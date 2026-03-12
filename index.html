@@ -28,7 +28,7 @@
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:72px;display:flex;align-items:center;justify-content:space-between;background:transparent;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);transition:all .35s ease;}
         nav.scrolled{background:rgba(249,250,247,.92);box-shadow:0 1px 20px rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.04);}
         .nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--dark);}
-        .nav-logo img{height:42px;width:42px;border-radius:10px;object-fit:contain; background:transparent;}
+        .nav-logo img{height:42px;width:42px;border-radius:10px;object-fit:cover;}
         .nav-logo span{font-weight:800;font-size:1.1rem;letter-spacing:-.5px;}
         .nav-logo .brand-sub{font-weight:500;font-size:.72rem;color:var(--teal);text-transform:uppercase;letter-spacing:1.5px;display:block;}
         .nav-links{display:flex;align-items:center;gap:32px;list-style:none;}
@@ -43,20 +43,19 @@
         .mobile-menu a{display:block;padding:16px 0;font-size:1.15rem;font-weight:700;color:var(--dark);text-decoration:none;border-bottom:1px solid rgba(0,0,0,.05);}
 
         /* HERO — with farmer background image */
-        .hero{min-height:calc(100vh - 72px);display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 48px 36px;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.55) 60%,rgba(15,17,20,.9) 100%),url('img/hero-bg.jpeg') center bottom/cover no-repeat;}
+        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 48px 80px;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(15,17,20,.45) 0%,rgba(15,17,20,.35) 50%,rgba(15,17,20,.5) 100%),url('img/hero-bg.jpeg') center center/cover no-repeat;}
         .hero-content{max-width:780px;position:relative;z-index:1;}
-        .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.55) 60%,rgba(15,17,20,.9) 100%),url('img/hero-bg.jpeg') center bottom/cover no-repeat;pointer-events:none;}
         .hero-logo{margin:0 auto 32px;}
-        .hero-logo img{height:96px;width:96px;border-radius:22px;object-fit:contain;margin:0 auto;box-shadow:0 8px 32px rgba(0,0,0,.08);background:transparent;}
-        .hero h1{font-family:var(--font-display);font-size:clamp(2.8rem,5.5vw,4.2rem);font-weight:700;line-height:1.08;color:var(--dark);margin-bottom:20px;letter-spacing:-1.5px;animation:fadeInUp .6s .1s ease forwards;opacity:0;}
-        .hero .hero-sub{font-size:1.15rem;color:var(--grey-700);max-width:480px;margin:0 auto 44px;line-height:1.6;animation:fadeInUp .6s .25s ease forwards;opacity:0;}
+        .hero-logo img{height:96px;width:96px;border-radius:22px;object-fit:cover;margin:0 auto;box-shadow:0 8px 32px rgba(0,0,0,.08);}
+        .hero h1{font-family:var(--font-display);font-size:clamp(2.8rem,5.5vw,4.2rem);font-weight:700;line-height:1.08;color:var(--white);margin-bottom:20px;letter-spacing:-1.5px;animation:fadeInUp .6s .1s ease forwards;opacity:0;text-shadow:0 2px 20px rgba(0,0,0,.3);}
+        .hero .hero-sub{font-size:1.15rem;color:rgba(255,255,255,.85);max-width:480px;margin:0 auto 44px;line-height:1.6;animation:fadeInUp .6s .25s ease forwards;opacity:0;text-shadow:0 1px 10px rgba(0,0,0,.2);}
         .hero-cta-box{background:var(--white);border-radius:20px;padding:28px 32px;box-shadow:0 4px 32px rgba(0,0,0,.06);max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;animation:fadeInUp .6s .4s ease forwards;opacity:0;}
         .hero-cta-text{text-align:left;flex:1;}
         .hero-cta-text span{font-size:.92rem;color:var(--grey-500);font-weight:500;}
         .btn-hero{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--white);padding:14px 28px;border-radius:var(--radius-full);font-size:.92rem;font-weight:700;text-decoration:none;transition:all .3s ease;white-space:nowrap;flex-shrink:0;font-family:var(--font-body);}
         .btn-hero:hover{background:var(--accent-hover);transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,133,91,.3);}
         .hero-tags{margin-top:36px;animation:fadeInUp .6s .55s ease forwards;opacity:0;}
-        .hero-tags p{font-size:.85rem;color:var(--grey-500);margin-bottom:14px;}
+        .hero-tags p{font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:14px;text-shadow:0 1px 8px rgba(0,0,0,.2);}
         .hero-tags-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;}
         .hero-tag{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:var(--radius-full);background:var(--white);border:1px solid rgba(0,0,0,.06);font-size:.82rem;font-weight:600;color:var(--grey-700);transition:all .25s ease;cursor:default;}
         .hero-tag:hover{border-color:var(--teal);color:var(--teal-dark);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
@@ -133,7 +132,7 @@
         .stat .number{font-family:var(--font-display);font-size:2.6rem;color:var(--lime);line-height:1;margin-bottom:6px;}
         .stat .label{font-size:.78rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;}
         .about-logo{display:flex;align-items:center;justify-content:center;}
-        .about-logo img{width:320px;height:320px;object-fit:contain;filter:drop-shadow(0 20px 40px rgba(0,0,0,.3));border-radius:50%;background:transparent;padding:0;}
+        .about-logo img{width:320px;height:320px;object-fit:contain;filter:drop-shadow(0 20px 40px rgba(0,0,0,.3));border-radius:50%;background:rgba(255,255,255,.95);padding:24px;}
 
         /* GALLERY */
         .gallery{background:var(--white);}
@@ -199,7 +198,7 @@
             .mission-icon{margin:0 auto;}
         }
         @media(max-width:768px){
-            nav{padding:0 24px;}section{padding:72px 24px;}.hero{padding:120px 24px 28px;min-height:calc(100vh - 72px);}
+            nav{padding:0 24px;}section{padding:72px 24px;}.hero{padding:120px 24px 60px;}
             .nav-links{display:none;}.hamburger{display:flex;}
             .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
             .hamburger.active span:nth-child(2){opacity:0;}
@@ -215,7 +214,7 @@
             .mission{padding:60px 24px;}
         }
         @media(max-width:480px){
-            nav{padding:0 16px;}section{padding:56px 16px;}.hero{padding:100px 16px 24px;min-height:calc(100vh - 72px);}
+            nav{padding:0 16px;}section{padding:56px 16px;}.hero{padding:100px 16px 48px;}
             .features-row{grid-template-columns:1fr;}
             .features-strip{padding:32px 24px;}
             .footer-grid{grid-template-columns:1fr;}
@@ -235,7 +234,7 @@
 <!-- NAV -->
 <nav id="navbar">
     <a href="#" class="nav-logo">
-        <img src="img/logo.png" alt="Sinergia Agrícola">
+        <img src="img/logo.jpg" alt="Sinergia Agrícola">
         <div><span>Sinergia</span><span class="brand-sub">Agrícola</span></div>
     </a>
     <ul class="nav-links">
@@ -258,7 +257,7 @@
 <!-- HERO -->
 <section class="hero">
     <div class="hero-content">
-        <div class="hero-logo"><img src="img/logo.png" alt="Sinergia Agrícola"></div>
+        <div class="hero-logo"><img src="img/logo.jpg" alt="Sinergia Agrícola"></div>
         <h1>Cursos y asesorías agrícolas Online</h1>
         <p class="hero-sub">Tu formación agrícola, sin límites.</p>
         <div class="hero-cta-box">
@@ -351,7 +350,7 @@
                 <div class="stat"><div class="number">100%</div><div class="label">Online</div></div>
             </div>
         </div>
-        <div class="about-logo anim"><img src="img/logo.png" alt="Sinergia Agrícola Logo"></div>
+        <div class="about-logo anim"><img src="img/logo.jpg" alt="Sinergia Agrícola Logo"></div>
     </div>
 </section>
 
@@ -408,12 +407,12 @@
 <footer>
     <div class="footer-grid">
         <div class="footer-brand">
-            <a href="#" class="nav-logo"><img src="img/logo.png" alt="Sinergia Agrícola" style="height:40px;width:40px;border-radius:8px;"><div><span>Sinergia</span><span class="brand-sub">Agrícola</span></div></a>
+            <a href="#" class="nav-logo"><img src="img/logo.jpg" alt="Sinergia Agrícola" style="height:40px;width:40px;border-radius:8px;"><div><span>Sinergia</span><span class="brand-sub">Agrícola</span></div></a>
             <p>Cursos online en vivo y asesorías agrícolas con certificado de valor curricular, QR verificable y folio único.</p>
         </div>
         <div class="footer-col"><h4>Cursos</h4><ul><li><a href="#cursos">Aguacate Hass</a></li><li><a href="#cursos">Suelos</a></li><li><a href="#cursos">Riego por Goteo</a></li><li><a href="#cursos">Chiles y Tomate</a></li><li><a href="#cursos">Ver todos</a></li></ul></div>
         <div class="footer-col"><h4>Empresa</h4><ul><li><a href="#nosotros">Nosotros</a></li><li><a href="#galeria">Galería</a></li><li><a href="#faq">Preguntas frecuentes</a></li><li><a href="#contacto">Contacto</a></li></ul></div>
-        <div class="footer-col"><h4>Contacto</h4><ul><li><a href="mailto:sinergiaagricola174@gmail.com">sinergiaagricola174@gmail.com</a></li><li><a href="https://wa.me/5212221035842" target="_blank">+52 1 222 103 5842</a></li><li><a href="https://www.facebook.com/share/1DmLB8omt2/" target="_blank">Facebook</a></li><li><a href="https://instagram.com/sinergiaagricola9" target="_blank">Instagram</a></li></ul></div>
+        <div class="footer-col"><h4>Contacto</h4><ul><li><a href="/cdn-cgi/l/email-protection#f4879d9a9186939d959593869d979b9895c5c3c0b49399959d98da979b99"><span class="__cf_email__" data-cfemail="92e1fbfcf7e0f5fbf3f3f5e0fbf1fdfef3a3a5a6d2f5fff3fbfebcf1fdff">[email&#160;protected]</span></a></li><li><a href="https://wa.me/5212221035842" target="_blank">+52 1 222 103 5842</a></li><li><a href="https://www.facebook.com/share/1DmLB8omt2/" target="_blank">Facebook</a></li><li><a href="https://instagram.com/sinergiaagricola9" target="_blank">Instagram</a></li></ul></div>
     </div>
     <div class="footer-bottom">
         <span>© 2026 Sinergia Agrícola. Todos los derechos reservados.</span>
@@ -425,7 +424,7 @@
     </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     const nav=document.getElementById('navbar');
     window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
     const hamburger=document.getElementById('hamburger'),mobileMenu=document.getElementById('mobileMenu');
@@ -434,8 +433,4 @@
     const anims=document.querySelectorAll('.anim');
     const observer=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);observer.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
     anims.forEach(el=>observer.observe(el));
-    document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{const item=btn.parentElement;const w=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!w)item.classList.add('open');});});
-    function scrollCarousel(dir){const track=document.getElementById('carouselTrack');track.scrollBy({left:dir*300,behavior:'smooth'});}
-</script>
-</body>
-</html>
+    document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{const item=btn.parentElement;const w=item.classList.contains('open');document.querySele
