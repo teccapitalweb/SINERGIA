@@ -290,10 +290,10 @@
 <!-- FEATURES STRIP -->
 <div class="features-strip">
     <div class="features-row">
-        <div class="feature-item anim"><div class="icon">📡</div><h3>Clases en Vivo</h3><p>Sesiones online interactivas con instructores expertos</p></div>
-        <div class="feature-item anim"><div class="icon">🎓</div><h3>Certificado Curricular</h3><p>Reconocimiento con valor curricular al completar cada curso</p></div>
-        <div class="feature-item anim"><div class="icon">📱</div><h3>QR Verificable</h3><p>Código QR escaneable para validar tu certificado</p></div>
-        <div class="feature-item anim"><div class="icon">🔢</div><h3>Folio Único</h3><p>Cada certificado con folio único de registro institucional</p></div>
+        <div class="feature-item"><div class="icon">📡</div><h3>Clases en Vivo</h3><p>Sesiones online interactivas con instructores expertos</p></div>
+        <div class="feature-item"><div class="icon">🎓</div><h3>Certificado Curricular</h3><p>Reconocimiento con valor curricular al completar cada curso</p></div>
+        <div class="feature-item"><div class="icon">📱</div><h3>QR Verificable</h3><p>Código QR escaneable para validar tu certificado</p></div>
+        <div class="feature-item"><div class="icon">🔢</div><h3>Folio Único</h3><p>Cada certificado con folio único de registro institucional</p></div>
     </div>
 </div>
 
@@ -456,6 +456,6 @@
     hamburger.addEventListener('click',()=>{hamburger.classList.toggle('active');mobileMenu.classList.toggle('open');document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';});
     function closeMenu(){hamburger.classList.remove('active');mobileMenu.classList.remove('open');document.body.style.overflow='';}
     const anims=document.querySelectorAll('.anim');
-    const observer=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);observer.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+    const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});},{threshold:0.05,rootMargin:'0px 0px -20px 0px'});
     anims.forEach(el=>observer.observe(el));
     document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{const item=btn.parentElement;const w=item.classList.contains('open');document.querySele
