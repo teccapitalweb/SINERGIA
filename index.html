@@ -43,7 +43,7 @@
         .mobile-menu a{display:block;padding:16px 0;font-size:1.15rem;font-weight:700;color:var(--dark);text-decoration:none;border-bottom:1px solid rgba(0,0,0,.05);}
 
         /* HERO */
-        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 48px 80px;position:relative;overflow:hidden;background:linear-gradient(180deg,#c8e6e7 0%,#d4e8e4 25%,#e4ece4 50%,#f0eedf 75%,#f5ead8 100%);}
+        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 48px 80px;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(200,230,231,.92) 0%,rgba(212,232,228,.9) 25%,rgba(228,236,228,.9) 50%,rgba(240,238,223,.92) 75%,rgba(245,234,216,.95) 100%),url('img/hero-bg.jpeg') center bottom/cover no-repeat;}
         .hero-content{max-width:780px;position:relative;z-index:1;}
         .hero-logo{margin:0 auto 32px;}
         .hero-logo img{height:96px;width:96px;border-radius:22px;object-fit:cover;margin:0 auto;box-shadow:0 8px 32px rgba(0,0,0,.08);}
@@ -302,7 +302,7 @@
     <div class="mission-inner anim">
         <div class="mission-icon">🌱</div>
         <div class="mission-text">
-            <p>Nuestro objetivo en <strong>Sinergia Agrícola</strong> es impulsar la sostenibilidad y la eficiencia en la producción agrícola 🚜, fomentando la innovación y el trabajo colaborativo. Promovemos el uso responsable de los recursos naturales para contribuir al desarrollo y bienestar de las futuras generaciones, siempre con un enfoque hacia el cuidado del medio ambiente y la optimización de procesos agrícolas.</p>
+            <p>Nuestro objetivo en <strong>Sinergia Agrícola</strong> es impulsar la sostenibilidad y la eficiencia en la producción agrícola, fomentando la innovación y el trabajo colaborativo. Promovemos el uso responsable de los recursos naturales para contribuir al desarrollo y bienestar de las futuras generaciones, siempre con un enfoque hacia el cuidado del medio ambiente y la optimización de procesos agrícolas.</p>
         </div>
     </div>
 </div>
@@ -437,7 +437,7 @@
         </div>
         <div class="footer-col"><h4>Cursos</h4><ul><li><a href="#cursos">Aguacate Hass</a></li><li><a href="#cursos">Suelos</a></li><li><a href="#cursos">Riego por Goteo</a></li><li><a href="#cursos">Chiles y Tomate</a></li><li><a href="#cursos">Ver todos</a></li></ul></div>
         <div class="footer-col"><h4>Empresa</h4><ul><li><a href="#nosotros">Nosotros</a></li><li><a href="#galeria">Galería</a></li><li><a href="#faq">Preguntas frecuentes</a></li><li><a href="#contacto">Contacto</a></li></ul></div>
-        <div class="footer-col"><h4>Contacto</h4><ul><li><a href="mailto:sinergiaagricola174@gmail.com">sinergiaagricola174@gmail.com</a></li><li><a href="https://wa.me/5212221035842" target="_blank">+52 1 222 103 5842</a></li><li><a href="https://www.facebook.com/share/1DmLB8omt2/" target="_blank">Facebook</a></li><li><a href="https://instagram.com/sinergiaagricola9" target="_blank">Instagram</a></li></ul></div>
+        <div class="footer-col"><h4>Contacto</h4><ul><li><a href="/cdn-cgi/l/email-protection#99eaf0f7fcebfef0f8f8feebf0faf6f5f8a8aeadd9fef4f8f0f5b7faf6f4"><span class="__cf_email__" data-cfemail="5023393e352237393131372239333f3c3161676410373d31393c7e333f3d">[email&#160;protected]</span></a></li><li><a href="https://wa.me/5212221035842" target="_blank">+52 1 222 103 5842</a></li><li><a href="https://www.facebook.com/share/1DmLB8omt2/" target="_blank">Facebook</a></li><li><a href="https://instagram.com/sinergiaagricola9" target="_blank">Instagram</a></li></ul></div>
     </div>
     <div class="footer-bottom">
         <span>© 2026 Sinergia Agrícola. Todos los derechos reservados.</span>
@@ -449,7 +449,7 @@
     </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     const nav=document.getElementById('navbar');
     window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
     const hamburger=document.getElementById('hamburger'),mobileMenu=document.getElementById('mobileMenu');
@@ -458,8 +458,4 @@
     const anims=document.querySelectorAll('.anim');
     const observer=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);observer.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
     anims.forEach(el=>observer.observe(el));
-    document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{const item=btn.parentElement;const w=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!w)item.classList.add('open');});});
-    function scrollCarousel(dir){const track=document.getElementById('carouselTrack');track.scrollBy({left:dir*300,behavior:'smooth'});}
-</script>
-</body>
-</html>
+    document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{const item=btn.parentElement;const w=item.classList.contains('open');document.querySele
