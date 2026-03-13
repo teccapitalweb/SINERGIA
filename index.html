@@ -411,7 +411,7 @@
         </div>
         <div class="footer-col"><h4>Cursos</h4><ul><li><a href="#cursos">Aguacate Hass</a></li><li><a href="#cursos">Suelos</a></li><li><a href="#cursos">Riego por Goteo</a></li><li><a href="#cursos">Chiles y Tomate</a></li><li><a href="#cursos">Ver todos</a></li></ul></div>
         <div class="footer-col"><h4>Empresa</h4><ul><li><a href="#nosotros">Nosotros</a></li><li><a href="#galeria">Galería</a></li><li><a href="#faq">Preguntas frecuentes</a></li><li><a href="#contacto">Contacto</a></li></ul></div>
-        <div class="footer-col"><h4>Contacto</h4><ul><li><a href="/cdn-cgi/l/email-protection#f4879d9a9186939d959593869d979b9895c5c3c0b49399959d98da979b99"><span class="__cf_email__" data-cfemail="92e1fbfcf7e0f5fbf3f3f5e0fbf1fdfef3a3a5a6d2f5fff3fbfebcf1fdff">[email&#160;protected]</span></a></li><li><a href="https://wa.me/5212221035842" target="_blank">+52 1 222 103 5842</a></li><li><a href="https://www.facebook.com/share/1DmLB8omt2/" target="_blank">Facebook</a></li><li><a href="https://instagram.com/sinergiaagricola9" target="_blank">Instagram</a></li></ul></div>
+        <div class="footer-col"><h4>Contacto</h4><ul><li><a href="mailto:sinergiaagricola174@gmail.com">sinergiaagricola174@gmail.com</a></li><li><a href="https://wa.me/5212221035842" target="_blank">+52 1 222 103 5842</a></li><li><a href="https://www.facebook.com/share/1DmLB8omt2/" target="_blank">Facebook</a></li><li><a href="https://instagram.com/sinergiaagricola9" target="_blank">Instagram</a></li></ul></div>
     </div>
     <div class="footer-bottom">
         <span>© 2026 Sinergia Agrícola. Todos los derechos reservados.</span>
@@ -423,13 +423,42 @@
     </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+    // Nav scroll
     const nav=document.getElementById('navbar');
-    window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
-    const hamburger=document.getElementById('hamburger'),mobileMenu=document.getElementById('mobileMenu');
-    hamburger.addEventListener('click',()=>{hamburger.classList.toggle('active');mobileMenu.classList.toggle('open');document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';});
-    function closeMenu(){hamburger.classList.remove('active');mobileMenu.classList.remove('open');document.body.style.overflow='';}
-    const anims=document.querySelectorAll('.anim');
-    const observer=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);observer.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
-    anims.forEach(el=>observer.observe(el));
-    document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{const item=btn.parentElement;const w=item.classList.contains('open');document.querySele
+    window.addEventListener('scroll',function(){nav.classList.toggle('scrolled',window.scrollY>40);});
+
+    // Mobile menu
+    const hamburger=document.getElementById('hamburger');
+    const mobileMenu=document.getElementById('mobileMenu');
+    hamburger.addEventListener('click',function(){
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('open');
+        document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
+    });
+    function closeMenu(){
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow='';
+    }
+
+    // FAQ accordion
+    var faqButtons=document.querySelectorAll('.faq-question');
+    for(var i=0;i<faqButtons.length;i++){
+        faqButtons[i].addEventListener('click',function(){
+            var item=this.parentElement;
+            var wasOpen=item.classList.contains('open');
+            var allItems=document.querySelectorAll('.faq-item');
+            for(var j=0;j<allItems.length;j++){allItems[j].classList.remove('open');}
+            if(!wasOpen){item.classList.add('open');}
+        });
+    }
+
+    // Carousel scroll
+    function scrollCarousel(dir){
+        var track=document.getElementById('carouselTrack');
+        track.scrollBy({left:dir*300,behavior:'smooth'});
+    }
+</script>
+</body>
+</html>
