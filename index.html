@@ -89,6 +89,19 @@
         .mission-text p{font-size:1.05rem;color:var(--grey-700);line-height:1.8;}
         .mission-text p strong{color:var(--dark);font-weight:700;}
 
+        /* TRUSTED ORGANIZATIONS */
+        .trusted{background:var(--white);padding:26px 48px 84px;overflow:hidden;}
+        .trusted-header{text-align:center;max-width:920px;margin:0 auto 34px;}
+        .trusted-header .section-subtitle{margin:0 auto;}
+        .trusted-marquee{position:relative;max-width:1200px;margin:0 auto;overflow:hidden;-webkit-mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent);}
+        .trusted-track{display:flex;align-items:center;gap:18px;width:max-content;animation:trustedScroll 34s linear infinite;will-change:transform;}
+        .trusted-marquee:hover .trusted-track{animation-play-state:paused;}
+        .trusted-logo{flex:0 0 180px;height:102px;background:var(--white);border:1px solid rgba(0,0,0,.06);border-radius:20px;display:flex;align-items:center;justify-content:center;padding:18px;box-shadow:var(--shadow-sm);}
+        .trusted-logo img{max-width:100%;max-height:58px;object-fit:contain;filter:saturate(.98) contrast(1.02);}
+        .trusted-logo img[src$="cropped-logo-blanco.png"],
+        .trusted-logo img[src$="logo.png"]{filter:invert(1) grayscale(1) brightness(.18);}
+        @keyframes trustedScroll{from{transform:translateX(0);}to{transform:translateX(calc(-50% - 9px));}}
+
         /* COURSES CAROUSEL */
         .courses{background:var(--cream);}
         .courses-header{text-align:center;margin-bottom:48px;}
@@ -211,6 +224,8 @@
             .hero-cta-box{flex-direction:column;text-align:center;}
             .course-card{flex:0 0 260px;}
             .mission{padding:60px 24px;}
+            .trusted{padding:18px 24px 64px;}
+            .trusted-logo{flex-basis:160px;height:92px;padding:14px;}
         }
         @media(max-width:480px){
             nav{padding:0 16px;}section{padding:56px 16px;}.hero{padding:100px 16px 48px;}
@@ -225,12 +240,12 @@
             .hero-tag{padding:8px 14px;font-size:.78rem;}
             .course-card{flex:0 0 240px;}
             .mission{padding:48px 16px;}
+            .trusted{padding:12px 16px 52px;}
+            .trusted-header{margin-bottom:26px;}
+            .trusted-logo{flex-basis:138px;height:84px;border-radius:16px;}
+            .trusted-logo img{max-height:48px;}
         }
-    
-/* Corrección para logos blancos en carrusel de empresas */
-.empresas-carousel img{filter:invert(1) grayscale(1) brightness(0.2);} 
-
-</style>
+    </style>
 </head>
 <body>
 
@@ -304,6 +319,55 @@
         </div>
     </div>
 </div>
+
+
+<section class="trusted" id="empresas">
+    <div class="trusted-header anim">
+        <span class="section-label">Empresas y organizaciones</span>
+        <h2 class="section-title">Empresas y organizaciones que confían en nosotros</h2>
+        <p class="section-subtitle">Aliados, instituciones y organizaciones que han formado parte de la experiencia de Sinergia Agrícola.</p>
+    </div>
+    <div class="trusted-marquee" aria-label="Carrusel infinito de empresas y organizaciones">
+        <div class="trusted-track">
+            <div class="trusted-logo"><img src="img/empresas/034-ipa.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/1646699991825.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/1678489689930.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/933b2a5de5224d9fbe40030f55fd76b9.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/centro-cultural-cocorit-a-c-logo-ccc.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/cropped-logo-blanco.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/images-10-.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/images-14-.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/images-15-.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/images-16-.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/logo.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/logo_grosanidad.avif" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/m.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/publiccontain.webp" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/seicop_final-300x173.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/umsnh5cdc5da738862_500h.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/unnamed-1-.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/upqroo-logo.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/034-ipa.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/1646699991825.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/1678489689930.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/933b2a5de5224d9fbe40030f55fd76b9.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/centro-cultural-cocorit-a-c-logo-ccc.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/cropped-logo-blanco.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/images-10-.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/images-14-.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/images-15-.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/images-16-.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/logo.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/logo_grosanidad.avif" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/m.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/publiccontain.webp" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/seicop_final-300x173.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/umsnh5cdc5da738862_500h.jpg" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/unnamed-1-.png" alt="Empresa u organización aliada" loading="lazy"></div>
+            <div class="trusted-logo"><img src="img/empresas/upqroo-logo.png" alt="Empresa u organización aliada" loading="lazy"></div>
+        </div>
+    </div>
+</section>
 
 <!-- COURSES CAROUSEL -->
 <section class="courses" id="cursos">
