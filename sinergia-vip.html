@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membresía VIP · Sinergia-Agrícola</title>
+<meta name="description" content="Acceso ilimitado a todos los cursos agrícolas, asesoría personalizada, comunidad privada y certificación verificable. Planes desde $199 MXN al mes.">
+<meta name="theme-color" content="#0D9488">
+
+<meta property="og:title" content="Membresía VIP · Sinergia-Agrícola">
+<meta property="og:description" content="Acceso ilimitado a +19 cursos agrícolas, asesoría 1 a 1 y certificación. Desde $199 MXN/mes.">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="img/logo.jpg" type="image/jpeg">
+<link rel="apple-touch-icon" href="img/logo.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --teal-50:  #F0FDFA;
+    --teal-100: #CCFBF1;
+    --teal-200: #99F6E4;
+    --teal-300: #5EEAD4;
+    --teal-400: #2DD4BF;
+    --teal-500: #14B8A6;
+    --teal-600: #0D9488;
+    --teal-700: #0F766E;
+    --teal-800: #115E59;
+    --teal-900: #134E4A;
+    --green-500: #22C55E;
+    --green-600: #16A34A;
+    --green-700: #15803D;
+    --amber-400: #FBBF24;
+    --amber-500: #F59E0B;
+    --amber-600: #D97706;
+    --rose-500: #F43F5E;
+    --violet-500: #8B5CF6;
+    --earth-700: #92400E;
+    --stone-50:  #FAFAF9;
+    --stone-100: #F5F5F4;
+    --stone-200: #E7E5E4;
+    --stone-300: #D6D3D1;
+    --stone-400: #A8A29E;
+    --stone-500: #78716C;
+    --stone-600: #57534E;
+    --stone-700: #44403C;
+    --stone-800: #292524;
+    --stone-900: #1C1917;
+
+    --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--stone-50);
+    background-image:
+      radial-gradient(ellipse 1200px 800px at 10% 0%, rgba(20, 184, 166, 0.10), transparent 50%),
+      radial-gradient(ellipse 1000px 600px at 90% 40%, rgba(13, 148, 136, 0.08), transparent 50%),
+      radial-gradient(ellipse 800px 600px at 50% 100%, rgba(251, 191, 36, 0.06), transparent 50%);
+    background-attachment: fixed;
+    color: var(--stone-900);
+    overflow-x: hidden;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  }
+
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+  a { text-decoration: none; color: inherit; }
+  img { max-width: 100%; display: block; }
+
+  /* ═══════════════════════════════════════════════
+     NAV SIMPLIFICADO (sin VIP porque ya estamos en VIP)
+     ═══════════════════════════════════════════════ */
+  header.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 16px 0;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(13, 148, 136, 0.22);
+    border-radius: 100px;
+    padding: 10px 10px 10px 24px;
+    box-shadow: 0 4px 24px rgba(13, 148, 136, 0.12);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
+  .nav-logo-text { display: flex; flex-direction: column; line-height: 1; font-family: var(--font-display); }
+  .nav-logo-text span:first-child { font-size: 18px; font-weight: 800; letter-spacing: -0.03em; color: var(--teal-700); }
+  .nav-logo-text span:last-child { font-size: 13px; font-weight: 600; color: var(--green-600); margin-top: 2px; }
+  .nav-links { display: flex; gap: 28px; font-size: 15px; font-weight: 500; color: var(--stone-800); }
+  .nav-links a { transition: color 0.2s; }
+  .nav-links a:hover { color: var(--teal-600); }
+  .nav-login {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: var(--stone-900);
+    color: white;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .nav-login:hover {
+    background: var(--teal-700);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(13, 148, 136, 0.35);
+  }
+  .nav-login svg { width: 14px; height: 14px; }
+
+  /* ═══════════════════════════════════════════════
+     HERO VIP PREMIUM
+     ═══════════════════════════════════════════════ */
+  .hero-vip {
+    padding: 80px 0 60px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero-vip-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+  .hero-vip-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(13,148,136,0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(13,148,136,0.12) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+  }
+  .hero-vip-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 800px 500px at 20% 30%, rgba(20, 184, 166, 0.4), transparent 55%),
+      radial-gradient(ellipse 700px 500px at 80% 70%, rgba(251, 191, 36, 0.28), transparent 55%),
+      radial-gradient(ellipse 500px 400px at 50% 10%, rgba(139, 92, 246, 0.2), transparent 55%);
+    animation: aurora 18s ease-in-out infinite alternate;
+  }
+  @keyframes aurora {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, -15px) scale(1.08); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px 10px 12px;
+    background: linear-gradient(135deg, var(--amber-400), var(--amber-500));
+    color: var(--stone-900);
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 8px 28px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255,255,255,0.4);
+    margin-bottom: 32px;
+  }
+  .hero-badge svg { width: 16px; height: 16px; }
+  .hero-badge code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    background: rgba(0,0,0,0.12);
+    border-radius: 6px;
+  }
+
+  .hero-vip h1 {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    color: var(--stone-900);
+    margin-bottom: 24px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-vip h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--teal-500) 0%, var(--green-500) 40%, var(--amber-500) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+  }
+  .hero-vip-sub {
+    font-size: 20px;
+    color: var(--stone-600);
+    max-width: 640px;
+    margin: 0 auto 44px;
+    line-height: 1.55;
+  }
+
+  .hero-benefits {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+  .hero-benefit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--stone-700);
+    font-weight: 500;
+  }
+  .hero-benefit svg {
+    width: 20px; height: 20px;
+    color: var(--green-600);
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════════════
+     PRICING — 2 PLANES LADO A LADO
+     ═══════════════════════════════════════════════ */
+  .pricing-section {
+    padding: 60px 0 100px;
+    position: relative;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    align-items: stretch;
+  }
+
+  .plan {
+    background: linear-gradient(180deg, #ffffff 0%, rgba(240, 253, 250, 0.95) 100%);
+    border: 1px solid rgba(13, 148, 136, 0.18);
+    border-radius: 28px;
+    padding: 44px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .plan:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(13, 148, 136, 0.18);
+  }
+
+  /* Plan Anual — el destacado */
+  .plan-featured {
+    background: linear-gradient(135deg, var(--teal-700) 0%, var(--teal-800) 50%, var(--green-700) 100%);
+    color: white;
+    border: 2px solid var(--amber-400);
+    box-shadow: 0 24px 80px rgba(13, 148, 136, 0.35);
+    position: relative;
+  }
+  .plan-featured::before {
+    content: '';
+    position: absolute;
+    top: -40%; right: -30%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.25), transparent 70%);
+    pointer-events: none;
+  }
+  .plan-featured::after {
+    content: '';
+    position: absolute;
+    bottom: -40%; left: -20%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .plan-featured:hover {
+    transform: translateY(-10px) scale(1.01);
+    box-shadow: 0 32px 100px rgba(13, 148, 136, 0.45);
+  }
+
+  .plan-badge-popular {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--amber-400), var(--amber-500));
+    color: var(--stone-900);
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.45);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+  }
+  .plan-badge-popular svg { width: 14px; height: 14px; }
+
+  .plan-header {
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .plan-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    color: var(--teal-600);
+  }
+  .plan-featured .plan-tag { color: var(--amber-400); }
+
+  .plan-name {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+    color: var(--stone-900);
+  }
+  .plan-featured .plan-name { color: white; }
+
+  .plan-description {
+    font-size: 15px;
+    color: var(--stone-600);
+    line-height: 1.5;
+  }
+  .plan-featured .plan-description { color: rgba(255,255,255,0.85); }
+
+  .plan-price {
+    margin: 28px 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .plan-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .plan-currency {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--stone-500);
+  }
+  .plan-featured .plan-currency { color: rgba(255,255,255,0.7); }
+
+  .plan-amount {
+    font-family: var(--font-display);
+    font-size: 68px;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--stone-900);
+    background: linear-gradient(135deg, var(--teal-700), var(--teal-500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .plan-featured .plan-amount {
+    background: linear-gradient(135deg, #ffffff 0%, var(--amber-400) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .plan-period {
+    font-size: 16px;
+    color: var(--stone-500);
+    font-weight: 500;
+  }
+  .plan-featured .plan-period { color: rgba(255,255,255,0.75); }
+
+  .plan-savings {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: rgba(251, 191, 36, 0.2);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    color: var(--amber-400);
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .plan-savings svg { width: 12px; height: 12px; }
+
+  /* Lista de beneficios */
+  .plan-features {
+    list-style: none;
+    margin: 0 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+  }
+  .plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--stone-700);
+  }
+  .plan-featured .plan-features li { color: rgba(255,255,255,0.92); }
+
+  .plan-feature-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--teal-500);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .plan-featured .plan-feature-icon {
+    background: linear-gradient(135deg, var(--amber-400), var(--amber-500));
+    color: var(--stone-900);
+  }
+  .plan-feature-icon svg { width: 12px; height: 12px; stroke-width: 3; }
+
+  /* Botón CTA del plan */
+  .plan-cta {
+    width: 100%;
+    padding: 16px 28px;
+    border: none;
+    border-radius: 100px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+    text-decoration: none;
+  }
+  .plan-cta-monthly {
+    background: linear-gradient(135deg, var(--teal-500) 0%, var(--teal-700) 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+  }
+  .plan-cta-monthly:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(13, 148, 136, 0.5);
+  }
+  .plan-cta-annual {
+    background: linear-gradient(135deg, var(--amber-400) 0%, var(--amber-500) 100%);
+    color: var(--stone-900);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+  }
+  .plan-cta-annual:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(245, 158, 11, 0.55);
+  }
+  .plan-cta svg { width: 16px; height: 16px; }
+
+  .plan-disclaimer {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--stone-500);
+    letter-spacing: 0.05em;
+    text-align: center;
+    margin-top: 14px;
+    position: relative;
+    z-index: 1;
+  }
+  .plan-featured .plan-disclaimer { color: rgba(255,255,255,0.6); }
+
+  /* ═══════════════════════════════════════════════
+     BENEFITS DETAIL SECTION
+     ═══════════════════════════════════════════════ */
+  .benefits-section { padding: 100px 0; }
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 60px;
+  }
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal-700);
+    margin-bottom: 16px;
+    padding: 6px 14px;
+    background: var(--teal-100);
+    border-radius: 100px;
+  }
+  .section h2, .section-header h2 {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+    color: var(--stone-900);
+  }
+  .section h2 em, .section-header h2 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--teal-500) 0%, var(--green-500) 50%, var(--violet-500) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+  }
+  .section-lead {
+    font-size: 18px;
+    color: var(--stone-600);
+    line-height: 1.6;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .benefit-card {
+    background: linear-gradient(180deg, #ffffff 0%, rgba(240, 253, 250, 0.95) 100%);
+    border: 1px solid rgba(13, 148, 136, 0.18);
+    border-radius: 24px;
+    padding: 32px 28px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 4px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .benefit-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(13, 148, 136, 0.18);
+    border-color: var(--teal-500);
+  }
+  .benefit-card:hover::before { transform: scaleX(1); }
+
+  .benefit-card:nth-child(1)::before { background: linear-gradient(90deg, var(--teal-400), var(--teal-600)); }
+  .benefit-card:nth-child(2)::before { background: linear-gradient(90deg, var(--green-500), var(--green-700)); }
+  .benefit-card:nth-child(3)::before { background: linear-gradient(90deg, var(--amber-400), var(--amber-500)); }
+  .benefit-card:nth-child(4)::before { background: linear-gradient(90deg, var(--violet-500), var(--violet-500)); }
+  .benefit-card:nth-child(5)::before { background: linear-gradient(90deg, #FDA4AF, var(--rose-500)); }
+  .benefit-card:nth-child(6)::before { background: linear-gradient(90deg, #7DD3FC, #0EA5E9); }
+
+  .benefit-icon {
+    width: 60px; height: 60px;
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    transition: transform 0.3s;
+  }
+  .benefit-card:hover .benefit-icon { transform: scale(1.1) rotate(-5deg); }
+  .benefit-icon svg { width: 30px; height: 30px; }
+
+  .benefit-card:nth-child(1) .benefit-icon {
+    background: linear-gradient(135deg, var(--teal-100), var(--teal-300));
+    color: var(--teal-700);
+    box-shadow: 0 8px 20px rgba(20, 184, 166, 0.25);
+  }
+  .benefit-card:nth-child(2) .benefit-icon {
+    background: linear-gradient(135deg, #DCFCE7, #86EFAC);
+    color: var(--green-700);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.25);
+  }
+  .benefit-card:nth-child(3) .benefit-icon {
+    background: linear-gradient(135deg, #FEF3C7, var(--amber-400));
+    color: var(--earth-700);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+  }
+  .benefit-card:nth-child(4) .benefit-icon {
+    background: linear-gradient(135deg, #EDE9FE, #C4B5FD);
+    color: #6D28D9;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
+  }
+  .benefit-card:nth-child(5) .benefit-icon {
+    background: linear-gradient(135deg, #FFE4E6, #FDA4AF);
+    color: #BE123C;
+    box-shadow: 0 8px 20px rgba(244, 63, 94, 0.25);
+  }
+  .benefit-card:nth-child(6) .benefit-icon {
+    background: linear-gradient(135deg, #DBEAFE, #7DD3FC);
+    color: #0369A1;
+    box-shadow: 0 8px 20px rgba(14, 165, 233, 0.25);
+  }
+
+  .benefit-card h3 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    color: var(--stone-900);
+  }
+  .benefit-card p {
+    font-size: 14px;
+    color: var(--stone-600);
+    line-height: 1.6;
+  }
+
+  /* ═══════════════════════════════════════════════
+     COMPARE TABLE
+     ═══════════════════════════════════════════════ */
+  .compare-section {
+    padding: 80px 0;
+    background: linear-gradient(180deg, transparent, rgba(94, 234, 212, 0.15), transparent);
+  }
+  .compare-card {
+    background: white;
+    border: 1px solid rgba(13, 148, 136, 0.2);
+    border-radius: 28px;
+    padding: 48px;
+    box-shadow: 0 20px 60px rgba(13, 148, 136, 0.1);
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--stone-200);
+    align-items: center;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-head {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--stone-500);
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--stone-200);
+  }
+  .compare-head-plan {
+    text-align: center;
+    color: var(--teal-700);
+  }
+  .compare-feature {
+    font-size: 15px;
+    color: var(--stone-800);
+    font-weight: 500;
+  }
+  .compare-value {
+    text-align: center;
+    font-size: 14px;
+    color: var(--stone-700);
+    font-weight: 500;
+  }
+  .compare-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--teal-100);
+    color: var(--teal-700);
+  }
+  .compare-check svg { width: 14px; height: 14px; stroke-width: 3; }
+  .compare-x { color: var(--stone-300); }
+  .compare-x svg { width: 16px; height: 16px; }
+
+  /* ═══════════════════════════════════════════════
+     TESTIMONIALS (placeholder)
+     ═══════════════════════════════════════════════ */
+  .testimonials-section { padding: 100px 0; }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .testimonial {
+    background: linear-gradient(180deg, #ffffff 0%, rgba(240, 253, 250, 0.9) 100%);
+    border: 1px solid rgba(13, 148, 136, 0.18);
+    border-radius: 24px;
+    padding: 32px 28px;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .testimonial:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(13, 148, 136, 0.15);
+  }
+  .testimonial-stars {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 16px;
+    color: var(--amber-500);
+  }
+  .testimonial-stars svg { width: 16px; height: 16px; }
+  .testimonial-quote {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--stone-700);
+    margin-bottom: 20px;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 18px;
+    border-top: 1px solid var(--stone-200);
+  }
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal-400), var(--teal-600));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+  .testimonial-info { flex: 1; }
+  .testimonial-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--stone-900);
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .testimonial-role {
+    font-size: 12px;
+    color: var(--stone-500);
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+
+  /* ═══════════════════════════════════════════════
+     FAQ VIP
+     ═══════════════════════════════════════════════ */
+  .faq-section { padding: 100px 0; }
+  .faq-list {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .faq-item {
+    background: linear-gradient(180deg, #ffffff 0%, rgba(240, 253, 250, 0.5) 100%);
+    border: 1px solid rgba(13, 148, 136, 0.18);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .faq-item:hover { border-color: var(--teal-400); box-shadow: 0 4px 16px rgba(13, 148, 136, 0.1); }
+  .faq-item.open {
+    border-color: var(--teal-500);
+    box-shadow: 0 12px 28px rgba(13, 148, 136, 0.14);
+  }
+  .faq-question {
+    width: 100%;
+    padding: 24px 28px;
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--stone-900);
+    letter-spacing: -0.015em;
+  }
+  .faq-question-icon {
+    width: 36px; height: 36px;
+    border-radius: 12px;
+    background: var(--teal-100);
+    color: var(--teal-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+  .faq-item.open .faq-question-icon {
+    background: var(--teal-600);
+    color: white;
+    transform: rotate(45deg);
+  }
+  .faq-question-icon svg { width: 16px; height: 16px; }
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .faq-item.open .faq-answer { max-height: 400px; }
+  .faq-answer-content {
+    padding: 0 28px 28px;
+    color: var(--stone-600);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ═══════════════════════════════════════════════
+     CTA FINAL
+     ═══════════════════════════════════════════════ */
+  .cta-section { padding: 100px 0; }
+  .cta-box {
+    background: linear-gradient(135deg, var(--teal-700) 0%, var(--teal-800) 50%, var(--green-700) 100%);
+    border-radius: 36px;
+    padding: 80px 60px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(13, 148, 136, 0.4);
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -30%; right: -20%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.28), transparent 70%);
+  }
+  .cta-box::after {
+    content: '';
+    position: absolute;
+    bottom: -40%; left: -10%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.22), transparent 70%);
+  }
+  .cta-content { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+  .cta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 100px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+  }
+  .cta-tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--amber-400);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .cta-box h2 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+    color: white;
+  }
+  .cta-box p {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: 36px;
+  }
+  .cta-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    background: white;
+    color: var(--teal-700);
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 15px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+  }
+  .btn-white:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+  }
+  .btn-white svg { width: 16px; height: 16px; }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: white;
+    transform: translateY(-2px);
+  }
+
+  /* ═══════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════ */
+  footer.site-footer {
+    background: var(--stone-900);
+    color: var(--stone-300);
+    padding: 60px 0 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  footer.site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--teal-500), var(--violet-500), transparent);
+  }
+  .footer-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-brand-simple {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer-brand-simple img {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  .footer-brand-simple-text {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-display);
+  }
+  .footer-brand-simple-text span:first-child {
+    font-size: 16px;
+    font-weight: 800;
+    color: white;
+  }
+  .footer-brand-simple-text span:last-child {
+    font-size: 12px;
+    color: var(--teal-400);
+    font-weight: 600;
+  }
+  .footer-copy {
+    font-size: 13px;
+    color: var(--stone-500);
+  }
+  .footer-copy code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--teal-400);
+  }
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+    color: var(--stone-400);
+  }
+  .footer-links a:hover { color: var(--teal-400); }
+
+  /* ═══════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════ */
+  @media (max-width: 1024px) {
+    .pricing-grid { grid-template-columns: 1fr; max-width: 560px; gap: 32px; }
+    .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+    .testimonials-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .wrap { padding: 0 20px; }
+    .nav { padding: 10px 10px 10px 18px; }
+    .nav-links { display: none; }
+    .hero-vip { padding: 50px 0 40px; }
+    .hero-vip h1 { font-size: 48px; line-height: 1; }
+    .hero-vip-sub { font-size: 17px; }
+    .hero-benefits { gap: 16px; }
+    .plan { padding: 32px 24px; }
+    .plan-amount { font-size: 56px; }
+    .benefits-grid { grid-template-columns: 1fr; }
+    .compare-card { padding: 28px 20px; }
+    .compare-row { grid-template-columns: 1.6fr 0.7fr 0.7fr; gap: 8px; font-size: 12px; }
+    .compare-feature { font-size: 13px; }
+    .cta-box { padding: 48px 24px; border-radius: 24px; }
+    .cta-box h2 { font-size: 32px; }
+    .cta-ctas { flex-direction: column; align-items: stretch; }
+    .btn-white, .btn-ghost { justify-content: center; width: 100%; }
+    .footer-simple { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav">
+      <a href="index.html" class="nav-logo">
+        <img src="img/logo.jpg" alt="Sinergia-Agrícola">
+        <div class="nav-logo-text">
+          <span>Sinergia</span>
+          <span>Agrícola</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Inicio</a>
+        <a href="index.html#cursos">Cursos</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a href="vip-auth.html" class="nav-login">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        Ya soy miembro
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════
+     HERO VIP
+     ═══════════════════════════════════════════════ -->
+<section class="hero-vip">
+  <div class="hero-vip-bg"></div>
+  <div class="wrap">
+    <span class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+      Membresía VIP
+      <code>v.2026</code>
+    </span>
+    <h1>Accede a todo el <em>conocimiento del campo</em> en un solo lugar.</h1>
+    <p class="hero-vip-sub">Todos los cursos, asesoría personalizada, comunidad privada de agricultores y certificación verificable. Desde <strong>$199 MXN al mes</strong>.</p>
+
+    <div class="hero-benefits">
+      <div class="hero-benefit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Acceso 24/7 desde cualquier dispositivo
+      </div>
+      <div class="hero-benefit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Cancela cuando quieras
+      </div>
+      <div class="hero-benefit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Certificación con folio y QR
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PRICING — 2 PLANES
+     ═══════════════════════════════════════════════ -->
+<section class="pricing-section" id="planes">
+  <div class="wrap">
+    <div class="pricing-grid">
+
+      <!-- PLAN MENSUAL -->
+      <div class="plan">
+        <div class="plan-header">
+          <div class="plan-tag">Plan mensual · Flexible</div>
+          <div class="plan-name">Membresía Mensual</div>
+          <div class="plan-description">Ideal para probar la experiencia completa sin compromiso. Cancela cuando quieras.</div>
+        </div>
+
+        <div class="plan-price">
+          <div class="plan-price-row">
+            <span class="plan-currency">$</span>
+            <span class="plan-amount">199</span>
+            <span class="plan-period">MXN / mes</span>
+          </div>
+        </div>
+
+        <ul class="plan-features">
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span><strong>Todos los cursos</strong> del catálogo actual y futuros</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>Clases en vivo con especialistas</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>Material descargable en PDF</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>Comunidad privada de agricultores</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>Certificación con folio y QR</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>Soporte por WhatsApp</span>
+          </li>
+        </ul>
+
+        <a href="vip-checkout.html?plan=mensual" class="plan-cta plan-cta-monthly">
+          Suscribirme mensual
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <div class="plan-disclaimer">Renovación automática mensual · Cancela cuando quieras</div>
+      </div>
+
+      <!-- PLAN ANUAL (DESTACADO) -->
+      <div class="plan plan-featured">
+        <div class="plan-badge-popular">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          Más popular · Ahorra 2 meses
+        </div>
+        <div class="plan-header">
+          <div class="plan-tag">Plan anual · Mejor valor</div>
+          <div class="plan-name">Membresía Anual</div>
+          <div class="plan-description">La opción más inteligente. Paga una vez y accede todo el año con el equivalente a 2 meses gratis.</div>
+        </div>
+
+        <div class="plan-price">
+          <div class="plan-price-row">
+            <span class="plan-currency">$</span>
+            <span class="plan-amount">1,990</span>
+            <span class="plan-period">MXN / año</span>
+          </div>
+          <div class="plan-savings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Ahorras $398 MXN vs mensual
+          </div>
+        </div>
+
+        <ul class="plan-features">
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span><strong>Todo lo del plan mensual</strong> incluido</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span><strong>Asesoría 1 a 1</strong> con agrónomos expertos</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>Acceso anticipado a nuevos cursos</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>Descuentos en asesorías premium</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>Soporte prioritario VIP</span>
+          </li>
+          <li>
+            <span class="plan-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span><strong>2 meses gratis</strong> vs pago mensual</span>
+          </li>
+        </ul>
+
+        <a href="vip-checkout.html?plan=anual" class="plan-cta plan-cta-annual">
+          Elegir plan anual
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <div class="plan-disclaimer">Pago único anual · Sin cobros sorpresa</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     BENEFITS DETAIL
+     ═══════════════════════════════════════════════ -->
+<section class="benefits-section" id="beneficios">
+  <div class="wrap">
+    <div class="section-header">
+      <span class="section-tag">Todo incluido</span>
+      <h2>Una membresía, <em>todo el campo</em>.</h2>
+      <p class="section-lead">Acceso completo a herramientas, contenido y expertos para que tu operación agrícola crezca con ciencia y método.</p>
+    </div>
+
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M4 6H14C15.5 6 17 7 17 9V26C17 24 15.5 23 14 23H4V6Z" fill="currentColor" fill-opacity="0.2"/>
+            <path d="M28 6H18C16.5 6 15 7 15 9V26C15 24 16.5 23 18 23H28V6Z" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M4 6H14C15.5 6 17 7 17 9V26C17 24 15.5 23 14 23H4V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M28 6H18C16.5 6 15 7 15 9V26C15 24 16.5 23 18 23H28V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Videoteca ilimitada</h3>
+        <p>Accede a toda la biblioteca de cursos 24/7 desde cualquier dispositivo. Nuevo contenido cada mes.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <rect x="2" y="8" width="18" height="16" rx="3" fill="currentColor" fill-opacity="0.2"/>
+            <rect x="2" y="8" width="18" height="16" rx="3" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 14L28 10V22L20 18" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="11" cy="16" r="2" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3>Clases en vivo</h3>
+        <p>Sesiones interactivas cada 15 días con agrónomos del campo mexicano. Participa y resuelve dudas en tiempo real.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="13" r="8" fill="currentColor" fill-opacity="0.2"/>
+            <circle cx="16" cy="13" r="8" stroke="currentColor" stroke-width="2"/>
+            <path d="M11 19L9 29L16 26L23 29L21 19" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M16 9L17.5 12L21 12.5L18.5 15L19 18.5L16 17L13 18.5L13.5 15L11 12.5L14.5 12L16 9Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3>Certificación VIP</h3>
+        <p>Constancias con folio único, código QR verificable y respaldo institucional para tu CV.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <circle cx="12" cy="10" r="4" fill="currentColor" fill-opacity="0.2"/>
+            <path d="M4 26V24C4 20 7 18 12 18C17 18 20 20 20 24V26" fill="currentColor" fill-opacity="0.2"/>
+            <circle cx="12" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M4 26V24C4 20 7 18 12 18C17 18 20 20 20 24V26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="22" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+            <path d="M22 18C26 18 28 20 28 23V24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Comunidad privada</h3>
+        <p>Conecta con +800 agricultores. Comparte experiencias, haz preguntas y aprende del campo real.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <rect x="3" y="5" width="26" height="18" rx="2" fill="currentColor" fill-opacity="0.2"/>
+            <rect x="3" y="5" width="26" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 27H20M16 23V27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M10 12L14 16L22 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Asesoría personal</h3>
+        <p>Sesiones 1 a 1 con agrónomos expertos en tu cultivo o problema específico. Exclusivo del plan anual.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="6" width="24" height="20" rx="2" fill="currentColor" fill-opacity="0.2"/>
+            <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M9 12H15M9 16H19M9 20H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="22" cy="18" r="3" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3>Material descargable</h3>
+        <p>PDFs, guías prácticas, plantillas de cálculo y recursos para aplicar en tu parcela hoy mismo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     COMPARE TABLE
+     ═══════════════════════════════════════════════ -->
+<section class="compare-section">
+  <div class="wrap">
+    <div class="section-header">
+      <span class="section-tag">Comparativa</span>
+      <h2>Mensual o <em>anual</em>, tú eliges.</h2>
+      <p class="section-lead">Ambos planes incluyen el acceso core. El anual agrega asesoría personalizada y te ahorra 2 meses de pago.</p>
+    </div>
+
+    <div class="compare-card">
+      <div class="compare-row">
+        <div class="compare-head">Característica</div>
+        <div class="compare-head compare-head-plan">Mensual</div>
+        <div class="compare-head compare-head-plan">Anual</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feature">Todos los cursos</div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feature">Clases en vivo</div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feature">Material descargable</div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feature">Certificación con folio y QR</div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feature">Comunidad privada</div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feature"><strong>Asesoría 1 a 1</strong></div>
+        <div class="compare-value compare-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feature"><strong>Soporte prioritario</strong></div>
+        <div class="compare-value compare-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+        <div class="compare-value"><span class="compare-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feature"><strong>Ahorro vs mensual</strong></div>
+        <div class="compare-value">—</div>
+        <div class="compare-value" style="font-weight:700;color:var(--amber-600);">$398 MXN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     TESTIMONIALS (placeholder)
+     ═══════════════════════════════════════════════ -->
+<section class="testimonials-section">
+  <div class="wrap">
+    <div class="section-header">
+      <span class="section-tag">Opiniones</span>
+      <h2>Lo que dicen nuestros <em>miembros</em>.</h2>
+      <p class="section-lead">Agricultores reales que han transformado su operación con Sinergia-Agrícola.</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+        </div>
+        <p class="testimonial-quote">"La membresía VIP me cambió la forma de producir aguacate. Las asesorías con los agrónomos me ayudaron a resolver un problema de plagas que llevaba meses sin poder solucionar."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">MR</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Miguel Ramírez</div>
+            <div class="testimonial-role">Productor · Michoacán</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+        </div>
+        <p class="testimonial-quote">"Lo que más me gustó fue poder ver las clases cuando yo quiero. Trabajo en el campo desde temprano y antes se me dificultaba tomar cursos presenciales. El certificado con QR lo valida todo."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background: linear-gradient(135deg, #FBBF24, #F59E0B); color: #1C1917;">LG</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Laura Gómez</div>
+            <div class="testimonial-role">Agrónoma · Puebla</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+        </div>
+        <p class="testimonial-quote">"La comunidad es oro puro. Me conecté con productores de otras zonas y compartimos experiencias. El curso de riego por goteo me permitió reducir el consumo de agua en un 40%."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">JH</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">José Hernández</div>
+            <div class="testimonial-role">Productor · Querétaro</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     FAQ
+     ═══════════════════════════════════════════════ -->
+<section class="faq-section" id="faq">
+  <div class="wrap">
+    <div class="section-header">
+      <span class="section-tag">Preguntas frecuentes</span>
+      <h2>Todo lo que necesitas <em>saber</em>.</h2>
+      <p class="section-lead">Resolvemos las dudas más comunes sobre la membresía VIP.</p>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Cómo funciona el acceso a los cursos?
+          <span class="faq-question-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-content">Al completar tu pago, te llega un correo con el enlace de acceso. Creas tu cuenta y entras a tu panel de miembro donde encuentras toda la videoteca, clases en vivo, material descargable y la comunidad.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Puedo cancelar en cualquier momento?
+          <span class="faq-question-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-content">Sí, sin penalización. En el plan mensual cancelas desde tu panel con un click y no te cobramos el próximo mes. En el plan anual tu acceso dura hasta la fecha de vencimiento aunque decidas no renovar.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Qué métodos de pago aceptan?
+          <span class="faq-question-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-content">Aceptamos tarjetas de crédito y débito Visa, Mastercard y American Express. También puedes pagar con OXXO o transferencia SPEI. El pago se procesa de forma segura a través de Shopify.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿La asesoría 1 a 1 es por video o por chat?
+          <span class="faq-question-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-content">Las asesorías son por videollamada (Google Meet o Zoom) para que puedas mostrarnos fotos de tu cultivo, suelo o problema específico. Programas la cita desde tu panel según la disponibilidad del agrónomo.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Los certificados tienen valor oficial?
+          <span class="faq-question-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-content">Sí. Cada certificado incluye folio único y código QR verificable, avalado por Sinergia-Agrícola. Es válido como constancia de capacitación para tu CV y trámites institucionales.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Qué pasa si un curso nuevo sale durante mi membresía?
+          <span class="faq-question-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        </button>
+        <div class="faq-answer"><div class="faq-answer-content">Todos los cursos nuevos se agregan automáticamente a tu membresía sin costo extra mientras esté activa. Los miembros anuales reciben acceso anticipado a los lanzamientos.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CTA FINAL
+     ═══════════════════════════════════════════════ -->
+<section class="cta-section">
+  <div class="wrap">
+    <div class="cta-box">
+      <div class="cta-content">
+        <span class="cta-tag">Únete hoy</span>
+        <h2>¿Listo para llevar tu campo al <em style="background:linear-gradient(135deg,#FBBF24,#F59E0B);-webkit-background-clip:text;background-clip:text;color:transparent;">siguiente nivel</em>?</h2>
+        <p>Elige tu plan y accede en minutos a todo el conocimiento del campo mexicano.</p>
+        <div class="cta-ctas">
+          <a href="#planes" class="btn-white">
+            Ver planes
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="https://wa.me/5212361074058?text=Hola%2C%20tengo%20dudas%20sobre%20la%20membres%C3%ADa%20VIP%20de%20Sinergia-Agr%C3%ADcola" target="_blank" class="btn-ghost">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Preguntar por WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-simple">
+      <a href="index.html" class="footer-brand-simple">
+        <img src="img/logo.jpg" alt="Sinergia-Agrícola">
+        <div class="footer-brand-simple-text">
+          <span>Sinergia</span>
+          <span>Agrícola</span>
+        </div>
+      </a>
+      <div class="footer-links">
+        <a href="index.html">Inicio</a>
+        <a href="index.html#cursos">Cursos</a>
+        <a href="#faq">FAQ</a>
+        <a href="vip-auth.html">Ya soy miembro</a>
+      </div>
+      <div class="footer-copy">
+        © 2026 Sinergia-Agrícola · <code>Powered by Tec Capital Group</code>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.benefit-card, .testimonial, .faq-item, .compare-row').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
