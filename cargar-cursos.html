@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cargar cursos iniciales · Sinergia-Agrícola</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #0F766E, #14B8A6);
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #1C1917;
+  }
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  h1 { font-size: 24px; margin-bottom: 8px; color: #0F766E; }
+  p { color: #57534E; line-height: 1.5; margin-bottom: 16px; }
+  button {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 12px;
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .log {
+    background: #1C1917;
+    color: #A7F3D0;
+    padding: 20px;
+    border-radius: 12px;
+    font-family: 'Menlo', monospace;
+    font-size: 12px;
+    margin-top: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+  }
+  .warning {
+    background: #FEF3C7;
+    border: 1px solid #F59E0B;
+    padding: 16px;
+    border-radius: 12px;
+    margin: 16px 0;
+    color: #92400E;
+    font-size: 14px;
+  }
+  .success {
+    background: #D1FAE5;
+    border: 1px solid #10B981;
+    padding: 16px;
+    border-radius: 12px;
+    margin: 16px 0;
+    color: #065F46;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🌾 Cargar cursos iniciales</h1>
+  <p>Este script subirá los 10 cursos iniciales de Sinergia-Agrícola a Firestore con todas sus sesiones y materiales.</p>
+
+  <div class="warning">
+    ⚠️ <strong>Solo ejecuta este script UNA vez.</strong> Si lo ejecutas de nuevo creará duplicados. Después de cargar los cursos, elimina este archivo de GitHub.
+  </div>
+
+  <p><strong>Importante:</strong> Debes iniciar sesión con una cuenta admin antes de ejecutar:</p>
+  <ul style="margin-left: 20px; color: #57534E; font-size: 14px; line-height: 1.8;">
+    <li>sinergiaagricola789@gmail.com</li>
+    <li>ipcilinstituto@gmail.com</li>
+    <li>ipcilinstituto@ipcil.org</li>
+  </ul>
+
+  <button id="loginBtn" onclick="login()">1️⃣ Iniciar sesión como admin</button>
+  <button id="loadBtn" onclick="cargarCursos()" disabled>2️⃣ Cargar los 10 cursos</button>
+
+  <div class="log" id="log">Log vacío. Esperando inicio de sesión...</div>
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0",
+    authDomain: "sinergia-agricola-vip.firebaseapp.com",
+    projectId: "sinergia-agricola-vip",
+    storageBucket: "sinergia-agricola-vip.firebasestorage.app",
+    messagingSenderId: "788533345154",
+    appId: "1:788533345154:web:4066de6561e1d54e2cad9b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const CURSOS = [
+    { titulo: "Administración y Operación de Viveros", categoria: "AgroTecnología", nivel: "Intermedio", duracion: 10, descripcion: "Domina la gestión integral de viveros agrícolas: desde la planeación de infraestructura hasta la operación diaria, manejo de plantas madre, propagación y comercialización.", emoji: "🌱", orden: 1,
+      sesiones: [
+        { numero: 1, titulo: "Fundamentos y planeación del vivero", url: "https://drive.google.com/file/d/1TLcbyUpGqOiLQOiELu_Ec9ThNhkHiKDe/view?usp=drive_link" },
+        { numero: 2, titulo: "Infraestructura y equipamiento esencial", url: "https://drive.google.com/file/d/1kY-fIFzTzi042Le4eFzejrJin5YvHj5V/view?usp=drive_link" },
+        { numero: 3, titulo: "Técnicas de propagación y manejo de sustratos", url: "https://drive.google.com/file/d/17ndDPX7suKd682kBe0aScORimXqiW_l0/view?usp=drive_link" },
+        { numero: 4, titulo: "Control fitosanitario y sanidad vegetal", url: "https://drive.google.com/file/d/1Cfn6IjF7cvQ5hPDEKHSeY8eCSBQGICE8/view?usp=drive_link" },
+        { numero: 5, titulo: "Comercialización y administración del vivero", url: "https://drive.google.com/file/d/1Y5t22tShmIG0SiIcXt1xjkyH8ZRxDcI4/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://drive.google.com/file/d/1T5V2VkJtk_ZsjExg2ysjv9gXBNFuqMvw/view?usp=sharing" }]
+    },
+    { titulo: "Certificación Orgánica", categoria: "Sustentabilidad", nivel: "Avanzado", duracion: 10, descripcion: "Aprende los requisitos, procesos y normativas para obtener la certificación orgánica de tus cultivos. Acceso a mercados premium nacionales e internacionales.", emoji: "🌿", orden: 2,
+      sesiones: [
+        { numero: 1, titulo: "Introducción a la producción orgánica", url: "https://drive.google.com/file/d/1IHYVIxjjk1-krCHCQSkgd0ld8my-oFoI/view?usp=drive_link" },
+        { numero: 2, titulo: "Normativas nacionales e internacionales", url: "https://drive.google.com/file/d/1LXbdxVVr2ArBTCNfFyfodOx80327wJdl/view?usp=drive_link" },
+        { numero: 3, titulo: "Transición a sistemas de producción orgánica", url: "https://drive.google.com/file/d/11xN0VzK9nGr8W-C2TvRLuHuX1S4wK3p9/view?usp=drive_link" },
+        { numero: 4, titulo: "Documentación y trazabilidad", url: "https://drive.google.com/file/d/1Z6UPGwmqJ9hyX10J0IShqLiWDXqH4_2T/view?usp=drive_link" },
+        { numero: 5, titulo: "Auditoría y proceso de certificación", url: "https://drive.google.com/file/d/1Gqu7xl8xczFn_Fq-Y1BbQTnPyEFUWqQd/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://drive.google.com/file/d/1A4S8ls1BrZkFoHMpMSN_xZKSJTJeBiNg/view?usp=sharing" }]
+    },
+    { titulo: "Del Cacao al Chocolate", categoria: "Cultivos", nivel: "Intermedio", duracion: 10, descripcion: "Conoce toda la cadena productiva del cacao: desde el cultivo y cosecha hasta el proceso artesanal para convertirlo en chocolate de calidad y agregar valor a tu producción.", emoji: "🍫", orden: 3,
+      sesiones: [
+        { numero: 1, titulo: "El cacao: origen, variedades y cultivo", url: "https://drive.google.com/file/d/1oCHzSLElBFY35kZmuiN3vFu4WhaOoSA5/view?usp=drive_link" },
+        { numero: 2, titulo: "Cosecha, fermentación y secado", url: "https://drive.google.com/file/d/1C_SQbiwV1Ig_F3EYSBeLaqNosb_ks0WO/view?usp=drive_link" },
+        { numero: 3, titulo: "Tostado, descascarillado y molienda", url: "https://drive.google.com/file/d/1pbhsbSOmYEaxwuagBZ-oy0eXtG-I_39k/view?usp=drive_link" },
+        { numero: 4, titulo: "Conchado, temperado y moldeado", url: "https://drive.google.com/file/d/12pEH2iqU6vora5bdoAm7IHdPqkAKHt9C/view?usp=drive_link" },
+        { numero: 5, titulo: "Comercialización y agregado de valor", url: "https://drive.google.com/file/d/1wOYIug34dShD1rC8J7ANwHR0OfpW6kML/view?usp=drive_link" }
+      ],
+      materiales: [
+        { titulo: "Material 1 — Generalidades del cacao", url: "https://drive.google.com/file/d/1hrxQlprUlGKucI6MR_8ynRM1J_X1u8Mv/view?usp=sharing" },
+        { titulo: "Material 2 — Procesos post-cosecha", url: "https://drive.google.com/file/d/1n_N6lqSZG2x0KERNnhDcWlngY6XgxriJ/view?usp=drive_link" },
+        { titulo: "Material 3 — Proceso de conchado", url: "https://drive.google.com/file/d/1sZPyHqCo-sG9Ztjfoc67mkPPoDAth9dY/view?usp=sharing" },
+        { titulo: "Material 4 — Comercialización y valor agregado", url: "https://drive.google.com/file/d/15CfCJS9yKAkjbiiwK1GOEScKKroLnz1n/view?usp=sharing" }
+      ]
+    },
+    { titulo: "Elaboración de Bioinsumos", categoria: "Sustentabilidad", nivel: "Intermedio", duracion: 10, descripcion: "Aprende a elaborar tus propios fertilizantes orgánicos, biofertilizantes, biocontroladores y caldos nutritivos. Reduce costos y produce más sano y sustentable.", emoji: "🧪", orden: 4,
+      sesiones: [
+        { numero: 1, titulo: "Principios y clasificación de bioinsumos", url: "https://drive.google.com/file/d/1Kb94U9tDV1jliihKUqgOiaHuUgmC8fA-/view?usp=drive_link" },
+        { numero: 2, titulo: "Biofertilizantes sólidos y líquidos", url: "https://drive.google.com/file/d/1jqNUytZQsLSmxbLuINXIAMY0Lfgq_b5T/view?usp=drive_link" },
+        { numero: 3, titulo: "Caldos minerales y nutricionales", url: "https://drive.google.com/file/d/13ZmCBBgZ7wRHT40D_Raqz6LLWLE2LX8d/view?usp=drive_link" },
+        { numero: 4, titulo: "Biocontroladores y repelentes orgánicos", url: "https://drive.google.com/file/d/1AsZWQ1IAGrpKflrT4M1MXv_YKIh4l1_Z/view?usp=drive_link" },
+        { numero: 5, titulo: "Aplicación en campo y escalamiento", url: "https://drive.google.com/file/d/1d8oYULjwB2FgIQEAJsl6lsNz_BXTPCmm/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://drive.google.com/file/d/1XQ3sXZZvMcRwLT-BtNosDQE4sj-XPtbK/view?usp=sharing" }]
+    },
+    { titulo: "Fertilización de Árboles Frutales", categoria: "Cultivos", nivel: "Intermedio", duracion: 8, descripcion: "Técnicas especializadas para la fertilización óptima de árboles frutales según sus etapas fenológicas. Maximiza producción, calidad y rentabilidad del huerto.", emoji: "🌳", orden: 5,
+      sesiones: [
+        { numero: 1, titulo: "Nutrición y fisiología de árboles frutales", url: "https://drive.google.com/file/d/1JEqYg_APXlY0FZlodZ6lgEq-0FqFpmBl/view?usp=drive_link" },
+        { numero: 2, titulo: "Análisis foliar y de suelo", url: "https://drive.google.com/file/d/1hIgCE-C8h0H8yWH5-VW9xwWWq7vnt6He/view?usp=drive_link" },
+        { numero: 3, titulo: "Planes de fertilización por etapa fenológica", url: "https://drive.google.com/file/d/1gRsoMYfgUbzdRwevkYhDhf3kXQ1WcZ85/view?usp=drive_link" },
+        { numero: 4, titulo: "Aplicación práctica y correcciones", url: "https://drive.google.com/file/d/1HeHyNZnmh3gGeAO2ZdfBmXUQUeR_5hj8/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://drive.google.com/file/d/1aeZItVE6Aq4GepyEfimtPsIEt7u_KLm6/view?usp=sharing" }]
+    },
+    { titulo: "Fertirriego", categoria: "Suelos y Riego", nivel: "Avanzado", duracion: 10, descripcion: "Domina la aplicación de fertilizantes a través del sistema de riego. Optimiza el uso del agua y nutrientes para maximizar rendimientos y reducir costos.", emoji: "💧", orden: 6,
+      sesiones: [
+        { numero: 1, titulo: "Fundamentos de fertirriego y sistemas de riego", url: "https://drive.google.com/file/d/180htOxvsk4oXrvaljkiTGg8cRbulVVEJ/view?usp=drive_link" },
+        { numero: 2, titulo: "Cálculo de soluciones nutritivas", url: "https://drive.google.com/file/d/1ivj2O_0Nbu_kR69a2SiSdCwZbgnfv4jz/view?usp=drive_link" },
+        { numero: 3, titulo: "Manejo de pH y conductividad eléctrica", url: "https://drive.google.com/file/d/1cPL55GJ_lGjEy5ZqQIf1qxF3BN5nnUjl/view?usp=drive_link" },
+        { numero: 4, titulo: "Programación y automatización", url: "https://drive.google.com/file/d/1Q1-AXetgRuYF3ujYKfSjflWlwNgua7l2/view?usp=drive_link" },
+        { numero: 5, titulo: "Casos prácticos y optimización", url: "https://drive.google.com/file/d/143UaRYlI5Et3p-jp50Xb0OjPD98sIHpm/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://docs.google.com/presentation/d/1QW7TX_3cl7QR6PHftw1IhSxxTExn4q3V/edit?usp=drive_link" }]
+    },
+    { titulo: "Gestión Estratégica de Clientes y Ventas Agro", categoria: "Mercados", nivel: "Intermedio", duracion: 10, descripcion: "Estrategias comerciales para el sector agrícola: prospección de clientes, negociación, cierre de ventas y fidelización en el negocio agro.", emoji: "📊", orden: 7,
+      sesiones: [
+        { numero: 1, titulo: "El cliente agro: perfilamiento y segmentación", url: "https://drive.google.com/file/d/1t5o0tX0yxwhZMEBGESDmj8OtP8uPEM2q/view?usp=drive_link" },
+        { numero: 2, titulo: "Prospección y generación de leads agro", url: "https://drive.google.com/file/d/1L5SCImXdVNs69J4iK8AhxZ6DH69_w3EF/view?usp=drive_link" },
+        { numero: 3, titulo: "Técnicas de negociación en el sector", url: "https://drive.google.com/file/d/1cJGpgOrVufXMW55YL_cXvxzFC_6Jz5bM/view?usp=drive_link" },
+        { numero: 4, titulo: "Cierre de ventas y manejo de objeciones", url: "https://drive.google.com/file/d/1II1fXHJV4ynYtc-kyagQHXa7PLoorqxB/view?usp=drive_link" },
+        { numero: 5, titulo: "Fidelización y crecimiento de cartera", url: "https://drive.google.com/file/d/1BWYi4k8Bm3WN65RXoFwKkjoS5XXT3jtE/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://drive.google.com/file/d/1s-kVLK3Yj6r2mpLXH1omn-WmsRZgnu5x/view?usp=sharing" }]
+    },
+    { titulo: "Inocuidad Alimentaria y Buenas Prácticas", categoria: "Sustentabilidad", nivel: "Avanzado", duracion: 10, descripcion: "Normativas, protocolos y buenas prácticas para garantizar la inocuidad de alimentos agrícolas. Cumple estándares nacionales e internacionales de calidad.", emoji: "✅", orden: 8,
+      sesiones: [
+        { numero: 1, titulo: "Fundamentos de inocuidad alimentaria", url: "https://drive.google.com/file/d/1GhL8BJmnYJXzInE_2EcdwtyrcRVziRK7/view?usp=drive_link" },
+        { numero: 2, titulo: "Contaminantes: físicos, químicos y biológicos", url: "https://drive.google.com/file/d/1fwwgnGrDR3B5HD-iqOTUp1vCevnJ0M58/view?usp=drive_link" },
+        { numero: 3, titulo: "Buenas prácticas agrícolas (BPA)", url: "https://drive.google.com/file/d/14Y941E5P-Q1TjEPmPjT8rIzhmkeZ-Gv9/view?usp=drive_link" },
+        { numero: 4, titulo: "Buenas prácticas de manufactura (BPM)", url: "https://drive.google.com/file/d/1Q_uVDigsihpgR62mHLU0qKGBxu-tUBdI/view?usp=drive_link" },
+        { numero: 5, titulo: "Sistema HACCP y trazabilidad", url: "https://drive.google.com/file/d/1fCpYDTEryylXmNyn4NLCVOYYwnU2Xrw9/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://docs.google.com/presentation/d/1cUKefBEFGway1TO3aJrGStLUzMbgJjGF/edit?usp=drive_link" }]
+    },
+    { titulo: "Lombricomposta", categoria: "Sustentabilidad", nivel: "Básico", duracion: 10, descripcion: "Produce tu propio abono orgánico premium con lombrices californianas. Técnica económica, efectiva y sustentable para mejorar la fertilidad del suelo.", emoji: "🪱", orden: 9,
+      sesiones: [
+        { numero: 1, titulo: "Introducción al proceso de lombricomposta", url: "https://drive.google.com/file/d/1N-9C6exszvqGnFFxTgJuJGXleFdP2Q7A/view?usp=drive_link" },
+        { numero: 2, titulo: "Biología de la lombriz californiana", url: "https://drive.google.com/file/d/1Be4YxIeHp31hUohlYsjhHzNCcq75cCIE/view?usp=drive_link" },
+        { numero: 3, titulo: "Diseño y construcción del sistema", url: "https://drive.google.com/file/d/1HMF2Z07eYx7c1rhph_Rt55zV-I-LUDIN/view?usp=drive_link" },
+        { numero: 4, titulo: "Alimentación, manejo y cosecha", url: "https://drive.google.com/file/d/1dNznSI8kGKraoGZ9M4W2sSMD7_Y-xEwp/view?usp=drive_link" },
+        { numero: 5, titulo: "Aplicación del humus y comercialización", url: "https://drive.google.com/file/d/165oy21LfLY9WsXaWOSasr50IjZHT4X05/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://drive.google.com/file/d/1UW3j-7vKlUyz00mn6fgjjFgzrrYIuf1k/view?usp=sharing" }]
+    },
+    { titulo: "Fitohormonas y Estimuladores de Crecimiento", categoria: "Cultivos", nivel: "Avanzado", duracion: 10, descripcion: "Uso estratégico de fitohormonas y bioestimulantes para potenciar la producción. Aprende auxinas, citoquininas, giberelinas y más reguladores del crecimiento.", emoji: "🌾", orden: 10,
+      sesiones: [
+        { numero: 1, titulo: "Fisiología vegetal y hormonas naturales", url: "https://drive.google.com/file/d/1HUKLVw_giuQKrYRwiwl0mpnYzIHUIbW2/view?usp=drive_link" },
+        { numero: 2, titulo: "Auxinas: enraizamiento y desarrollo", url: "https://drive.google.com/file/d/1OgNKcL_Ceph1Bt-d4MDE-OucEZy_NWz_/view?usp=drive_link" },
+        { numero: 3, titulo: "Citoquininas y giberelinas", url: "https://drive.google.com/file/d/1ROf1I6PeaW4QF-pSBpCTHuFJ6XxVyFcg/view?usp=drive_link" },
+        { numero: 4, titulo: "Bioestimulantes y aplicación en cultivos", url: "https://drive.google.com/file/d/1aqAqMZmDmB2BWYWFxGZYShXBROfQ9rjF/view?usp=drive_link" },
+        { numero: 5, titulo: "Protocolos de aplicación por cultivo", url: "https://drive.google.com/file/d/1Qq0zcHyR03FmhMSNnEUrw1bWwNEvXdiY/view?usp=drive_link" }
+      ],
+      materiales: [{ titulo: "Material completo del curso", url: "https://drive.google.com/file/d/1o2lbisIY2UIv1hwX_jBgpxE7xTGi3ur_/view?usp=sharing" }]
+    }
+  ];
+
+  const logEl = document.getElementById('log');
+  function log(msg) {
+    logEl.textContent += '\n' + msg;
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  window.login = async function() {
+    const email = prompt('Ingresa email admin:');
+    const pass = prompt('Ingresa contraseña:');
+    if (!email || !pass) return;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      log('✅ Sesión iniciada: ' + email);
+      document.getElementById('loadBtn').disabled = false;
+      document.getElementById('loginBtn').disabled = true;
+    } catch (e) {
+      log('❌ Error: ' + e.message);
+    }
+  };
+
+  window.cargarCursos = async function() {
+    const btn = document.getElementById('loadBtn');
+    btn.disabled = true;
+    btn.textContent = 'Cargando...';
+    log('\n🚀 Iniciando carga de ' + CURSOS.length + ' cursos...\n');
+
+    let exitosos = 0;
+    let errores = 0;
+
+    for (const curso of CURSOS) {
+      try {
+        log('📚 Cargando: ' + curso.titulo);
+        await addDoc(collection(db, 'cursos'), {
+          ...curso,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+        log('   ✅ OK');
+        exitosos++;
+      } catch (e) {
+        log('   ❌ ERROR: ' + e.message);
+        errores++;
+      }
+    }
+
+    log('\n═══════════════════════════════════');
+    log('✅ Exitosos: ' + exitosos);
+    log('❌ Errores: ' + errores);
+    log('═══════════════════════════════════');
+
+    if (errores === 0) {
+      document.body.innerHTML += '<div style="position:fixed;top:20px;right:20px;background:#10B981;color:white;padding:20px;border-radius:12px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,0.3);">✅ ¡Cursos cargados! Elimina este archivo de GitHub ahora.</div>';
+    }
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      log('👤 Usuario: ' + user.email);
+      document.getElementById('loadBtn').disabled = false;
+      document.getElementById('loginBtn').textContent = '✓ Sesión activa: ' + user.email;
+      document.getElementById('loginBtn').disabled = true;
+    }
+  });
+</script>
+
+</body>
+</html>
