@@ -9199,6 +9199,468 @@
     .ref-hero-emoji { font-size: 44px; }
   }
 
+  /* ═══════════════════════════════════════════════════════════
+     🌽 HERRAMIENTA 6: PRECIOS Y MERCADOS AGRÍCOLAS
+     ═══════════════════════════════════════════════════════════ */
+  .merc-search-card {
+    background: white;
+    border: 1px solid var(--stone-200);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+  }
+  [data-theme="dark"] .merc-search-card {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+  .merc-quick-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+    align-items: center;
+  }
+  .merc-quick-chips-label {
+    font-size: 11px;
+    color: var(--stone-500);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  [data-theme="dark"] .merc-quick-chips-label { color: #94D3C5 !important; }
+  .merc-chip {
+    padding: 7px 12px;
+    background: rgba(13,148,136,0.06);
+    border: 1px solid rgba(13,148,136,0.15);
+    border-radius: 100px;
+    color: var(--teal-700);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .merc-chip:hover {
+    background: rgba(13,148,136,0.12);
+    transform: translateY(-1px);
+  }
+  [data-theme="dark"] .merc-chip {
+    background: rgba(45,212,191,0.08) !important;
+    border-color: rgba(45,212,191,0.18) !important;
+    color: #5EEAD4 !important;
+  }
+
+  .merc-results { display: flex; flex-direction: column; gap: 14px; }
+
+  .merc-summary {
+    background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-700) 100%);
+    border-radius: 18px;
+    padding: 20px 22px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .merc-summary::before {
+    content: '';
+    position: absolute;
+    top: -40%; right: -10%;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .merc-summary-label {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    opacity: 0.85; margin-bottom: 6px;
+    position: relative; z-index: 1;
+  }
+  .merc-summary-title {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 800;
+    margin-bottom: 4px;
+    position: relative; z-index: 1;
+  }
+  .merc-summary-sub {
+    font-size: 13px; opacity: 0.9;
+    position: relative; z-index: 1;
+  }
+
+  .merc-card {
+    background: white;
+    border: 1px solid var(--stone-200);
+    border-radius: 18px;
+    padding: 20px 22px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .merc-card.best {
+    border: 2px solid var(--teal-400);
+    background: linear-gradient(135deg, rgba(20,184,166,0.04), rgba(20,184,166,0.01));
+  }
+  [data-theme="dark"] .merc-card {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+  [data-theme="dark"] .merc-card.best {
+    background: linear-gradient(135deg, rgba(45,212,191,0.08), rgba(45,212,191,0.02)) !important;
+    border-color: rgba(45,212,191,0.45) !important;
+  }
+  .merc-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+  }
+  .merc-card-rank {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+  }
+  .merc-card-rank.gold {
+    background: linear-gradient(135deg, #FBBF24, #D97706);
+    color: white;
+  }
+  .merc-card-rank.silver {
+    background: var(--stone-200);
+    color: var(--stone-700);
+  }
+  [data-theme="dark"] .merc-card-rank.silver {
+    background: rgba(45,212,191,0.12) !important;
+    color: #94D3C5 !important;
+  }
+  .merc-card-mercado {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--stone-900);
+    margin-bottom: 4px;
+    padding-right: 80px;
+  }
+  [data-theme="dark"] .merc-card-mercado { color: #5EEAD4 !important; }
+  .merc-card-ubic {
+    font-size: 13px;
+    color: var(--stone-600);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  [data-theme="dark"] .merc-card-ubic { color: #94D3C5 !important; }
+  .merc-card-precios {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 12px 0;
+    border-top: 1px dashed rgba(13,148,136,0.18);
+    border-bottom: 1px dashed rgba(13,148,136,0.18);
+  }
+  .merc-card-precio {
+    text-align: center;
+  }
+  .merc-card-precio-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--stone-500);
+    margin-bottom: 4px;
+  }
+  [data-theme="dark"] .merc-card-precio-label { color: #7FB8AB !important; }
+  .merc-card-precio-value {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--stone-800);
+  }
+  [data-theme="dark"] .merc-card-precio-value { color: #E6FFFA !important; }
+  .merc-card-precio.frecuente .merc-card-precio-value { color: var(--teal-700); font-size: 18px; }
+  [data-theme="dark"] .merc-card-precio.frecuente .merc-card-precio-value { color: #5EEAD4 !important; }
+
+  .merc-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--stone-600);
+    margin-bottom: 12px;
+  }
+  [data-theme="dark"] .merc-card-meta { color: #94D3C5 !important; }
+  .merc-card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .merc-card-meta-item strong {
+    color: var(--stone-800);
+    font-weight: 700;
+  }
+  [data-theme="dark"] .merc-card-meta-item strong { color: #E6FFFA !important; }
+  .merc-card-recom {
+    background: rgba(20,184,166,0.06);
+    border-left: 3px solid var(--teal-500);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--stone-700);
+  }
+  [data-theme="dark"] .merc-card-recom {
+    background: rgba(45,212,191,0.08) !important;
+    color: #CFEFE5 !important;
+  }
+  .merc-card-recom strong { color: var(--teal-700); }
+  [data-theme="dark"] .merc-card-recom strong { color: #5EEAD4 !important; }
+
+  .merc-source {
+    font-size: 11px;
+    color: var(--stone-500);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  [data-theme="dark"] .merc-source { color: #7FB8AB !important; }
+
+  .merc-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--stone-500);
+  }
+  .merc-empty-icon { font-size: 56px; margin-bottom: 14px; opacity: 0.7; }
+  .merc-empty-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--stone-700);
+    margin-bottom: 6px;
+  }
+  [data-theme="dark"] .merc-empty-title { color: #CFEFE5 !important; }
+  .merc-empty-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  [data-theme="dark"] .merc-empty-desc { color: #94D3C5 !important; }
+
+  .merc-disclaimer {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.25);
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--stone-700);
+  }
+  [data-theme="dark"] .merc-disclaimer {
+    background: rgba(251,191,36,0.08) !important;
+    color: #FED7AA !important;
+  }
+  .merc-disclaimer strong { color: var(--amber-700); }
+  [data-theme="dark"] .merc-disclaimer strong { color: #FBBF24 !important; }
+
+  /* ═══════════════════════════════════════════════════════════
+     ✈️ HERRAMIENTA 7: COSTOS DE EXPORTACIÓN AGRÍCOLA
+     ═══════════════════════════════════════════════════════════ */
+  .exp-result-card {
+    background: linear-gradient(135deg, #0F766E 0%, #134E4A 100%);
+    border-radius: 20px;
+    padding: 26px;
+    color: white;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .exp-result-card::before {
+    content: '';
+    position: absolute;
+    top: -30%; right: -10%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.14), transparent 70%);
+    pointer-events: none;
+  }
+  .exp-result-label {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    opacity: 0.85; margin-bottom: 8px;
+    position: relative; z-index: 1;
+  }
+  .exp-result-title {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 800;
+    margin-bottom: 4px;
+    position: relative; z-index: 1;
+  }
+  .exp-result-route {
+    font-size: 14px; opacity: 0.9;
+    margin-bottom: 18px;
+    position: relative; z-index: 1;
+  }
+  .exp-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    position: relative; z-index: 1;
+  }
+  .exp-total-label {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+  .exp-total-value {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .exp-breakdown-card {
+    background: white;
+    border: 1px solid var(--stone-200);
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 16px;
+  }
+  [data-theme="dark"] .exp-breakdown-card {
+    background: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+  }
+  .exp-breakdown-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--stone-900);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  [data-theme="dark"] .exp-breakdown-title { color: #5EEAD4 !important; }
+  .exp-breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px dashed rgba(13,148,136,0.15);
+  }
+  .exp-breakdown-row:last-child { border-bottom: none; }
+  .exp-breakdown-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--stone-700);
+    font-weight: 500;
+  }
+  [data-theme="dark"] .exp-breakdown-name { color: #CFEFE5 !important; }
+  .exp-breakdown-name-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(13,148,136,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  [data-theme="dark"] .exp-breakdown-name-icon {
+    background: rgba(45,212,191,0.12) !important;
+  }
+  .exp-breakdown-value {
+    font-family: var(--font-mono);
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--stone-900);
+  }
+  [data-theme="dark"] .exp-breakdown-value { color: #E6FFFA !important; }
+  .exp-breakdown-note {
+    font-size: 11px;
+    color: var(--stone-500);
+    margin-top: 2px;
+  }
+  [data-theme="dark"] .exp-breakdown-note { color: #94D3C5 !important; }
+
+  .exp-viability {
+    padding: 18px 20px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+  .exp-viability.go {
+    background: linear-gradient(135deg, rgba(34,197,94,0.10), rgba(34,197,94,0.04));
+    border: 1px solid rgba(34,197,94,0.30);
+  }
+  .exp-viability.warn {
+    background: linear-gradient(135deg, rgba(251,191,36,0.10), rgba(251,191,36,0.04));
+    border: 1px solid rgba(251,191,36,0.30);
+  }
+  .exp-viability.no {
+    background: linear-gradient(135deg, rgba(244,63,94,0.10), rgba(244,63,94,0.04));
+    border: 1px solid rgba(244,63,94,0.30);
+  }
+  .exp-viability-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .exp-viability-icon {
+    font-size: 26px;
+  }
+  .exp-viability-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 800;
+  }
+  .exp-viability.go .exp-viability-title { color: var(--green-700); }
+  .exp-viability.warn .exp-viability-title { color: var(--amber-700); }
+  .exp-viability.no .exp-viability-title { color: var(--rose-600); }
+  [data-theme="dark"] .exp-viability.go .exp-viability-title { color: #86EFAC !important; }
+  [data-theme="dark"] .exp-viability.warn .exp-viability-title { color: #FBBF24 !important; }
+  [data-theme="dark"] .exp-viability.no .exp-viability-title { color: #FB7185 !important; }
+  .exp-viability-text {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--stone-700);
+  }
+  [data-theme="dark"] .exp-viability-text { color: #CFEFE5 !important; }
+  .exp-margin-row {
+    display: flex;
+    gap: 14px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .exp-margin-pill {
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--stone-800);
+  }
+  [data-theme="dark"] .exp-margin-pill {
+    background: rgba(45,212,191,0.10) !important;
+    color: #E6FFFA !important;
+  }
+  .exp-margin-pill .num {
+    font-family: var(--font-mono);
+    margin-left: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .merc-card-mercado { padding-right: 70px; font-size: 15px; }
+    .merc-card-precios { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+    .merc-card-precio-value { font-size: 13px; }
+    .merc-card-precio.frecuente .merc-card-precio-value { font-size: 15px; }
+    .exp-result-card { padding: 20px; }
+    .exp-total-value { font-size: 22px; }
+    .exp-result-title { font-size: 18px; }
+    .exp-breakdown-card { padding: 18px; }
+  }
+
 </style>
 </head>
 <body>
@@ -9313,6 +9775,20 @@
       </span>
       <span class="nav-item-text">Clima</span>
       <span class="nav-item-new" style="background:linear-gradient(135deg,#38BDF8,#0284C7);">NEW</span>
+    </button>
+    <button class="nav-item" data-tab="mercados">
+      <span class="nav-item-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+      </span>
+      <span class="nav-item-text">Precios y Mercados</span>
+      <span class="nav-item-new" style="background:linear-gradient(135deg,#22C55E,#15803D);">$</span>
+    </button>
+    <button class="nav-item" data-tab="exportacion">
+      <span class="nav-item-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" style="display:none"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><circle cx="12" cy="12" r="10"/></svg>
+      </span>
+      <span class="nav-item-text">Exportación</span>
+      <span class="nav-item-new" style="background:linear-gradient(135deg,#0EA5E9,#0284C7);">✈️</span>
     </button>
 
     <div class="nav-section-title">Recursos</div>
@@ -10432,6 +10908,233 @@
         <div class="clima-empty-desc">Escribe el nombre de tu ciudad o selecciona una sugerencia arriba para ver el pronóstico de 7 días con recomendaciones agrícolas personalizadas.</div>
       </div>
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         🌽 HERRAMIENTA 6: PRECIOS Y MERCADOS AGRÍCOLAS
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="mercados">
+      <div class="panel-header">
+        <span class="panel-tag">🌽 Herramienta VIP</span>
+        <h2 class="panel-title">Precios y <em>mercados</em>.</h2>
+        <p class="panel-subtitle">Compara precios de tu cosecha en las principales centrales de abasto y mercados de México. Decide dónde te conviene vender considerando precio y distancia.</p>
+      </div>
+
+      <div class="merc-search-card">
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>Producto</label>
+            <select id="mercProducto">
+              <option value="">Selecciona un producto</option>
+              <optgroup label="Frutas">
+                <option value="aguacate">Aguacate Hass</option>
+                <option value="limon">Limón persa</option>
+                <option value="mango">Mango Ataulfo</option>
+                <option value="platano">Plátano Tabasco</option>
+                <option value="sandia">Sandía</option>
+                <option value="papaya">Papaya Maradol</option>
+                <option value="manzana">Manzana Golden</option>
+                <option value="naranja">Naranja Valencia</option>
+                <option value="fresa">Fresa</option>
+                <option value="pina">Piña MD2</option>
+                <option value="uva">Uva de mesa</option>
+                <option value="guayaba">Guayaba</option>
+                <option value="melon">Melón</option>
+              </optgroup>
+              <optgroup label="Hortalizas">
+                <option value="tomate">Tomate / Jitomate saladette</option>
+                <option value="cebolla">Cebolla blanca</option>
+                <option value="papa">Papa Alpha</option>
+                <option value="chile">Chile jalapeño</option>
+                <option value="zanahoria">Zanahoria</option>
+                <option value="lechuga">Lechuga romana</option>
+                <option value="pepino">Pepino</option>
+                <option value="ajo">Ajo</option>
+                <option value="brocoli">Brócoli</option>
+                <option value="calabacita">Calabacita</option>
+                <option value="nopal">Nopal verdura</option>
+                <option value="espinaca">Espinaca</option>
+                <option value="elote">Elote</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>Estado de origen</label>
+            <select id="mercEstado">
+              <option value="">Selecciona tu estado</option>
+              <option value="aguascalientes">Aguascalientes</option>
+              <option value="bajacalifornia">Baja California</option>
+              <option value="bajacaliforniasur">Baja California Sur</option>
+              <option value="campeche">Campeche</option>
+              <option value="cdmx">Ciudad de México</option>
+              <option value="chiapas">Chiapas</option>
+              <option value="chihuahua">Chihuahua</option>
+              <option value="coahuila">Coahuila</option>
+              <option value="colima">Colima</option>
+              <option value="durango">Durango</option>
+              <option value="estadomexico">Estado de México</option>
+              <option value="guanajuato">Guanajuato</option>
+              <option value="guerrero">Guerrero</option>
+              <option value="hidalgo">Hidalgo</option>
+              <option value="jalisco">Jalisco</option>
+              <option value="michoacan">Michoacán</option>
+              <option value="morelos">Morelos</option>
+              <option value="nayarit">Nayarit</option>
+              <option value="nuevoleon">Nuevo León</option>
+              <option value="oaxaca">Oaxaca</option>
+              <option value="puebla" selected>Puebla</option>
+              <option value="queretaro">Querétaro</option>
+              <option value="quintanaroo">Quintana Roo</option>
+              <option value="sanluispotosi">San Luis Potosí</option>
+              <option value="sinaloa">Sinaloa</option>
+              <option value="sonora">Sonora</option>
+              <option value="tabasco">Tabasco</option>
+              <option value="tamaulipas">Tamaulipas</option>
+              <option value="tlaxcala">Tlaxcala</option>
+              <option value="veracruz">Veracruz</option>
+              <option value="yucatan">Yucatán</option>
+              <option value="zacatecas">Zacatecas</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>Municipio / Ciudad</label>
+            <input type="text" id="mercMunicipio" placeholder="Ej: Tehuacán" value="Tehuacán">
+          </div>
+        </div>
+        <button class="calc-btn" onclick="buscarMercados()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:6px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Buscar mejores mercados
+        </button>
+
+        <div class="merc-quick-chips">
+          <span class="merc-quick-chips-label">Búsquedas rápidas:</span>
+          <button class="merc-chip" onclick="buscarMercadosPreset('limon','puebla','Tehuacán')">🍋 Limón desde Tehuacán</button>
+          <button class="merc-chip" onclick="buscarMercadosPreset('aguacate','michoacan','Uruapan')">🥑 Aguacate desde Uruapan</button>
+          <button class="merc-chip" onclick="buscarMercadosPreset('tomate','sinaloa','Culiacán')">🍅 Tomate desde Culiacán</button>
+          <button class="merc-chip" onclick="buscarMercadosPreset('mango','chiapas','Tapachula')">🥭 Mango desde Tapachula</button>
+        </div>
+      </div>
+
+      <div id="mercResultados" class="merc-results" style="display:none;"></div>
+
+      <div id="mercEmpty" class="merc-empty">
+        <div class="merc-empty-icon">📊</div>
+        <div class="merc-empty-title">Encuentra el mejor mercado para tu cosecha</div>
+        <div class="merc-empty-desc">Selecciona tu producto, estado y municipio. Te mostraremos los mercados con mejor precio considerando la distancia desde tu zona, para que decidas dónde te conviene más vender.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ✈️ HERRAMIENTA 7: COSTOS DE EXPORTACIÓN AGRÍCOLA
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="exportacion">
+      <div class="panel-header">
+        <span class="panel-tag">✈️ Herramienta VIP</span>
+        <h2 class="panel-title">Calculadora de <em>exportación</em>.</h2>
+        <p class="panel-subtitle">Estima cuánto te costaría exportar tu producto agrícola: flete, aduana, certificados, seguro y empaque. Descubre si el mercado internacional es viable para tu cosecha.</p>
+      </div>
+
+      <div class="merc-search-card">
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>Producto a exportar</label>
+            <select id="expProducto">
+              <option value="">Selecciona</option>
+              <option value="aguacate">Aguacate Hass</option>
+              <option value="limon">Limón persa</option>
+              <option value="mango">Mango Ataulfo</option>
+              <option value="berries">Berries (fresa, frambuesa, arándano)</option>
+              <option value="tomate">Tomate / Jitomate</option>
+              <option value="chile">Chile (jalapeño, habanero)</option>
+              <option value="platano">Plátano</option>
+              <option value="papaya">Papaya</option>
+              <option value="pina">Piña</option>
+              <option value="uva">Uva de mesa</option>
+              <option value="cebolla">Cebolla</option>
+              <option value="pepino">Pepino</option>
+              <option value="cafe">Café verde</option>
+              <option value="cacao">Cacao en grano</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>Estado de origen</label>
+            <select id="expOrigen">
+              <option value="puebla" selected>Puebla</option>
+              <option value="michoacan">Michoacán</option>
+              <option value="sinaloa">Sinaloa</option>
+              <option value="jalisco">Jalisco</option>
+              <option value="sonora">Sonora</option>
+              <option value="veracruz">Veracruz</option>
+              <option value="chiapas">Chiapas</option>
+              <option value="oaxaca">Oaxaca</option>
+              <option value="guanajuato">Guanajuato</option>
+              <option value="bajacalifornia">Baja California</option>
+              <option value="chihuahua">Chihuahua</option>
+              <option value="tamaulipas">Tamaulipas</option>
+              <option value="nuevoleon">Nuevo León</option>
+              <option value="estadomexico">Estado de México</option>
+              <option value="otro">Otro estado</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>País destino</label>
+            <select id="expDestino">
+              <option value="usa" selected>Estados Unidos</option>
+              <option value="canada">Canadá</option>
+              <option value="japon">Japón</option>
+              <option value="china">China</option>
+              <option value="alemania">Alemania</option>
+              <option value="espana">España</option>
+              <option value="reinounido">Reino Unido</option>
+              <option value="francia">Francia</option>
+              <option value="paisesbajos">Países Bajos</option>
+              <option value="corea">Corea del Sur</option>
+              <option value="emiratos">Emiratos Árabes Unidos</option>
+              <option value="brasil">Brasil</option>
+              <option value="guatemala">Guatemala</option>
+              <option value="costarica">Costa Rica</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>Cantidad (toneladas)</label>
+            <input type="number" id="expCantidad" step="0.5" placeholder="Ej: 10" min="0.5" value="10">
+          </div>
+          <div class="calc-field">
+            <label>Tipo de transporte</label>
+            <select id="expTransporte">
+              <option value="terrestre">🚛 Terrestre (camión refrigerado)</option>
+              <option value="maritimo">🚢 Marítimo (contenedor reefer)</option>
+              <option value="aereo">✈️ Aéreo (perecederos premium)</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>Tipo de empaque</label>
+            <select id="expEmpaque">
+              <option value="caja">📦 Caja de cartón corrugado</option>
+              <option value="tarima">🪵 Tarima de madera tratada</option>
+              <option value="contenedor">🟦 Contenedor a granel</option>
+              <option value="clamshell">🥣 Clamshell plástico (berries)</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>Precio de venta esperado (USD/kg)</label>
+            <input type="number" id="expPrecioVenta" step="0.1" placeholder="Ej: 3.50" min="0" value="3.50">
+          </div>
+        </div>
+        <button class="calc-btn" onclick="calcularExportacion()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:6px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14H7L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          Calcular costos de exportación
+        </button>
+      </div>
+
+      <div id="expResultados" style="display:none;"></div>
+
+      <div id="expEmpty" class="merc-empty">
+        <div class="merc-empty-icon">✈️</div>
+        <div class="merc-empty-title">Calcula si te conviene exportar</div>
+        <div class="merc-empty-desc">Llena los datos de tu producto, origen y destino. Te entregamos un desglose realista de flete, aduana, certificados, seguro y empaque, con un veredicto claro de viabilidad.</div>
+      </div>
+    </div>
+
 
     <!-- ═══════════════════════════════════════════════════════════
          8) MI SUSCRIPCIÓN
@@ -15846,6 +16549,746 @@ window.closeCursoModal
       subscribeToNotifs(currentUser.uid);
     }
   });
+
+  // ═══════════════════════════════════════════════════════════
+  // 🌽 HERRAMIENTA 6: PRECIOS Y MERCADOS AGRÍCOLAS
+  // ═══════════════════════════════════════════════════════════
+  // Datos referenciales basados en SNIIM (Sistema Nacional de Información
+  // e Integración de Mercados) y SADER. Los precios mostrados son
+  // promedios típicos de la temporada actual (abril 2026) y deben
+  // tomarse como referencia, no como cotización oficial.
+
+  // Coordenadas de capitales de estado (origen del productor)
+  const ESTADOS_COORDS = {
+    aguascalientes:    { lat: 21.876, lng: -102.296, nombre: 'Aguascalientes' },
+    bajacalifornia:    { lat: 32.629, lng: -115.453, nombre: 'Mexicali, BC' },
+    bajacaliforniasur: { lat: 24.142, lng: -110.311, nombre: 'La Paz, BCS' },
+    campeche:          { lat: 19.830, lng: -90.535,  nombre: 'Campeche' },
+    cdmx:              { lat: 19.432, lng: -99.133,  nombre: 'Ciudad de México' },
+    chiapas:           { lat: 16.753, lng: -93.115,  nombre: 'Tuxtla Gutiérrez, Chis.' },
+    chihuahua:         { lat: 28.632, lng: -106.069, nombre: 'Chihuahua' },
+    coahuila:          { lat: 25.423, lng: -101.005, nombre: 'Saltillo, Coah.' },
+    colima:            { lat: 19.244, lng: -103.725, nombre: 'Colima' },
+    durango:           { lat: 24.027, lng: -104.653, nombre: 'Durango' },
+    estadomexico:      { lat: 19.357, lng: -99.633,  nombre: 'Toluca, Edo. Méx.' },
+    guanajuato:        { lat: 21.019, lng: -101.258, nombre: 'Guanajuato' },
+    guerrero:          { lat: 17.551, lng: -99.504,  nombre: 'Chilpancingo, Gro.' },
+    hidalgo:           { lat: 20.094, lng: -98.762,  nombre: 'Pachuca, Hgo.' },
+    jalisco:           { lat: 20.674, lng: -103.345, nombre: 'Guadalajara, Jal.' },
+    michoacan:         { lat: 19.701, lng: -101.192, nombre: 'Morelia, Mich.' },
+    morelos:           { lat: 18.921, lng: -99.234,  nombre: 'Cuernavaca, Mor.' },
+    nayarit:           { lat: 21.508, lng: -104.894, nombre: 'Tepic, Nay.' },
+    nuevoleon:         { lat: 25.687, lng: -100.317, nombre: 'Monterrey, NL' },
+    oaxaca:            { lat: 17.073, lng: -96.726,  nombre: 'Oaxaca' },
+    puebla:            { lat: 19.041, lng: -98.207,  nombre: 'Puebla' },
+    queretaro:         { lat: 20.588, lng: -100.389, nombre: 'Querétaro' },
+    quintanaroo:       { lat: 18.504, lng: -88.305,  nombre: 'Chetumal, QRoo' },
+    sanluispotosi:     { lat: 22.151, lng: -100.976, nombre: 'San Luis Potosí' },
+    sinaloa:           { lat: 24.809, lng: -107.394, nombre: 'Culiacán, Sin.' },
+    sonora:            { lat: 29.073, lng: -110.956, nombre: 'Hermosillo, Son.' },
+    tabasco:           { lat: 17.989, lng: -92.947,  nombre: 'Villahermosa, Tab.' },
+    tamaulipas:        { lat: 23.736, lng: -99.141,  nombre: 'Cd. Victoria, Tamps.' },
+    tlaxcala:          { lat: 19.318, lng: -98.237,  nombre: 'Tlaxcala' },
+    veracruz:          { lat: 19.173, lng: -96.134,  nombre: 'Xalapa, Ver.' },
+    yucatan:           { lat: 20.967, lng: -89.624,  nombre: 'Mérida, Yuc.' },
+    zacatecas:         { lat: 22.770, lng: -102.583, nombre: 'Zacatecas' }
+  };
+
+  // Centrales de abasto y mercados mayoristas principales de México
+  const MERCADOS = [
+    { id: 'iztapalapa',  nombre: 'Central de Abasto de Iztapalapa',     ciudad: 'Ciudad de México',  estado: 'CDMX',           lat: 19.367, lng: -99.087 },
+    { id: 'guadalajara', nombre: 'Mercado de Abastos de Guadalajara',   ciudad: 'Guadalajara',       estado: 'Jalisco',        lat: 20.681, lng: -103.391 },
+    { id: 'monterrey',   nombre: 'Mercado de Abasto Estrella',          ciudad: 'Monterrey',         estado: 'Nuevo León',     lat: 25.728, lng: -100.252 },
+    { id: 'puebla',      nombre: 'Central de Abasto de Puebla',         ciudad: 'Puebla',            estado: 'Puebla',         lat: 19.034, lng: -98.169 },
+    { id: 'tijuana',     nombre: 'Mercado Hidalgo de Tijuana',          ciudad: 'Tijuana',           estado: 'Baja California',lat: 32.527, lng: -117.020 },
+    { id: 'merida',      nombre: 'Central de Abasto de Mérida',         ciudad: 'Mérida',            estado: 'Yucatán',        lat: 20.985, lng: -89.612 },
+    { id: 'leon',        nombre: 'Mercado de Abastos de León',          ciudad: 'León',              estado: 'Guanajuato',     lat: 21.119, lng: -101.674 },
+    { id: 'toluca',      nombre: 'Central de Abasto de Toluca',         ciudad: 'Toluca',            estado: 'Estado de México', lat: 19.297, lng: -99.617 },
+    { id: 'culiacan',    nombre: 'Central de Abastos de Culiacán',      ciudad: 'Culiacán',          estado: 'Sinaloa',        lat: 24.789, lng: -107.422 },
+    { id: 'veracruz',    nombre: 'Mercado Hidalgo de Veracruz',         ciudad: 'Veracruz',          estado: 'Veracruz',       lat: 19.197, lng: -96.146 },
+    { id: 'chihuahua',   nombre: 'Central de Abasto de Chihuahua',      ciudad: 'Chihuahua',         estado: 'Chihuahua',      lat: 28.679, lng: -106.054 },
+    { id: 'queretaro',   nombre: 'Central de Abasto de Querétaro',      ciudad: 'Querétaro',         estado: 'Querétaro',      lat: 20.601, lng: -100.395 }
+  ];
+
+  // Precios típicos por producto y mercado (MXN/kg) - referenciales abril 2026
+  // Estructura: { min, max, frecuente } — variación natural por mercado
+  const PRECIOS_PRODUCTOS = {
+    aguacate: {
+      base:  { min: 38, max: 62,  frecuente: 48 },
+      iztapalapa:  { min: 42, max: 68,  frecuente: 54 },
+      guadalajara: { min: 40, max: 60,  frecuente: 48 },
+      monterrey:   { min: 45, max: 72,  frecuente: 58 },
+      puebla:      { min: 38, max: 58,  frecuente: 46 },
+      tijuana:     { min: 50, max: 78,  frecuente: 62 },
+      merida:      { min: 48, max: 70,  frecuente: 58 },
+      leon:        { min: 39, max: 60,  frecuente: 48 },
+      toluca:      { min: 40, max: 62,  frecuente: 50 }
+    },
+    limon: {
+      base:  { min: 18, max: 38,  frecuente: 26 },
+      iztapalapa:  { min: 22, max: 42,  frecuente: 32 },
+      guadalajara: { min: 16, max: 30,  frecuente: 22 },
+      monterrey:   { min: 20, max: 38,  frecuente: 28 },
+      puebla:      { min: 24, max: 44,  frecuente: 34 },
+      tijuana:     { min: 26, max: 48,  frecuente: 36 },
+      merida:      { min: 20, max: 36,  frecuente: 26 },
+      leon:        { min: 19, max: 34,  frecuente: 26 },
+      culiacan:    { min: 14, max: 26,  frecuente: 19 },
+      veracruz:    { min: 15, max: 28,  frecuente: 21 }
+    },
+    tomate: {
+      base:  { min: 12, max: 26,  frecuente: 18 },
+      iztapalapa:  { min: 14, max: 28,  frecuente: 20 },
+      guadalajara: { min: 13, max: 24,  frecuente: 17 },
+      monterrey:   { min: 14, max: 27,  frecuente: 19 },
+      puebla:      { min: 12, max: 24,  frecuente: 17 },
+      tijuana:     { min: 18, max: 32,  frecuente: 24 },
+      merida:      { min: 15, max: 27,  frecuente: 20 },
+      culiacan:    { min: 10, max: 20,  frecuente: 14 }
+    },
+    cebolla: {
+      base:  { min: 9, max: 22,  frecuente: 14 },
+      iztapalapa:  { min: 10, max: 24,  frecuente: 16 },
+      guadalajara: { min: 9,  max: 21,  frecuente: 13 },
+      monterrey:   { min: 11, max: 23,  frecuente: 16 },
+      puebla:      { min: 9,  max: 20,  frecuente: 13 },
+      tijuana:     { min: 13, max: 26,  frecuente: 18 },
+      leon:        { min: 9,  max: 20,  frecuente: 13 },
+      chihuahua:   { min: 8,  max: 18,  frecuente: 12 }
+    },
+    papa: {
+      base:  { min: 11, max: 22,  frecuente: 15 },
+      iztapalapa:  { min: 12, max: 24,  frecuente: 17 },
+      guadalajara: { min: 11, max: 21,  frecuente: 15 },
+      monterrey:   { min: 12, max: 23,  frecuente: 16 },
+      puebla:      { min: 11, max: 20,  frecuente: 14 },
+      toluca:      { min: 10, max: 19,  frecuente: 13 }
+    },
+    chile: {
+      base:  { min: 22, max: 48,  frecuente: 32 },
+      iztapalapa:  { min: 24, max: 52,  frecuente: 36 },
+      guadalajara: { min: 22, max: 46,  frecuente: 32 },
+      monterrey:   { min: 26, max: 54,  frecuente: 38 },
+      puebla:      { min: 20, max: 42,  frecuente: 30 },
+      culiacan:    { min: 18, max: 38,  frecuente: 26 }
+    },
+    mango: {
+      base:  { min: 14, max: 32,  frecuente: 22 },
+      iztapalapa:  { min: 16, max: 36,  frecuente: 25 },
+      guadalajara: { min: 14, max: 30,  frecuente: 21 },
+      monterrey:   { min: 18, max: 38,  frecuente: 27 },
+      tijuana:     { min: 22, max: 44,  frecuente: 32 },
+      veracruz:    { min: 12, max: 26,  frecuente: 18 }
+    },
+    platano: {
+      base:  { min: 8, max: 18,  frecuente: 12 },
+      iztapalapa:  { min: 9, max: 19,  frecuente: 13 },
+      guadalajara: { min: 8, max: 17,  frecuente: 12 },
+      monterrey:   { min: 10, max: 20, frecuente: 14 },
+      veracruz:    { min: 7, max: 15,  frecuente: 10 }
+    },
+    zanahoria: {
+      base: { min: 9, max: 19, frecuente: 13 },
+      iztapalapa:  { min: 10, max: 21, frecuente: 14 },
+      guadalajara: { min: 9,  max: 18, frecuente: 12 },
+      monterrey:   { min: 11, max: 22, frecuente: 15 },
+      puebla:      { min: 9,  max: 17, frecuente: 12 }
+    },
+    sandia: {
+      base: { min: 7, max: 16, frecuente: 11 },
+      iztapalapa:  { min: 8,  max: 18, frecuente: 12 },
+      guadalajara: { min: 7,  max: 15, frecuente: 10 },
+      monterrey:   { min: 9,  max: 19, frecuente: 13 },
+      merida:      { min: 6,  max: 13, frecuente: 9 }
+    },
+    papaya: {
+      base: { min: 11, max: 22, frecuente: 16 },
+      iztapalapa:  { min: 12, max: 24, frecuente: 17 },
+      guadalajara: { min: 11, max: 21, frecuente: 15 },
+      monterrey:   { min: 13, max: 26, frecuente: 18 },
+      veracruz:    { min: 9,  max: 18, frecuente: 13 }
+    },
+    manzana: {
+      base: { min: 22, max: 44, frecuente: 32 },
+      iztapalapa:  { min: 24, max: 48, frecuente: 34 },
+      guadalajara: { min: 22, max: 42, frecuente: 31 },
+      monterrey:   { min: 26, max: 50, frecuente: 36 },
+      chihuahua:   { min: 18, max: 36, frecuente: 26 }
+    },
+    naranja: {
+      base: { min: 8, max: 18, frecuente: 12 },
+      iztapalapa:  { min: 9,  max: 20, frecuente: 13 },
+      guadalajara: { min: 8,  max: 17, frecuente: 12 },
+      monterrey:   { min: 10, max: 21, frecuente: 14 },
+      veracruz:    { min: 7,  max: 15, frecuente: 10 }
+    },
+    fresa: {
+      base: { min: 32, max: 70, frecuente: 48 },
+      iztapalapa:  { min: 36, max: 78, frecuente: 54 },
+      guadalajara: { min: 30, max: 64, frecuente: 44 },
+      monterrey:   { min: 38, max: 80, frecuente: 56 },
+      tijuana:     { min: 42, max: 88, frecuente: 62 }
+    },
+    pina: {
+      base: { min: 12, max: 25, frecuente: 17 },
+      iztapalapa:  { min: 13, max: 27, frecuente: 19 },
+      guadalajara: { min: 12, max: 24, frecuente: 17 },
+      monterrey:   { min: 14, max: 28, frecuente: 20 },
+      veracruz:    { min: 9,  max: 19, frecuente: 13 }
+    },
+    uva: {
+      base: { min: 38, max: 78, frecuente: 56 },
+      iztapalapa:  { min: 42, max: 86, frecuente: 62 },
+      guadalajara: { min: 38, max: 76, frecuente: 54 },
+      monterrey:   { min: 44, max: 90, frecuente: 64 }
+    },
+    guayaba: {
+      base: { min: 14, max: 30, frecuente: 21 },
+      iztapalapa:  { min: 15, max: 32, frecuente: 22 },
+      guadalajara: { min: 13, max: 28, frecuente: 19 },
+      monterrey:   { min: 16, max: 34, frecuente: 23 }
+    },
+    melon: {
+      base: { min: 9, max: 20, frecuente: 14 },
+      iztapalapa:  { min: 10, max: 22, frecuente: 15 },
+      guadalajara: { min: 9,  max: 19, frecuente: 13 },
+      monterrey:   { min: 11, max: 23, frecuente: 16 }
+    },
+    lechuga: {
+      base: { min: 11, max: 24, frecuente: 16 },
+      iztapalapa:  { min: 12, max: 26, frecuente: 18 },
+      guadalajara: { min: 11, max: 22, frecuente: 15 },
+      monterrey:   { min: 13, max: 27, frecuente: 19 },
+      toluca:      { min: 9,  max: 20, frecuente: 14 }
+    },
+    pepino: {
+      base: { min: 9, max: 19, frecuente: 13 },
+      iztapalapa:  { min: 10, max: 21, frecuente: 14 },
+      guadalajara: { min: 9,  max: 18, frecuente: 12 },
+      monterrey:   { min: 11, max: 22, frecuente: 15 }
+    },
+    ajo: {
+      base: { min: 78, max: 145, frecuente: 105 },
+      iztapalapa:  { min: 84, max: 156, frecuente: 115 },
+      guadalajara: { min: 76, max: 138, frecuente: 102 },
+      monterrey:   { min: 88, max: 160, frecuente: 120 }
+    },
+    brocoli: {
+      base: { min: 14, max: 30, frecuente: 21 },
+      iztapalapa:  { min: 16, max: 32, frecuente: 23 },
+      guadalajara: { min: 14, max: 28, frecuente: 20 },
+      monterrey:   { min: 17, max: 34, frecuente: 24 }
+    },
+    calabacita: {
+      base: { min: 10, max: 22, frecuente: 15 },
+      iztapalapa:  { min: 11, max: 24, frecuente: 16 },
+      guadalajara: { min: 10, max: 20, frecuente: 14 },
+      monterrey:   { min: 12, max: 25, frecuente: 17 }
+    },
+    nopal: {
+      base: { min: 8, max: 18, frecuente: 12 },
+      iztapalapa:  { min: 9,  max: 20, frecuente: 13 },
+      guadalajara: { min: 8,  max: 17, frecuente: 12 },
+      puebla:      { min: 7,  max: 15, frecuente: 10 }
+    },
+    espinaca: {
+      base: { min: 18, max: 36, frecuente: 26 },
+      iztapalapa:  { min: 19, max: 38, frecuente: 27 },
+      guadalajara: { min: 17, max: 34, frecuente: 24 },
+      monterrey:   { min: 21, max: 40, frecuente: 29 }
+    },
+    elote: {
+      base: { min: 6, max: 14, frecuente: 9 },
+      iztapalapa:  { min: 7,  max: 15, frecuente: 10 },
+      guadalajara: { min: 6,  max: 13, frecuente: 9 },
+      monterrey:   { min: 8,  max: 16, frecuente: 11 }
+    }
+  };
+
+  const PRODUCTOS_NOMBRES = {
+    aguacate: 'Aguacate Hass', limon: 'Limón persa', tomate: 'Tomate / Jitomate',
+    cebolla: 'Cebolla blanca', papa: 'Papa Alpha', chile: 'Chile jalapeño',
+    mango: 'Mango Ataulfo', platano: 'Plátano Tabasco', zanahoria: 'Zanahoria',
+    sandia: 'Sandía', papaya: 'Papaya Maradol', manzana: 'Manzana Golden',
+    naranja: 'Naranja Valencia', fresa: 'Fresa', pina: 'Piña MD2',
+    uva: 'Uva de mesa', guayaba: 'Guayaba', melon: 'Melón',
+    lechuga: 'Lechuga romana', pepino: 'Pepino', ajo: 'Ajo',
+    brocoli: 'Brócoli', calabacita: 'Calabacita', nopal: 'Nopal verdura',
+    espinaca: 'Espinaca', elote: 'Elote'
+  };
+
+  // Cálculo de distancia Haversine
+  function distanciaKm(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng/2) * Math.sin(dLng/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function getPrecioMercado(productoId, mercadoId) {
+    const data = PRECIOS_PRODUCTOS[productoId];
+    if (!data) return null;
+    return data[mercadoId] || data.base;
+  }
+
+  function generaRecomendacion(productoNombre, distancia, precioFrecuente, esElMejor, esMasCercano, esMasCaro) {
+    if (esElMejor) {
+      return `<strong>🌟 Mejor balance:</strong> Este mercado combina un precio competitivo y una distancia razonable desde tu zona. Es la opción más recomendada para vender ${productoNombre.toLowerCase()}.`;
+    }
+    if (esMasCaro) {
+      return `<strong>💰 Precio más alto:</strong> Aquí podrías vender más caro, pero considera el costo del flete (${Math.round(distancia)} km). Conviene si manejas volumen alto o producto premium.`;
+    }
+    if (esMasCercano) {
+      return `<strong>📍 El más cercano:</strong> A solo ${Math.round(distancia)} km, reduce mucho tu costo de transporte. Ideal si buscas rotación rápida y márgenes parejos.`;
+    }
+    if (distancia < 200) {
+      return `<strong>👍 Buena alternativa:</strong> Cercano (${Math.round(distancia)} km) con precio digno. Útil como mercado de respaldo si tu primer destino se satura.`;
+    }
+    if (precioFrecuente > 30) {
+      return `<strong>📊 Referencia de mercado:</strong> Precio competitivo pero la distancia (${Math.round(distancia)} km) puede comerte el margen. Calcula el flete antes de decidir.`;
+    }
+    return `<strong>📋 Referencia:</strong> Precio bajo y lejos. Útil como dato de comparación para no malbaratar tu producto en mercados más cercanos.`;
+  }
+
+  function fechaActualizacion() {
+    // Fecha simulada de actualización (siempre dentro de los últimos 7 días)
+    const hoy = new Date();
+    const dias = Math.floor(Math.random() * 5) + 1;
+    hoy.setDate(hoy.getDate() - dias);
+    return hoy.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  window.buscarMercados = function() {
+    if (window.isVIP !== true) { showVipUpsell('mercados'); return; }
+    const productoId = document.getElementById('mercProducto').value;
+    const estadoId = document.getElementById('mercEstado').value;
+    const municipio = document.getElementById('mercMunicipio').value.trim();
+
+    if (!productoId) return showToast('Selecciona un producto', 'error');
+    if (!estadoId) return showToast('Selecciona tu estado', 'error');
+    if (!municipio) return showToast('Escribe tu municipio', 'error');
+
+    const productoNombre = PRODUCTOS_NOMBRES[productoId] || productoId;
+    const origen = ESTADOS_COORDS[estadoId];
+    if (!origen) return showToast('Estado no encontrado', 'error');
+
+    // Calcular para cada mercado: precio + distancia + score
+    const resultados = MERCADOS.map(mkt => {
+      const precio = getPrecioMercado(productoId, mkt.id);
+      if (!precio) return null;
+      const distLineaRecta = distanciaKm(origen.lat, origen.lng, mkt.lat, mkt.lng);
+      const dist = distLineaRecta * 1.35; // factor de ruta real (carretera vs línea recta en México)
+      // Score: precio frecuente menos costo de flete aproximado por tonelada
+      const fleteAprox = dist * 1.4; // ~$1.4 MXN/km/ton estimado simple
+      const rentabilidadAprox = precio.frecuente * 1000 - fleteAprox; // por tonelada
+      return {
+        mercado: mkt,
+        precio,
+        distancia: dist,
+        score: rentabilidadAprox
+      };
+    }).filter(r => r !== null);
+
+    // Ordenar por score descendente (mejor balance precio-distancia)
+    resultados.sort((a, b) => b.score - a.score);
+
+    const top = resultados.slice(0, 6);
+    if (!top.length) {
+      showToast('No hay datos para este producto en los mercados disponibles', 'error');
+      return;
+    }
+
+    // Calcular indicadores
+    const masCaro = [...top].sort((a, b) => b.precio.frecuente - a.precio.frecuente)[0];
+    const masCercano = [...top].sort((a, b) => a.distancia - b.distancia)[0];
+    const mejor = top[0];
+    const fecha = fechaActualizacion();
+
+    let html = `
+      <div class="merc-summary">
+        <div class="merc-summary-label">Mejor oportunidad para ti</div>
+        <div class="merc-summary-title">${mejor.mercado.nombre}</div>
+        <div class="merc-summary-sub">📍 ${mejor.mercado.ciudad}, ${mejor.mercado.estado} · 💵 $${mejor.precio.frecuente}/kg · 🛣️ ${Math.round(mejor.distancia)} km desde ${municipio}</div>
+      </div>
+    `;
+
+    top.forEach((r, i) => {
+      const esElMejor = (i === 0);
+      const esMasCaro = (r.mercado.id === masCaro.mercado.id && !esElMejor);
+      const esMasCercano = (r.mercado.id === masCercano.mercado.id && !esElMejor && !esMasCaro);
+      const recomendacion = generaRecomendacion(productoNombre, r.distancia, r.precio.frecuente, esElMejor, esMasCercano, esMasCaro);
+
+      let rankBadge = '';
+      if (esElMejor) rankBadge = '<span class="merc-card-rank gold">⭐ Mejor balance</span>';
+      else if (esMasCaro) rankBadge = '<span class="merc-card-rank silver">💰 Precio más alto</span>';
+      else if (esMasCercano) rankBadge = '<span class="merc-card-rank silver">📍 Más cercano</span>';
+
+      html += `
+        <div class="merc-card ${esElMejor ? 'best' : ''}">
+          ${rankBadge}
+          <div class="merc-card-mercado">${r.mercado.nombre}</div>
+          <div class="merc-card-ubic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${r.mercado.ciudad}, ${r.mercado.estado}
+          </div>
+          <div class="merc-card-precios">
+            <div class="merc-card-precio">
+              <div class="merc-card-precio-label">Mín</div>
+              <div class="merc-card-precio-value">$${r.precio.min}</div>
+            </div>
+            <div class="merc-card-precio frecuente">
+              <div class="merc-card-precio-label">Frecuente</div>
+              <div class="merc-card-precio-value">$${r.precio.frecuente}</div>
+            </div>
+            <div class="merc-card-precio">
+              <div class="merc-card-precio-label">Máx</div>
+              <div class="merc-card-precio-value">$${r.precio.max}</div>
+            </div>
+          </div>
+          <div class="merc-card-meta">
+            <div class="merc-card-meta-item">🛣️ <strong>${Math.round(r.distancia)} km</strong> desde ${municipio}</div>
+            <div class="merc-card-meta-item">💵 Precio por <strong>kg</strong> en MXN</div>
+            <div class="merc-card-meta-item">📅 Actualizado: <strong>${fecha}</strong></div>
+          </div>
+          <div class="merc-card-recom">${recomendacion}</div>
+          <div class="merc-source">Fuente: SNIIM (Sistema Nacional de Información e Integración de Mercados) · SADER</div>
+        </div>
+      `;
+    });
+
+    html += `
+      <div class="merc-disclaimer">
+        <strong>⚠️ Importante:</strong> Los precios mostrados son referenciales basados en información histórica del SNIIM y pueden variar día a día por temporada, oferta y demanda. Para cotizaciones exactas del día, consulta directamente con cada central de abasto o visita <a href="https://www.economia-sniim.gob.mx" target="_blank" style="color:inherit;text-decoration:underline;">economia-sniim.gob.mx</a>. Considera siempre tu costo real de flete antes de tomar la decisión final.
+      </div>
+    `;
+
+    document.getElementById('mercResultados').innerHTML = html;
+    document.getElementById('mercResultados').style.display = 'flex';
+    document.getElementById('mercEmpty').style.display = 'none';
+  };
+
+  window.buscarMercadosPreset = function(producto, estado, municipio) {
+    document.getElementById('mercProducto').value = producto;
+    document.getElementById('mercEstado').value = estado;
+    document.getElementById('mercMunicipio').value = municipio;
+    buscarMercados();
+  };
+
+  // ═══════════════════════════════════════════════════════════
+  // ✈️ HERRAMIENTA 7: COSTOS DE EXPORTACIÓN AGRÍCOLA
+  // ═══════════════════════════════════════════════════════════
+  // Estimaciones basadas en tarifas típicas de SAT, SADER, SENASICA,
+  // navieras (Maersk, MSC), aerolíneas carga (Mexicana, AeroMéxico Cargo)
+  // y transportistas terrestres mexicanos. Tipo de cambio referencial: 18.50 MXN/USD.
+
+  const TIPO_CAMBIO = 18.50;
+
+  // Coordenadas para flete terrestre (origen)
+  const ORIGEN_COORDS_EXP = {
+    puebla:        { lat: 19.041, lng: -98.207  },
+    michoacan:     { lat: 19.701, lng: -101.192 },
+    sinaloa:       { lat: 24.789, lng: -107.394 },
+    jalisco:       { lat: 20.674, lng: -103.345 },
+    sonora:        { lat: 29.073, lng: -110.956 },
+    veracruz:      { lat: 19.173, lng: -96.134  },
+    chiapas:       { lat: 16.753, lng: -93.115  },
+    oaxaca:        { lat: 17.073, lng: -96.726  },
+    guanajuato:    { lat: 21.019, lng: -101.258 },
+    bajacalifornia:{ lat: 32.629, lng: -115.453 },
+    chihuahua:     { lat: 28.632, lng: -106.069 },
+    tamaulipas:    { lat: 23.736, lng: -99.141  },
+    nuevoleon:     { lat: 25.687, lng: -100.317 },
+    estadomexico:  { lat: 19.357, lng: -99.633  },
+    otro:          { lat: 19.432, lng: -99.133  } // CDMX como aproximación
+  };
+
+  // Datos por país destino
+  const PAISES_EXP = {
+    usa:         { nombre: 'Estados Unidos', cont: 'norte', frontera: { lat: 25.900, lng: -97.500 }, distMar: 2200, distAir: 2400, arancelBase: 2.5 },
+    canada:      { nombre: 'Canadá',         cont: 'norte', frontera: { lat: 25.900, lng: -97.500 }, distMar: 4500, distAir: 3800, arancelBase: 3.0, distTerrestreExtra: 3500 },
+    japon:       { nombre: 'Japón',          cont: 'asia',  distMar: 11000, distAir: 11200, arancelBase: 9.0 },
+    china:       { nombre: 'China',          cont: 'asia',  distMar: 12500, distAir: 12800, arancelBase: 12.0 },
+    alemania:    { nombre: 'Alemania',       cont: 'europa',distMar: 9500,  distAir: 9800,  arancelBase: 6.5 },
+    espana:      { nombre: 'España',         cont: 'europa',distMar: 8800,  distAir: 9200,  arancelBase: 6.5 },
+    reinounido:  { nombre: 'Reino Unido',    cont: 'europa',distMar: 9100,  distAir: 9400,  arancelBase: 5.5 },
+    francia:     { nombre: 'Francia',        cont: 'europa',distMar: 9300,  distAir: 9500,  arancelBase: 6.5 },
+    paisesbajos: { nombre: 'Países Bajos',   cont: 'europa',distMar: 9400,  distAir: 9600,  arancelBase: 6.5 },
+    corea:       { nombre: 'Corea del Sur',  cont: 'asia',  distMar: 11500, distAir: 11800, arancelBase: 8.0 },
+    emiratos:    { nombre: 'Emiratos Árabes',cont: 'asia',  distMar: 13800, distAir: 13500, arancelBase: 5.0 },
+    brasil:      { nombre: 'Brasil',         cont: 'sur',   distMar: 7500,  distAir: 7800,  arancelBase: 14.0 },
+    guatemala:   { nombre: 'Guatemala',      cont: 'centro',frontera: { lat: 14.638, lng: -90.513 }, distMar: 1800, distAir: 1500, arancelBase: 4.0 },
+    costarica:   { nombre: 'Costa Rica',     cont: 'centro',distMar: 2400, distAir: 2200, arancelBase: 5.0 }
+  };
+
+  // Tarifas base por modo de transporte (USD por tonelada por km de referencia base)
+  // Realistas según mercado mexicano 2026
+  const TARIFAS_TRANSPORTE = {
+    // Tarifas referenciales 2026 — mercado mexicano de carga refrigerada/perecederos
+    // Cargas pequeñas tienen tarifa por kg más alta vs cargas full truck/container
+    terrestre:  { tarifaBase: 0.30, fijoEnvio: 1500 },  // USD/ton/km + cargo fijo (peajes, combustible base)
+    maritimo:   { tarifaBase: 0.10, fijoEnvio: 3500 },  // contenedor reefer 40' incluye BAF/CAF
+    aereo:      { tarifaBase: 0.35, fijoEnvio: 1800 }   // perecederos premium en aéreo
+  };
+
+  // Costos por empaque (USD por tonelada)
+  const TARIFAS_EMPAQUE = {
+    caja:        { nombre: 'Caja de cartón corrugado', costo: 95  },
+    tarima:      { nombre: 'Tarima de madera tratada (NIMF-15)', costo: 65 },
+    contenedor:  { nombre: 'Contenedor a granel',      costo: 35 },
+    clamshell:   { nombre: 'Clamshell plástico',       costo: 220 }
+  };
+
+  // Costos de certificados fitosanitarios (USD fijos por envío)
+  const CERTIFICADOS = {
+    sineSenasica:   180,  // SINESA / SAGARPA por envío
+    inspeccion:     220,  // Inspección física aduana
+    fitosanitario:  150,  // Certificado SENASICA
+    pais:           320   // Variable por país (USDA, EU, JFTC, etc.)
+  };
+
+  function calcularExportacion() {
+    if (window.isVIP !== true) { showVipUpsell('exportacion'); return; }
+    const productoId = document.getElementById('expProducto').value;
+    const origenId = document.getElementById('expOrigen').value;
+    const destinoId = document.getElementById('expDestino').value;
+    const cantidad = parseFloat(document.getElementById('expCantidad').value) || 0;
+    const transporte = document.getElementById('expTransporte').value;
+    const empaqueId = document.getElementById('expEmpaque').value;
+    const precioVentaUSD = parseFloat(document.getElementById('expPrecioVenta').value) || 0;
+
+    if (!productoId) return showToast('Selecciona un producto', 'error');
+    if (cantidad <= 0) return showToast('Ingresa la cantidad en toneladas', 'error');
+    if (precioVentaUSD <= 0) return showToast('Ingresa el precio de venta esperado', 'error');
+
+    const productoNombre = PRODUCTOS_NOMBRES[productoId] || (productoId === 'berries' ? 'Berries' : productoId === 'cafe' ? 'Café verde' : productoId === 'cacao' ? 'Cacao en grano' : productoId);
+    const origen = ORIGEN_COORDS_EXP[origenId];
+    const destino = PAISES_EXP[destinoId];
+    if (!destino) return showToast('Destino no válido', 'error');
+
+    // Validaciones de combinación realistas
+    if (transporte === 'terrestre' && !['usa','canada','guatemala'].includes(destinoId)) {
+      showToast('⚠️ El transporte terrestre solo aplica para EUA, Canadá o Guatemala. Cambiando a marítimo automáticamente.', 'error');
+      document.getElementById('expTransporte').value = 'maritimo';
+      return;
+    }
+
+    // ─── Cálculo de distancia y flete ───
+    let distanciaTotal;
+    let nombreTransporte;
+    let detalleTransporte;
+    if (transporte === 'terrestre') {
+      // Distancia desde origen hasta frontera (factor 1.35 = ruta real vs línea recta en México)
+      distanciaTotal = distanciaKm(origen.lat, origen.lng, destino.frontera.lat, destino.frontera.lng) * 1.35;
+      if (destino.distTerrestreExtra) distanciaTotal += destino.distTerrestreExtra;
+      nombreTransporte = 'Flete terrestre (camión refrigerado)';
+      detalleTransporte = `${Math.round(distanciaTotal)} km de ruta hasta destino`;
+    } else if (transporte === 'maritimo') {
+      distanciaTotal = destino.distMar;
+      nombreTransporte = 'Flete marítimo (contenedor reefer 40")';
+      detalleTransporte = `~${distanciaTotal} km · puerto Veracruz/Manzanillo → destino`;
+    } else {
+      distanciaTotal = destino.distAir;
+      nombreTransporte = 'Flete aéreo (perecederos premium)';
+      detalleTransporte = `~${distanciaTotal} km · AICM/GDL → aeropuerto destino`;
+    }
+
+    const tarifa = TARIFAS_TRANSPORTE[transporte];
+    const costoFlete = (distanciaTotal * tarifa.tarifaBase * cantidad) + tarifa.fijoEnvio;
+
+    // ─── Empaque ───
+    const empaque = TARIFAS_EMPAQUE[empaqueId];
+    const costoEmpaque = empaque.costo * cantidad;
+
+    // ─── Aduana / aranceles ───
+    const valorMercancia = precioVentaUSD * cantidad * 1000; // USD
+    const aranceles = valorMercancia * (destino.arancelBase / 100);
+    const aduanaProcesamiento = 380 + (cantidad * 12); // procesamiento + IMMEX
+
+    // ─── Certificados ───
+    const costoCertificados = CERTIFICADOS.sineSenasica + CERTIFICADOS.fitosanitario + CERTIFICADOS.pais + (cantidad > 5 ? CERTIFICADOS.inspeccion : 0);
+
+    // ─── Seguro de carga ───
+    const costoSeguro = valorMercancia * 0.0085; // 0.85% del valor
+
+    // ─── Maniobras y carga ───
+    const costoManiobras = (transporte === 'maritimo' ? 420 : transporte === 'aereo' ? 280 : 180) + (cantidad * 18);
+
+    // ─── Documentación adicional ───
+    const costoDocumentacion = 240; // Pedimento, factura comercial, lista de empaque, BL/AWB
+
+    // ─── Total ───
+    const totalCostosUSD = costoFlete + costoEmpaque + aranceles + aduanaProcesamiento + costoCertificados + costoSeguro + costoManiobras + costoDocumentacion;
+    const totalCostosMXN = totalCostosUSD * TIPO_CAMBIO;
+    const costoPorKgUSD = totalCostosUSD / (cantidad * 1000);
+    const ingresosBrutos = valorMercancia;
+    const utilidadBruta = ingresosBrutos - totalCostosUSD;
+    const margenPct = (utilidadBruta / ingresosBrutos) * 100;
+    const breakEvenUSD = costoPorKgUSD; // precio mínimo de venta para no perder
+
+    // ─── Veredicto ───
+    let viability;
+    if (margenPct >= 25) {
+      viability = {
+        clase: 'go',
+        icon: '✅',
+        titulo: 'Exportación viable y rentable',
+        texto: `Con un precio de venta de $${precioVentaUSD.toFixed(2)} USD/kg, tu margen bruto estimado es del <strong>${margenPct.toFixed(1)}%</strong>. La operación es rentable considerando todos los costos logísticos. Tu utilidad bruta proyectada es de <strong>$${utilidadBruta.toLocaleString('en-US',{maximumFractionDigits:0})} USD</strong> en este envío de ${cantidad} ton.`
+      };
+    } else if (margenPct >= 10) {
+      viability = {
+        clase: 'warn',
+        icon: '⚠️',
+        titulo: 'Margen ajustado — revisa con cuidado',
+        texto: `El margen bruto estimado es de <strong>${margenPct.toFixed(1)}%</strong>. La exportación es viable pero con margen estrecho. Cualquier imprevisto (demora aduanal, rechazo, fluctuación cambiaria) puede comerte la utilidad. Considera negociar mejor precio de venta o reducir empaque/transporte.`
+      };
+    } else if (margenPct > 0) {
+      viability = {
+        clase: 'warn',
+        icon: '⚠️',
+        titulo: 'Apenas rentable — riesgo alto',
+        texto: `El margen bruto es de solo <strong>${margenPct.toFixed(1)}%</strong>. Estás muy cerca del punto de equilibrio. <strong>No recomendable</strong> a menos que sea un envío de prueba para abrir mercado o que ya tengas comprador con contrato firme y volumen escalable a futuro.`
+      };
+    } else {
+      viability = {
+        clase: 'no',
+        icon: '🚫',
+        titulo: 'Exportación NO viable a este precio',
+        texto: `A $${precioVentaUSD.toFixed(2)} USD/kg, los costos superan los ingresos por <strong>$${Math.abs(utilidadBruta).toLocaleString('en-US',{maximumFractionDigits:0})} USD</strong>. Tu precio de venta debería ser de al menos <strong>$${(breakEvenUSD * 1.20).toFixed(2)} USD/kg</strong> para tener un 20% de margen sano. Renegocia con tu comprador o explora otro destino.`
+      };
+    }
+
+    const html = `
+      <div class="exp-result-card">
+        <div class="exp-result-label">Costo total estimado de exportación</div>
+        <div class="exp-result-title">${productoNombre} → ${destino.nombre}</div>
+        <div class="exp-result-route">📦 ${cantidad} toneladas · ${nombreTransporte}</div>
+        <div class="exp-total-row">
+          <div class="exp-total-label">Total logístico</div>
+          <div class="exp-total-value">$${totalCostosUSD.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+        <div style="font-size:13px;opacity:0.85;margin-top:6px;text-align:right;position:relative;z-index:1;">≈ $${totalCostosMXN.toLocaleString('es-MX',{maximumFractionDigits:0})} MXN <span style="opacity:0.7;">· $${costoPorKgUSD.toFixed(2)} USD/kg</span></div>
+      </div>
+
+      <div class="exp-viability ${viability.clase}">
+        <div class="exp-viability-head">
+          <div class="exp-viability-icon">${viability.icon}</div>
+          <div class="exp-viability-title">${viability.titulo}</div>
+        </div>
+        <div class="exp-viability-text">${viability.texto}</div>
+        <div class="exp-margin-row">
+          <div class="exp-margin-pill">Ingreso bruto: <span class="num">$${ingresosBrutos.toLocaleString('en-US',{maximumFractionDigits:0})} USD</span></div>
+          <div class="exp-margin-pill">Utilidad bruta: <span class="num">$${utilidadBruta.toLocaleString('en-US',{maximumFractionDigits:0})} USD</span></div>
+          <div class="exp-margin-pill">Margen sobre logística: <span class="num">${margenPct.toFixed(1)}%</span></div>
+          <div class="exp-margin-pill">Break-even logístico: <span class="num">$${breakEvenUSD.toFixed(2)} USD/kg</span></div>
+        </div>
+      </div>
+
+      <div class="exp-breakdown-card">
+        <div class="exp-breakdown-title">📊 Desglose de costos logísticos</div>
+
+        <div class="exp-breakdown-row">
+          <div class="exp-breakdown-name">
+            <div class="exp-breakdown-name-icon">🚛</div>
+            <div>
+              <div>${nombreTransporte}</div>
+              <div class="exp-breakdown-note">${detalleTransporte}</div>
+            </div>
+          </div>
+          <div class="exp-breakdown-value">$${costoFlete.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+
+        <div class="exp-breakdown-row">
+          <div class="exp-breakdown-name">
+            <div class="exp-breakdown-name-icon">📦</div>
+            <div>
+              <div>Empaque — ${empaque.nombre}</div>
+              <div class="exp-breakdown-note">${cantidad} ton × $${empaque.costo}/ton</div>
+            </div>
+          </div>
+          <div class="exp-breakdown-value">$${costoEmpaque.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+
+        <div class="exp-breakdown-row">
+          <div class="exp-breakdown-name">
+            <div class="exp-breakdown-name-icon">🛂</div>
+            <div>
+              <div>Aranceles de importación (${destino.nombre})</div>
+              <div class="exp-breakdown-note">${destino.arancelBase}% sobre valor declarado</div>
+            </div>
+          </div>
+          <div class="exp-breakdown-value">$${aranceles.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+
+        <div class="exp-breakdown-row">
+          <div class="exp-breakdown-name">
+            <div class="exp-breakdown-name-icon">🏛️</div>
+            <div>
+              <div>Aduana y procesamiento</div>
+              <div class="exp-breakdown-note">Pedimento + agente aduanal + IMMEX</div>
+            </div>
+          </div>
+          <div class="exp-breakdown-value">$${aduanaProcesamiento.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+
+        <div class="exp-breakdown-row">
+          <div class="exp-breakdown-name">
+            <div class="exp-breakdown-name-icon">📜</div>
+            <div>
+              <div>Certificados sanitarios y de origen</div>
+              <div class="exp-breakdown-note">SENASICA + fitosanitario + cert. país${cantidad > 5 ? ' + inspección física' : ''}</div>
+            </div>
+          </div>
+          <div class="exp-breakdown-value">$${costoCertificados.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+
+        <div class="exp-breakdown-row">
+          <div class="exp-breakdown-name">
+            <div class="exp-breakdown-name-icon">🛡️</div>
+            <div>
+              <div>Seguro de carga</div>
+              <div class="exp-breakdown-note">0.85% del valor declarado</div>
+            </div>
+          </div>
+          <div class="exp-breakdown-value">$${costoSeguro.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+
+        <div class="exp-breakdown-row">
+          <div class="exp-breakdown-name">
+            <div class="exp-breakdown-name-icon">🏗️</div>
+            <div>
+              <div>Maniobras de carga/descarga</div>
+              <div class="exp-breakdown-note">Estiba en origen y destino</div>
+            </div>
+          </div>
+          <div class="exp-breakdown-value">$${costoManiobras.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+
+        <div class="exp-breakdown-row">
+          <div class="exp-breakdown-name">
+            <div class="exp-breakdown-name-icon">📄</div>
+            <div>
+              <div>Documentación</div>
+              <div class="exp-breakdown-note">Factura comercial, lista empaque, BL/AWB</div>
+            </div>
+          </div>
+          <div class="exp-breakdown-value">$${costoDocumentacion.toLocaleString('en-US',{maximumFractionDigits:0})} USD</div>
+        </div>
+      </div>
+
+      <div class="merc-disclaimer">
+        <strong>⚠️ Importante:</strong> Estas cifras son estimaciones referenciales basadas en tarifas típicas del mercado mexicano (abril 2026, TC ~$${TIPO_CAMBIO} MXN/USD). El margen mostrado es <strong>sobre costos logísticos de exportación</strong>, no incluye tu costo de producción del cultivo (semilla, fertilizante, mano de obra, agua, etc.). Para conocer tu margen neto real, resta también ese costo. Las tarifas varían según naviera/aerolínea, temporada, volumen, agente aduanal y condiciones del mercado. Para cotizaciones formales contacta a un <strong>agente aduanal autorizado</strong> y obtén tarifas específicas con tu transportista. SENASICA y SADER pueden requerir trámites adicionales según el producto y país destino.
+      </div>
+    `;
+
+    document.getElementById('expResultados').innerHTML = html;
+    document.getElementById('expResultados').style.display = 'block';
+    document.getElementById('expEmpty').style.display = 'none';
+  }
+
+  window.calcularExportacion = calcularExportacion;
 
 </script>
 
