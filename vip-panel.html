@@ -16558,6 +16558,359 @@ window.closeCursoModal
   // promedios típicos de la temporada actual (abril 2026) y deben
   // tomarse como referencia, no como cotización oficial.
 
+  // ============================================================
+  // TABLA DE MUNICIPIOS PRODUCTORES AGRÍCOLAS DE MÉXICO
+  // Coordenadas de los principales municipios para cálculo
+  // de distancia preciso (vs. solo capitales de estado).
+  // Búsqueda con normalización: sin acentos, lowercase, fuzzy.
+  // ============================================================
+  const MUNICIPIOS_COORDS = {
+    'aguascalientes': {
+      'aguascalientes':       { lat: 21.8853, lng: -102.2916 },
+      'calvillo':             { lat: 21.8475, lng: -102.7197 },
+      'jesus maria':          { lat: 21.9650, lng: -102.3431 },
+      'rincon de romos':      { lat: 22.2333, lng: -102.3167 }
+    },
+    'bajacalifornia': {
+      'tijuana':              { lat: 32.5149, lng: -117.0382 },
+      'mexicali':             { lat: 32.6245, lng: -115.4523 },
+      'ensenada':             { lat: 31.8667, lng: -116.5964 },
+      'tecate':               { lat: 32.5667, lng: -116.6333 },
+      'rosarito':             { lat: 32.3614, lng: -117.0539 },
+      'san quintin':          { lat: 30.4833, lng: -115.9500 }
+    },
+    'bajacaliforniasur': {
+      'la paz':               { lat: 24.1426, lng: -110.3128 },
+      'los cabos':            { lat: 22.8909, lng: -109.9124 },
+      'cabo san lucas':       { lat: 22.8905, lng: -109.9167 },
+      'comondu':              { lat: 26.0167, lng: -111.8333 },
+      'loreto':               { lat: 26.0114, lng: -111.3479 }
+    },
+    'campeche': {
+      'campeche':             { lat: 19.8301, lng: -90.5349 },
+      'ciudad del carmen':    { lat: 18.6505, lng: -91.8149 },
+      'champoton':            { lat: 19.3500, lng: -90.7167 },
+      'escarcega':            { lat: 18.6094, lng: -90.7361 }
+    },
+    'chiapas': {
+      'tuxtla gutierrez':     { lat: 16.7531, lng: -93.1156 },
+      'tapachula':            { lat: 14.9000, lng: -92.2667 },
+      'san cristobal de las casas': { lat: 16.7370, lng: -92.6376 },
+      'comitan':              { lat: 16.2500, lng: -92.1333 },
+      'palenque':             { lat: 17.5092, lng: -91.9819 },
+      'villaflores':          { lat: 16.2333, lng: -93.2667 },
+      'ocosingo':             { lat: 16.9056, lng: -92.0942 },
+      'cintalapa':            { lat: 16.6814, lng: -93.7253 }
+    },
+    'chihuahua': {
+      'chihuahua':            { lat: 28.6353, lng: -106.0889 },
+      'ciudad juarez':        { lat: 31.6904, lng: -106.4245 },
+      'cuauhtemoc':           { lat: 28.4047, lng: -106.8717 },
+      'delicias':             { lat: 28.1942, lng: -105.4708 },
+      'parral':               { lat: 26.9333, lng: -105.6667 },
+      'camargo':              { lat: 27.6833, lng: -105.1667 },
+      'nuevo casas grandes':  { lat: 30.4156, lng: -107.9156 }
+    },
+    'cdmx': {
+      'ciudad de mexico':     { lat: 19.4326, lng: -99.1332 },
+      'iztapalapa':           { lat: 19.3589, lng: -99.0712 },
+      'gustavo a madero':     { lat: 19.4828, lng: -99.1192 },
+      'coyoacan':             { lat: 19.3467, lng: -99.1617 },
+      'tlalpan':              { lat: 19.2826, lng: -99.1671 },
+      'xochimilco':           { lat: 19.2580, lng: -99.1037 },
+      'milpa alta':           { lat: 19.1928, lng: -99.0231 }
+    },
+    'coahuila': {
+      'saltillo':             { lat: 25.4232, lng: -101.0053 },
+      'torreon':              { lat: 25.5428, lng: -103.4068 },
+      'monclova':             { lat: 26.9075, lng: -101.4202 },
+      'piedras negras':       { lat: 28.6911, lng: -100.5236 },
+      'acuna':                { lat: 29.3258, lng: -100.9519 },
+      'parras':               { lat: 25.4453, lng: -102.1797 },
+      'san pedro':            { lat: 25.7592, lng: -102.9847 }
+    },
+    'colima': {
+      'colima':               { lat: 19.2433, lng: -103.7253 },
+      'manzanillo':            { lat: 19.0533, lng: -104.3158 },
+      'tecoman':              { lat: 18.9089, lng: -103.8745 },
+      'villa de alvarez':     { lat: 19.2667, lng: -103.7333 }
+    },
+    'durango': {
+      'durango':              { lat: 24.0277, lng: -104.6532 },
+      'gomez palacio':        { lat: 25.5667, lng: -103.5000 },
+      'lerdo':                { lat: 25.5333, lng: -103.5333 },
+      'el salto':             { lat: 23.7833, lng: -105.3667 },
+      'santiago papasquiaro': { lat: 25.0500, lng: -105.4167 }
+    },
+    'guanajuato': {
+      'guanajuato':           { lat: 21.0190, lng: -101.2574 },
+      'leon':                 { lat: 21.1250, lng: -101.6859 },
+      'irapuato':             { lat: 20.6767, lng: -101.3556 },
+      'celaya':               { lat: 20.5239, lng: -100.8126 },
+      'salamanca':            { lat: 20.5736, lng: -101.1956 },
+      'san miguel de allende': { lat: 20.9136, lng: -100.7434 },
+      'silao':                { lat: 20.9486, lng: -101.4267 },
+      'dolores hidalgo':      { lat: 21.1572, lng: -100.9314 },
+      'pénjamo':              { lat: 20.4308, lng: -101.7253 },
+      'penjamo':              { lat: 20.4308, lng: -101.7253 }
+    },
+    'guerrero': {
+      'chilpancingo':         { lat: 17.5506, lng: -99.5006 },
+      'acapulco':             { lat: 16.8531, lng: -99.8237 },
+      'iguala':               { lat: 18.3447, lng: -99.5400 },
+      'taxco':                { lat: 18.5547, lng: -99.6058 },
+      'zihuatanejo':          { lat: 17.6406, lng: -101.5519 },
+      'chilapa':              { lat: 17.5994, lng: -99.1769 },
+      'ciudad altamirano':    { lat: 18.3597, lng: -100.6678 }
+    },
+    'hidalgo': {
+      'pachuca':              { lat: 20.1011, lng: -98.7591 },
+      'tulancingo':           { lat: 20.0833, lng: -98.3667 },
+      'tula':                 { lat: 20.0561, lng: -99.3450 },
+      'tizayuca':             { lat: 19.8333, lng: -98.9833 },
+      'huejutla':             { lat: 21.1417, lng: -98.4181 },
+      'actopan':              { lat: 20.2700, lng: -98.9442 },
+      'ixmiquilpan':          { lat: 20.4847, lng: -99.2167 }
+    },
+    'jalisco': {
+      'guadalajara':          { lat: 20.6597, lng: -103.3496 },
+      'zapopan':              { lat: 20.7239, lng: -103.3850 },
+      'tlaquepaque':          { lat: 20.6403, lng: -103.2933 },
+      'tonala':               { lat: 20.6244, lng: -103.2331 },
+      'tlajomulco':           { lat: 20.4719, lng: -103.4458 },
+      'puerto vallarta':      { lat: 20.6534, lng: -105.2253 },
+      'tepatitlan':           { lat: 20.8167, lng: -102.7667 },
+      'lagos de moreno':      { lat: 21.3567, lng: -101.9303 },
+      'sayula':               { lat: 19.8783, lng: -103.6017 },
+      'autlan':               { lat: 19.7700, lng: -104.3683 },
+      'ciudad guzman':        { lat: 19.7000, lng: -103.4500 },
+      'ocotlan':              { lat: 20.3500, lng: -102.7667 },
+      'arandas':              { lat: 20.7028, lng: -102.3478 }
+    },
+    'estadomexico': {
+      'toluca':               { lat: 19.2833, lng: -99.6500 },
+      'ecatepec':             { lat: 19.6014, lng: -99.0500 },
+      'naucalpan':            { lat: 19.4747, lng: -99.2386 },
+      'tlalnepantla':         { lat: 19.5403, lng: -99.1947 },
+      'nezahualcoyotl':       { lat: 19.4006, lng: -99.0144 },
+      'texcoco':              { lat: 19.5036, lng: -98.8800 },
+      'atlacomulco':          { lat: 19.7969, lng: -99.8758 },
+      'valle de bravo':       { lat: 19.1928, lng: -100.1306 },
+      'metepec':              { lat: 19.2528, lng: -99.6056 },
+      'chalco':               { lat: 19.2647, lng: -98.8975 }
+    },
+    'michoacan': {
+      'morelia':              { lat: 19.7008, lng: -101.1844 },
+      'uruapan':              { lat: 19.4205, lng: -102.0628 },
+      'zamora':               { lat: 19.9847, lng: -102.2828 },
+      'patzcuaro':            { lat: 19.5097, lng: -101.6097 },
+      'apatzingan':           { lat: 19.0833, lng: -102.3500 },
+      'lazaro cardenas':      { lat: 17.9583, lng: -102.2000 },
+      'tacambaro':            { lat: 19.2333, lng: -101.4500 },
+      'sahuayo':              { lat: 20.0578, lng: -102.7167 },
+      'la piedad':            { lat: 20.3433, lng: -102.0231 },
+      'zitacuaro':            { lat: 19.4378, lng: -100.3658 },
+      'jiquilpan':            { lat: 19.9981, lng: -102.7197 },
+      'paracho':              { lat: 19.6500, lng: -102.0500 }
+    },
+    'morelos': {
+      'cuernavaca':           { lat: 18.9242, lng: -99.2216 },
+      'cuautla':              { lat: 18.8133, lng: -98.9542 },
+      'jiutepec':             { lat: 18.8833, lng: -99.1667 },
+      'temixco':              { lat: 18.8500, lng: -99.2333 },
+      'yautepec':             { lat: 18.8833, lng: -99.0667 },
+      'tepoztlan':            { lat: 18.9833, lng: -99.1000 }
+    },
+    'nayarit': {
+      'tepic':                { lat: 21.5039, lng: -104.8939 },
+      'bahia de banderas':    { lat: 20.7867, lng: -105.2631 },
+      'compostela':           { lat: 21.2367, lng: -104.9050 },
+      'santiago ixcuintla':   { lat: 21.8128, lng: -105.2114 },
+      'xalisco':              { lat: 21.4422, lng: -104.8975 }
+    },
+    'nuevoleon': {
+      'monterrey':            { lat: 25.6866, lng: -100.3161 },
+      'guadalupe':            { lat: 25.6775, lng: -100.2611 },
+      'apodaca':              { lat: 25.7833, lng: -100.1833 },
+      'san pedro garza garcia': { lat: 25.6500, lng: -100.4000 },
+      'san nicolas':          { lat: 25.7417, lng: -100.3000 },
+      'general escobedo':     { lat: 25.7917, lng: -100.3158 },
+      'linares':              { lat: 24.8569, lng: -99.5681 },
+      'montemorelos':         { lat: 25.1903, lng: -99.8281 },
+      'allende':              { lat: 25.2806, lng: -100.0144 }
+    },
+    'oaxaca': {
+      'oaxaca':               { lat: 17.0732, lng: -96.7266 },
+      'salina cruz':          { lat: 16.1761, lng: -95.1972 },
+      'juchitan':             { lat: 16.4317, lng: -95.0211 },
+      'tehuantepec':          { lat: 16.3206, lng: -95.2406 },
+      'tuxtepec':             { lat: 18.0833, lng: -96.1167 },
+      'huajuapan':            { lat: 17.8086, lng: -97.7794 },
+      'tlaxiaco':             { lat: 17.2697, lng: -97.6803 },
+      'pinotepa':             { lat: 16.3411, lng: -98.0533 },
+      'puerto escondido':     { lat: 15.8636, lng: -97.0769 },
+      'pochutla':             { lat: 15.7444, lng: -96.4667 }
+    },
+    'puebla': {
+      'puebla':               { lat: 19.0414, lng: -98.2063 },
+      'tehuacan':             { lat: 18.4609, lng: -97.3923 },
+      'san jose miahuatlan':  { lat: 18.3253, lng: -97.2700 },
+      'atlixco':              { lat: 18.9078, lng: -98.4347 },
+      'izucar de matamoros':  { lat: 18.6019, lng: -98.4683 },
+      'cholula':              { lat: 19.0633, lng: -98.3014 },
+      'san martin texmelucan': { lat: 19.2825, lng: -98.4378 },
+      'huauchinango':         { lat: 20.1750, lng: -97.9967 },
+      'teziutlan':            { lat: 19.8181, lng: -97.3597 },
+      'zacatlan':             { lat: 19.9303, lng: -97.9617 },
+      'libres':               { lat: 19.4633, lng: -97.6864 },
+      'acatzingo':            { lat: 18.9989, lng: -97.7867 },
+      'ciudad serdan':        { lat: 18.9919, lng: -97.4408 },
+      'amozoc':               { lat: 19.0353, lng: -98.0408 }
+    },
+    'queretaro': {
+      'queretaro':            { lat: 20.5888, lng: -100.3899 },
+      'san juan del rio':     { lat: 20.3925, lng: -99.9956 },
+      'tequisquiapan':        { lat: 20.5219, lng: -99.8919 },
+      'el marques':           { lat: 20.6181, lng: -100.2661 },
+      'corregidora':          { lat: 20.5408, lng: -100.4419 },
+      'cadereyta':            { lat: 20.6917, lng: -99.8158 }
+    },
+    'quintanaroo': {
+      'chetumal':             { lat: 18.5036, lng: -88.3056 },
+      'cancun':               { lat: 21.1619, lng: -86.8515 },
+      'playa del carmen':     { lat: 20.6296, lng: -87.0739 },
+      'tulum':                { lat: 20.2114, lng: -87.4654 },
+      'cozumel':              { lat: 20.5083, lng: -86.9458 },
+      'felipe carrillo puerto': { lat: 19.5786, lng: -88.0464 }
+    },
+    'sanluispotosi': {
+      'san luis potosi':      { lat: 22.1565, lng: -100.9855 },
+      'soledad':              { lat: 22.1833, lng: -100.9333 },
+      'matehuala':            { lat: 23.6500, lng: -100.6394 },
+      'ciudad valles':        { lat: 21.9942, lng: -99.0156 },
+      'rio verde':            { lat: 21.9292, lng: -99.9994 },
+      'tamazunchale':         { lat: 21.2625, lng: -98.7858 }
+    },
+    'sinaloa': {
+      'culiacan':             { lat: 24.8091, lng: -107.3940 },
+      'mazatlan':             { lat: 23.2494, lng: -106.4111 },
+      'los mochis':           { lat: 25.7833, lng: -108.9833 },
+      'ahome':                { lat: 25.9181, lng: -109.1769 },
+      'guasave':              { lat: 25.5664, lng: -108.4669 },
+      'navolato':             { lat: 24.7647, lng: -107.7053 },
+      'guamuchil':            { lat: 25.4581, lng: -108.0822 },
+      'el fuerte':            { lat: 26.4222, lng: -108.6206 },
+      'angostura':            { lat: 25.3667, lng: -108.1667 }
+    },
+    'sonora': {
+      'hermosillo':           { lat: 29.0729, lng: -110.9559 },
+      'ciudad obregon':       { lat: 27.4833, lng: -109.9333 },
+      'cajeme':               { lat: 27.4833, lng: -109.9333 },
+      'caborca':              { lat: 30.7264, lng: -112.1572 },
+      'guaymas':              { lat: 27.9181, lng: -110.8983 },
+      'navojoa':              { lat: 27.0700, lng: -109.4458 },
+      'nogales':              { lat: 31.3186, lng: -110.9447 },
+      'agua prieta':          { lat: 31.3261, lng: -109.5497 },
+      'san luis rio colorado': { lat: 32.4581, lng: -114.7728 },
+      'puerto penasco':       { lat: 31.3147, lng: -113.5358 }
+    },
+    'tabasco': {
+      'villahermosa':         { lat: 17.9892, lng: -92.9281 },
+      'cardenas':             { lat: 17.9897, lng: -93.3756 },
+      'comalcalco':           { lat: 18.2667, lng: -93.2167 },
+      'macuspana':            { lat: 17.7544, lng: -92.5953 },
+      'huimanguillo':         { lat: 17.8389, lng: -93.3858 },
+      'paraiso':              { lat: 18.4036, lng: -93.2117 }
+    },
+    'tamaulipas': {
+      'ciudad victoria':      { lat: 23.7411, lng: -99.1411 },
+      'reynosa':              { lat: 26.0922, lng: -98.2775 },
+      'matamoros':            { lat: 25.8825, lng: -97.5036 },
+      'tampico':              { lat: 22.2331, lng: -97.8614 },
+      'nuevo laredo':         { lat: 27.4861, lng: -99.5069 },
+      'altamira':             { lat: 22.3989, lng: -97.9303 },
+      'mante':                { lat: 22.7397, lng: -98.9714 },
+      'rio bravo':            { lat: 25.9833, lng: -98.1000 }
+    },
+    'tlaxcala': {
+      'tlaxcala':             { lat: 19.3139, lng: -98.2400 },
+      'apizaco':              { lat: 19.4167, lng: -98.1500 },
+      'huamantla':            { lat: 19.3133, lng: -97.9239 },
+      'chiautempan':          { lat: 19.3206, lng: -98.2078 },
+      'calpulalpan':          { lat: 19.5897, lng: -98.5664 }
+    },
+    'veracruz': {
+      'xalapa':               { lat: 19.5438, lng: -96.9102 },
+      'veracruz':             { lat: 19.1738, lng: -96.1342 },
+      'cordoba':              { lat: 18.8939, lng: -96.9342 },
+      'orizaba':              { lat: 18.8514, lng: -97.0989 },
+      'coatzacoalcos':        { lat: 18.1500, lng: -94.4333 },
+      'minatitlan':           { lat: 17.9925, lng: -94.5494 },
+      'poza rica':            { lat: 20.5333, lng: -97.4500 },
+      'tuxpan':               { lat: 20.9514, lng: -97.4081 },
+      'cosamaloapan':         { lat: 18.3667, lng: -95.8000 },
+      'martinez de la torre': { lat: 20.0667, lng: -97.0667 },
+      'coatepec':             { lat: 19.4528, lng: -96.9611 },
+      'huatusco':             { lat: 19.1481, lng: -96.9633 },
+      'fortin':               { lat: 18.9081, lng: -97.0044 },
+      'san andres tuxtla':    { lat: 18.4500, lng: -95.2167 }
+    },
+    'yucatan': {
+      'merida':               { lat: 20.9674, lng: -89.5926 },
+      'valladolid':           { lat: 20.6889, lng: -88.2008 },
+      'tizimin':              { lat: 21.1419, lng: -88.1517 },
+      'progreso':             { lat: 21.2828, lng: -89.6628 },
+      'oxkutzcab':            { lat: 20.3000, lng: -89.4167 },
+      'ticul':                { lat: 20.3958, lng: -89.5347 }
+    },
+    'zacatecas': {
+      'zacatecas':            { lat: 22.7709, lng: -102.5832 },
+      'fresnillo':            { lat: 23.1763, lng: -102.8669 },
+      'guadalupe':            { lat: 22.7475, lng: -102.5161 },
+      'jerez':                { lat: 22.6500, lng: -102.9833 },
+      'sombrerete':           { lat: 23.6342, lng: -103.6403 },
+      'rio grande':           { lat: 23.8281, lng: -103.0214 }
+    }
+  };
+
+  // Normaliza un texto para búsqueda fuzzy: lowercase, sin acentos,
+  // sin caracteres especiales, espacios unificados.
+  function normalizaMunicipio(texto) {
+    if (!texto) return '';
+    return texto
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remueve diacríticos
+      .replace(/[.,;:'"()\-_]/g, ' ')                    // separadores → espacio
+      .replace(/\s+/g, ' ')                              // colapsa espacios
+      .trim();
+  }
+
+  // Busca coordenadas del municipio dentro del estado.
+  // Si encuentra match exacto → retorna esas coords.
+  // Si encuentra match parcial (substring) → retorna esas coords.
+  // Si no encuentra nada → retorna null (caller hace fallback al estado).
+  function getCoordsMunicipio(municipioInput, estadoId) {
+    const municipiosEstado = MUNICIPIOS_COORDS[estadoId];
+    if (!municipiosEstado) return null;
+    const norm = normalizaMunicipio(municipioInput);
+    if (!norm) return null;
+
+    // 1) match exacto
+    if (municipiosEstado[norm]) {
+      return municipiosEstado[norm];
+    }
+
+    // 2) match parcial: el input contiene el nombre del municipio o viceversa
+    //    (cubre "san jose" → "san jose miahuatlan", "uruapan michoacan" → "uruapan")
+    for (const key in municipiosEstado) {
+      if (key.includes(norm) || norm.includes(key)) {
+        return municipiosEstado[key];
+      }
+    }
+
+    return null;
+  }
+
   // Coordenadas de capitales de estado (origen del productor)
   const ESTADOS_COORDS = {
     aguascalientes:    { lat: 21.876, lng: -102.296, nombre: 'Aguascalientes' },
@@ -16872,8 +17225,14 @@ window.closeCursoModal
     if (!municipio) return showToast('Escribe tu municipio', 'error');
 
     const productoNombre = PRODUCTOS_NOMBRES[productoId] || productoId;
-    const origen = ESTADOS_COORDS[estadoId];
-    if (!origen) return showToast('Estado no encontrado', 'error');
+    const estadoCoords = ESTADOS_COORDS[estadoId];
+    if (!estadoCoords) return showToast('Estado no encontrado', 'error');
+
+    // Si el municipio está en la tabla → usa coords precisas del municipio.
+    // Si no → fallback a la capital del estado y avisa al usuario.
+    const municipioCoords = getCoordsMunicipio(municipio, estadoId);
+    const origen = municipioCoords || estadoCoords;
+    const origenEsAproximado = !municipioCoords;
 
     // Calcular para cada mercado: precio + distancia + score
     const resultados = MERCADOS.map(mkt => {
@@ -16914,6 +17273,14 @@ window.closeCursoModal
         <div class="merc-summary-sub">📍 ${mejor.mercado.ciudad}, ${mejor.mercado.estado} · 💵 $${mejor.precio.frecuente}/kg · 🛣️ ${Math.round(mejor.distancia)} km desde ${municipio}</div>
       </div>
     `;
+
+    if (origenEsAproximado) {
+      html += `
+        <div class="merc-disclaimer" style="background:#fffbeb;border-color:#fbbf24;color:#92400e;">
+          <strong>ℹ️ Nota:</strong> No localicé "${municipio}" en mi base de municipios. Las distancias se calcularon desde la capital del estado (${estadoCoords.nombre || estadoId}). Para mayor precisión, prueba con el nombre del municipio principal más cercano (ej. "Tehuacán", "Uruapan", "Culiacán").
+        </div>
+      `;
+    }
 
     top.forEach((r, i) => {
       const esElMejor = (i === 0);
