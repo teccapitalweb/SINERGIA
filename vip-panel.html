@@ -1300,8 +1300,8 @@
     /* Sticky al fondo del sidebar para mantenerse visible aunque haya scroll */
     position: sticky;
     bottom: 0;
-    /* Background SÓLIDO para tapar contenido que pase por detrás al scrollear */
-    background: var(--bg-sidebar-a);
+    /* Background COMPLETAMENTE OPACO para tapar contenido detrás al scrollear */
+    background: var(--sidebar-footer-bg, #f0fdfa);
     padding-bottom: 4px;
     z-index: 5;
   }
@@ -1311,8 +1311,12 @@
     position: absolute;
     top: -20px; left: 0; right: 0;
     height: 20px;
-    background: linear-gradient(180deg, transparent 0%, var(--bg-sidebar-a) 100%);
+    background: linear-gradient(180deg, transparent 0%, var(--sidebar-footer-bg, #f0fdfa) 100%);
     pointer-events: none;
+  }
+  /* Dark mode: footer con color sólido oscuro */
+  [data-theme="dark"] .sidebar-footer {
+    --sidebar-footer-bg: #0a1916;
   }
   .btn-logout {
     width: 100%;
