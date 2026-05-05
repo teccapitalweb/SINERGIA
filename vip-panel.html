@@ -1297,6 +1297,14 @@
     border-top: 1px solid rgba(13, 148, 136, 0.1);
     margin-top: auto; /* Empuja el footer al fondo del sidebar (flex column) */
     flex-shrink: 0;   /* No se comprime aunque el nav tenga muchas pestañas */
+    /* Sticky al fondo del sidebar para mantenerse visible aunque haya scroll */
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, var(--bg-sidebar-a) 30%, var(--bg-sidebar-a) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding-bottom: 4px;
+    z-index: 5;
   }
   .btn-logout {
     width: 100%;
@@ -2399,6 +2407,200 @@
     border-radius: 0 0 100px 100px;
   }
   .mobile-nav-item { position: relative; }
+
+  /* Botón "Menú" especial: gradiente teal, distintivo */
+  .mobile-nav-menu-btn {
+    background: linear-gradient(135deg, rgba(13,148,136,0.10), rgba(20,184,166,0.06));
+    color: var(--teal-700);
+  }
+  .mobile-nav-menu-btn:hover {
+    background: linear-gradient(135deg, rgba(13,148,136,0.18), rgba(20,184,166,0.12));
+  }
+  .mobile-nav-menu-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     MOBILE DRAWER (sidebar deslizable mobile)
+     ═══════════════════════════════════════════════════════════ */
+  .mobile-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s ease, visibility .3s;
+  }
+  .mobile-drawer-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .mobile-drawer {
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    width: min(86vw, 340px);
+    background: linear-gradient(180deg, var(--bg-sidebar-a) 0%, var(--bg-sidebar-b) 50%, var(--bg-sidebar-a) 100%);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    box-shadow: 4px 0 32px rgba(0,0,0,0.18);
+    z-index: 201;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-105%);
+    transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+    overflow: hidden;
+  }
+  .mobile-drawer.active {
+    transform: translateX(0);
+  }
+  .mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 18px 14px;
+    border-bottom: 1px solid rgba(13,148,136,0.12);
+    flex-shrink: 0;
+  }
+  .mobile-drawer-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+  .mobile-drawer-logo img {
+    width: 40px; height: 40px;
+    border-radius: 11px;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+    flex-shrink: 0;
+  }
+  .mobile-drawer-logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    min-width: 0;
+  }
+  .mobile-drawer-logo-text > span:first-child {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--teal-800);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mobile-drawer-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--teal-600);
+    letter-spacing: 0.15em;
+    margin-top: 2px;
+  }
+  .mobile-drawer-close {
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    background: rgba(13,148,136,0.08);
+    border: none;
+    color: var(--teal-700);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background .2s, transform .15s;
+  }
+  .mobile-drawer-close:hover { background: rgba(13,148,136,0.16); }
+  .mobile-drawer-close:active { transform: scale(0.92); }
+  .mobile-drawer-close svg { width: 18px; height: 18px; }
+
+  .mobile-drawer-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* Ocultar scrollbar visualmente pero mantener funcional */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(13,148,136,0.25) transparent;
+  }
+  .mobile-drawer-content::-webkit-scrollbar { width: 4px; }
+  .mobile-drawer-content::-webkit-scrollbar-thumb {
+    background: rgba(13,148,136,0.25);
+    border-radius: 100px;
+  }
+
+  /* Items dentro del drawer (clones de .nav-item) — ya heredan estilos del .nav-item */
+  .mobile-drawer-content .nav-item {
+    width: 100%;
+  }
+  .mobile-drawer-content .nav-section-title {
+    padding: 14px 12px 6px;
+    font-size: 10px;
+  }
+
+  .mobile-drawer-footer {
+    padding: 14px 12px;
+    border-top: 1px solid rgba(13,148,136,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.4);
+  }
+  .mobile-drawer-login-btn,
+  .mobile-drawer-logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: inherit;
+  }
+  .mobile-drawer-login-btn {
+    background: linear-gradient(135deg, var(--teal-500), var(--teal-700));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(13,148,136,0.3);
+  }
+  .mobile-drawer-login-btn:hover {
+    box-shadow: 0 6px 18px rgba(13,148,136,0.42);
+    transform: translateY(-1px);
+  }
+  .mobile-drawer-login-btn svg { width: 16px; height: 16px; }
+  .mobile-drawer-logout-btn {
+    background: transparent;
+    color: var(--stone-500);
+  }
+  .mobile-drawer-logout-btn:hover {
+    background: rgba(244, 63, 94, 0.08);
+    color: var(--rose-600);
+  }
+  .mobile-drawer-logout-btn svg { width: 18px; height: 18px; }
+
+  /* Dark mode */
+  [data-theme="dark"] .mobile-drawer-overlay {
+    background: rgba(0,0,0,0.7);
+  }
+  [data-theme="dark"] .mobile-drawer-logo-text > span:first-child { color: #f0fdfa; }
+  [data-theme="dark"] .mobile-drawer-tag { color: #5eead4; }
+  [data-theme="dark"] .mobile-drawer-close { background: rgba(94,234,212,0.1); color: #5eead4; }
+  [data-theme="dark"] .mobile-drawer-footer { background: rgba(0,0,0,0.2); }
+
+  /* Solo visible en mobile */
+  @media (min-width: 769px) {
+    .mobile-drawer-overlay,
+    .mobile-drawer { display: none !important; }
+  }
 
   /* TABLET (1024px o menos) */
   @media (max-width: 1024px) {
@@ -11525,6 +11727,10 @@
 
 <!-- Mobile bottom nav -->
 <nav class="mobile-nav">
+  <button class="mobile-nav-item mobile-nav-menu-btn" id="mobileMenuBtn" onclick="abrirMobileDrawer()" aria-label="Abrir menú">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <span>Menú</span>
+  </button>
   <button class="mobile-nav-item active" data-tab="dashboard">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
     <span>Inicio</span>
@@ -11542,6 +11748,42 @@
     <span>Cuenta</span>
   </button>
 </nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MOBILE DRAWER (sidebar deslizable para celular)
+     Reutiliza el mismo concepto del sidebar lateral pero como
+     panel deslizable desde la izquierda en pantallas mobile.
+     Todas las pestañas accesibles aquí.
+     ═══════════════════════════════════════════════════════════ -->
+<div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="cerrarMobileDrawer()"></div>
+<aside class="mobile-drawer" id="mobileDrawer" aria-label="Menú principal">
+  <div class="mobile-drawer-header">
+    <div class="mobile-drawer-logo">
+      <img src="img/logo.jpg" alt="Sinergia-Agrícola" onerror="this.style.display='none'">
+      <div class="mobile-drawer-logo-text">
+        <span>Sinergia-Agrícola</span>
+        <span class="mobile-drawer-tag">VIP PANEL</span>
+      </div>
+    </div>
+    <button class="mobile-drawer-close" onclick="cerrarMobileDrawer()" aria-label="Cerrar menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="mobile-drawer-content">
+    <!-- Las pestañas se renderizan dinámicamente clonando del sidebar al abrir -->
+  </div>
+  <div class="mobile-drawer-footer">
+    <button class="mobile-drawer-login-btn" id="mobileDrawerLoginBtn" onclick="window.location.href='vip-auth.html'" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      <span>Iniciar sesión</span>
+    </button>
+    <button class="mobile-drawer-logout-btn" id="mobileDrawerLogoutBtn" onclick="if(typeof handleSesion==='function')handleSesion()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span id="mobileDrawerLogoutLabel">Cerrar sesión</span>
+    </button>
+  </div>
+</aside>
+
 
 <!-- ═══════════════════════════════════════════════════════════
      FIREBASE + LÓGICA DEL PANEL
@@ -11706,6 +11948,91 @@
       const tab = btn.dataset.tab;
       if (tab) switchTab(tab);
     });
+  });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // MOBILE DRAWER (sidebar deslizable para celular)
+  // Clona las pestañas del sidebar al drawer cuando se abre, así
+  // siempre refleja el estado actual (badges, pestaña activa, etc).
+  // ═══════════════════════════════════════════════════════════════════
+
+  // Clona el contenido del sidebar-nav al drawer
+  function poblarMobileDrawer() {
+    const sourceNav = document.querySelector('.sidebar-nav');
+    const target = document.querySelector('.mobile-drawer-content');
+    if (!sourceNav || !target) return;
+    // Limpiar contenido previo
+    target.innerHTML = '';
+    // Clonar cada hijo del sidebar-nav (secciones + items)
+    Array.from(sourceNav.children).forEach(child => {
+      const clone = child.cloneNode(true);
+      // Para los nav-item: hookear click para que también cierre el drawer
+      if (clone.classList && clone.classList.contains('nav-item')) {
+        const tab = clone.dataset.tab;
+        clone.addEventListener('click', () => {
+          if (tab && typeof window.switchTab === 'function') {
+            window.switchTab(tab);
+          }
+          cerrarMobileDrawer();
+        });
+      }
+      target.appendChild(clone);
+    });
+    // Sincronizar visibilidad de los botones de login/logout del drawer
+    // con el estado actual de la sesión (replica el comportamiento del footer del sidebar).
+    try {
+      const sourceLoginBtn = document.getElementById('btnLoginInvitado');
+      const sourceLogoutLabel = document.getElementById('sesionLabel');
+      const drawerLoginBtn = document.getElementById('mobileDrawerLoginBtn');
+      const drawerLogoutLabel = document.getElementById('mobileDrawerLogoutLabel');
+      if (sourceLoginBtn && drawerLoginBtn) {
+        drawerLoginBtn.style.display = sourceLoginBtn.style.display || '';
+      }
+      if (sourceLogoutLabel && drawerLogoutLabel) {
+        drawerLogoutLabel.textContent = sourceLogoutLabel.textContent || 'Cerrar sesión';
+      }
+    } catch (e) { /* no crítico */ }
+  }
+
+  window.abrirMobileDrawer = function() {
+    poblarMobileDrawer();
+    const overlay = document.getElementById('mobileDrawerOverlay');
+    const drawer = document.getElementById('mobileDrawer');
+    if (overlay) overlay.classList.add('active');
+    if (drawer) drawer.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.cerrarMobileDrawer = function() {
+    const overlay = document.getElementById('mobileDrawerOverlay');
+    const drawer = document.getElementById('mobileDrawer');
+    if (overlay) overlay.classList.remove('active');
+    if (drawer) drawer.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+
+  // Cerrar con tecla ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const drawer = document.getElementById('mobileDrawer');
+      if (drawer && drawer.classList.contains('active')) {
+        cerrarMobileDrawer();
+      }
+    }
+  });
+
+  // Cerrar drawer si se cambia de tamaño a desktop (>768px)
+  let _drawerResizeTimer = null;
+  window.addEventListener('resize', () => {
+    if (_drawerResizeTimer) clearTimeout(_drawerResizeTimer);
+    _drawerResizeTimer = setTimeout(() => {
+      if (window.innerWidth > 768) {
+        const drawer = document.getElementById('mobileDrawer');
+        if (drawer && drawer.classList.contains('active')) {
+          cerrarMobileDrawer();
+        }
+      }
+    }, 150);
   });
 
   // ─── Animaciones de contadores ──────────────────
