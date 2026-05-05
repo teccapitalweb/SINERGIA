@@ -1295,7 +1295,8 @@
   .sidebar-footer {
     padding-top: 16px;
     border-top: 1px solid rgba(13, 148, 136, 0.1);
-    margin-top: 16px;
+    margin-top: auto; /* Empuja el footer al fondo del sidebar (flex column) */
+    flex-shrink: 0;   /* No se comprime aunque el nav tenga muchas pestañas */
   }
   .btn-logout {
     width: 100%;
