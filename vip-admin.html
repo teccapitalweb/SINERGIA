@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel Coordinador — ICADEM</title>
+  <title>Panel Coordinador — Sinergia-Agrícola</title>
   <link rel="icon" type="image/jpeg" href="assets/logo/logo-icadem.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -317,7 +317,7 @@
     <div style="text-align:center;margin-bottom:2rem">
       <img src="assets/logo/logo-icadem.jpg" style="width:52px;height:52px;border-radius:10px;margin-bottom:1rem;object-fit:cover" onerror="this.style.display='none'">
       <p style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8;margin-bottom:.25rem">Panel Coordinador</p>
-      <p style="font-size:20px;font-weight:700;font-family:'Cormorant Garamond',serif;color:#0b2554">Acceso ICADEM</p>
+      <p style="font-size:20px;font-weight:700;font-family:'Cormorant Garamond',serif;color:#0b2554">Acceso Sinergia</p>
     </div>
     <div id="login-error" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:7px;padding:.75rem 1rem;font-size:12px;color:#dc2626;margin-bottom:1rem;text-align:center"></div>
     <div style="margin-bottom:1rem">
@@ -436,7 +436,7 @@
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-mark">I</div>
-    <div class="logo-text"><strong>ICADEM</strong><span>Coordinador</span></div>
+    <div class="logo-text"><strong>Sinergia</strong><span>Coordinador</span></div>
   </div>
   <div class="sidebar-user">
     <div class="user-avatar" id="sidebar-avatar">?</div>
@@ -511,7 +511,7 @@
       <div class="page-header">
         <p class="page-tag">Panel de coordinación</p>
         <h1 class="page-title">Resumen general</h1>
-        <p class="page-sub">Vista rápida del estado actual del programa VIP de ICADEM.</p>
+        <p class="page-sub">Vista rápida del estado actual del programa VIP de Sinergia-Agrícola.</p>
       </div>
       <div class="stats-row">
         <div class="stat-card"><p class="stat-label">Miembros activos</p><p class="stat-value green" id="stat-miembros">—</p><p class="stat-sub">Total con membresía activa</p></div>
@@ -862,12 +862,12 @@
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey:"AIzaSyBzPC1wxbzOYutcECtwYBWTTbo76cqrmdA",
-    authDomain:"icadem-vip.firebaseapp.com",
-    projectId:"icadem-vip",
-    storageBucket:"icadem-vip.firebasestorage.app",
-    messagingSenderId:"12508983783",
-    appId:"1:12508983783:web:b12be6f1fab9bb91fb8d42"
+    apiKey: "AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0",
+    authDomain: "sinergia-agricola-vip.firebaseapp.com",
+    projectId: "sinergia-agricola-vip",
+    storageBucket: "sinergia-agricola-vip.firebasestorage.app",
+    messagingSenderId: "788533345154",
+    appId: "1:788533345154:web:4066de6561e1d54e2cad9b"
   };
 
   const app  = initializeApp(firebaseConfig);
@@ -1505,7 +1505,7 @@
             correo_miembro:  miembro.correo,
             nombre_miembro:  miembro.nombre || 'Miembro VIP',
             titulo:          titulo,
-            instructor:      instructor || 'ICADEM',
+            instructor:      instructor || 'Sinergia-Agrícola',
             fecha:           fechaFmt,
             hora:            hora || 'Por confirmar',
             plataforma:      plataforma,
