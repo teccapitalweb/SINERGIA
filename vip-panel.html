@@ -15106,6 +15106,28 @@ window.closeCursoModal
         const snap = await getDoc(doc(db, 'miembros', user.uid));
         if (snap.exists()) {
           memberData = snap.data();
+          // ─── VERIFICACIÓN DE EXPIRACIÓN AUTOMÁTICA ───
+          // Si la membresía tiene fecha de expiración y ya pasó, desactivar.
+          if (memberData.activa === true && memberData.expiraEn) {
+            try {
+              const expira = memberData.expiraEn.toDate ? memberData.expiraEn.toDate() : new Date(memberData.expiraEn);
+              const ahora = new Date();
+              if (expira < ahora) {
+                // Membresía expirada → desactivar automáticamente
+                await updateDoc(doc(db, 'miembros', user.uid), {
+                  activa: false,
+                  desactivadoEn: ahora,
+                  motivoDesactivacion: 'expiracion_automatica'
+                });
+                memberData.activa = false;
+                memberData.desactivadoEn = ahora;
+                memberData.motivoDesactivacion = 'expiracion_automatica';
+                console.log('[Sinergia] Membresía expirada, desactivada automáticamente');
+              }
+            } catch (errExp) {
+              console.warn('[Sinergia] Error verificando expiración:', errExp);
+            }
+          }
           if (memberData.activa === true) {
             isVIP = true;
           }
@@ -15136,6 +15158,22 @@ window.closeCursoModal
     renderLive();
     renderMaterial();
     // renderNews() removido — sección de Noticias eliminada del panel
+
+    // ─── TOAST DE BIENVENIDA: si admin activó la membresía ───
+    if (memberData?.notificacionPendiente?.tipo === 'activacion'
+        && memberData.notificacionPendiente.mostrada !== true
+        && user) {
+      try {
+        mostrarToastActivacionAdmin(memberData.notificacionPendiente);
+        // Marcar como mostrada para que no aparezca de nuevo
+        await updateDoc(doc(db, 'miembros', user.uid), {
+          'notificacionPendiente.mostrada': true,
+          'notificacionPendiente.mostradaEn': new Date()
+        });
+      } catch (errToast) {
+        console.warn('[Sinergia] Error mostrando toast activación:', errToast);
+      }
+    }
 
     // Si el miembro tiene cancelación programada, mostrar banner
     if (typeof checkCancelacionBanner === 'function') {
@@ -18640,6 +18678,241 @@ window.closeCursoModal
     </div>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOAST DE ACTIVACIÓN POR ADMIN
+     Aparece cuando el coordinador activa la membresía desde el
+     panel admin. Se muestra UNA SOLA VEZ al entrar el miembro al panel.
+     ═══════════════════════════════════════════════════════════ -->
+<style>
+  .admin-toast-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+  .admin-toast-overlay.active {
+    display: flex;
+    opacity: 1;
+  }
+  .admin-toast {
+    background: #fff;
+    border-radius: 24px;
+    max-width: 420px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.35);
+    transform: scale(.85) translateY(20px);
+    transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .admin-toast-overlay.active .admin-toast {
+    transform: scale(1) translateY(0);
+  }
+  .admin-toast-hero {
+    padding: 32px 28px 24px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .admin-toast-hero.mensual { background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); }
+  .admin-toast-hero.anual { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
+  .admin-toast-hero.regalo { background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%); }
+  .admin-toast-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.12) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .admin-toast-emoji {
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 14px;
+    display: inline-block;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.25));
+    animation: adminToastBounce .8s cubic-bezier(.34,1.56,.64,1) .2s both;
+    position: relative; z-index: 1;
+  }
+  @keyframes adminToastBounce {
+    0% { transform: scale(.4) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .admin-toast-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+    position: relative; z-index: 1;
+  }
+  .admin-toast-subtitle {
+    font-size: 14px;
+    opacity: .95;
+    margin: 0;
+    line-height: 1.5;
+    position: relative; z-index: 1;
+  }
+  .admin-toast-body {
+    padding: 24px 28px 22px;
+  }
+  .admin-toast-info {
+    background: #f0fdfa;
+    border: 1px solid #5eead4;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .admin-toast-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .admin-toast-info-label {
+    color: #0f766e;
+    font-weight: 600;
+  }
+  .admin-toast-info-value {
+    color: #134e4a;
+    font-weight: 700;
+  }
+  .admin-toast-message {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #475569;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .admin-toast-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform .15s, box-shadow .2s;
+    box-shadow: 0 8px 22px rgba(13,148,136,0.4);
+  }
+  .admin-toast-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(13,148,136,0.5);
+  }
+  .admin-toast-btn:active { transform: scale(.97); }
+
+  [data-theme="dark"] .admin-toast { background: #0f1729; color: #e2e8f0; }
+  [data-theme="dark"] .admin-toast-info { background: #042f2e; border-color: #134e4a; }
+  [data-theme="dark"] .admin-toast-info-label { color: #5eead4; }
+  [data-theme="dark"] .admin-toast-info-value { color: #f0fdfa; }
+  [data-theme="dark"] .admin-toast-message { color: #cbd5e1; }
+</style>
+
+<div class="admin-toast-overlay" id="adminToastOverlay" onclick="if(event.target===this)cerrarAdminToast()">
+  <div class="admin-toast">
+    <div class="admin-toast-hero" id="adminToastHero">
+      <span class="admin-toast-emoji" id="adminToastEmoji">🎉</span>
+      <h2 class="admin-toast-title" id="adminToastTitle">¡Bienvenido al VIP!</h2>
+      <p class="admin-toast-subtitle" id="adminToastSubtitle">Tu acceso ya está activo</p>
+    </div>
+    <div class="admin-toast-body">
+      <div class="admin-toast-info">
+        <div class="admin-toast-info-row">
+          <span class="admin-toast-info-label">Plan activado:</span>
+          <span class="admin-toast-info-value" id="adminToastPlan">—</span>
+        </div>
+        <div class="admin-toast-info-row">
+          <span class="admin-toast-info-label">Duración:</span>
+          <span class="admin-toast-info-value" id="adminToastDuracion">—</span>
+        </div>
+        <div class="admin-toast-info-row">
+          <span class="admin-toast-info-label">Válido hasta:</span>
+          <span class="admin-toast-info-value" id="adminToastExpira">—</span>
+        </div>
+      </div>
+      <p class="admin-toast-message" id="adminToastMessage">
+        Disfruta de todos los cursos, webinars y herramientas VIP que tenemos para ti.
+      </p>
+      <button class="admin-toast-btn" onclick="cerrarAdminToast()">
+        ¡Vamos a empezar! →
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ═══════════════════════════════════════════════════════════════════
+  // TOAST DE ACTIVACIÓN POR ADMIN
+  // Se muestra UNA SOLA VEZ al miembro cuando el coordinador activa
+  // su membresía desde el panel admin (mensual/anual/regalo).
+  // ═══════════════════════════════════════════════════════════════════
+
+  window.mostrarToastActivacionAdmin = function(notif) {
+    if (!notif) return;
+    const plan = notif.plan || 'mensual';
+    const dias = notif.duracionDias || 30;
+    const esRegalo = !!notif.esRegalo;
+    let expiraEn;
+    try {
+      expiraEn = notif.expiraEn?.toDate ? notif.expiraEn.toDate() : new Date(notif.expiraEn);
+    } catch (e) { expiraEn = new Date(Date.now() + dias * 86400000); }
+
+    // Configurar contenido según el tipo
+    const hero = document.getElementById('adminToastHero');
+    if (esRegalo) {
+      hero.className = 'admin-toast-hero regalo';
+      document.getElementById('adminToastEmoji').textContent = '🎁';
+      document.getElementById('adminToastTitle').textContent = '¡Tienes un regalo!';
+      document.getElementById('adminToastSubtitle').textContent = 'Disfruta de tu acceso de cortesía';
+      document.getElementById('adminToastPlan').textContent = 'Acceso temporal (regalo)';
+      document.getElementById('adminToastMessage').textContent =
+        '¡Es un detalle especial para ti! Aprovecha este tiempo para explorar todos los cursos y herramientas. Si te encanta, puedes suscribirte cuando termine.';
+    } else if (plan === 'anual') {
+      hero.className = 'admin-toast-hero anual';
+      document.getElementById('adminToastEmoji').textContent = '💎';
+      document.getElementById('adminToastTitle').textContent = '¡Bienvenido VIP Anual!';
+      document.getElementById('adminToastSubtitle').textContent = 'Tu membresía anual está activa';
+      document.getElementById('adminToastPlan').textContent = 'Plan Anual ($1,990 MXN)';
+      document.getElementById('adminToastMessage').textContent =
+        'Tu acceso completo al VIP de Sinergia-Agrícola está listo. Aprovecha al máximo todos los cursos, webinars y herramientas durante el año.';
+    } else {
+      hero.className = 'admin-toast-hero mensual';
+      document.getElementById('adminToastEmoji').textContent = '🎉';
+      document.getElementById('adminToastTitle').textContent = '¡Bienvenido al VIP!';
+      document.getElementById('adminToastSubtitle').textContent = 'Tu membresía mensual está activa';
+      document.getElementById('adminToastPlan').textContent = 'Plan Mensual ($199 MXN)';
+      document.getElementById('adminToastMessage').textContent =
+        'Tu acceso al VIP de Sinergia-Agrícola está listo. Disfruta de todos los cursos, webinars y herramientas durante el mes.';
+    }
+    document.getElementById('adminToastDuracion').textContent = `${dias} días`;
+    const fechaFmt = expiraEn.toLocaleDateString('es-MX', { day:'numeric', month:'long', year:'numeric' });
+    document.getElementById('adminToastExpira').textContent = fechaFmt;
+
+    // Mostrar overlay
+    const overlay = document.getElementById('adminToastOverlay');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.cerrarAdminToast = function() {
+    const overlay = document.getElementById('adminToastOverlay');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+</script>
 
 <script>
   // ═══════════════════════════════════════════════════════════════════
