@@ -1300,11 +1300,19 @@
     /* Sticky al fondo del sidebar para mantenerse visible aunque haya scroll */
     position: sticky;
     bottom: 0;
-    background: linear-gradient(180deg, transparent 0%, var(--bg-sidebar-a) 30%, var(--bg-sidebar-a) 100%);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    /* Background SÓLIDO para tapar contenido que pase por detrás al scrollear */
+    background: var(--bg-sidebar-a);
     padding-bottom: 4px;
     z-index: 5;
+  }
+  /* Sombra/separación visual sutil cuando el contenido pasa por detrás */
+  .sidebar-footer::before {
+    content: '';
+    position: absolute;
+    top: -20px; left: 0; right: 0;
+    height: 20px;
+    background: linear-gradient(180deg, transparent 0%, var(--bg-sidebar-a) 100%);
+    pointer-events: none;
   }
   .btn-logout {
     width: 100%;
