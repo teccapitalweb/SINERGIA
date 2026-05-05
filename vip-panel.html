@@ -12137,6 +12137,32 @@
 
   // ═ Modal detalle de curso ═
   window.openCursoModal = function(cursoId) {
+    // ─────────────────────────────────────────────────────────
+    // Splash pre-primer-curso: si el usuario está logueado y
+    // nunca ha visto el aviso del nombre del certificado, lo
+    // mostramos UNA vez antes de abrir el modal del curso.
+    // ─────────────────────────────────────────────────────────
+    if (window.isLoggedIn && window.currentUser?.uid && window.currentUser.uid !== 'invitado') {
+      const splashKey = 'sinergia_cert_splash_visto_' + window.currentUser.uid;
+      if (!localStorage.getItem(splashKey)) {
+        // Pendiente: abrir este curso después de cerrar el splash
+        window._cursoIdPendiente = cursoId;
+        const nombreActual = (window.currentMember?.nombre || window.currentUser?.displayName || window.currentUser?.email || 'Sin nombre').trim();
+        const nombreEl = document.getElementById('certSplashNombreActual');
+        if (nombreEl) nombreEl.textContent = nombreActual;
+        const overlay = document.getElementById('certSplashOverlay');
+        if (overlay) {
+          overlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
+          return; // No abrir el curso todavía
+        }
+      }
+    }
+    return _openCursoModalReal(cursoId);
+  };
+
+  // Función original renombrada — la wrapper de arriba la llama tras pasar el splash.
+  function _openCursoModalReal(cursoId) {
     const curso = cursosFromFirestore.find(c => c.id === cursoId);
     if (!curso) return;
 
@@ -12285,11 +12311,62 @@ window.closeCursoModal
 
     document.getElementById('cursoModalOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
-  };
+  }
 
   window.closeCursoModal = function() {
     document.getElementById('cursoModalOverlay').classList.remove('active');
     document.body.style.overflow = '';
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SPLASH PRE-PRIMER-CURSO: aviso sobre nombre del certificado
+  // ═══════════════════════════════════════════════════════════════════
+
+  // Cierra el splash. Si abrirCurso=true, abre el curso pendiente que
+  // se intentó abrir antes del splash.
+  window.cerrarCertSplash = function(abrirCurso) {
+    const overlay = document.getElementById('certSplashOverlay');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    // Marcar como visto para que no aparezca de nuevo
+    if (window.currentUser?.uid && window.currentUser.uid !== 'invitado') {
+      try {
+        localStorage.setItem('sinergia_cert_splash_visto_' + window.currentUser.uid, '1');
+      } catch (e) { /* localStorage puede fallar en privado/iframe */ }
+    }
+    if (abrirCurso && window._cursoIdPendiente) {
+      const cursoId = window._cursoIdPendiente;
+      window._cursoIdPendiente = null;
+      // Pequeño delay para que la animación de cierre se vea suave
+      setTimeout(() => _openCursoModalReal(cursoId), 200);
+    } else {
+      window._cursoIdPendiente = null;
+    }
+  };
+
+  // Botón "Cambiar mi nombre" del splash: cierra splash y abre modal de
+  // editar nombre. NO marca como visto para que el flujo se complete una
+  // vez que el usuario guarde el nombre y vuelva a entrar a un curso.
+  window.cambiarNombreDesdeSplash = function() {
+    const overlay = document.getElementById('certSplashOverlay');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    // Marcar como visto: ya cumplió su propósito de avisar
+    if (window.currentUser?.uid && window.currentUser.uid !== 'invitado') {
+      try {
+        localStorage.setItem('sinergia_cert_splash_visto_' + window.currentUser.uid, '1');
+      } catch (e) {}
+    }
+    window._cursoIdPendiente = null;
+    // Abrir modal de editar nombre
+    if (typeof window.openEditarNombreModal === 'function') {
+      setTimeout(() => window.openEditarNombreModal(), 200);
+    } else {
+      // Fallback: ir al panel de perfil
+      if (typeof window.switchTab === 'function') {
+        window.switchTab('profile');
+      }
+    }
   };
 
   // ═══════════════════════════════════════════════════════════════════
@@ -12320,7 +12397,7 @@ window.closeCursoModal
                   userId: currentUser.uid,
           courseId: courseId,
           courseName: courseName,
-                  userName: currentUser.displayName || currentUser.email,
+                  userName: (window.currentMember?.nombre || currentUser.displayName || currentUser.email),
           userEmail: currentUser.email,
           hours: hours,
           consultantName: 'Sinergia-Agrícola',
@@ -15903,11 +15980,25 @@ window.closeCursoModal
       await updateDoc(doc(db, 'miembros', window.currentUser.uid), { nombre: nuevoNombre });
       if (!window.currentMember) window.currentMember = {};
       window.currentMember.nombre = nuevoNombre;
+      // Intentar también actualizar displayName de Firebase Auth (best-effort, no bloqueante)
+      try {
+        const { updateProfile } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+        if (window.currentUser && typeof updateProfile === 'function') {
+          await updateProfile(window.currentUser, { displayName: nuevoNombre });
+        }
+      } catch (e) { /* no crítico, el certificado ya usa currentMember.nombre */ }
       closeEditarNombreModal();
       renderPerfil();
-      // Actualizar topbar
+      // Actualizar topbar (saludo "Hola, X")
       const topbarName = document.getElementById('topbarName');
       if (topbarName) topbarName.textContent = nuevoNombre.split(' ')[0];
+      // Actualizar sidebar (nombre del usuario)
+      const sidebarName = document.getElementById('sidebarUserName');
+      if (sidebarName) sidebarName.textContent = nuevoNombre;
+      // Toast de confirmación con aviso sobre certificados
+      if (typeof showToast === 'function') {
+        showToast('✅ Nombre actualizado. Tus próximos certificados aparecerán a nombre de "' + nuevoNombre + '".', 'success');
+      }
     } catch (err) {
       console.warn('Error guardando nombre:', err);
       alert('No se pudo guardar el nombre. Intenta de nuevo.');
@@ -17667,6 +17758,741 @@ window.closeCursoModal
     <!-- Se renderiza con JS -->
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SPLASH PRE-PRIMER-CURSO: aviso sobre nombre del certificado
+     Se muestra UNA SOLA VEZ antes de abrir el primer curso del usuario.
+     ═══════════════════════════════════════════════════════════ -->
+<style>
+  .cert-splash-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 10000;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  .cert-splash-overlay.active { display: flex; opacity: 1; }
+  .cert-splash-card {
+    background: #fff;
+    border-radius: 24px;
+    max-width: 480px; width: 100%;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+    overflow: hidden;
+    transform: scale(.94);
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  .cert-splash-overlay.active .cert-splash-card { transform: scale(1); }
+  .cert-splash-hero {
+    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #2dd4bf 100%);
+    padding: 32px 28px 28px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .cert-splash-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 40%),
+                      radial-gradient(circle at 80% 70%, rgba(255,255,255,0.10) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  .cert-splash-emoji {
+    font-size: 56px;
+    margin-bottom: 8px;
+    display: block;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+    position: relative; z-index: 1;
+  }
+  .cert-splash-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+    position: relative; z-index: 1;
+  }
+  .cert-splash-subtitle {
+    font-size: 13px;
+    opacity: .92;
+    margin-top: 6px;
+    font-weight: 500;
+    position: relative; z-index: 1;
+  }
+  .cert-splash-body {
+    padding: 28px;
+  }
+  .cert-splash-namecard {
+    background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+    border: 2px solid #5eead4;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .cert-splash-namecard-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f766e;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .cert-splash-namecard-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #134e4a;
+    word-break: break-word;
+    line-height: 1.25;
+  }
+  .cert-splash-message {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #475569;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .cert-splash-message strong { color: #0f172a; }
+  .cert-splash-warn {
+    background: #fffbeb;
+    border-left: 3px solid #f59e0b;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: #78350f;
+    margin: 16px 0 22px;
+    line-height: 1.5;
+  }
+  .cert-splash-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cert-splash-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .15s;
+    font-family: inherit;
+  }
+  .cert-splash-btn:active { transform: scale(.97); }
+  .cert-splash-btn.primary {
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(13,148,136,0.35);
+  }
+  .cert-splash-btn.primary:hover { box-shadow: 0 8px 22px rgba(13,148,136,0.45); }
+  .cert-splash-btn.secondary {
+    background: #f1f5f9;
+    color: #334155;
+  }
+  .cert-splash-btn.secondary:hover { background: #e2e8f0; }
+  /* Dark mode */
+  [data-theme="dark"] .cert-splash-card { background: #0f1729; color: #e2e8f0; }
+  [data-theme="dark"] .cert-splash-namecard {
+    background: linear-gradient(135deg, #042f2e, #0f3330);
+    border-color: #134e4a;
+  }
+  [data-theme="dark"] .cert-splash-namecard-label { color: #5eead4; }
+  [data-theme="dark"] .cert-splash-namecard-value { color: #f0fdfa; }
+  [data-theme="dark"] .cert-splash-message { color: #cbd5e1; }
+  [data-theme="dark"] .cert-splash-message strong { color: #f1f5f9; }
+  [data-theme="dark"] .cert-splash-warn { background: #422006; color: #fde68a; border-left-color: #d97706; }
+  [data-theme="dark"] .cert-splash-btn.secondary { background: #1e293b; color: #cbd5e1; }
+  [data-theme="dark"] .cert-splash-btn.secondary:hover { background: #334155; }
+  /* Mobile */
+  @media (max-width: 480px) {
+    .cert-splash-card { border-radius: 20px; }
+    .cert-splash-hero { padding: 26px 20px 22px; }
+    .cert-splash-title { font-size: 19px; }
+    .cert-splash-emoji { font-size: 48px; }
+    .cert-splash-body { padding: 22px 20px; }
+    .cert-splash-namecard-value { font-size: 18px; }
+  }
+</style>
+<div class="cert-splash-overlay" id="certSplashOverlay" onclick="if(event.target===this)cerrarCertSplash(false)">
+  <div class="cert-splash-card">
+    <div class="cert-splash-hero">
+      <span class="cert-splash-emoji">🎓</span>
+      <h2 class="cert-splash-title">Antes de comenzar tu primer curso</h2>
+      <p class="cert-splash-subtitle">Un detalle importante sobre tu certificado</p>
+    </div>
+    <div class="cert-splash-body">
+      <div class="cert-splash-namecard">
+        <div class="cert-splash-namecard-label">Tu nombre actual</div>
+        <div class="cert-splash-namecard-value" id="certSplashNombreActual">—</div>
+      </div>
+      <p class="cert-splash-message">
+        Cuando completes un curso, este será el <strong>nombre exacto</strong> que aparecerá en tu certificado oficial con folio y código QR.
+      </p>
+      <div class="cert-splash-warn">
+        💡 <strong>Tip:</strong> Si iniciaste sesión con Google, puede que tu nombre tenga abreviaciones o esté incompleto. Asegúrate de que sea como quieres que aparezca en tu diploma.
+      </div>
+      <div class="cert-splash-actions">
+        <button class="cert-splash-btn primary" onclick="cambiarNombreDesdeSplash()">
+          ✏️ Cambiar mi nombre
+        </button>
+        <button class="cert-splash-btn secondary" onclick="cerrarCertSplash(true)">
+          Continuar con este nombre
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SPLASH DE INVITADO POR PESTAÑA (5 prioritarias)
+     Aparece UNA VEZ por sesión cuando el invitado entra a una
+     pestaña VIP (Videoteca, Webinars, Diagnóstico IA, Precios
+     y Mercados, Exportación). Al cerrar, el invitado ve la
+     pestaña normal. Si intenta usar una función VIP, el sistema
+     showVipUpsell existente lo invita a registrarse.
+     ═══════════════════════════════════════════════════════════ -->
+<style>
+  .guest-splash-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+  .guest-splash-overlay.active {
+    display: flex;
+    opacity: 1;
+  }
+  .guest-splash-card {
+    background: #fff;
+    border-radius: 28px;
+    max-width: 520px; width: 100%;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.45), 0 0 0 1px rgba(13,148,136,0.1);
+    overflow: hidden;
+    transform: scale(.92) translateY(20px);
+    transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+    position: relative;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+  .guest-splash-overlay.active .guest-splash-card {
+    transform: scale(1) translateY(0);
+  }
+  .guest-splash-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    color: #475569;
+    transition: background .2s, transform .2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .guest-splash-close:hover {
+    background: #fff;
+    transform: scale(1.08);
+    color: #0f172a;
+  }
+  .guest-splash-close svg {
+    width: 18px; height: 18px;
+    stroke-width: 2.5;
+  }
+  /* HERO con gradiente teal/amber */
+  .guest-splash-hero {
+    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 45%, #2dd4bf 100%);
+    padding: 36px 30px 30px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .guest-splash-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(255,255,255,0.18) 0%, transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(245,215,122,0.20) 0%, transparent 50%),
+      radial-gradient(circle at 50% 100%, rgba(255,255,255,0.10) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .guest-splash-hero::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(245,215,122,0.25) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .guest-splash-emoji {
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 12px;
+    display: inline-block;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.25));
+    position: relative; z-index: 1;
+    animation: gsEmojiPop .6s cubic-bezier(.34,1.56,.64,1) .2s both;
+  }
+  @keyframes gsEmojiPop {
+    0%   { transform: scale(.5) rotate(-12deg); opacity: 0; }
+    100% { transform: scale(1)  rotate(0deg);   opacity: 1; }
+  }
+  .guest-splash-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    position: relative; z-index: 1;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .guest-splash-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 0 0 10px;
+    position: relative; z-index: 1;
+  }
+  .guest-splash-subtitle {
+    font-size: 14px;
+    line-height: 1.5;
+    opacity: .95;
+    margin: 0;
+    font-weight: 500;
+    position: relative; z-index: 1;
+    max-width: 90%;
+    margin-left: auto; margin-right: auto;
+  }
+
+  /* BODY */
+  .guest-splash-body {
+    padding: 30px 30px 28px;
+  }
+  .guest-splash-invite {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1.5px solid #fde68a;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .guest-splash-invite-icon {
+    font-size: 20px;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+  .guest-splash-invite-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #78350f;
+    font-weight: 600;
+  }
+  .guest-splash-invite-text strong {
+    color: #451a03;
+    font-weight: 800;
+  }
+  .guest-splash-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .guest-splash-benefit {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #334155;
+  }
+  .guest-splash-benefit-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0d9488, #14b8a6);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 3px 8px rgba(13,148,136,0.3);
+  }
+  .guest-splash-benefit-check svg {
+    width: 12px; height: 12px;
+    stroke-width: 3.5;
+  }
+  .guest-splash-benefit strong {
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  /* PRICE BOX */
+  .guest-splash-price {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+    border: 1.5px solid #5eead4;
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .guest-splash-price-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f766e;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .guest-splash-price-amount {
+    font-size: 28px;
+    font-weight: 800;
+    color: #134e4a;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .guest-splash-price-amount span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f766e;
+  }
+  .guest-splash-price-note {
+    font-size: 12px;
+    color: #0f766e;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* ACTIONS */
+  .guest-splash-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .guest-splash-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .2s, background .2s;
+    font-family: inherit;
+    text-align: center;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+  }
+  .guest-splash-btn:active { transform: scale(.97); }
+  .guest-splash-btn.primary {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(13,148,136,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .guest-splash-btn.primary:hover {
+    box-shadow: 0 12px 28px rgba(13,148,136,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+    transform: translateY(-1px);
+  }
+  .guest-splash-btn.secondary {
+    background: transparent;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px;
+  }
+  .guest-splash-btn.secondary:hover {
+    color: #334155;
+    text-decoration: underline;
+  }
+
+  /* DARK MODE */
+  [data-theme="dark"] .guest-splash-card {
+    background: #0f1729;
+    color: #e2e8f0;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(94,234,212,0.15);
+  }
+  [data-theme="dark"] .guest-splash-close {
+    background: rgba(30,41,59,0.95);
+    color: #cbd5e1;
+  }
+  [data-theme="dark"] .guest-splash-close:hover {
+    background: #1e293b;
+    color: #f1f5f9;
+  }
+  [data-theme="dark"] .guest-splash-invite {
+    background: linear-gradient(135deg, #422006 0%, #4a2009 100%);
+    border-color: #78350f;
+  }
+  [data-theme="dark"] .guest-splash-invite-text {
+    color: #fde68a;
+  }
+  [data-theme="dark"] .guest-splash-invite-text strong {
+    color: #fef3c7;
+  }
+  [data-theme="dark"] .guest-splash-benefit { color: #cbd5e1; }
+  [data-theme="dark"] .guest-splash-benefit strong { color: #f1f5f9; }
+  [data-theme="dark"] .guest-splash-price {
+    background: linear-gradient(135deg, #042f2e 0%, #0f3330 100%);
+    border-color: #134e4a;
+  }
+  [data-theme="dark"] .guest-splash-price-label { color: #5eead4; }
+  [data-theme="dark"] .guest-splash-price-amount { color: #f0fdfa; }
+  [data-theme="dark"] .guest-splash-price-amount span { color: #5eead4; }
+  [data-theme="dark"] .guest-splash-price-note { color: #5eead4; }
+  [data-theme="dark"] .guest-splash-btn.secondary { color: #94a3b8; }
+  [data-theme="dark"] .guest-splash-btn.secondary:hover { color: #cbd5e1; }
+
+  /* MOBILE */
+  @media (max-width: 480px) {
+    .guest-splash-overlay { padding: 12px; }
+    .guest-splash-card { border-radius: 22px; max-height: 95vh; }
+    .guest-splash-hero { padding: 28px 22px 24px; }
+    .guest-splash-emoji { font-size: 52px; }
+    .guest-splash-title { font-size: 22px; }
+    .guest-splash-subtitle { font-size: 13px; }
+    .guest-splash-body { padding: 24px 22px 22px; }
+    .guest-splash-price-amount { font-size: 24px; }
+    .guest-splash-btn.primary { padding: 14px 18px; font-size: 14px; }
+  }
+</style>
+
+<div class="guest-splash-overlay" id="guestSplashOverlay" onclick="if(event.target===this)cerrarGuestSplash()">
+  <div class="guest-splash-card">
+    <button class="guest-splash-close" onclick="cerrarGuestSplash()" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="guest-splash-hero">
+      <div class="guest-splash-tag" id="guestSplashTag">HERRAMIENTA VIP</div>
+      <span class="guest-splash-emoji" id="guestSplashEmoji">🌱</span>
+      <h2 class="guest-splash-title" id="guestSplashTitle">Título</h2>
+      <p class="guest-splash-subtitle" id="guestSplashSubtitle">Subtítulo</p>
+    </div>
+    <div class="guest-splash-body">
+      <div class="guest-splash-invite">
+        <span class="guest-splash-invite-icon">✨</span>
+        <span class="guest-splash-invite-text" id="guestSplashInvite">Mensaje de invitación</span>
+      </div>
+      <ul class="guest-splash-benefits" id="guestSplashBenefits">
+        <!-- Se renderiza con JS -->
+      </ul>
+      <div class="guest-splash-price">
+        <div class="guest-splash-price-label">Membresía VIP Sinergia</div>
+        <div class="guest-splash-price-amount">$199 <span>MXN/mes</span></div>
+        <div class="guest-splash-price-note">Cancela cuando quieras · Sin permanencia</div>
+      </div>
+      <div class="guest-splash-actions">
+        <button class="guest-splash-btn primary" onclick="haceVIPDesdeSplash()">
+          🚀 Quiero ser miembro VIP
+        </button>
+        <button class="guest-splash-btn secondary" onclick="cerrarGuestSplash()">
+          Seguir explorando
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ═══════════════════════════════════════════════════════════════════
+  // SISTEMA DE SPLASH DE INVITADO POR PESTAÑA
+  // Aparece una vez por sesión cuando un invitado entra a una pestaña VIP.
+  // No interfiere con el sistema showVipUpsell existente (que actúa al
+  // intentar usar funciones VIP).
+  // ═══════════════════════════════════════════════════════════════════
+
+  // Mensajes personalizados por pestaña
+  const GUEST_SPLASH_MESSAGES = {
+    courses: {
+      tag: "Videoteca VIP",
+      emoji: "🎬",
+      title: "Aprende con expertos certificados",
+      subtitle: "Cursos profesionales de producción agrícola, impartidos por agrónomos especialistas con años de experiencia en campo.",
+      invite: "<strong>Regístrate y hazte miembro VIP</strong> para aprovechar todo el catálogo de cursos a tu ritmo, las 24 horas.",
+      benefits: [
+        "<strong>10+ cursos</strong> disponibles ahora y nuevos cada mes",
+        "Material descargable en PDF y videos en HD",
+        "Avanza a tu propio ritmo, desde tu celular o computadora"
+      ]
+    },
+    live: {
+      tag: "Webinars en vivo",
+      emoji: "📡",
+      title: "Conecta en vivo con especialistas",
+      subtitle: "Sesiones interactivas con agrónomos y productores expertos donde puedes preguntar y resolver tus dudas en tiempo real.",
+      invite: "<strong>Regístrate y hazte miembro VIP</strong> para acceder a todos los webinars en vivo y la bóveda de sesiones grabadas.",
+      benefits: [
+        "Webinars <strong>en vivo</strong> con especialistas del sector",
+        "Bóveda de sesiones grabadas para ver cuando quieras",
+        "Resuelve tus dudas con preguntas en tiempo real"
+      ]
+    },
+    diagnostico: {
+      tag: "Diagnóstico con IA",
+      emoji: "🤖",
+      title: "Identifica plagas y enfermedades en segundos",
+      subtitle: "Sube una foto de tu cultivo y nuestra inteligencia artificial te dice qué tiene y cómo tratarlo, al instante.",
+      invite: "<strong>Regístrate y hazte miembro VIP</strong> para usar el diagnóstico con IA cuando lo necesites en tu parcela.",
+      benefits: [
+        "Diagnóstico <strong>instantáneo</strong> con foto desde tu celular",
+        "Recomendaciones de tratamiento por especialistas",
+        "Identifica plagas, enfermedades y deficiencias nutricionales"
+      ]
+    },
+    mercados: {
+      tag: "Precios y Mercados",
+      emoji: "💰",
+      title: "Vende donde te paguen mejor",
+      subtitle: "Compara precios de tu producto en las principales centrales de abasto de México y decide a dónde llevar tu cosecha.",
+      invite: "<strong>Regístrate y hazte miembro VIP</strong> para ver los precios actualizados y maximizar las ganancias de tu cosecha.",
+      benefits: [
+        "Precios en <strong>12 centrales de abasto</strong> nacionales",
+        "Compara <strong>26 productos</strong>: frutas y hortalizas",
+        "Recomendación inteligente: precio + distancia desde tu zona"
+      ]
+    },
+    exportacion: {
+      tag: "Calculadora de Exportación",
+      emoji: "🌎",
+      title: "Lleva tu cosecha al extranjero",
+      subtitle: "Calcula la viabilidad de exportar tu producto: flete, aduana, certificados, seguro y margen, todo en un solo lugar.",
+      invite: "<strong>Regístrate y hazte miembro VIP</strong> para calcular cuánto puedes ganar exportando y prepararte como productor internacional.",
+      benefits: [
+        "Calcula exportación a <strong>14 países</strong>: USA, Canadá, Japón, UE y más",
+        "Desglose completo: flete, aduana, SENASICA, seguro y margen",
+        "Veredicto de viabilidad con código de colores"
+      ]
+    }
+  };
+
+  // Pestañas que muestran splash (solo las VIP relevantes)
+  const GUEST_SPLASH_TABS = Object.keys(GUEST_SPLASH_MESSAGES);
+
+  // Determina si el usuario actual es invitado (no logueado o no VIP)
+  function esInvitadoSinergia() {
+    if (window.isVIP === true) return false;
+    if (window.isLoggedIn !== true) return true;
+    if (window.currentUser?.uid === 'invitado') return true;
+    // Logueado pero sin VIP activo → tratamos como invitado para conversión
+    return true;
+  }
+
+  // Renderiza el contenido del splash para una pestaña
+  function renderGuestSplash(tabName) {
+    const data = GUEST_SPLASH_MESSAGES[tabName];
+    if (!data) return false;
+    const set = (id, html) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
+    };
+    set('guestSplashTag', data.tag);
+    set('guestSplashEmoji', data.emoji);
+    set('guestSplashTitle', data.title);
+    set('guestSplashSubtitle', data.subtitle);
+    set('guestSplashInvite', data.invite);
+    const benefitsHtml = data.benefits.map(b => `
+      <li class="guest-splash-benefit">
+        <span class="guest-splash-benefit-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </span>
+        <span>${b}</span>
+      </li>
+    `).join('');
+    set('guestSplashBenefits', benefitsHtml);
+    return true;
+  }
+
+  // Muestra el splash de una pestaña (si el usuario es invitado y no lo ha visto en esta sesión)
+  window.mostrarGuestSplash = function(tabName) {
+    if (!GUEST_SPLASH_TABS.includes(tabName)) return false;
+    if (!esInvitadoSinergia()) return false;
+    // Verificar si ya lo vio en esta sesión
+    let seen = {};
+    try {
+      seen = JSON.parse(sessionStorage.getItem('sinergia_guest_splash_seen') || '{}');
+    } catch (e) {}
+    if (seen[tabName]) return false;
+    // Renderizar y mostrar
+    if (!renderGuestSplash(tabName)) return false;
+    const overlay = document.getElementById('guestSplashOverlay');
+    if (!overlay) return false;
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    // Marcar como visto en esta sesión
+    seen[tabName] = true;
+    try {
+      sessionStorage.setItem('sinergia_guest_splash_seen', JSON.stringify(seen));
+    } catch (e) {}
+    return true;
+  };
+
+  // Cierra el splash sin hacer nada (el invitado puede explorar la pestaña)
+  window.cerrarGuestSplash = function() {
+    const overlay = document.getElementById('guestSplashOverlay');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+
+  // Botón "Quiero ser miembro VIP" → cierra splash y va a checkout (mensual por default)
+  window.haceVIPDesdeSplash = function() {
+    cerrarGuestSplash();
+    // Pequeño delay para que la animación de cierre se vea suave
+    setTimeout(() => {
+      window.location.href = 'vip-checkout.html?plan=mensual';
+    }, 200);
+  };
+
+  // ─── Wrap de switchTab para inyectar el splash al entrar a pestaña ───
+  // Se ejecuta DESPUÉS de que switchTab haya hecho su trabajo normal,
+  // así el panel se cambia y el splash aparece encima.
+  (function wrapSwitchTabForGuestSplash() {
+    if (typeof window.switchTab !== 'function') {
+      // switchTab aún no está definido, reintentar en cuanto cargue
+      setTimeout(wrapSwitchTabForGuestSplash, 200);
+      return;
+    }
+    if (window._switchTabWrappedForSplash) return; // evitar doble wrap
+    window._switchTabWrappedForSplash = true;
+    const originalSwitchTab = window.switchTab;
+    window.switchTab = function(tabName) {
+      const result = originalSwitchTab.apply(this, arguments);
+      // Mostrar splash con un pequeño delay para que el cambio de pestaña se vea
+      try {
+        if (GUEST_SPLASH_TABS.includes(tabName) && esInvitadoSinergia()) {
+          setTimeout(() => mostrarGuestSplash(tabName), 350);
+        }
+      } catch (e) {
+        console.error('[GuestSplash] Error:', e);
+      }
+      return result;
+    };
+  })();
+</script>
+
+
 
 <!-- ═══════════════════════════════════════════════════════════
      MODAL CONFIRMACIÓN CERRAR SESIÓN
