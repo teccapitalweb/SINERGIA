@@ -141,13 +141,9 @@
     border-right: 1px solid var(--border-subtle);
     z-index: 20;
     box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.5);
-    overflow-y: auto;
-    overflow-x: hidden;
-    /* Ocultar scrollbar visualmente pero mantener scroll funcional */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-    /* Reserva espacio para la barra aunque esté oculta — evita reflow al hacer scroll */
-    scrollbar-gutter: stable;
+    /* SIN overflow propio — el scroll lo maneja el .sidebar-nav (hijo).
+       Esto garantiza que el footer SIEMPRE esté al fondo del sidebar. */
+    overflow: hidden;
   }
   .sidebar::-webkit-scrollbar,
   .sidebar *::-webkit-scrollbar {
@@ -336,10 +332,18 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    /* Sin overflow propio — el scroll lo maneja el .sidebar padre.
-       Esto evita el doble-scroll anidado que causaba reflow visual
-       (texto duplicado/temblando) al hacer scroll. */
+    /* El nav scrollea internamente cuando el contenido excede el espacio.
+       El sidebar padre tiene overflow: hidden, así NO hay doble scroll. */
+    overflow-y: auto;
+    overflow-x: hidden;
     min-height: 0;
+    /* Ocultar scrollbar visualmente */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .sidebar-nav::-webkit-scrollbar {
+    display: none;
+    width: 0;
   }
 
   .nav-section-title {
