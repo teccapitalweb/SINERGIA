@@ -2036,6 +2036,35 @@
   const db = getFirestore(app);
 
   // ═══════════════════════════════════════════════════
+  // BACKEND ADMIN — Railway endpoints
+  // (Usado para acciones que requieren server: cancelar Stripe,
+  //  borrar Auth, batch operations. La activación manual sigue
+  //  escribiendo directo a Firestore porque las reglas lo permiten
+  //  para admins.)
+  // ═══════════════════════════════════════════════════
+  const BACKEND_URL = 'https://sinergia-webhook-production.up.railway.app';
+
+  async function callAdminEndpoint(path, body = {}) {
+    if (!auth.currentUser) {
+      throw new Error('No estás autenticado');
+    }
+    const idToken = await auth.currentUser.getIdToken();
+    const response = await fetch(BACKEND_URL + path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + idToken
+      },
+      body: JSON.stringify(body)
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.error || ('Error HTTP ' + response.status));
+    }
+    return data;
+  }
+
+  // ═══════════════════════════════════════════════════
   // WHITELIST DE ADMINS (EDITA AQUÍ PARA AGREGAR/QUITAR)
   // ═══════════════════════════════════════════════════
   const ADMIN_EMAILS = [
@@ -2271,19 +2300,29 @@
       type: newState ? 'info' : 'warn',
       title: newState ? '¿Activar membresía?' : '¿Desactivar membresía?',
       body: `¿Seguro que deseas ${newState ? 'activar' : 'desactivar'} la membresía de <b>${m.nombre || m.email}</b>?${
-        !newState ? '<br><br><span style="color:#B45309;font-weight:600;">El miembro perderá acceso al panel VIP inmediatamente.</span>' : ''
+        !newState ? '<br><br><span style="color:#B45309;font-weight:600;">El miembro perderá acceso al panel VIP inmediatamente.<br>⚠ Esta acción NO cancela Stripe — usa el botón Cancelar para eso.</span>' : ''
       }`,
       confirmText: newState ? 'Activar' : 'Desactivar',
       onConfirm: async () => {
-        await updateDoc(doc(db, 'miembros', uid), {
-          activa: newState,
-          lastUpdatedAt: serverTimestamp(),
-          ...(newState ? {} : { desactivadoEn: serverTimestamp(), desactivadoPor: 'admin', motivoDesactivacion: 'manual' })
-        });
-        m.activa = newState;
-        applyFiltersAndRender();
-        updateDashboard();
-        showToast(newState ? 'Membresía activada ✓' : 'Membresía desactivada');
+        try {
+          if (newState) {
+            // Activación directa (caso poco común — la activación normal usa abrirModalActivar)
+            await updateDoc(doc(db, 'miembros', uid), {
+              activa: true,
+              lastUpdatedAt: serverTimestamp()
+            });
+          } else {
+            // Desactivación inmediata vía backend (NO toca Stripe)
+            await callAdminEndpoint('/admin/desactivar-miembro', { uid });
+          }
+          m.activa = newState;
+          applyFiltersAndRender();
+          updateDashboard();
+          showToast(newState ? 'Membresía activada ✓' : 'Membresía desactivada');
+        } catch (err) {
+          console.error('Error toggleActive:', err);
+          showToast('Error: ' + err.message, 'error');
+        }
       }
     });
   };
@@ -2394,17 +2433,19 @@
     showModal({
       type: 'warn',
       title: '¿Cancelar suscripción?',
-      body: `Se cancelará la suscripción de <b>${nombre}</b>.<br><br>Mantendrá su acceso hasta la fecha de expiración actual y NO se renovará automáticamente.`,
+      body: `Se cancelará la suscripción de <b>${nombre}</b> en Stripe.<br><br>Mantendrá su acceso hasta la fecha de fin del periodo pagado y NO se renovará automáticamente.<br><br><span style="color:#6B7280;font-size:0.85em;">Solo aplica a miembros con suscripción Stripe activa.</span>`,
       confirmText: 'Sí, cancelar',
       onConfirm: async () => {
         try {
-          await updateDoc(doc(db, 'miembros', uid), {
-            cancelacionProgramada: true,
-            fechaCancelacion: serverTimestamp(),
-            canceladoPor: 'admin',
-            lastUpdatedAt: serverTimestamp()
-          });
-          showToast('Suscripción cancelada (mantiene acceso hasta vencimiento)', 'ok');
+          const res = await callAdminEndpoint('/admin/cancelar-stripe', { uid });
+          // Actualizar estado local
+          m.cancelacionProgramada = true;
+          if (res.finAcceso) m.fechaFinAcceso = new Date(res.finAcceso);
+          applyFiltersAndRender();
+          const msg = res.finAcceso
+            ? `Cancelada en Stripe. Acceso hasta: ${new Date(res.finAcceso).toLocaleDateString('es-MX')}`
+            : 'Suscripción cancelada (mantiene acceso hasta vencimiento)';
+          showToast(msg, 'ok');
         } catch (err) {
           console.error('Error cancelando:', err);
           showToast('Error al cancelar: ' + err.message, 'error');
@@ -2425,14 +2466,28 @@
     showModal({
       type: 'danger',
       title: '¿Eliminar miembro?',
-      body: `Esta acción eliminará permanentemente el registro de <b>${nombre}</b> en Firestore.<br><br><span style="color:#BE123C;font-weight:600;">⚠ La cuenta de Firebase Auth NO se eliminará (debes hacerlo manualmente en Firebase Console).</span><br><br>Esta acción no se puede deshacer.`,
+      body: `Esta acción eliminará permanentemente a <b>${nombre}</b>:<br><br>• Cancelará suscripción en Stripe (si tiene)<br>• Borrará cuenta de Firebase Auth<br>• Borrará registro de Firestore<br><br><span style="color:#BE123C;font-weight:600;">⚠ Esta acción NO se puede deshacer.</span>`,
       confirmText: 'Eliminar',
       onConfirm: async () => {
-        await deleteDoc(doc(db, 'miembros', uid));
-        allMembers = allMembers.filter(m => m.uid !== uid);
-        applyFiltersAndRender();
-        updateDashboard();
-        showToast('Miembro eliminado');
+        try {
+          const res = await callAdminEndpoint('/admin/eliminar-miembro', { uid });
+          allMembers = allMembers.filter(m => m.uid !== uid);
+          applyFiltersAndRender();
+          updateDashboard();
+          // Construir mensaje detallado según qué se borró
+          const partes = [];
+          if (res.stripeCancelada) partes.push('Stripe');
+          if (res.authBorrado) partes.push('Auth');
+          if (res.firestoreBorrado) partes.push('Firestore');
+          const detalles = partes.length ? ` (${partes.join(' + ')})` : '';
+          showToast('Miembro eliminado' + detalles, 'ok');
+          if (res.avisos && res.avisos.length > 0) {
+            console.warn('[deleteMember] Avisos del backend:', res.avisos);
+          }
+        } catch (err) {
+          console.error('Error eliminando:', err);
+          showToast('Error al eliminar: ' + err.message, 'error');
+        }
       }
     });
   };
