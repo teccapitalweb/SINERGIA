@@ -13163,21 +13163,80 @@ window.closeCursoModal
     const initials = getInitials(name, email);
 
     document.getElementById('sidebarAvatar').textContent = initials;
-    document.getElementById('sidebarUserName').textContent = name || 'Miembro VIP';
     document.getElementById('topbarName').textContent = firstName.charAt(0).toUpperCase() + firstName.slice(1);
     document.getElementById('welcomeName').textContent = firstName;
     document.getElementById('certMockupName').textContent = name || 'Tu nombre aparecerá aquí';
 
-    // Plan info (solo si es miembro activo)
+    // ═══════════════════════════════════════════════════════════
+    // DETECCIÓN DE ESTADO COMPLETO
+    // 1) INVITADO          → no logueado
+    // 2) PENDIENTE         → logueado, activa=false, sin stripeSubscriptionId, sin shopifyOrderId
+    // 3) VIP TEMPORAL      → activa=true, esRegalo=true (regalo del coordinador)
+    // 4) VIP MANUAL        → activa=true, activacionManual=true (pago externo coordinador)
+    // 5) VIP STRIPE        → activa=true, stripeSubscriptionId presente
+    // 6) VIP SHOPIFY       → activa=true, shopifyOrderId presente
+    // 7) CANCELADO         → activa=false, canceladaEn presente o tuvo subscription antes
+    // ═══════════════════════════════════════════════════════════
+    const isLogged = window.isLoggedIn === true;
     const isActiveMember = member && member.activa === true;
     const plan = member?.plan || 'mensual';
     const esRegalo = !!member?.esRegalo || plan === 'regalo';
     const activacionManual = !!member?.activacionManual;
-    const badgeEl = document.getElementById('sidebarPlanBadge');
-    const badgeParent = badgeEl?.parentElement; // .sidebar-user-badge
+    const tieneStripe = !!member?.stripeSubscriptionId;
+    const tieneShopify = !!member?.shopifyOrderId;
+    const tuvoMembresia = !!member?.canceladaEn || !!member?.desactivadoEn || tieneStripe || tieneShopify;
+    const esPendiente = isLogged && member && !isActiveMember && !tuvoMembresia && !!member?.plan;
+    const esCancelado = isLogged && member && !isActiveMember && tuvoMembresia;
 
-    if (isActiveMember) {
-      if (badgeParent) badgeParent.classList.remove('guest');
+    // Sidebar: nombre del usuario (no más "Miembro VIP" hardcoded)
+    const sidebarUserNameEl = document.getElementById('sidebarUserName');
+    if (sidebarUserNameEl) {
+      if (!isLogged) {
+        sidebarUserNameEl.textContent = 'Invitado';
+      } else if (name) {
+        sidebarUserNameEl.textContent = name;
+      } else {
+        sidebarUserNameEl.textContent = email.split('@')[0] || 'Usuario';
+      }
+    }
+
+    const badgeEl = document.getElementById('sidebarPlanBadge');
+    const badgeParent = badgeEl?.parentElement;
+
+    // ═══════════════════════════════════════════════════════════
+    // Sidebar badge según estado
+    // ═══════════════════════════════════════════════════════════
+    if (!isLogged) {
+      // INVITADO
+      if (badgeParent) badgeParent.classList.add('guest');
+      badgeEl.textContent = 'INVITADO';
+    } else if (esPendiente) {
+      // PENDIENTE: registrado pero no pagó
+      if (badgeParent) badgeParent.classList.add('guest');
+      badgeEl.textContent = plan === 'anual' ? 'ANUAL · PAGO PENDIENTE' : 'MENSUAL · PAGO PENDIENTE';
+      // Estilo naranja para pendiente
+      if (badgeParent) {
+        badgeParent.style.background = 'linear-gradient(135deg, #FEF3C7, #FCD34D)';
+        badgeParent.style.color = '#92400E';
+        badgeParent.style.border = '1px solid #F59E0B';
+      }
+    } else if (esCancelado) {
+      // CANCELADO
+      if (badgeParent) badgeParent.classList.add('guest');
+      badgeEl.textContent = 'PLAN VENCIDO';
+      if (badgeParent) {
+        badgeParent.style.background = 'linear-gradient(135deg, #FEE2E2, #FCA5A5)';
+        badgeParent.style.color = '#991B1B';
+        badgeParent.style.border = '1px solid #EF4444';
+      }
+    } else if (isActiveMember) {
+      // VIP ACTIVO (cualquier subtipo)
+      if (badgeParent) {
+        badgeParent.classList.remove('guest');
+        badgeParent.style.background = '';
+        badgeParent.style.color = '';
+        badgeParent.style.border = '';
+      }
       let planLabel, planName, planPrice;
       if (esRegalo) {
         planLabel = 'VIP TEMPORAL';
@@ -13194,17 +13253,31 @@ window.closeCursoModal
         planPrice = '$199<span>/mes</span>';
       }
       badgeEl.textContent = planLabel;
-      document.getElementById('subPlanName').textContent = planName;
-      document.getElementById('subPlanPrice').innerHTML = planPrice;
+      const subPlanNameEl = document.getElementById('subPlanName');
+      const subPlanPriceEl = document.getElementById('subPlanPrice');
+      if (subPlanNameEl) subPlanNameEl.textContent = planName;
+      if (subPlanPriceEl) subPlanPriceEl.innerHTML = planPrice;
     } else {
-      // Invitado o pendiente → badge neutro gris
+      // Logueado pero sin info clara → "SIN PLAN" genérico
       if (badgeParent) badgeParent.classList.add('guest');
-      badgeEl.textContent = window.isLoggedIn === true ? 'SIN PLAN' : 'INVITADO';
+      badgeEl.textContent = 'SIN PLAN';
       const subName = document.getElementById('subPlanName');
       const subPrice = document.getElementById('subPlanPrice');
       if (subName) subName.textContent = 'Sin membresía activa';
       if (subPrice) subPrice.innerHTML = '—';
     }
+
+    // ═══════════════════════════════════════════════════════════
+    // POPUP / Banner para usuarios PENDIENTES
+    // ═══════════════════════════════════════════════════════════
+    if (esPendiente) {
+      mostrarBannerPendiente(member);
+    } else {
+      ocultarBannerPendiente();
+    }
+
+    // Si es invitado o pendiente o cancelado, no procesar info de membresía VIP
+    if (!isActiveMember) return;
 
     // ═══════════════════════════════════════════════════════════
     // Fechas y método de pago: depende del tipo de membresía
@@ -13216,7 +13289,6 @@ window.closeCursoModal
     const nextEl = document.getElementById('subNextDate');
     const sinceEl = document.getElementById('subSince');
 
-    // Calcular fecha de expiración: priorizar expiraEn (regalos/manual) sobre proximaRenovacion
     let fechaExpiracion;
     if (member?.expiraEn) {
       fechaExpiracion = member.expiraEn.toDate ? member.expiraEn.toDate() : new Date(member.expiraEn);
@@ -13228,14 +13300,12 @@ window.closeCursoModal
       fechaExpiracion = new Date(createdAt);
       fechaExpiracion.setDate(fechaExpiracion.getDate() + periodDays);
     }
-    const fechaActivacion = member?.activadoEn?.toDate?.() || member?.createdAt?.toDate?.() || new Date();
+    const fechaActivacion = member?.activadoEn?.toDate?.() || member?.creadoEn?.toDate?.() || member?.createdAt?.toDate?.() || new Date();
 
     const nextStr = fechaExpiracion.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
     if (nextEl) nextEl.textContent = nextStr;
 
-    // Adaptar etiquetas y método de pago según tipo
     if (esRegalo) {
-      // Regalo: cambiar etiquetas
       if (subNextDateLabel) subNextDateLabel.textContent = 'ACCESO VENCE EL';
       if (subSinceLabel) subSinceLabel.textContent = 'ACTIVADO EL';
       if (subPaymentLabel) subPaymentLabel.textContent = 'TIPO DE ACCESO';
@@ -13243,15 +13313,21 @@ window.closeCursoModal
       const sinceStr = fechaActivacion.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
       if (sinceEl) sinceEl.textContent = sinceStr;
     } else if (activacionManual) {
-      // Activación manual del coordinador (no regalo, sino mensual/anual sin Stripe)
       if (subNextDateLabel) subNextDateLabel.textContent = 'ACCESO VENCE EL';
       if (subSinceLabel) subSinceLabel.textContent = 'ACTIVADO EL';
       if (subPaymentLabel) subPaymentLabel.textContent = 'MÉTODO DE PAGO';
       if (subPaymentMethodEl) subPaymentMethodEl.textContent = 'Pago externo';
       const sinceStr = fechaActivacion.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
       if (sinceEl) sinceEl.textContent = sinceStr;
+    } else if (tieneShopify) {
+      if (subNextDateLabel) subNextDateLabel.textContent = 'PRÓXIMA RENOVACIÓN';
+      if (subSinceLabel) subSinceLabel.textContent = 'MIEMBRO DESDE';
+      if (subPaymentLabel) subPaymentLabel.textContent = 'MÉTODO DE PAGO';
+      if (subPaymentMethodEl) subPaymentMethodEl.textContent = 'Shopify';
+      const sinceStr = fechaActivacion.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+      if (sinceEl) sinceEl.textContent = sinceStr.charAt(0).toUpperCase() + sinceStr.slice(1);
     } else {
-      // Pago normal con Stripe (default original)
+      // Stripe (default)
       if (subNextDateLabel) subNextDateLabel.textContent = 'PRÓXIMA RENOVACIÓN';
       if (subSinceLabel) subSinceLabel.textContent = 'MIEMBRO DESDE';
       if (subPaymentLabel) subPaymentLabel.textContent = 'MÉTODO DE PAGO';
@@ -13260,53 +13336,237 @@ window.closeCursoModal
       if (sinceEl) sinceEl.textContent = sinceStr.charAt(0).toUpperCase() + sinceStr.slice(1);
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // Ocultar/mostrar acciones según tipo de membresía
-    // ═══════════════════════════════════════════════════════════
     const btnCambiarPlan = document.getElementById('btnCambiarPlan');
     const btnHistorialFact = document.getElementById('btnHistorialFact');
     const btnCancelarSub = document.getElementById('btnCancelarSub');
 
     if (esRegalo || activacionManual) {
-      // Para regalos y activaciones manuales: ocultar acciones de Stripe
       if (btnCambiarPlan) btnCambiarPlan.style.display = 'none';
       if (btnHistorialFact) btnHistorialFact.style.display = 'none';
       if (btnCancelarSub) btnCancelarSub.style.display = 'none';
-      // Mostrar CTA de suscripción permanente para regalos
       if (esRegalo) {
         renderRegaloSuscribirseCTA(fechaExpiracion);
       }
     } else {
-      // Pago normal Stripe: mostrar todas las acciones
       if (btnCambiarPlan) btnCambiarPlan.style.display = '';
       if (btnHistorialFact) btnHistorialFact.style.display = '';
       if (btnCancelarSub) btnCancelarSub.style.display = '';
-      // Quitar CTA de regalo si existe
       const ctaExistente = document.getElementById('regaloSuscribirseCTA');
       if (ctaExistente) ctaExistente.remove();
     }
 
-    // Ajustar tag superior de la tarjeta según tipo
     const subTag = document.querySelector('.sub-tag');
     if (subTag) {
       if (esRegalo) {
-        subTag.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-          ACCESO TEMPORAL ACTIVO
-        `;
-      } else if (activacionManual) {
-        subTag.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
-          MEMBRESÍA VIP ACTIVA
-        `;
+        subTag.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" stroke="currentColor" stroke-width="2" fill="none"/></svg> ACCESO TEMPORAL ACTIVO`;
       } else {
-        subTag.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
-          MEMBRESÍA VIP ACTIVA
-        `;
+        subTag.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg> MEMBRESÍA VIP ACTIVA`;
       }
     }
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // BANNER + POPUP PARA USUARIOS PENDIENTES (registrados sin pagar)
+  // ═══════════════════════════════════════════════════════════════
+  function mostrarBannerPendiente(member) {
+    if (document.getElementById('pendienteBanner')) return;
+    const planEl = member?.plan || 'mensual';
+    const planLabel = planEl === 'anual' ? 'Plan Anual ($1,990 MXN)' : 'Plan Mensual ($199 MXN)';
+    const banner = document.createElement('div');
+    banner.id = 'pendienteBanner';
+    banner.style.cssText = `
+      position: fixed; top: 0; left: 0; right: 0;
+      background: linear-gradient(135deg, #FEF3C7, #FCD34D);
+      border-bottom: 2px solid #F59E0B;
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      z-index: 200;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+      flex-wrap: wrap;
+    `;
+    banner.innerHTML = `
+      <span style="font-size:18px;">⏳</span>
+      <span style="color:#7C2D12;font-size:13.5px;font-weight:600;">
+        Tu pago está pendiente · ${planLabel}
+      </span>
+      <button onclick="continuarPago('${planEl}')" style="
+        background: linear-gradient(135deg, #D97706, #B45309); color: #fff;
+        border: none; padding: 7px 16px; border-radius: 8px;
+        font-size: 12.5px; font-weight: 700; cursor: pointer;
+        font-family: inherit; box-shadow: 0 3px 10px rgba(217,119,6,0.35);
+      ">Completar mi pago →</button>
+      <button onclick="abrirSelectorPlanPendiente()" style="
+        background: #fff; color: #92400E;
+        border: 1.5px solid #F59E0B; padding: 7px 14px; border-radius: 8px;
+        font-size: 12.5px; font-weight: 600; cursor: pointer;
+        font-family: inherit;
+      ">Cambiar plan</button>
+    `;
+    document.body.appendChild(banner);
+    // Ajustar padding del body para que no tape contenido
+    document.body.style.paddingTop = banner.offsetHeight + 'px';
+
+    // Mostrar popup grande la primera vez por sesión
+    const popupKey = `sinergia_pendiente_popup_${member?.uid || ''}`;
+    if (!sessionStorage.getItem(popupKey)) {
+      setTimeout(() => mostrarPopupPendiente(member), 800);
+      sessionStorage.setItem(popupKey, '1');
+    }
+  }
+
+  function ocultarBannerPendiente() {
+    const banner = document.getElementById('pendienteBanner');
+    if (banner) {
+      banner.remove();
+      document.body.style.paddingTop = '';
+    }
+  }
+
+  function mostrarPopupPendiente(member) {
+    if (document.getElementById('pendientePopupOverlay')) return;
+    const planEl = member?.plan || 'mensual';
+    const planLabel = planEl === 'anual' ? 'Plan Anual' : 'Plan Mensual';
+    const planPrecio = planEl === 'anual' ? '$1,990 MXN/año' : '$199 MXN/mes';
+    const overlay = document.createElement('div');
+    overlay.id = 'pendientePopupOverlay';
+    overlay.style.cssText = `
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      z-index: 9998;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; transition: opacity .3s;
+    `;
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:24px;max-width:440px;width:100%;
+                  box-shadow:0 30px 70px rgba(0,0,0,0.35);overflow:hidden;
+                  transform: scale(.85) translateY(20px); transition: transform .4s cubic-bezier(.34,1.56,.64,1);">
+        <div style="background: linear-gradient(135deg, #D97706, #F59E0B);
+                    padding: 32px 28px 24px; text-align: center; color: #fff; position:relative;">
+          <div style="font-size:62px;line-height:1;margin-bottom:14px;">⏳</div>
+          <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.02em;margin:0 0 8px;font-family:var(--font-h, inherit);">
+            ¡Casi terminas tu registro!
+          </h2>
+          <p style="font-size:14px;opacity:.95;margin:0;line-height:1.5;">
+            Te falta completar el pago para activar tu acceso VIP
+          </p>
+        </div>
+        <div style="padding: 24px 28px 22px;">
+          <div style="background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:14px;padding:14px 16px;margin-bottom:18px;">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
+              <span style="color:#92400E;font-weight:600;">Plan elegido:</span>
+              <span style="color:#7C2D12;font-weight:800;">${planLabel}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;">
+              <span style="color:#92400E;font-weight:600;">Precio:</span>
+              <span style="color:#7C2D12;font-weight:800;">${planPrecio}</span>
+            </div>
+          </div>
+          <p style="font-size:13.5px;line-height:1.5;color:#475569;text-align:center;margin-bottom:18px;">
+            Cuando completes el pago, tendrás acceso inmediato a todos los cursos, webinars y herramientas VIP.
+          </p>
+          <button onclick="continuarPago('${planEl}')" style="
+            width:100%;padding:14px;border:none;border-radius:12px;
+            background:linear-gradient(135deg, #D97706, #B45309);color:#fff;
+            font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+            box-shadow:0 8px 22px rgba(217,119,6,0.4);margin-bottom:10px;
+            transition:transform .15s;
+          " onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+            Completar mi pago ahora →
+          </button>
+          <button onclick="abrirSelectorPlanPendiente()" style="
+            width:100%;padding:12px;border:1.5px solid #E2E8F0;border-radius:12px;
+            background:#fff;color:#64748B;
+            font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+            margin-bottom:10px;
+          ">
+            Cambiar de plan
+          </button>
+          <button onclick="cerrarPopupPendiente()" style="
+            width:100%;padding:8px;border:none;background:transparent;
+            color:#94A3B8;font-size:12px;cursor:pointer;font-family:inherit;
+          ">
+            Recordarme después
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => {
+      overlay.style.opacity = '1';
+      const card = overlay.firstElementChild;
+      if (card) card.style.transform = 'scale(1) translateY(0)';
+    });
+  }
+
+  window.cerrarPopupPendiente = function() {
+    const overlay = document.getElementById('pendientePopupOverlay');
+    if (overlay) overlay.remove();
+  };
+
+  window.continuarPago = function(plan) {
+    window.location.href = `vip-checkout.html?plan=${plan || 'mensual'}`;
+  };
+
+  window.abrirSelectorPlanPendiente = function() {
+    cerrarPopupPendiente();
+    // Mostrar selector simple de plan
+    const overlay = document.createElement('div');
+    overlay.id = 'pendientePopupOverlay';
+    overlay.style.cssText = `
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      z-index: 9998;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    `;
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:22px;max-width:440px;width:100%;
+                  box-shadow:0 30px 70px rgba(0,0,0,0.35);padding:28px;">
+        <h2 style="font-size:20px;font-weight:800;color:#0F172A;margin:0 0 6px;font-family:var(--font-h, inherit);">
+          Elige tu plan
+        </h2>
+        <p style="font-size:13px;color:#64748B;margin:0 0 22px;">Selecciona el plan que mejor se adapte a ti.</p>
+        <button onclick="continuarPago('mensual')" style="
+          width:100%;display:flex;gap:14px;align-items:center;
+          padding:16px;background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;
+          cursor:pointer;margin-bottom:10px;text-align:left;font-family:inherit;
+          transition:all .2s;
+        " onmouseover="this.style.borderColor='#0D9488';this.style.background='#F0FDFA';" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='#fff';">
+          <div style="width:44px;height:44px;border-radius:12px;background:#CCFBF1;color:#0F766E;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📅</div>
+          <div style="flex:1;">
+            <p style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 2px;">Plan Mensual</p>
+            <p style="font-size:12.5px;color:#64748B;margin:0;">$199 MXN/mes · Cancela cuando quieras</p>
+          </div>
+          <span style="color:#0D9488;font-size:18px;">→</span>
+        </button>
+        <button onclick="continuarPago('anual')" style="
+          width:100%;display:flex;gap:14px;align-items:center;
+          padding:16px;background:#FFFBEB;border:1.5px solid #F59E0B;border-radius:14px;
+          cursor:pointer;margin-bottom:18px;text-align:left;font-family:inherit;
+          transition:all .2s;position:relative;
+        " onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
+          <div style="position:absolute;top:-9px;right:14px;background:#F59E0B;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:0.05em;">MÁS POPULAR</div>
+          <div style="width:44px;height:44px;border-radius:12px;background:#FEF3C7;color:#B45309;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💎</div>
+          <div style="flex:1;">
+            <p style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 2px;">Plan Anual</p>
+            <p style="font-size:12.5px;color:#64748B;margin:0;">$1,990 MXN/año · Ahorra $398 (2 meses gratis)</p>
+          </div>
+          <span style="color:#B45309;font-size:18px;">→</span>
+        </button>
+        <button onclick="cerrarPopupPendiente()" style="
+          width:100%;padding:10px;border:1.5px solid #E2E8F0;border-radius:10px;
+          background:#fff;color:#64748B;font-size:13px;font-weight:600;
+          cursor:pointer;font-family:inherit;
+        ">
+          Cancelar
+        </button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  };
 
   // CTA para regalo: invitar a suscribirse antes de que venza
   function renderRegaloSuscribirseCTA(fechaExpiracion) {
