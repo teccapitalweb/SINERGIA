@@ -1297,26 +1297,7 @@
     border-top: 1px solid rgba(13, 148, 136, 0.1);
     margin-top: auto; /* Empuja el footer al fondo del sidebar (flex column) */
     flex-shrink: 0;   /* No se comprime aunque el nav tenga muchas pestañas */
-    /* Sticky al fondo del sidebar para mantenerse visible aunque haya scroll */
-    position: sticky;
-    bottom: 0;
-    /* Background COMPLETAMENTE OPACO para tapar contenido detrás al scrollear */
-    background: var(--sidebar-footer-bg, #f0fdfa);
     padding-bottom: 4px;
-    z-index: 5;
-  }
-  /* Sombra/separación visual sutil cuando el contenido pasa por detrás */
-  .sidebar-footer::before {
-    content: '';
-    position: absolute;
-    top: -20px; left: 0; right: 0;
-    height: 20px;
-    background: linear-gradient(180deg, transparent 0%, var(--sidebar-footer-bg, #f0fdfa) 100%);
-    pointer-events: none;
-  }
-  /* Dark mode: footer con color sólido oscuro */
-  [data-theme="dark"] .sidebar-footer {
-    --sidebar-footer-bg: #0a1916;
   }
   .btn-logout {
     width: 100%;
