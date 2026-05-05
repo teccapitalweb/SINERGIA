@@ -146,6 +146,8 @@
     /* Ocultar scrollbar visualmente pero mantener scroll funcional */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
+    /* Reserva espacio para la barra aunque esté oculta — evita reflow al hacer scroll */
+    scrollbar-gutter: stable;
   }
   .sidebar::-webkit-scrollbar,
   .sidebar *::-webkit-scrollbar {
@@ -334,11 +336,11 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    overflow-y: auto;
-    scrollbar-width: thin;
+    /* Sin overflow propio — el scroll lo maneja el .sidebar padre.
+       Esto evita el doble-scroll anidado que causaba reflow visual
+       (texto duplicado/temblando) al hacer scroll. */
+    min-height: 0;
   }
-  .sidebar-nav::-webkit-scrollbar { width: 6px; }
-  .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(13,148,136,0.2); border-radius: 100px; }
 
   .nav-section-title {
     font-family: var(--font-mono);
