@@ -13171,15 +13171,28 @@ window.closeCursoModal
     // Plan info (solo si es miembro activo)
     const isActiveMember = member && member.activa === true;
     const plan = member?.plan || 'mensual';
+    const esRegalo = !!member?.esRegalo || plan === 'regalo';
+    const activacionManual = !!member?.activacionManual;
     const badgeEl = document.getElementById('sidebarPlanBadge');
     const badgeParent = badgeEl?.parentElement; // .sidebar-user-badge
 
     if (isActiveMember) {
       if (badgeParent) badgeParent.classList.remove('guest');
-      const planLabel = plan === 'anual' ? 'VIP ANUAL' : 'VIP MENSUAL';
-      const planName = plan === 'anual' ? 'Membresía Anual' : 'Membresía Mensual';
-      const planPrice = plan === 'anual' ? '$1,990<span>/año</span>' : '$199<span>/mes</span>';
-
+      let planLabel, planName, planPrice;
+      if (esRegalo) {
+        planLabel = 'VIP TEMPORAL';
+        planName = 'Acceso de Cortesía';
+        const dias = member.duracionDias || 3;
+        planPrice = `<span style="font-size:0.7em;font-weight:600;">Sin costo · ${dias} días</span>`;
+      } else if (plan === 'anual') {
+        planLabel = 'VIP ANUAL';
+        planName = 'Membresía Anual';
+        planPrice = '$1,990<span>/año</span>';
+      } else {
+        planLabel = 'VIP MENSUAL';
+        planName = 'Membresía Mensual';
+        planPrice = '$199<span>/mes</span>';
+      }
       badgeEl.textContent = planLabel;
       document.getElementById('subPlanName').textContent = planName;
       document.getElementById('subPlanPrice').innerHTML = planPrice;
@@ -13193,17 +13206,132 @@ window.closeCursoModal
       if (subPrice) subPrice.innerHTML = '—';
     }
 
-    // Fecha próxima renovación (placeholder: hoy + 30/365 días según plan)
-    const createdAt = member?.createdAt?.toDate?.() || new Date();
-    const periodDays = plan === 'anual' ? 365 : 30;
-    const nextDate = new Date(createdAt);
-    nextDate.setDate(nextDate.getDate() + periodDays);
-    const nextStr = nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
-    const sinceStr = createdAt.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+    // ═══════════════════════════════════════════════════════════
+    // Fechas y método de pago: depende del tipo de membresía
+    // ═══════════════════════════════════════════════════════════
+    const subNextDateLabel = document.querySelector('#subNextDate')?.parentElement?.querySelector('.sub-meta-label');
+    const subPaymentMethodEl = document.getElementById('subPaymentMethod');
+    const subPaymentLabel = subPaymentMethodEl?.parentElement?.querySelector('.sub-meta-label');
+    const subSinceLabel = document.querySelector('#subSince')?.parentElement?.querySelector('.sub-meta-label');
     const nextEl = document.getElementById('subNextDate');
     const sinceEl = document.getElementById('subSince');
+
+    // Calcular fecha de expiración: priorizar expiraEn (regalos/manual) sobre proximaRenovacion
+    let fechaExpiracion;
+    if (member?.expiraEn) {
+      fechaExpiracion = member.expiraEn.toDate ? member.expiraEn.toDate() : new Date(member.expiraEn);
+    } else if (member?.proximaRenovacion) {
+      fechaExpiracion = member.proximaRenovacion.toDate ? member.proximaRenovacion.toDate() : new Date(member.proximaRenovacion);
+    } else {
+      const createdAt = member?.createdAt?.toDate?.() || new Date();
+      const periodDays = plan === 'anual' ? 365 : 30;
+      fechaExpiracion = new Date(createdAt);
+      fechaExpiracion.setDate(fechaExpiracion.getDate() + periodDays);
+    }
+    const fechaActivacion = member?.activadoEn?.toDate?.() || member?.createdAt?.toDate?.() || new Date();
+
+    const nextStr = fechaExpiracion.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
     if (nextEl) nextEl.textContent = nextStr;
-    if (sinceEl) sinceEl.textContent = sinceStr.charAt(0).toUpperCase() + sinceStr.slice(1);
+
+    // Adaptar etiquetas y método de pago según tipo
+    if (esRegalo) {
+      // Regalo: cambiar etiquetas
+      if (subNextDateLabel) subNextDateLabel.textContent = 'ACCESO VENCE EL';
+      if (subSinceLabel) subSinceLabel.textContent = 'ACTIVADO EL';
+      if (subPaymentLabel) subPaymentLabel.textContent = 'TIPO DE ACCESO';
+      if (subPaymentMethodEl) subPaymentMethodEl.textContent = 'Regalo del coordinador';
+      const sinceStr = fechaActivacion.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+      if (sinceEl) sinceEl.textContent = sinceStr;
+    } else if (activacionManual) {
+      // Activación manual del coordinador (no regalo, sino mensual/anual sin Stripe)
+      if (subNextDateLabel) subNextDateLabel.textContent = 'ACCESO VENCE EL';
+      if (subSinceLabel) subSinceLabel.textContent = 'ACTIVADO EL';
+      if (subPaymentLabel) subPaymentLabel.textContent = 'MÉTODO DE PAGO';
+      if (subPaymentMethodEl) subPaymentMethodEl.textContent = 'Pago externo';
+      const sinceStr = fechaActivacion.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+      if (sinceEl) sinceEl.textContent = sinceStr;
+    } else {
+      // Pago normal con Stripe (default original)
+      if (subNextDateLabel) subNextDateLabel.textContent = 'PRÓXIMA RENOVACIÓN';
+      if (subSinceLabel) subSinceLabel.textContent = 'MIEMBRO DESDE';
+      if (subPaymentLabel) subPaymentLabel.textContent = 'MÉTODO DE PAGO';
+      if (subPaymentMethodEl) subPaymentMethodEl.textContent = 'Stripe';
+      const sinceStr = fechaActivacion.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+      if (sinceEl) sinceEl.textContent = sinceStr.charAt(0).toUpperCase() + sinceStr.slice(1);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Ocultar/mostrar acciones según tipo de membresía
+    // ═══════════════════════════════════════════════════════════
+    const btnCambiarPlan = document.getElementById('btnCambiarPlan');
+    const btnHistorialFact = document.getElementById('btnHistorialFact');
+    const btnCancelarSub = document.getElementById('btnCancelarSub');
+
+    if (esRegalo || activacionManual) {
+      // Para regalos y activaciones manuales: ocultar acciones de Stripe
+      if (btnCambiarPlan) btnCambiarPlan.style.display = 'none';
+      if (btnHistorialFact) btnHistorialFact.style.display = 'none';
+      if (btnCancelarSub) btnCancelarSub.style.display = 'none';
+      // Mostrar CTA de suscripción permanente para regalos
+      if (esRegalo) {
+        renderRegaloSuscribirseCTA(fechaExpiracion);
+      }
+    } else {
+      // Pago normal Stripe: mostrar todas las acciones
+      if (btnCambiarPlan) btnCambiarPlan.style.display = '';
+      if (btnHistorialFact) btnHistorialFact.style.display = '';
+      if (btnCancelarSub) btnCancelarSub.style.display = '';
+      // Quitar CTA de regalo si existe
+      const ctaExistente = document.getElementById('regaloSuscribirseCTA');
+      if (ctaExistente) ctaExistente.remove();
+    }
+
+    // Ajustar tag superior de la tarjeta según tipo
+    const subTag = document.querySelector('.sub-tag');
+    if (subTag) {
+      if (esRegalo) {
+        subTag.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          ACCESO TEMPORAL ACTIVO
+        `;
+      } else if (activacionManual) {
+        subTag.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          MEMBRESÍA VIP ACTIVA
+        `;
+      } else {
+        subTag.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px;height:11px;"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+          MEMBRESÍA VIP ACTIVA
+        `;
+      }
+    }
+  }
+
+  // CTA para regalo: invitar a suscribirse antes de que venza
+  function renderRegaloSuscribirseCTA(fechaExpiracion) {
+    const actionsContainer = document.querySelector('.sub-actions');
+    if (!actionsContainer) return;
+    let cta = document.getElementById('regaloSuscribirseCTA');
+    if (cta) return; // ya existe
+    const diasRestantes = Math.max(0, Math.ceil((fechaExpiracion - new Date()) / 86400000));
+    cta = document.createElement('button');
+    cta.id = 'regaloSuscribirseCTA';
+    cta.className = 'sub-action-btn';
+    cta.style.cssText = 'background:linear-gradient(135deg, #FEF3C7, #FCD34D); border-color:#F59E0B;';
+    cta.onclick = () => { window.location.href = 'vip-checkout.html?plan=mensual'; };
+    cta.innerHTML = `
+      <div class="sub-action-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
+      </div>
+      <div class="sub-action-text">
+        <div class="sub-action-title" style="color:#7C2D12;">¿Te encanta? Suscríbete antes de que venza</div>
+        <div class="sub-action-sub" style="color:#92400E;">${diasRestantes > 0 ? `Quedan ${diasRestantes} día${diasRestantes !== 1 ? 's' : ''} de tu acceso de cortesía` : 'Tu acceso temporal está por vencer'}</div>
+      </div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:#92400E;"><polyline points="9 18 15 12 9 6"/></svg>
+    `;
+    // Insertar al inicio de las acciones
+    actionsContainer.insertBefore(cta, actionsContainer.firstChild);
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -16233,7 +16361,10 @@ window.closeCursoModal
       badgeText.textContent = 'Invitado';
     } else if (isVip) {
       badgeEl.classList.add('pb-vip');
-      const planStr = (member.plan === 'anual') ? 'VIP ANUAL' : (member.plan === 'mensual' ? 'VIP MENSUAL' : 'VIP');
+      const esRegaloPerfil = !!member.esRegalo || member.plan === 'regalo';
+      const planStr = esRegaloPerfil ? 'VIP TEMPORAL'
+                    : (member.plan === 'anual') ? 'VIP ANUAL'
+                    : (member.plan === 'mensual' ? 'VIP MENSUAL' : 'VIP');
       badgeText.textContent = planStr;
     } else {
       badgeEl.classList.add('pb-pendiente');
@@ -16241,9 +16372,13 @@ window.closeCursoModal
     }
 
     // Plan (con el fix del bug: solo si pagó)
-    const pagoConfirmado = isVip && (member.plan === 'mensual' || member.plan === 'anual');
+    const esRegaloPerfil2 = !!member?.esRegalo || member?.plan === 'regalo';
+    const pagoConfirmado = isVip && (member.plan === 'mensual' || member.plan === 'anual') && !esRegaloPerfil2;
     const planEl = document.getElementById('perfilPlan');
-    if (pagoConfirmado) {
+    if (esRegaloPerfil2 && isVip) {
+      const dias = member.duracionDias || 3;
+      planEl.textContent = `Acceso de cortesía · ${dias} días`;
+    } else if (pagoConfirmado) {
       planEl.textContent = member.plan === 'anual' ? 'Miembro VIP · $1,990 MXN/año' : 'Miembro VIP · $199 MXN/mes';
     } else if (isLogged) {
       planEl.textContent = 'Sin plan seleccionado';
