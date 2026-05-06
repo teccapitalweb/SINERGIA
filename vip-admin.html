@@ -2694,14 +2694,26 @@
         }
 
         // Recopilar destinatarios según audience
-        // Por ahora todas las opciones envían a miembros activos
-        // (el resto de audiences se pueden refinar después)
-        const recipients = allMembers
-          .filter(m => m.activa === true && m.uid)
-          .map(m => m.uid);
+        // Mapeo de las 4 opciones del dropdown:
+        //   'all'      → todos los miembros activos
+        //   'mensual'  → activos con plan mensual
+        //   'anual'    → activos con plan anual
+        //   'inactive' → pendientes de pago (NO activos: pendientes, cancelados, etc.)
+        let recipients;
+        if (audience === 'mensual') {
+          recipients = allMembers.filter(m => m.activa === true && m.plan === 'mensual' && m.uid).map(m => m.uid);
+        } else if (audience === 'anual') {
+          recipients = allMembers.filter(m => m.activa === true && m.plan === 'anual' && m.uid).map(m => m.uid);
+        } else if (audience === 'inactive') {
+          recipients = allMembers.filter(m => m.activa !== true && m.uid).map(m => m.uid);
+        } else {
+          // 'all' o default
+          recipients = allMembers.filter(m => m.activa === true && m.uid).map(m => m.uid);
+        }
 
         if (recipients.length === 0) {
-          showToast('No hay miembros activos a quien enviar', 'error');
+          const labels = { all: 'miembros activos', mensual: 'miembros mensuales', anual: 'miembros anuales', inactive: 'pendientes de pago' };
+          showToast(`No hay ${labels[audience] || 'destinatarios'} a quien enviar`, 'error');
           btn.disabled = false;
           return;
         }
