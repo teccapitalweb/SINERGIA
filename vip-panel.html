@@ -7214,17 +7214,17 @@
     flex: 1;
     height: 100%;
   }
-  /* Cover invisible que tapa el botón "popup" que Google Drive
+  /* Cover opaco que TAPA visualmente el botón "popup" que Google Drive
      inyecta en la esquina superior derecha de su iframe.
-     No bloquea la lectura del PDF/video, solo intercepta clicks
-     en esa zona pequeña. */
+     Color = fondo del visor-modal para integrarse con la barra oscura
+     que Drive pinta en el header del preview. */
   .visor-cover-popup {
     position: absolute;
     top: 0;
     right: 0;
-    width: 56px;
-    height: 56px;
-    background: transparent;
+    width: 48px;
+    height: 48px;
+    background: #0f1f1c;
     cursor: default;
     z-index: 2;
   }
@@ -14653,24 +14653,44 @@ window.closeCursoModal
     document.body.style.overflow = '';
   };
 
-  // Toggle pantalla completa sobre el iframe (solo se usa en clases/video)
+  // Toggle pantalla completa sobre el visor-modal (incluye header con
+  // los botones, para que el usuario pueda salir desde el mismo botón).
+  // Solo se usa en clases/video.
   window.toggleVisorFullscreen = function() {
-    const frame = document.getElementById('visorFrame');
-    if (!frame) return;
+    const modal = document.querySelector('.visor-modal');
+    if (!modal) return;
     const enFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
     try {
       if (enFullscreen) {
         if (document.exitFullscreen) document.exitFullscreen();
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       } else {
-        if (frame.requestFullscreen) frame.requestFullscreen();
-        else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
-        else if (frame.msRequestFullscreen) frame.msRequestFullscreen();
+        if (modal.requestFullscreen) modal.requestFullscreen();
+        else if (modal.webkitRequestFullscreen) modal.webkitRequestFullscreen();
+        else if (modal.msRequestFullscreen) modal.msRequestFullscreen();
       }
     } catch (err) {
       console.warn('[toggleVisorFullscreen] No se pudo cambiar fullscreen:', err.message);
     }
   };
+
+  // Cambia el ícono/texto del botón según el estado de fullscreen
+  function actualizarBotonFullscreen() {
+    const fsBtn = document.getElementById('visorFullscreen');
+    if (!fsBtn) return;
+    const enFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (enFullscreen) {
+      // Ícono "minimizar" (4 esquinas hacia adentro) + texto "Pantalla normal"
+      fsBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg><span>Pantalla normal</span>';
+      fsBtn.title = 'Salir de pantalla completa';
+    } else {
+      // Ícono "expandir" (4 esquinas hacia afuera) + texto "Pantalla completa"
+      fsBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>Pantalla completa</span>';
+      fsBtn.title = 'Pantalla completa';
+    }
+  }
+  document.addEventListener('fullscreenchange', actualizarBotonFullscreen);
+  document.addEventListener('webkitfullscreenchange', actualizarBotonFullscreen);
 
   // ═══ SISTEMA DE SESIONES VISTAS ═══
   window.marcarSesionVista = function() {
