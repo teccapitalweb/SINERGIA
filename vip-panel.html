@@ -13375,21 +13375,26 @@ window.closeCursoModal
       const cursoLocked = !cursoDesbloqueado(idx);
       const cursoDiasFaltan = diasParaDesbloquear(idx);
       const diasActuales = calcularDiasMembresia();
+      // Día absoluto en que el curso se desbloquea (para ordenar)
+      const cursoDiaAbs = idx * 10;
       (curso.materiales || []).forEach(m => {
         // Reglas de desbloqueo del material (en este orden):
-        // 1. Si disponibleSiempre === true → siempre desbloqueado
+        // 1. Si disponibleSiempre === true → siempre desbloqueado (día 0)
         // 2. Si tiene desbloquearEnDias (número) → comparar con días de membresía
         // 3. Sino → hereda del curso (compatibilidad con materiales viejos)
-        let locked, diasFaltan;
+        let locked, diasFaltan, diaAbs;
         if (m.disponibleSiempre === true) {
           locked = false;
           diasFaltan = 0;
+          diaAbs = 0;
         } else if (typeof m.desbloquearEnDias === 'number') {
           locked = diasActuales < m.desbloquearEnDias;
           diasFaltan = Math.max(0, m.desbloquearEnDias - diasActuales);
+          diaAbs = m.desbloquearEnDias;
         } else {
           locked = cursoLocked;
           diasFaltan = cursoDiasFaltan;
+          diaAbs = cursoDiaAbs;
         }
         todosMateriales.push({
           titulo: m.titulo,
@@ -13397,10 +13402,14 @@ window.closeCursoModal
           curso: curso.titulo,
           emoji: curso.emoji || '🌾',
           locked,
-          diasFaltan
+          diasFaltan,
+          diaAbs
         });
       });
     });
+
+    // Ordenar por día absoluto de desbloqueo (los disponibles primero, luego los más cercanos a desbloquearse)
+    todosMateriales.sort((a, b) => a.diaAbs - b.diaAbs);
 
     if (!todosMateriales.length) {
       grid.innerHTML = `
