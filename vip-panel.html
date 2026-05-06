@@ -13372,16 +13372,19 @@ window.closeCursoModal
 
     const todosMateriales = [];
     sorted.forEach((curso, idx) => {
-      const locked = !cursoDesbloqueado(idx);
-      const diasFaltan = diasParaDesbloquear(idx);
+      const cursoLocked = !cursoDesbloqueado(idx);
+      const cursoDiasFaltan = diasParaDesbloquear(idx);
       (curso.materiales || []).forEach(m => {
+        // Si el material está marcado "disponibleSiempre: true", se ve siempre,
+        // ignorando el lock del curso. Si no, hereda el lock del curso.
+        const siempre = m.disponibleSiempre === true;
         todosMateriales.push({
           titulo: m.titulo,
           url: m.url,
           curso: curso.titulo,
           emoji: curso.emoji || '🌾',
-          locked,
-          diasFaltan
+          locked: siempre ? false : cursoLocked,
+          diasFaltan: siempre ? 0 : cursoDiasFaltan
         });
       });
     });
