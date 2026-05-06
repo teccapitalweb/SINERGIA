@@ -12321,12 +12321,15 @@
 
   // Un curso se desbloquea cada 10 días según su orden de creación
   // Curso 1: día 0, Curso 2: día 10, Curso 3: día 20, ...
-  function cursoDesbloqueado(indexCurso) {
+  // EXCEPCIÓN: si el curso tiene disponibleSiempre:true, se ve desde el día 1
+  function cursoDesbloqueado(indexCurso, curso) {
+    if (curso && curso.disponibleSiempre === true) return true;
     const dias = calcularDiasMembresia();
     return dias >= (indexCurso * 10);
   }
 
-  function diasParaDesbloquear(indexCurso) {
+  function diasParaDesbloquear(indexCurso, curso) {
+    if (curso && curso.disponibleSiempre === true) return 0;
     const dias = calcularDiasMembresia();
     return Math.max(0, (indexCurso * 10) - dias);
   }
@@ -12501,8 +12504,8 @@
     const conEstado = sorted.map((c, idx) => ({
       ...c,
       _idx: idx,
-      _unlocked: cursoDesbloqueado(idx),
-      _diasFaltantes: diasParaDesbloquear(idx)
+      _unlocked: cursoDesbloqueado(idx, c),
+      _diasFaltantes: diasParaDesbloquear(idx, c)
     }));
 
     let filtered = conEstado;
@@ -12623,8 +12626,8 @@
       return (a.createdAt?.toDate?.().getTime() || 0) - (b.createdAt?.toDate?.().getTime() || 0);
     });
     const idx = sorted.findIndex(c => c.id === cursoId);
-    const locked = !cursoDesbloqueado(idx);
-    const diasFaltan = diasParaDesbloquear(idx);
+    const locked = !cursoDesbloqueado(idx, curso);
+    const diasFaltan = diasParaDesbloquear(idx, curso);
 
     const emoji = curso.emoji || '🌾';
     const sesiones = curso.sesiones || [];
@@ -13372,11 +13375,12 @@ window.closeCursoModal
 
     const todosMateriales = [];
     sorted.forEach((curso, idx) => {
-      const cursoLocked = !cursoDesbloqueado(idx);
-      const cursoDiasFaltan = diasParaDesbloquear(idx);
+      const cursoLocked = !cursoDesbloqueado(idx, curso);
+      const cursoDiasFaltan = diasParaDesbloquear(idx, curso);
       const diasActuales = calcularDiasMembresia();
       // Día absoluto en que el curso se desbloquea (para ordenar)
-      const cursoDiaAbs = idx * 10;
+      // Si el curso es disponibleSiempre, lo tratamos como día 0
+      const cursoDiaAbs = (curso.disponibleSiempre === true) ? 0 : (idx * 10);
       (curso.materiales || []).forEach(m => {
         // Reglas de desbloqueo del material (en este orden):
         // 1. Si disponibleSiempre === true → siempre desbloqueado (día 0)
