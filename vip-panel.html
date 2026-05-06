@@ -255,14 +255,14 @@
   }
 
   /* Toggle de tema en topbar (solo móvil — en desktop ya está en sidebar) */
-  .topbar-theme-toggle { display: none; position: relative; overflow: hidden; }
-  .topbar-theme-toggle svg {
+  .topbar-btn.topbar-theme-toggle { display: none; position: relative; overflow: hidden; }
+  .topbar-btn.topbar-theme-toggle svg {
     position: absolute;
     width: 18px; height: 18px;
     transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   @media (max-width: 768px) {
-    .topbar-theme-toggle { display: inline-flex; align-items: center; justify-content: center; }
+    .topbar-btn.topbar-theme-toggle { display: inline-flex; align-items: center; justify-content: center; }
   }
 
   /* User card in sidebar */
