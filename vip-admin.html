@@ -1663,6 +1663,29 @@
           <!-- Se llena con JS -->
         </div>
       </div>
+
+      <!-- Mantenimiento: limpiar expirados -->
+      <div class="widget-box" style="margin-top:18px;">
+        <div class="widget-head">
+          <span class="widget-name">Mantenimiento</span>
+          <span style="font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--stone-400);letter-spacing:0.08em;">SISTEMA</span>
+        </div>
+        <div style="padding:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div style="flex:1;min-width:240px;">
+            <div style="font-size:14px;font-weight:700;color:var(--stone-800);">Desactivar miembros expirados</div>
+            <div style="font-size:12.5px;color:var(--stone-500);margin-top:3px;line-height:1.45;">
+              Revisa miembros manuales/regalo cuya fecha de expiración ya venció y los desactiva. <b id="expiradosPendientes" style="color:#D97706;">— pendientes</b> (auto-cron corre cada hora).
+            </div>
+          </div>
+          <button id="btnLimpiarExpirados" onclick="ejecutarLimpiezaExpirados()" class="btn-secondary" style="font-size:13px;padding:10px 16px;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Limpiar ahora
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -2849,7 +2872,53 @@
     renderGrowth();
     renderActivity();
     populateMembersSelect();
+    actualizarContadorExpirados();
   }
+
+  // Cuenta miembros con expiraEn vencido que aún están activos
+  function actualizarContadorExpirados() {
+    const el = document.getElementById('expiradosPendientes');
+    if (!el) return;
+    const ahora = Date.now();
+    const expirados = allMembers.filter(m => {
+      if (m.activa !== true) return false;
+      if (!m.expiraEn) return false;
+      const exp = m.expiraEn.toDate ? m.expiraEn.toDate() : new Date(m.expiraEn);
+      return exp.getTime() < ahora;
+    }).length;
+    if (expirados === 0) {
+      el.textContent = 'Sin pendientes';
+      el.style.color = '#059669';
+    } else {
+      el.textContent = `${expirados} ${expirados === 1 ? 'pendiente' : 'pendientes'}`;
+      el.style.color = '#D97706';
+    }
+  }
+
+  // Disparo manual del cron de auto-desactivación
+  window.ejecutarLimpiezaExpirados = async function() {
+    const btn = document.getElementById('btnLimpiarExpirados');
+    if (!btn) return;
+    btn.disabled = true;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<span style="font-size:12px;">Procesando...</span>';
+    try {
+      const res = await callAdminEndpoint('/admin/desactivar-expirados', {});
+      const desactivados = res?.desactivados ?? res?.count ?? 0;
+      if (desactivados === 0) {
+        showToast('No hay miembros expirados que limpiar', 'info');
+      } else {
+        showToast(`${desactivados} ${desactivados === 1 ? 'miembro desactivado' : 'miembros desactivados'} ✓`);
+      }
+      // Recargar para refrescar el contador
+      await loadMembers();
+    } catch (err) {
+      console.error('Error en limpieza de expirados:', err);
+      showToast('Error: ' + (err.message || 'no se pudo ejecutar'), 'error');
+    }
+    btn.disabled = false;
+    btn.innerHTML = originalHTML;
+  };
 
   function renderDistribution(mensual, anual, inactive) {
     const total = Math.max(1, mensual + anual + inactive);
