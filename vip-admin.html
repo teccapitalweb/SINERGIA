@@ -1493,6 +1493,11 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       <span class="nav-item-text">Notificaciones</span>
     </button>
+    <button class="nav-item" data-tab="webinars">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      <span class="nav-item-text">Webinars</span>
+      <span id="navWebinarsCount" class="nav-item-count">0</span>
+    </button>
     <button class="nav-item" data-tab="certificates">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
       <span class="nav-item-text">Certificados</span>
@@ -1773,6 +1778,85 @@
         </div>
         <div class="activity-list" id="notifHistory">
           <!-- Se llena con JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         3.5) WEBINARS (gestión)
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="webinars">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Próximos <em>webinars</em> en vivo</h2>
+          <p class="panel-sub">Programa los webinars que verán los miembros VIP en su pestaña <b>Webinars en vivo</b>. El countdown del Inicio se actualiza automáticamente.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-card">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span id="webinarFormTitle">Nuevo webinar</span>
+          </h3>
+          <form id="webinarForm">
+            <input type="hidden" id="webinarEditId" value="">
+            <div class="form-group">
+              <label class="form-label" for="webinarTitle">Título del webinar</label>
+              <input type="text" id="webinarTitle" class="form-input" placeholder="Ej: Manejo integrado de plagas en aguacate" maxlength="120" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="webinarInstructor">Instructor (opcional)</label>
+              <input type="text" id="webinarInstructor" class="form-input" placeholder="Ej: Ing. Ricardo Olmos" maxlength="80">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="webinarFechaHora">Fecha y hora</label>
+              <input type="datetime-local" id="webinarFechaHora" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="webinarLink">Link de Zoom / Meet (opcional)</label>
+              <input type="url" id="webinarLink" class="form-input" placeholder="https://zoom.us/j/...">
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="submit" class="btn-submit" id="webinarSubmit" style="flex:1;min-width:160px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <span id="webinarSubmitText">Crear webinar</span>
+              </button>
+              <button type="button" class="btn-secondary" id="webinarCancelEdit" onclick="cancelarEdicionWebinar()" style="display:none;">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="side-info">
+          <div class="side-info-content">
+            <div class="side-info-tag">VISIBILIDAD</div>
+            <h4>Visible para miembros VIP</h4>
+            <p>Los webinars aparecen en la pestaña <b>Webinars en vivo</b> del panel VIP de cada miembro activo. El countdown del Inicio se actualiza con el más próximo automáticamente.</p>
+            <div class="side-stat">
+              <span class="side-stat-label">Programados</span>
+              <span id="webinarStatCount" class="side-stat-value">0</span>
+            </div>
+            <div class="side-stat">
+              <span class="side-stat-label">Auto-borrado</span>
+              <span class="side-stat-value">24h post-inicio</span>
+            </div>
+            <div class="side-stat">
+              <span class="side-stat-label">Entrega</span>
+              <span class="side-stat-value">Tiempo real</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de próximos webinars -->
+      <div class="widget-box">
+        <div class="widget-head">
+          <span class="widget-name">Próximos webinars programados</span>
+        </div>
+        <div id="webinarList" style="padding:12px;">
+          <div style="padding:20px;text-align:center;color:var(--stone-400);font-size:13px;">Cargando webinars...</div>
         </div>
       </div>
     </div>
@@ -2789,6 +2873,211 @@
   }
 
   // ═══════════════════════════════════════════════════
+  // WEBINARS (gestión)
+  // Colección Firestore: proximos_webinars
+  // Doc: { titulo, instructor?, fechaHora: Timestamp, link? }
+  // ═══════════════════════════════════════════════════
+  let _webinarsCache = [];
+  let _webinarsUnsub = null;
+
+  function escapeHtmlSafe(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function formatFechaHora(ts) {
+    if (!ts) return '—';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleString('es-MX', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function suscribirWebinars() {
+    if (_webinarsUnsub) return; // ya suscrito
+    try {
+      const q = query(collection(db, 'proximos_webinars'), orderBy('fechaHora', 'asc'));
+      _webinarsUnsub = onSnapshot(q, (snap) => {
+        _webinarsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderWebinarsList();
+        // Actualizar contadores
+        const futuros = _webinarsCache.filter(w => {
+          if (!w.fechaHora) return false;
+          const dt = w.fechaHora.toDate ? w.fechaHora.toDate() : new Date(w.fechaHora);
+          return dt.getTime() > Date.now();
+        }).length;
+        const navCount = document.getElementById('navWebinarsCount');
+        if (navCount) navCount.textContent = futuros;
+        const statCount = document.getElementById('webinarStatCount');
+        if (statCount) statCount.textContent = futuros;
+      }, (err) => {
+        console.error('Error suscribiendo webinars:', err);
+        const list = document.getElementById('webinarList');
+        if (list) list.innerHTML = '<div style="padding:20px;text-align:center;color:#DC2626;font-size:13px;">Error al cargar webinars: ' + err.message + '</div>';
+      });
+    } catch (err) {
+      console.error('Error iniciando suscripción de webinars:', err);
+    }
+  }
+
+  function renderWebinarsList() {
+    const list = document.getElementById('webinarList');
+    if (!list) return;
+    if (_webinarsCache.length === 0) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--stone-400);font-size:13px;">No hay webinars programados</div>';
+      return;
+    }
+    const ahora = Date.now();
+    list.innerHTML = _webinarsCache.map(w => {
+      const dt = w.fechaHora?.toDate ? w.fechaHora.toDate() : (w.fechaHora ? new Date(w.fechaHora) : null);
+      const yaComenzó = dt && dt.getTime() <= ahora;
+      const fechaFmt = formatFechaHora(w.fechaHora);
+      const titulo = escapeHtmlSafe(w.titulo || 'Sin título');
+      const instructor = w.instructor ? `<div style="font-size:12px;color:var(--stone-500);margin-top:2px;">👤 ${escapeHtmlSafe(w.instructor)}</div>` : '';
+      const linkHtml = w.link ? `<a href="${escapeHtmlSafe(w.link)}" target="_blank" rel="noopener" style="font-size:11px;color:var(--teal-600);text-decoration:none;">🔗 Abrir link</a>` : '<span style="font-size:11px;color:var(--stone-400);">Sin link</span>';
+      const badgeColor = yaComenzó ? '#9CA3AF' : '#10B981';
+      const badgeText = yaComenzó ? 'Ya comenzó' : 'Programado';
+      return `
+        <div style="display:flex;align-items:center;gap:14px;padding:14px;border-bottom:1px solid var(--border-subtle);flex-wrap:wrap;">
+          <div style="flex:1;min-width:220px;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="background:${badgeColor};color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;">${badgeText}</span>
+              <span style="font-size:14px;font-weight:600;color:var(--stone-800);">${titulo}</span>
+            </div>
+            ${instructor}
+            <div style="font-size:12px;color:var(--stone-500);margin-top:4px;">📅 ${fechaFmt}</div>
+            <div style="margin-top:4px;">${linkHtml}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <button class="m-act-btn cancelar" title="Editar" onclick="editarWebinar('${w.id}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="m-act-btn danger" title="Eliminar" onclick="eliminarWebinar('${w.id}', '${titulo.replace(/'/g, '&apos;')}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Convierte input datetime-local (string) a Timestamp
+  function datetimeLocalToTimestamp(value) {
+    if (!value) return null;
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return null;
+    return d;
+  }
+
+  // Convierte Timestamp/Date a string para input datetime-local
+  function timestampToDatetimeLocal(ts) {
+    if (!ts) return '';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    if (isNaN(d.getTime())) return '';
+    // Necesita formato YYYY-MM-DDTHH:mm
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  window.editarWebinar = function(id) {
+    const w = _webinarsCache.find(x => x.id === id);
+    if (!w) return;
+    document.getElementById('webinarEditId').value = id;
+    document.getElementById('webinarTitle').value = w.titulo || '';
+    document.getElementById('webinarInstructor').value = w.instructor || '';
+    document.getElementById('webinarFechaHora').value = timestampToDatetimeLocal(w.fechaHora);
+    document.getElementById('webinarLink').value = w.link || '';
+    document.getElementById('webinarFormTitle').textContent = 'Editar webinar';
+    document.getElementById('webinarSubmitText').textContent = 'Guardar cambios';
+    document.getElementById('webinarCancelEdit').style.display = '';
+    // Scroll al formulario
+    document.querySelector('[data-panel="webinars"] .form-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  window.cancelarEdicionWebinar = function() {
+    document.getElementById('webinarForm').reset();
+    document.getElementById('webinarEditId').value = '';
+    document.getElementById('webinarFormTitle').textContent = 'Nuevo webinar';
+    document.getElementById('webinarSubmitText').textContent = 'Crear webinar';
+    document.getElementById('webinarCancelEdit').style.display = 'none';
+  };
+
+  window.eliminarWebinar = function(id, titulo) {
+    showModal({
+      type: 'danger',
+      title: '¿Eliminar webinar?',
+      body: `Se eliminará el webinar <b>${titulo}</b>. Los miembros dejarán de verlo en su panel.<br><br>Esta acción no se puede deshacer.`,
+      confirmText: 'Eliminar',
+      onConfirm: async () => {
+        try {
+          await deleteDoc(doc(db, 'proximos_webinars', id));
+          showToast('Webinar eliminado');
+        } catch (err) {
+          console.error('Error eliminando webinar:', err);
+          showToast('Error: ' + err.message, 'error');
+        }
+      }
+    });
+  };
+
+  // Form submit (crea o actualiza)
+  const webinarForm = document.getElementById('webinarForm');
+  if (webinarForm) {
+    webinarForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('webinarSubmit');
+      btn.disabled = true;
+      try {
+        const id = document.getElementById('webinarEditId').value.trim();
+        const titulo = document.getElementById('webinarTitle').value.trim();
+        const instructor = document.getElementById('webinarInstructor').value.trim();
+        const fechaHoraStr = document.getElementById('webinarFechaHora').value;
+        const link = document.getElementById('webinarLink').value.trim();
+
+        if (!titulo || !fechaHoraStr) {
+          showToast('Completa título y fecha/hora', 'error');
+          btn.disabled = false;
+          return;
+        }
+        const fechaHora = datetimeLocalToTimestamp(fechaHoraStr);
+        if (!fechaHora) {
+          showToast('Fecha/hora inválida', 'error');
+          btn.disabled = false;
+          return;
+        }
+
+        const data = {
+          titulo,
+          instructor: instructor || null,
+          fechaHora,  // Firebase JS SDK convierte Date a Timestamp automáticamente
+          link: link || null,
+          updatedAt: serverTimestamp()
+        };
+
+        if (id) {
+          // Editar
+          await updateDoc(doc(db, 'proximos_webinars', id), data);
+          showToast('Webinar actualizado ✓');
+        } else {
+          // Crear
+          data.createdAt = serverTimestamp();
+          data.createdBy = currentUser?.email || 'admin';
+          await addDoc(collection(db, 'proximos_webinars'), data);
+          showToast('Webinar creado ✓');
+        }
+        cancelarEdicionWebinar();
+      } catch (err) {
+        console.error('Error guardando webinar:', err);
+        showToast('Error: ' + (err.message || 'no se pudo guardar'), 'error');
+      }
+      btn.disabled = false;
+    });
+  }
+
+  // ═══════════════════════════════════════════════════
   // CERTIFICATES FORM
   // ═══════════════════════════════════════════════════
   const certForm = document.getElementById('certForm');
@@ -2987,6 +3276,7 @@
     await loadMembers();
     await loadNotifHistory();
     await loadCertsHistory();
+    suscribirWebinars();
 
     // Ocultar loader, mostrar app
     setTimeout(() => {
