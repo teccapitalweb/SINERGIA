@@ -12623,7 +12623,7 @@ window.closeCursoModal
         </h3>
         <div class="sesiones-list">${sesionesHtml}</div>
         ${materialesHtml}
-                    ${progresoPct === 100 ? `
+                    ${progresoPct === 100 && !tieneCertificadoEmitido(curso.id) ? `
               <div class="certificado-cta" style="margin-top:24px;padding:20px;background:linear-gradient(135deg,#064e3b,#065f46);border-radius:16px;text-align:center;">
                 <div style="font-size:2rem;margin-bottom:8px;">🎓</div>
                 <div style="color:#a7f3d0;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">IPCI · Sinergia-Agrícola</div>
@@ -12708,11 +12708,22 @@ window.closeCursoModal
       return;
   }
 
-    const btn = document.querySelector('.certificado-cta button');
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = '⏳ Generando certificado...';
-  }
+    // Doble seguro: si ya tiene certificado para este curso, no volver a generar
+    if (tieneCertificadoEmitido(courseId)) {
+      cerrarCertCta();
+      switchTab('certificates');
+      return;
+    }
+
+    // Bloquear ambos botones (banner del modal + popup nuevo) mientras se genera
+    const btnBanner = document.querySelector('.certificado-cta button');
+    const btnPopup = document.getElementById('certCtaBtn');
+    [btnBanner, btnPopup].forEach(b => {
+      if (b) {
+        b.disabled = true;
+        b.textContent = '⏳ Generando certificado...';
+      }
+    });
 
     try {
       const hours = 5; // Default, puede tomarse del curso si está disponible
@@ -12736,6 +12747,10 @@ window.closeCursoModal
 
           if (response.ok && data.certificate) {
                   const cert = data.certificate;
+        // Marcar el curso como ya certificado para que NO vuelva a aparecer el popup/banner
+        if (window._certIds) window._certIds.add(courseId);
+        // Cerrar el popup CTA si estaba abierto
+        cerrarCertCta();
         mostrarCertificadoModal(cert);
         // Crear notificación de certificado generado
         try {
@@ -12753,10 +12768,15 @@ window.closeCursoModal
   }
   } catch (err) {
       console.error('Error generando certificado:', err);
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = '🎓 Generar mi Certificado';
-  }
+      // Restaurar ambos botones a su estado original
+      if (btnBanner) {
+        btnBanner.disabled = false;
+        btnBanner.textContent = '🎓 Generar mi Certificado';
+      }
+      if (btnPopup) {
+        btnPopup.disabled = false;
+        btnPopup.textContent = '🎓 Generar mi Certificado';
+      }
       alert('Hubo un error al generar tu certificado. Intenta de nuevo.');
     }
   };
@@ -12978,6 +12998,32 @@ window.closeCursoModal
   };
 
   // Cargar certificados del usuario en la sección "Mis certificados"
+  // ═══════════════════════════════════════════════════════════════════
+  // PRECARGA DE CERTIFICADOS EMITIDOS
+  // Set global con los courseId que ya tienen certificado emitido,
+  // usado para condicionar la aparición del banner / popup de
+  // "Generar mi Certificado" (debe aparecer solo una vez por curso).
+  // ═══════════════════════════════════════════════════════════════════
+  if (!window._certIds) window._certIds = new Set();
+
+  async function precargarCertificadosEmitidos() {
+    if (!currentUser || currentUser.uid === 'invitado') return;
+    try {
+      const response = await fetch(`${BACKEND_URL_CERT}/certificados/usuario/${currentUser.uid}`);
+      if (!response.ok) return;
+      const data = await response.json();
+      if (data.certificates && Array.isArray(data.certificates)) {
+        window._certIds = new Set(data.certificates.map(c => c.courseId).filter(Boolean));
+      }
+    } catch (err) {
+      console.warn('[precargarCertificadosEmitidos] No se pudo precargar:', err.message);
+    }
+  }
+
+  function tieneCertificadoEmitido(courseId) {
+    return window._certIds && window._certIds.has(courseId);
+  }
+
   async function cargarCertificadosUsuario() {
     const container = document.getElementById('certificadosContainer');
     if (!container || !currentUser) return;
@@ -12997,6 +13043,9 @@ window.closeCursoModal
         container.innerHTML = '<p style="text-align:center;color:#6b7280;padding:2rem;">No se pudieron cargar tus certificados.</p>';
                            return;
   }
+
+      // Sincronizar el Set global con los certificados encontrados
+      window._certIds = new Set((data.certificates || []).map(c => c.courseId).filter(Boolean));
 
       if (data.certificates.length === 0) {
               togglePreview(true); // No tiene certificados → mostrar preview ejemplo
@@ -14602,6 +14651,9 @@ window.closeCursoModal
   window.mostrarFelicitacion = function(cursoId) {
     const curso = cursosFromFirestore.find(c => c.id === cursoId);
     const nombreCurso = curso?.titulo || 'este curso';
+    // Guardar el contexto del curso para el popup "Generar mi Certificado"
+    window._congratsCourseId = cursoId;
+    window._congratsCourseName = nombreCurso;
     const descEl = document.getElementById('congratsDesc');
     if (descEl) {
       descEl.textContent = `Has completado todas las sesiones de "${nombreCurso}". Tu certificado está listo para ser descargado.`;
@@ -14611,6 +14663,43 @@ window.closeCursoModal
       overlay.classList.add('visible');
       document.body.style.overflow = 'hidden';
     }
+  };
+
+  // Abrir el popup "Generar mi Certificado" usando el contexto guardado
+  // por mostrarFelicitacion (cursoId + cursoName)
+  window.abrirCertCta = function() {
+    const cursoId = window._congratsCourseId;
+    const cursoName = window._congratsCourseName;
+    if (!cursoId) {
+      console.warn('[abrirCertCta] No hay curso en contexto');
+      return;
+    }
+    // Si ya tiene certificado emitido, mandar directo a la pestaña
+    if (tieneCertificadoEmitido(cursoId)) {
+      switchTab('certificates');
+      return;
+    }
+    const titleEl = document.getElementById('certCtaTitle');
+    if (titleEl) titleEl.textContent = cursoName || 'Curso completado';
+    const overlay = document.getElementById('certificadoCtaOverlay');
+    if (overlay) {
+      overlay.classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  window.cerrarCertCta = function() {
+    const overlay = document.getElementById('certificadoCtaOverlay');
+    if (overlay) overlay.classList.remove('visible');
+    document.body.style.overflow = '';
+  };
+
+  // Disparado por el botón "Generar mi Certificado" del popup nuevo
+  window.confirmarGenerarCertCta = function() {
+    const cursoId = window._congratsCourseId;
+    const cursoName = window._congratsCourseName;
+    if (!cursoId) return;
+    generarCertificadoCurso(cursoId, cursoName);
   };
 
   window.cerrarCongrats = function() {
@@ -15536,6 +15625,9 @@ window.closeCursoModal
     window.isLoggedIn = isLoggedIn;
     window.currentUser = currentUser;
     window.currentMember = memberData;
+
+    // Precargar lista de certificados emitidos (en background, no bloquea)
+    precargarCertificadosEmitidos();
 
     // Disparar evento para que los renders de logros/perfil/referidos se actualicen
     window.dispatchEvent(new CustomEvent('sinergiaUserReady'));
@@ -19754,12 +19846,130 @@ window.closeCursoModal
       </div>
     </div>
     <div class="congrats-actions">
-      <button class="congrats-cta-primary" onclick="cerrarCongrats(); switchTab('certificates');">
+      <button class="congrats-cta-primary" onclick="cerrarCongrats(); abrirCertCta();">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         Ver mi certificado
       </button>
-      <button class="congrats-cta-secondary" onclick="cerrarCongrats();">Seguir explorando</button>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     🎓 POPUP "GENERAR MI CERTIFICADO" (post-felicitaciones)
+     Se abre desde el botón "Ver mi certificado" del popup
+     anterior. Solo se muestra si el usuario aún no tiene
+     certificado emitido para ese curso.
+     ═══════════════════════════════════════════════════════════ -->
+<style>
+  .cert-cta-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.25) 0%, rgba(5, 15, 24, 0.92) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 100003;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .cert-cta-overlay.visible {
+    display: flex;
+    opacity: 1;
+  }
+  .cert-cta-modal {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border-radius: 24px;
+    max-width: 460px;
+    width: 100%;
+    padding: 36px 28px 28px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 60px rgba(16, 185, 129, 0.35);
+    border: 2px solid rgba(110, 231, 183, 0.35);
+    transform: scale(0.88);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .cert-cta-overlay.visible .cert-cta-modal { transform: scale(1); }
+  .cert-cta-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: #d1fae5;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .cert-cta-close:hover { background: rgba(255,255,255,0.18); }
+  .cert-cta-close svg { width: 18px; height: 18px; }
+  .cert-cta-icon { font-size: 2.6rem; margin-bottom: 10px; }
+  .cert-cta-eyebrow {
+    color: #a7f3d0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .cert-cta-heading {
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .cert-cta-course {
+    color: #e6fffa;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    word-break: break-word;
+  }
+  .cert-cta-sub {
+    color: #6ee7b7;
+    font-size: 0.85rem;
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+  .cert-cta-button {
+    width: 100%;
+    background: #10b981;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+  }
+  .cert-cta-button:hover { background: #059669; transform: translateY(-1px); }
+  .cert-cta-button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+</style>
+<div class="cert-cta-overlay" id="certificadoCtaOverlay" onclick="if(event.target===this)cerrarCertCta()">
+  <div class="cert-cta-modal">
+    <button class="cert-cta-close" onclick="cerrarCertCta()" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="cert-cta-icon">🎓</div>
+    <div class="cert-cta-eyebrow">IPCI · Sinergia-Agrícola</div>
+    <div class="cert-cta-heading">¡Curso completado!</div>
+    <div class="cert-cta-course" id="certCtaTitle">Curso</div>
+    <div class="cert-cta-sub">Ya puedes generar tu certificado oficial con folio y código QR</div>
+    <button class="cert-cta-button" id="certCtaBtn" onclick="confirmarGenerarCertCta()">
+      🎓 Generar mi Certificado
+    </button>
   </div>
 </div>
 
