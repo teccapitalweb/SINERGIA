@@ -7202,6 +7202,32 @@
     background: #f0f0f0;
     display: block;
   }
+  /* Wrapper del iframe — necesario para posicionar el cover sobre el botón
+     "Ventana emergente" que Google Drive inyecta en su preview */
+  .visor-frame-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+  }
+  .visor-frame-wrap > .visor-frame {
+    flex: 1;
+    height: 100%;
+  }
+  /* Cover invisible que tapa el botón "popup" que Google Drive
+     inyecta en la esquina superior derecha de su iframe.
+     No bloquea la lectura del PDF/video, solo intercepta clicks
+     en esa zona pequeña. */
+  .visor-cover-popup {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 56px;
+    height: 56px;
+    background: transparent;
+    cursor: default;
+    z-index: 2;
+  }
   @media (max-width: 640px) {
     .visor-overlay { padding: 0; }
     .visor-modal { height: 100vh; max-width: 100%; border-radius: 0; }
@@ -14595,12 +14621,15 @@ window.closeCursoModal
     const frame = document.getElementById('visorFrame');
     const titleEl = document.getElementById('visorTitle');
     const dlEl = document.getElementById('visorDownload');
+    const fsBtn = document.getElementById('visorFullscreen');
     if (!overlay || !frame) return;
 
     const previewUrl = convertirUrlDrive(url);
     frame.src = previewUrl;
     titleEl.textContent = titulo || 'Visor';
     if (dlEl) dlEl.href = url;
+    // Botón pantalla completa: solo en clases (videos), oculto en material
+    if (fsBtn) fsBtn.style.display = (tipo === 'video') ? '' : 'none';
     overlay.classList.add('visible');
     document.body.style.overflow = 'hidden';
 
@@ -14612,9 +14641,35 @@ window.closeCursoModal
     const overlay = document.getElementById('visorOverlay');
     const frame = document.getElementById('visorFrame');
     if (!overlay || !frame) return;
+    // Salir de pantalla completa si está activa al cerrar el visor
+    try {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    } catch(e) { /* silencio */ }
     overlay.classList.remove('visible');
     frame.src = '';
     document.body.style.overflow = '';
+  };
+
+  // Toggle pantalla completa sobre el iframe (solo se usa en clases/video)
+  window.toggleVisorFullscreen = function() {
+    const frame = document.getElementById('visorFrame');
+    if (!frame) return;
+    const enFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    try {
+      if (enFullscreen) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      } else {
+        if (frame.requestFullscreen) frame.requestFullscreen();
+        else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+        else if (frame.msRequestFullscreen) frame.msRequestFullscreen();
+      }
+    } catch (err) {
+      console.warn('[toggleVisorFullscreen] No se pudo cambiar fullscreen:', err.message);
+    }
   };
 
   // ═══ SISTEMA DE SESIONES VISTAS ═══
@@ -19985,12 +20040,19 @@ window.closeCursoModal
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <span>Marcar como visto</span>
         </button>
+        <button id="visorFullscreen" class="visor-btn-action" onclick="toggleVisorFullscreen()" title="Pantalla completa" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+          <span>Pantalla completa</span>
+        </button>
         <button class="visor-close" onclick="cerrarVisor()" aria-label="Cerrar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
     </div>
-    <iframe id="visorFrame" class="visor-frame" src="" allow="autoplay" allowfullscreen></iframe>
+    <div class="visor-frame-wrap">
+      <iframe id="visorFrame" class="visor-frame" src="" allow="autoplay" allowfullscreen></iframe>
+      <div class="visor-cover-popup"></div>
+    </div>
   </div>
 </div>
 
