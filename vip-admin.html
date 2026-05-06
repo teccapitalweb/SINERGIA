@@ -2018,7 +2018,7 @@
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-  import { getFirestore, collection, doc, getDocs, updateDoc, deleteDoc, addDoc, serverTimestamp, query, orderBy, onSnapshot, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  import { getFirestore, collection, doc, getDocs, updateDoc, deleteDoc, addDoc, serverTimestamp, query, orderBy, onSnapshot, getDoc, writeBatch, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
   // ═══════════════════════════════════════════════════
   // FIREBASE CONFIG
@@ -2669,7 +2669,11 @@
   }
 
   // ═══════════════════════════════════════════════════
-  // NOTIFICATIONS FORM
+  // NOTIFICATIONS FORM — fan-out a notificaciones/{uid}/items/
+  // El panel del usuario lee de su subcolección personal.
+  // Para que un anuncio llegue a todos, escribimos un doc en cada
+  // subcolección (batch en chunks de 500 por límite de Firestore).
+  // Además guardamos un master en `notificaciones_admin` para el historial.
   // ═══════════════════════════════════════════════════
   const notifForm = document.getElementById('notifForm');
   if (notifForm) {
@@ -2678,21 +2682,67 @@
       const btn = document.getElementById('notifSubmit');
       btn.disabled = true;
       try {
-        const data = {
-          title: document.getElementById('notifTitle').value.trim(),
-          body: document.getElementById('notifBody').value.trim(),
-          link: document.getElementById('notifLink').value.trim() || null,
-          audience: document.getElementById('notifAudience').value,
+        const titulo = document.getElementById('notifTitle').value.trim();
+        const cuerpo = document.getElementById('notifBody').value.trim();
+        const enlace = document.getElementById('notifLink').value.trim() || null;
+        const audience = document.getElementById('notifAudience').value;
+
+        if (!titulo || !cuerpo) {
+          showToast('Completa título y mensaje', 'error');
+          btn.disabled = false;
+          return;
+        }
+
+        // Recopilar destinatarios según audience
+        // Por ahora todas las opciones envían a miembros activos
+        // (el resto de audiences se pueden refinar después)
+        const recipients = allMembers
+          .filter(m => m.activa === true && m.uid)
+          .map(m => m.uid);
+
+        if (recipients.length === 0) {
+          showToast('No hay miembros activos a quien enviar', 'error');
+          btn.disabled = false;
+          return;
+        }
+
+        // 1. Master en notificaciones_admin (historial admin)
+        const masterRef = await addDoc(collection(db, 'notificaciones_admin'), {
+          title: titulo,
+          body: cuerpo,
+          link: enlace,
+          audience: audience,
+          recipientCount: recipients.length,
           createdAt: serverTimestamp(),
           createdBy: currentUser?.email || 'admin'
-        };
-        await addDoc(collection(db, 'notificaciones'), data);
-        showToast('Notificación enviada ✓');
+        });
+
+        // 2. Fan-out: 1 doc por destinatario en notificaciones/{uid}/items/
+        // Firestore permite hasta 500 ops por batch
+        const CHUNK = 500;
+        for (let i = 0; i < recipients.length; i += CHUNK) {
+          const batch = writeBatch(db);
+          recipients.slice(i, i + CHUNK).forEach(uid => {
+            const ref = doc(collection(db, 'notificaciones', uid, 'items'));
+            batch.set(ref, {
+              tipo: 'sistema',
+              titulo: titulo,
+              texto: cuerpo,
+              link: enlace,
+              leida: false,
+              createdAt: serverTimestamp(),
+              anuncioMasterId: masterRef.id
+            });
+          });
+          await batch.commit();
+        }
+
+        showToast(`Notificación enviada a ${recipients.length} miembros ✓`);
         notifForm.reset();
         loadNotifHistory();
       } catch (err) {
-        console.error(err);
-        showToast('Error al enviar notificación', 'error');
+        console.error('Error al enviar notificación:', err);
+        showToast('Error: ' + (err.message || 'no se pudo enviar'), 'error');
       }
       btn.disabled = false;
     });
@@ -2700,7 +2750,8 @@
 
   async function loadNotifHistory() {
     try {
-      const q = query(collection(db, 'notificaciones'), orderBy('createdAt', 'desc'));
+      // Leer del master `notificaciones_admin` (donde guardamos cada anuncio una vez)
+      const q = query(collection(db, 'notificaciones_admin'), orderBy('createdAt', 'desc'), limit(20));
       const snap = await getDocs(q);
       const host = document.getElementById('notifHistory');
       if (snap.empty) {
@@ -2715,7 +2766,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </div>
           <div class="activity-text">
-            <b>${n.title}</b> <span style="color:var(--stone-500);">→ ${n.audience === 'all' ? 'Todos activos' : n.audience}</span>
+            <b>${n.title}</b> <span style="color:var(--stone-500);">→ ${n.recipientCount || (n.audience === 'all' ? 'Todos activos' : n.audience)} ${n.recipientCount ? 'miembros' : ''}</span>
           </div>
           <span class="activity-time">${formatTimeAgo(n.createdAt)}</span>
         </div>
