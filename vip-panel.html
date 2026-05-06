@@ -13445,6 +13445,9 @@ window.closeCursoModal
   // ═══════════════════════════════════════════════════════════════
   function mostrarBannerPendiente(member) {
     if (document.getElementById('pendienteBanner')) return;
+    // Si el usuario ya cerró el banner en esta sesión, no mostrarlo de nuevo
+    const dismissKey = `sinergia_pendiente_banner_dismissed_${member?.uid || ''}`;
+    if (sessionStorage.getItem(dismissKey)) return;
     const planEl = member?.plan || 'mensual';
     const planLabel = planEl === 'anual' ? 'Plan Anual ($1,990 MXN)' : 'Plan Mensual ($199 MXN)';
     const banner = document.createElement('div');
@@ -13459,6 +13462,7 @@ window.closeCursoModal
       box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
       flex-wrap: wrap;
     `;
+    const uidEsc = (member?.uid || '').replace(/'/g, "\\'");
     banner.innerHTML = `
       <span style="font-size:18px;">⏳</span>
       <span style="color:#7C2D12;font-size:13.5px;font-weight:600;">
@@ -13476,6 +13480,17 @@ window.closeCursoModal
         font-size: 12.5px; font-weight: 600; cursor: pointer;
         font-family: inherit;
       ">Cambiar plan</button>
+      <button onclick="ocultarBannerPendienteManual('${uidEsc}')" title="Ocultar por ahora" aria-label="Cerrar aviso" style="
+        background: rgba(124, 45, 18, 0.1);
+        border: none; width: 28px; height: 28px;
+        border-radius: 50%; color: #7C2D12;
+        cursor: pointer; display: flex;
+        align-items: center; justify-content: center;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      " onmouseover="this.style.background='rgba(124,45,18,0.22)'" onmouseout="this.style.background='rgba(124,45,18,0.1)'">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     `;
     document.body.appendChild(banner);
     // Ajustar padding del body para que no tape contenido
@@ -13488,6 +13503,13 @@ window.closeCursoModal
       sessionStorage.setItem(popupKey, '1');
     }
   }
+
+  // Cierre manual desde la X — recuerda la decisión por sesión
+  window.ocultarBannerPendienteManual = function(uid) {
+    const dismissKey = `sinergia_pendiente_banner_dismissed_${uid || ''}`;
+    try { sessionStorage.setItem(dismissKey, '1'); } catch(e) {}
+    ocultarBannerPendiente();
+  };
 
   function ocultarBannerPendiente() {
     const banner = document.getElementById('pendienteBanner');
