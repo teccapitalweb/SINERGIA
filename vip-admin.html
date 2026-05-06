@@ -1502,6 +1502,11 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       <span class="nav-item-text">Materiales</span>
     </button>
+    <button class="nav-item" data-tab="courses">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span class="nav-item-text">Videoteca</span>
+      <span id="navCoursesCount" class="nav-item-count">0</span>
+    </button>
     <button class="nav-item" data-tab="certificates">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
       <span class="nav-item-text">Certificados</span>
@@ -1964,6 +1969,99 @@
               <span id="materialModalSubmitText">Agregar</span>
             </button>
             <button type="button" class="btn-secondary" onclick="cerrarMaterialModal()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         3.7) VIDEOTECA / CURSOS (gestión)
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="courses">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Gestión de la <em>videoteca</em></h2>
+          <p class="panel-sub">Crea cursos, edita sus datos y administra las clases (sesiones) de cada uno. Aparecen en la pestaña <b>Videoteca</b> del panel VIP.</p>
+        </div>
+      </div>
+
+      <!-- Card destacada: nuevo curso -->
+      <div style="background:linear-gradient(135deg,#7C3AED,#A855F7);border-radius:14px;padding:18px 20px;margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(139,92,246,0.25);">
+        <div style="flex:1;min-width:240px;color:#fff;">
+          <div style="font-size:15px;font-weight:800;margin-bottom:4px;">Crear curso nuevo</div>
+          <div style="font-size:13px;opacity:0.9;">Agrega un curso completo con título, descripción y sesiones (clases).</div>
+        </div>
+        <button onclick="abrirCursoModalNuevo()" style="background:#fff;color:#5B21B6;border:none;padding:11px 20px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuevo curso
+        </button>
+      </div>
+
+      <div id="coursesList" style="display:flex;flex-direction:column;gap:14px;">
+        <div style="padding:24px;text-align:center;color:var(--stone-400);font-size:13px;background:#fff;border-radius:14px;border:1px solid var(--border-subtle);">Cargando cursos...</div>
+      </div>
+    </div>
+
+    <!-- Modal de creación/edición de curso -->
+    <div id="cursoModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(6px);z-index:99999;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+      <div style="background:#fff;border-radius:18px;max-width:680px;width:100%;padding:28px 24px;box-shadow:0 30px 80px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h3 style="font-size:18px;font-weight:800;color:var(--stone-800);margin:0;" id="cursoModalTitle">Nuevo curso</h3>
+          <button onclick="cerrarCursoModal()" style="background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--stone-500);padding:0;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;">&times;</button>
+        </div>
+
+        <form id="cursoModalForm">
+          <input type="hidden" id="cursoEditId" value="">
+
+          <div class="form-group">
+            <label class="form-label" for="cursoTitle">Título del curso</label>
+            <input type="text" id="cursoTitle" class="form-input" placeholder="Ej: Manejo Integrado de Plagas en Aguacate" maxlength="120" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cursoDesc">Descripción</label>
+            <textarea id="cursoDesc" class="form-input" rows="3" placeholder="Descripción breve del curso (qué aprenderá el estudiante)" maxlength="500"></textarea>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+            <div class="form-group">
+              <label class="form-label" for="cursoEmoji">Emoji</label>
+              <input type="text" id="cursoEmoji" class="form-input" placeholder="🌾" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cursoNivel">Nivel</label>
+              <select id="cursoNivel" class="form-select">
+                <option value="Básico">Básico</option>
+                <option value="Intermedio">Intermedio</option>
+                <option value="Avanzado">Avanzado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cursoDuracion">Duración (horas)</label>
+              <input type="number" id="cursoDuracion" class="form-input" placeholder="10" min="1" max="200">
+            </div>
+          </div>
+
+          <!-- Sección de sesiones (clases) -->
+          <div style="background:#F9FAFB;border:1px solid var(--border-subtle);border-radius:12px;padding:14px;margin-top:8px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+              <div>
+                <div style="font-size:13.5px;font-weight:700;color:var(--stone-800);">Clases / sesiones del curso</div>
+                <div style="font-size:11.5px;color:var(--stone-500);margin-top:2px;">Las clases se desbloquean en orden: el alumno tiene que ver una para acceder a la siguiente.</div>
+              </div>
+              <button type="button" onclick="agregarSesionCurso()" class="btn-secondary" style="font-size:12px;padding:7px 12px;">
+                + Agregar clase
+              </button>
+            </div>
+            <div id="cursoSesionesList" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button type="submit" class="btn-submit" id="cursoModalSubmit" style="flex:1;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span id="cursoModalSubmitText">Crear curso</span>
+            </button>
+            <button type="button" class="btn-secondary" onclick="cerrarCursoModal()">Cancelar</button>
           </div>
         </form>
       </div>
@@ -3201,6 +3299,7 @@
       _adminCursosUnsub = onSnapshot(q, (snap) => {
         _adminCursosCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderMaterialesPanel();
+        if (typeof renderCoursesPanel === 'function') renderCoursesPanel();
       }, (err) => {
         console.error('Error suscribiendo cursos (admin):', err);
         const list = document.getElementById('materialsCursosList');
@@ -3570,6 +3669,292 @@
   document.addEventListener('click', (e) => {
     const ov = document.getElementById('materialModalOverlay');
     if (ov && e.target === ov) cerrarMaterialModal();
+  });
+
+  // ═══════════════════════════════════════════════════
+  // VIDEOTECA / CURSOS (gestión)
+  // Reusa _adminCursosCache (ya suscrito por la pestaña Materiales)
+  // Doc: { titulo, descripcion, emoji, nivel, duracion, orden,
+  //        sesiones: [{numero, titulo, url}],
+  //        materiales: [...], createdAt }
+  // ═══════════════════════════════════════════════════
+
+  // Render del panel cursos (lista de cards). Usa la misma cache que materiales.
+  function renderCoursesPanel() {
+    const list = document.getElementById('coursesList');
+    if (!list) return;
+    if (_adminCursosCache.length === 0) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--stone-400);font-size:13px;background:#fff;border-radius:14px;border:1px solid var(--border-subtle);">No hay cursos. Usa "Nuevo curso" arriba para crear el primero.</div>';
+      const navCount = document.getElementById('navCoursesCount');
+      if (navCount) navCount.textContent = '0';
+      return;
+    }
+    const navCount = document.getElementById('navCoursesCount');
+    if (navCount) navCount.textContent = String(_adminCursosCache.length);
+
+    list.innerHTML = _adminCursosCache.map((curso, idx) => {
+      const sesiones = Array.isArray(curso.sesiones) ? curso.sesiones : [];
+      const mats = Array.isArray(curso.materiales) ? curso.materiales : [];
+      const titulo = escapeHtmlSafe(curso.titulo || 'Sin título');
+      const desc = escapeHtmlSafe(curso.descripcion || '');
+      const emoji = curso.emoji || '📚';
+      const nivel = escapeHtmlSafe(curso.nivel || 'Básico');
+      const duracion = curso.duracion || 0;
+      const orden = curso.orden ?? (idx + 1);
+      const diaDesbloqueo = idx * 10;
+
+      return `
+        <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:14px;overflow:hidden;">
+          <div style="padding:16px 18px;display:flex;align-items:flex-start;gap:14px;background:linear-gradient(90deg,rgba(124,58,237,0.06),transparent);border-bottom:1px solid var(--border-subtle);flex-wrap:wrap;">
+            <span style="font-size:32px;flex-shrink:0;">${emoji}</span>
+            <div style="flex:1;min-width:240px;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                <span style="font-size:11px;font-weight:700;color:#5B21B6;background:#EDE9FE;padding:2px 7px;border-radius:5px;">CURSO #${orden}</span>
+                <span style="font-size:11px;font-weight:700;color:#92400E;background:#FEF3C7;padding:2px 7px;border-radius:5px;">${nivel}</span>
+                ${diaDesbloqueo === 0
+                  ? `<span style="font-size:11px;font-weight:700;color:#065F46;background:#D1FAE5;padding:2px 7px;border-radius:5px;">⚡ DISPONIBLE DÍA 1</span>`
+                  : `<span style="font-size:11px;font-weight:700;color:#3730A3;background:#E0E7FF;padding:2px 7px;border-radius:5px;">🔒 DESBLOQUEO DÍA ${diaDesbloqueo}</span>`
+                }
+              </div>
+              <div style="font-size:15px;font-weight:700;color:var(--stone-800);">${titulo}</div>
+              ${desc ? `<div style="font-size:12.5px;color:var(--stone-500);margin-top:4px;line-height:1.45;">${desc}</div>` : ''}
+              <div style="display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;">
+                <span style="font-size:12px;color:var(--stone-500);">⏱ ${duracion}h</span>
+                <span style="font-size:12px;color:var(--stone-500);">▶ ${sesiones.length} ${sesiones.length === 1 ? 'clase' : 'clases'}</span>
+                <span style="font-size:12px;color:var(--stone-500);">📎 ${mats.length} ${mats.length === 1 ? 'material' : 'materiales'}</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;flex-shrink:0;">
+              <button class="m-act-btn cancelar" title="Editar curso" onclick="editarCurso('${curso.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="m-act-btn danger" title="Eliminar curso" onclick="eliminarCurso('${curso.id}', '${titulo.replace(/'/g, '&apos;')}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+          ${sesiones.length === 0
+            ? `<div style="padding:14px 18px;color:var(--stone-400);font-size:13px;font-style:italic;">Este curso no tiene clases aún. Usa el botón Editar para agregarlas.</div>`
+            : `<div style="padding:8px 18px 14px 18px;">
+                ${sesiones.map((s, sIdx) => `
+                  <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:${sIdx === 0 ? '0' : '1px solid #F3F4F6'};">
+                    <span style="background:#EDE9FE;color:#6D28D9;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0;">CLASE ${s.numero || (sIdx + 1)}</span>
+                    <span style="flex:1;font-size:13px;color:var(--stone-700);">${escapeHtmlSafe(s.titulo || 'Sin título')}</span>
+                    ${s.url ? `<a href="${escapeHtmlSafe(s.url)}" target="_blank" rel="noopener" style="font-size:11px;color:#7C3AED;text-decoration:none;flex-shrink:0;">🔗 Abrir</a>` : `<span style="font-size:11px;color:var(--stone-400);">Sin URL</span>`}
+                  </div>
+                `).join('')}
+              </div>`
+          }
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Estado del formulario de sesiones (mientras está abierto el modal)
+  let _cursoEditandoSesiones = [];
+
+  function renderSesionesEnModal() {
+    const cont = document.getElementById('cursoSesionesList');
+    if (!cont) return;
+    if (_cursoEditandoSesiones.length === 0) {
+      cont.innerHTML = '<div style="padding:14px;text-align:center;color:var(--stone-400);font-size:12px;font-style:italic;">Aún no hay clases. Usa "+ Agregar clase" arriba.</div>';
+      return;
+    }
+    cont.innerHTML = _cursoEditandoSesiones.map((s, idx) => `
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:10px;background:#fff;border:1px solid var(--border-subtle);border-radius:10px;">
+        <span style="background:#EDE9FE;color:#6D28D9;font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;flex-shrink:0;margin-top:4px;">CLASE ${idx + 1}</span>
+        <div style="flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;">
+          <input type="text" placeholder="Título de la clase" value="${escapeHtmlSafe(s.titulo || '')}" oninput="actualizarSesion(${idx}, 'titulo', this.value)" class="form-input" style="font-size:13px;padding:8px 10px;">
+          <input type="url" placeholder="URL del video (Drive, YouTube, etc.)" value="${escapeHtmlSafe(s.url || '')}" oninput="actualizarSesion(${idx}, 'url', this.value)" class="form-input" style="font-size:13px;padding:8px 10px;">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+          <button type="button" onclick="moverSesion(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Subir" style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;${idx === 0 ? 'opacity:0.4;cursor:not-allowed;' : ''}">▲</button>
+          <button type="button" onclick="moverSesion(${idx}, 1)" ${idx === _cursoEditandoSesiones.length - 1 ? 'disabled' : ''} title="Bajar" style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;${idx === _cursoEditandoSesiones.length - 1 ? 'opacity:0.4;cursor:not-allowed;' : ''}">▼</button>
+          <button type="button" onclick="eliminarSesion(${idx})" title="Eliminar clase" style="background:#FEE2E2;border:1px solid #FECACA;border-radius:6px;padding:4px 8px;cursor:pointer;color:#B91C1C;font-size:11px;">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.agregarSesionCurso = function() {
+    _cursoEditandoSesiones.push({
+      numero: _cursoEditandoSesiones.length + 1,
+      titulo: '',
+      url: ''
+    });
+    renderSesionesEnModal();
+  };
+
+  window.actualizarSesion = function(idx, campo, valor) {
+    if (_cursoEditandoSesiones[idx]) {
+      _cursoEditandoSesiones[idx][campo] = valor;
+    }
+  };
+
+  window.moverSesion = function(idx, delta) {
+    const newIdx = idx + delta;
+    if (newIdx < 0 || newIdx >= _cursoEditandoSesiones.length) return;
+    const tmp = _cursoEditandoSesiones[idx];
+    _cursoEditandoSesiones[idx] = _cursoEditandoSesiones[newIdx];
+    _cursoEditandoSesiones[newIdx] = tmp;
+    // Actualizar numeración interna
+    _cursoEditandoSesiones.forEach((s, i) => { s.numero = i + 1; });
+    renderSesionesEnModal();
+  };
+
+  window.eliminarSesion = function(idx) {
+    _cursoEditandoSesiones.splice(idx, 1);
+    _cursoEditandoSesiones.forEach((s, i) => { s.numero = i + 1; });
+    renderSesionesEnModal();
+  };
+
+  window.abrirCursoModalNuevo = function() {
+    document.getElementById('cursoModalTitle').textContent = 'Nuevo curso';
+    document.getElementById('cursoModalSubmitText').textContent = 'Crear curso';
+    document.getElementById('cursoEditId').value = '';
+    document.getElementById('cursoTitle').value = '';
+    document.getElementById('cursoDesc').value = '';
+    document.getElementById('cursoEmoji').value = '🌾';
+    document.getElementById('cursoNivel').value = 'Básico';
+    document.getElementById('cursoDuracion').value = '10';
+    _cursoEditandoSesiones = [];
+    renderSesionesEnModal();
+    document.getElementById('cursoModalOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('cursoTitle').focus(), 50);
+  };
+
+  window.editarCurso = function(cursoId) {
+    const curso = _adminCursosCache.find(c => c.id === cursoId);
+    if (!curso) return;
+    document.getElementById('cursoModalTitle').textContent = 'Editar curso';
+    document.getElementById('cursoModalSubmitText').textContent = 'Guardar cambios';
+    document.getElementById('cursoEditId').value = cursoId;
+    document.getElementById('cursoTitle').value = curso.titulo || '';
+    document.getElementById('cursoDesc').value = curso.descripcion || '';
+    document.getElementById('cursoEmoji').value = curso.emoji || '🌾';
+    document.getElementById('cursoNivel').value = curso.nivel || 'Básico';
+    document.getElementById('cursoDuracion').value = curso.duracion || 10;
+    // Clonar sesiones para editar sin tocar la cache
+    _cursoEditandoSesiones = (curso.sesiones || []).map(s => ({
+      numero: s.numero,
+      titulo: s.titulo || '',
+      url: s.url || ''
+    }));
+    renderSesionesEnModal();
+    document.getElementById('cursoModalOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('cursoTitle').focus(), 50);
+  };
+
+  window.cerrarCursoModal = function() {
+    document.getElementById('cursoModalOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+    _cursoEditandoSesiones = [];
+  };
+
+  window.eliminarCurso = function(cursoId, titulo) {
+    showModal({
+      type: 'danger',
+      title: '¿Eliminar curso?',
+      body: `Se eliminará el curso <b>${titulo}</b> con todas sus clases y materiales.<br><br>Esta acción <b>no se puede deshacer</b>. Los miembros perderán acceso a este contenido.`,
+      confirmText: 'Eliminar curso',
+      onConfirm: async () => {
+        try {
+          await deleteDoc(doc(db, 'cursos', cursoId));
+          showToast('Curso eliminado');
+        } catch (err) {
+          console.error('Error eliminando curso:', err);
+          showToast('Error: ' + err.message, 'error');
+        }
+      }
+    });
+  };
+
+  // Submit del formulario (crea o edita curso)
+  const cursoForm = document.getElementById('cursoModalForm');
+  if (cursoForm) {
+    cursoForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('cursoModalSubmit');
+      btn.disabled = true;
+      try {
+        const cursoId = document.getElementById('cursoEditId').value.trim();
+        const titulo = document.getElementById('cursoTitle').value.trim();
+        const descripcion = document.getElementById('cursoDesc').value.trim();
+        const emoji = document.getElementById('cursoEmoji').value.trim() || '🌾';
+        const nivel = document.getElementById('cursoNivel').value;
+        const duracion = parseInt(document.getElementById('cursoDuracion').value, 10) || 10;
+
+        if (!titulo) {
+          showToast('El título es obligatorio', 'error');
+          btn.disabled = false;
+          return;
+        }
+
+        // Validar sesiones: cada una con título y URL válida
+        const sesionesLimpias = [];
+        for (let i = 0; i < _cursoEditandoSesiones.length; i++) {
+          const s = _cursoEditandoSesiones[i];
+          if (!s.titulo || !s.url) {
+            showToast(`Clase ${i + 1}: completa título y URL`, 'error');
+            btn.disabled = false;
+            return;
+          }
+          try { new URL(s.url); } catch(e) {
+            showToast(`Clase ${i + 1}: URL inválida`, 'error');
+            btn.disabled = false;
+            return;
+          }
+          sesionesLimpias.push({
+            numero: i + 1,
+            titulo: s.titulo.trim(),
+            url: s.url.trim()
+          });
+        }
+
+        const data = {
+          titulo,
+          descripcion,
+          emoji,
+          nivel,
+          duracion,
+          sesiones: sesionesLimpias
+        };
+
+        if (cursoId) {
+          // Editar — preservar materiales y otros campos
+          await updateDoc(doc(db, 'cursos', cursoId), data);
+          showToast('Curso actualizado ✓');
+        } else {
+          // Nuevo — agregar createdAt y orden al final
+          const ordenes = _adminCursosCache.map(c => c.orden || 0);
+          const maxOrden = ordenes.length ? Math.max(...ordenes) : 0;
+          data.orden = maxOrden + 1;
+          data.createdAt = serverTimestamp();
+          data.materiales = [];
+          await addDoc(collection(db, 'cursos'), data);
+          showToast('Curso creado ✓');
+        }
+        cerrarCursoModal();
+      } catch (err) {
+        console.error('Error guardando curso:', err);
+        showToast('Error: ' + (err.message || 'no se pudo guardar'), 'error');
+      }
+      btn.disabled = false;
+    });
+  }
+
+  // Cerrar modal con ESC o click en overlay
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const ov = document.getElementById('cursoModalOverlay');
+      if (ov && ov.style.display === 'flex') cerrarCursoModal();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    const ov = document.getElementById('cursoModalOverlay');
+    if (ov && e.target === ov) cerrarCursoModal();
   });
 
   // ═══════════════════════════════════════════════════
