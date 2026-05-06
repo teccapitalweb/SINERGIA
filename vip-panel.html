@@ -411,6 +411,32 @@
   }
   .nav-item-icon svg { width: 20px; height: 20px; }
   .nav-item-text { flex: 1; }
+
+  /* Badge en nav-item de Webinars (cantidad de webinars nuevos sin ver) */
+  .live-nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: #EF4444;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(239,68,68,0.45);
+    animation: liveBadgePulse 2s ease-in-out infinite;
+  }
+  @keyframes liveBadgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  [data-theme="dark"] .live-nav-badge {
+    background: #F87171;
+    box-shadow: 0 0 12px rgba(248,113,113,0.6);
+  }
   .nav-item-badge {
     font-family: var(--font-mono);
     font-size: 9px;
@@ -3245,6 +3271,40 @@
     border: 1px solid var(--stone-200);
   }
   .live-item-btn.recorded:hover { background: var(--teal-50); color: var(--teal-700); border-color: var(--teal-400); }
+
+  /* Countdown pequeño dentro de cada live-item */
+  .live-cd-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 6px 8px;
+    background: linear-gradient(135deg, rgba(13,148,136,0.08), rgba(13,148,136,0.04));
+    border: 1px solid rgba(13,148,136,0.18);
+    border-radius: 10px;
+  }
+  .live-cd-num {
+    font-family: var(--font-display, 'Inter', sans-serif);
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--teal-700);
+    letter-spacing: 0.02em;
+  }
+  .live-cd-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--teal-600);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+  [data-theme="dark"] .live-cd-box {
+    background: linear-gradient(135deg, rgba(45,212,191,0.12), rgba(45,212,191,0.05));
+    border-color: rgba(45,212,191,0.3);
+  }
+  [data-theme="dark"] .live-cd-num { color: #5EEAD4; }
+  [data-theme="dark"] .live-cd-label { color: #99F6E4; }
 
   /* ═══════════════════════════════════════════════════════════
      NOVEDADES - News Feed
@@ -9977,6 +10037,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
       </span>
       <span class="nav-item-text">Webinars</span>
+      <span id="liveNavBadge" class="live-nav-badge" style="display:none;">0</span>
     </button>
 
     <div class="nav-section-title">🛠️ Herramientas</div>
@@ -12106,6 +12167,9 @@
   let webinarCountdownInterval = null;
   let currentWebinarId = null;
 
+  // Webinars cargados desde Firestore (compartidos entre Inicio y pestaña Webinars)
+  window._webinarsCache = [];
+
   function startCountdown() {
     // Escuchar en tiempo real el webinar más próximo
     const webinarsRef = collection(db, 'proximos_webinars');
@@ -12122,6 +12186,13 @@
           const dt = w.fechaHora.toDate ? w.fechaHora.toDate() : new Date(w.fechaHora);
           return dt.getTime() > now; // Solo futuros
         });
+
+      // Compartir con la pestaña Webinars
+      window._webinarsCache = webinars;
+      // Re-renderizar lista en pestaña Webinars
+      if (typeof renderLive === 'function') renderLive();
+      // Actualizar badge en sidebar
+      if (typeof actualizarLiveBadge === 'function') actualizarLiveBadge();
 
       // Auto-borrar los webinars que ya pasaron más de 24h (gracia)
       snap.docs.forEach(async (d) => {
@@ -12161,7 +12232,17 @@
       }
       const linkEl = document.getElementById('nextWebinarLink');
       if (webinar.link) {
+        // Restricción VIP: si no es VIP, el click muestra paywall
+        // El href se mantiene, pero interceptamos el click
         linkEl.href = webinar.link;
+        linkEl.onclick = (ev) => {
+          if (window.isVIP !== true) {
+            ev.preventDefault();
+            if (typeof showVipUpsell === 'function') showVipUpsell('webinar');
+            else showToast?.('Solo miembros VIP activos pueden acceder a los webinars', 'error');
+            return false;
+          }
+        };
         linkEl.style.display = 'inline-flex';
       } else {
         linkEl.style.display = 'none';
@@ -13135,13 +13216,16 @@ window.closeCursoModal
     });
   });
 
-  // ─── Renderizar webinars ──────────────────────
+  // ─── Renderizar webinars en pestaña /live ──────
+  // Usa la misma fuente de datos del countdown del Inicio.
+  // El botón "Acceder al webinar" requiere ser VIP activo.
   function renderLive() {
     const upcoming = document.getElementById('liveUpcoming');
     if (!upcoming) return;
 
-    // Empty state si no hay próximos webinars publicados
-    if (!LIVE_CLASSES.upcoming || LIVE_CLASSES.upcoming.length === 0) {
+    const webinars = (window._webinarsCache || []);
+
+    if (!webinars.length) {
       upcoming.innerHTML = `
         <div style="text-align:center;padding:60px 20px;color:var(--stone-500);">
           <div style="font-size:48px;margin-bottom:14px;">📡</div>
@@ -13152,23 +13236,126 @@ window.closeCursoModal
       return;
     }
 
-    upcoming.innerHTML = LIVE_CLASSES.upcoming.map(c => `
-      <div class="live-item">
-        <div class="live-item-date">
-          <div class="live-item-day">${c.day} ${c.month}</div>
-          <div class="live-item-num">${c.num}</div>
-        </div>
-        <div class="live-item-info">
-          <div class="live-item-title">${c.title}</div>
-          <div class="live-item-meta">
-            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${c.instructor}</span>
-            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${c.hora} · ${c.duracion}</span>
+    upcoming.innerHTML = webinars.map(w => {
+      const dt = w.fechaHora?.toDate ? w.fechaHora.toDate() : new Date(w.fechaHora);
+      const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      const day = String(dt.getDate()).padStart(2, '0');
+      const month = meses[dt.getMonth()].toUpperCase();
+      const num = dt.getFullYear();
+      const titulo = (w.titulo || 'Webinar VIP').replace(/</g, '&lt;');
+      const instructor = w.instructor ? w.instructor.replace(/</g, '&lt;') : 'Por confirmar';
+      const hora = dt.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+      const linkAttr = w.link ? `data-link="${w.link.replace(/"/g, '&quot;')}"` : '';
+      return `
+        <div class="live-item" data-webinar-id="${w.id}">
+          <div class="live-item-date">
+            <div class="live-item-day">${day} ${month}</div>
+            <div class="live-item-num">${num}</div>
           </div>
+          <div class="live-item-info">
+            <div class="live-item-title">${titulo}</div>
+            <div class="live-item-meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${instructor}</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${hora}</span>
+            </div>
+            <div class="live-item-countdown" id="liveCd-${w.id}" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <div class="live-cd-box"><span class="live-cd-num" data-unit="d">--</span><span class="live-cd-label">D</span></div>
+              <div class="live-cd-box"><span class="live-cd-num" data-unit="h">--</span><span class="live-cd-label">H</span></div>
+              <div class="live-cd-box"><span class="live-cd-num" data-unit="m">--</span><span class="live-cd-label">M</span></div>
+              <div class="live-cd-box"><span class="live-cd-num" data-unit="s">--</span><span class="live-cd-label">S</span></div>
+            </div>
+          </div>
+          <button class="live-item-btn upcoming" onclick="abrirWebinarLink('${w.id}')" ${linkAttr}>
+            ${w.link ? 'Acceder al webinar' : 'Sin link aún'}
+          </button>
         </div>
-        <button class="live-item-btn upcoming">Agendar recordatorio</button>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+
+    // Iniciar/refrescar countdown en cada item
+    iniciarCountdownsLive();
   }
+
+  // Maneja click en botón "Acceder al webinar" — restringe a VIP activo
+  window.abrirWebinarLink = function(webinarId) {
+    const w = (window._webinarsCache || []).find(x => x.id === webinarId);
+    if (!w) return;
+    if (!w.link) {
+      showToast?.('Aún no hay link disponible para este webinar', 'info');
+      return;
+    }
+    // Solo VIPs pueden abrir el link
+    if (window.isVIP !== true) {
+      if (typeof showVipUpsell === 'function') showVipUpsell('webinar');
+      else showToast?.('Solo miembros VIP activos pueden acceder a los webinars', 'error');
+      return;
+    }
+    window.open(w.link, '_blank', 'noopener');
+  };
+
+  // Tick global para todos los countdowns de la pestaña Webinars
+  let _liveCountdownInterval = null;
+  function iniciarCountdownsLive() {
+    if (_liveCountdownInterval) clearInterval(_liveCountdownInterval);
+    const tick = () => {
+      const now = Date.now();
+      (window._webinarsCache || []).forEach(w => {
+        const dt = w.fechaHora?.toDate ? w.fechaHora.toDate() : new Date(w.fechaHora);
+        const ms = dt.getTime() - now;
+        const cont = document.getElementById('liveCd-' + w.id);
+        if (!cont) return;
+        if (ms <= 0) {
+          cont.querySelector('[data-unit="d"]').textContent = '00';
+          cont.querySelector('[data-unit="h"]').textContent = '00';
+          cont.querySelector('[data-unit="m"]').textContent = '00';
+          cont.querySelector('[data-unit="s"]').textContent = '00';
+          return;
+        }
+        let diff = Math.floor(ms / 1000);
+        const d = Math.floor(diff / 86400); diff -= d * 86400;
+        const h = Math.floor(diff / 3600); diff -= h * 3600;
+        const m = Math.floor(diff / 60);
+        const s = diff - m * 60;
+        const pad = n => String(n).padStart(2, '0');
+        cont.querySelector('[data-unit="d"]').textContent = pad(d);
+        cont.querySelector('[data-unit="h"]').textContent = pad(h);
+        cont.querySelector('[data-unit="m"]').textContent = pad(m);
+        cont.querySelector('[data-unit="s"]').textContent = pad(s);
+      });
+    };
+    tick();
+    _liveCountdownInterval = setInterval(tick, 1000);
+  }
+
+  // ─── Badge "nuevos webinars" en sidebar ───────────
+  // Cuenta los webinars con createdAt > webinarsLastSeen del usuario.
+  // Cuando el usuario abre la pestaña Webinars, marca la fecha y desaparece.
+  function actualizarLiveBadge() {
+    const badge = document.getElementById('liveNavBadge');
+    if (!badge) return;
+    const lastSeenStr = localStorage.getItem('webinarsLastSeen') || '0';
+    const lastSeen = parseInt(lastSeenStr, 10) || 0;
+    const nuevos = (window._webinarsCache || []).filter(w => {
+      const ts = w.createdAt?.toDate ? w.createdAt.toDate().getTime() : 0;
+      return ts > lastSeen;
+    }).length;
+    if (nuevos > 0) {
+      badge.textContent = nuevos > 9 ? '9+' : String(nuevos);
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // Marcar webinars como vistos cuando el usuario abre la pestaña
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-tab="live"]');
+    if (btn) {
+      try { localStorage.setItem('webinarsLastSeen', String(Date.now())); } catch(e) {}
+      // Pequeño delay para que el switchTab termine antes de ocultar badge
+      setTimeout(actualizarLiveBadge, 100);
+    }
+  });
 
   // ─── Renderizar material PDF ────────────────────
   function renderMaterial() {
