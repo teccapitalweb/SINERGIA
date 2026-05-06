@@ -1946,6 +1946,17 @@
               </label>
             </div>
             <div id="materialDispHint" style="margin-top:10px;font-size:12px;font-weight:600;padding:8px 10px;background:rgba(99,102,241,0.08);border-radius:8px;border:1px solid rgba(99,102,241,0.2);color:#3730A3;"></div>
+
+            <!-- Solo al editar: permite cambiar manualmente el día absoluto -->
+            <div id="materialDiaManualWrap" style="display:none;margin-top:12px;">
+              <label class="form-label" for="materialDiaManual" style="display:flex;align-items:center;gap:6px;">
+                Cambiar posición en la cola <span style="font-weight:400;color:var(--stone-500);font-size:11px;">(opcional)</span>
+              </label>
+              <input type="number" id="materialDiaManual" class="form-input" placeholder="Ej: 0 (siempre disponible) · 50 · 200..." min="0" step="10">
+              <div style="font-size:11.5px;color:var(--stone-500);margin-top:6px;line-height:1.45;">
+                Cambia este número solo si quieres mover el material a otra posición. Día <b>0</b> = visible desde el día 1. Si lo dejas vacío, se mantiene la posición actual.
+              </div>
+            </div>
           </div>
           <div style="display:flex;gap:8px;margin-top:18px;">
             <button type="submit" class="btn-submit" id="materialModalSubmit" style="flex:1;">
@@ -3354,6 +3365,11 @@
     // Modo atado: ocultar select, mostrar label
     document.getElementById('materialModalCursoLabel').style.display = '';
     document.getElementById('materialCursoSelectWrap').style.display = 'none';
+    // Creación: ocultar input de día manual y limpiarlo
+    const diaWrap = document.getElementById('materialDiaManualWrap');
+    if (diaWrap) diaWrap.style.display = 'none';
+    const diaInput = document.getElementById('materialDiaManual');
+    if (diaInput) diaInput.value = '';
     document.getElementById('materialModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('materialTitle').focus(), 50);
@@ -3374,6 +3390,11 @@
     // Modo global: mostrar select, ocultar label
     document.getElementById('materialModalCursoLabel').style.display = 'none';
     document.getElementById('materialCursoSelectWrap').style.display = '';
+    // Creación: ocultar input de día manual y limpiarlo
+    const diaWrap = document.getElementById('materialDiaManualWrap');
+    if (diaWrap) diaWrap.style.display = 'none';
+    const diaInput = document.getElementById('materialDiaManual');
+    if (diaInput) diaInput.value = '';
     // Llenar el select con los cursos
     const select = document.getElementById('materialCursoSelect');
     select.innerHTML = _adminCursosCache.map(c =>
@@ -3400,6 +3421,17 @@
     // Modo atado: ocultar select, mostrar label
     document.getElementById('materialModalCursoLabel').style.display = '';
     document.getElementById('materialCursoSelectWrap').style.display = 'none';
+    // Edición: mostrar input de día manual con el valor actual como placeholder
+    const diaWrap = document.getElementById('materialDiaManualWrap');
+    const diaInput = document.getElementById('materialDiaManual');
+    if (diaWrap && diaInput) {
+      diaWrap.style.display = '';
+      diaInput.value = ''; // dejar vacío para que solo cambie si el admin escribe algo
+      const actual = (typeof mat.desbloquearEnDias === 'number') ? mat.desbloquearEnDias : null;
+      diaInput.placeholder = actual !== null
+        ? `Actual: día ${actual} (déjalo vacío para no mover)`
+        : 'Hereda del curso (escribe un número para fijar día absoluto)';
+    }
     document.getElementById('materialModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('materialTitle').focus(), 50);
@@ -3478,33 +3510,43 @@
 
         const nuevos = (curso.materiales || []).slice();
         const siempre = getMaterialDisponibilidad();
-        // Construir el material nuevo. Reglas:
-        // - Si "siempre" → disponibleSiempre:true, eliminar desbloquearEnDias
-        // - Si "progresivo" → disponibleSiempre:false, asignar desbloquearEnDias:
-        //     - Si edita y ya tiene uno → preservar
-        //     - Si nuevo o sin valor previo → calcular siguiente (max + 10)
-        const itemBase = { titulo, url, disponibleSiempre: siempre };
-        if (siempre) {
-          // Forzar quitar desbloquearEnDias si lo tenía
-          itemBase.desbloquearEnDias = null;
-        } else {
-          let dia;
-          if (idx >= 0 && nuevos[idx] && typeof nuevos[idx].desbloquearEnDias === 'number') {
-            // Edición conservando posición en la cola
-            dia = nuevos[idx].desbloquearEnDias;
-          } else {
-            // Nuevo o cambiando desde "siempre" → al final de la cola
-            dia = calcularSiguienteDiaDesbloqueo();
-          }
-          itemBase.desbloquearEnDias = dia;
-        }
+        const esCreacion = (idx === -1 || idx < 0);
 
-        if (idx === -1 || idx < 0) {
-          // Agregar al final
-          nuevos.push(itemBase);
+        if (esCreacion) {
+          // ─── CREACIÓN ───
+          // Material NUEVO: aplica lógica de cola
+          //   - "siempre" → disponibleSiempre:true, sin día
+          //   - "progresivo" → calcular siguiente día (max + 10)
+          const itemNuevo = {
+            titulo,
+            url,
+            disponibleSiempre: siempre,
+            desbloquearEnDias: siempre ? null : calcularSiguienteDiaDesbloqueo()
+          };
+          nuevos.push(itemNuevo);
         } else {
-          // Editar (preservar otros campos si los hubiera)
-          nuevos[idx] = { ...nuevos[idx], ...itemBase };
+          // ─── EDICIÓN ───
+          // Solo actualizar contenido. NUNCA mover el material en la cola.
+          // - Si el admin escribió un día manualmente en el campo, usarlo
+          // - Si no, preservar el día existente tal como estaba
+          const existing = nuevos[idx];
+          const diaInput = document.getElementById('materialDiaManual');
+          const diaManualStr = diaInput ? diaInput.value.trim() : '';
+          let nuevoDia = existing.desbloquearEnDias;
+          if (diaManualStr !== '' && !isNaN(parseInt(diaManualStr, 10))) {
+            const v = parseInt(diaManualStr, 10);
+            nuevoDia = (v < 0) ? 0 : v;
+          }
+
+          nuevos[idx] = {
+            ...existing,
+            titulo,
+            url,
+            disponibleSiempre: siempre,
+            // Si cambia a "siempre", el día se preserva por si vuelve a progresivo
+            // Si está en progresivo, se usa nuevoDia (manual o el existente)
+            desbloquearEnDias: siempre ? existing.desbloquearEnDias : (typeof nuevoDia === 'number' ? nuevoDia : null)
+          };
         }
 
         await updateDoc(doc(db, 'cursos', cursoId), { materiales: nuevos });
