@@ -1498,6 +1498,10 @@
       <span class="nav-item-text">Webinars</span>
       <span id="navWebinarsCount" class="nav-item-count">0</span>
     </button>
+    <button class="nav-item" data-tab="materials">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span class="nav-item-text">Materiales</span>
+    </button>
     <button class="nav-item" data-tab="certificates">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
       <span class="nav-item-text">Certificados</span>
@@ -1858,6 +1862,52 @@
         <div id="webinarList" style="padding:12px;">
           <div style="padding:20px;text-align:center;color:var(--stone-400);font-size:13px;">Cargando webinars...</div>
         </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         3.6) MATERIALES (gestión por curso)
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="materials">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Gestión de <em>materiales</em> por curso</h2>
+          <p class="panel-sub">Edita los PDFs y enlaces descargables de cada curso. Aparecen en la pestaña <b>Material</b> del panel VIP.</p>
+        </div>
+      </div>
+
+      <div id="materialsCursosList" style="display:flex;flex-direction:column;gap:14px;">
+        <div style="padding:24px;text-align:center;color:var(--stone-400);font-size:13px;background:#fff;border-radius:14px;border:1px solid var(--border-subtle);">Cargando cursos...</div>
+      </div>
+    </div>
+
+    <!-- Modal de edición/creación de material -->
+    <div id="materialModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(6px);z-index:99999;align-items:center;justify-content:center;padding:20px;">
+      <div style="background:#fff;border-radius:18px;max-width:520px;width:100%;padding:28px 24px;box-shadow:0 30px 80px rgba(0,0,0,0.3);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h3 style="font-size:18px;font-weight:800;color:var(--stone-800);margin:0;" id="materialModalTitle">Agregar material</h3>
+          <button onclick="cerrarMaterialModal()" style="background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--stone-500);padding:0;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;">&times;</button>
+        </div>
+        <p style="font-size:13px;color:var(--stone-500);margin:0 0 16px 0;">Curso: <b id="materialModalCurso">—</b></p>
+        <form id="materialModalForm">
+          <input type="hidden" id="materialEditCursoId">
+          <input type="hidden" id="materialEditIdx" value="-1">
+          <div class="form-group">
+            <label class="form-label" for="materialTitle">Título del material</label>
+            <input type="text" id="materialTitle" class="form-input" placeholder="Ej: Material completo del curso" maxlength="120" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="materialUrl">URL (Drive, PDF, etc.)</label>
+            <input type="url" id="materialUrl" class="form-input" placeholder="https://drive.google.com/..." required>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:18px;">
+            <button type="submit" class="btn-submit" id="materialModalSubmit" style="flex:1;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span id="materialModalSubmitText">Agregar</span>
+            </button>
+            <button type="button" class="btn-secondary" onclick="cerrarMaterialModal()">Cancelar</button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -3078,6 +3128,212 @@
   }
 
   // ═══════════════════════════════════════════════════
+  // MATERIALES (gestión por curso)
+  // Cada curso (en colección `cursos`) tiene un array `materiales: []`
+  // donde cada item es { titulo, url }. Editamos el array y guardamos
+  // con updateDoc en el documento del curso.
+  // ═══════════════════════════════════════════════════
+  let _adminCursosCache = [];
+  let _adminCursosUnsub = null;
+
+  function suscribirCursosAdmin() {
+    if (_adminCursosUnsub) return;
+    try {
+      const q = query(collection(db, 'cursos'), orderBy('orden', 'asc'));
+      _adminCursosUnsub = onSnapshot(q, (snap) => {
+        _adminCursosCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderMaterialesPanel();
+      }, (err) => {
+        console.error('Error suscribiendo cursos (admin):', err);
+        const list = document.getElementById('materialsCursosList');
+        if (list) list.innerHTML = '<div style="padding:20px;text-align:center;color:#DC2626;font-size:13px;background:#fff;border-radius:14px;">Error al cargar cursos: ' + err.message + '</div>';
+      });
+    } catch (err) {
+      console.error('Error iniciando suscripción cursos:', err);
+    }
+  }
+
+  function renderMaterialesPanel() {
+    const list = document.getElementById('materialsCursosList');
+    if (!list) return;
+    if (_adminCursosCache.length === 0) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--stone-400);font-size:13px;background:#fff;border-radius:14px;border:1px solid var(--border-subtle);">No hay cursos cargados</div>';
+      return;
+    }
+
+    list.innerHTML = _adminCursosCache.map(curso => {
+      const mats = Array.isArray(curso.materiales) ? curso.materiales : [];
+      const tituloCurso = escapeHtmlSafe(curso.titulo || 'Sin título');
+      const emoji = curso.emoji || '📚';
+
+      const matsHtml = mats.length === 0
+        ? `<div style="padding:14px 16px;color:var(--stone-400);font-size:13px;font-style:italic;">Este curso no tiene materiales aún. Usa "Agregar material" abajo.</div>`
+        : mats.map((m, idx) => `
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border-subtle);flex-wrap:wrap;">
+              <div style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div style="flex:1;min-width:200px;">
+                <div style="font-size:13.5px;font-weight:600;color:var(--stone-800);">${escapeHtmlSafe(m.titulo || 'Sin título')}</div>
+                <a href="${escapeHtmlSafe(m.url || '#')}" target="_blank" rel="noopener" style="font-size:11px;color:var(--teal-600);text-decoration:none;word-break:break-all;">🔗 ${escapeHtmlSafe(m.url || '')}</a>
+              </div>
+              <div style="display:flex;gap:6px;flex-shrink:0;">
+                <button class="m-act-btn cancelar" title="Editar" onclick="editarMaterial('${curso.id}', ${idx})">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="m-act-btn danger" title="Eliminar" onclick="eliminarMaterial('${curso.id}', ${idx})">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+          `).join('');
+
+      return `
+        <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:14px;overflow:hidden;">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,rgba(20,184,166,0.06),transparent);border-bottom:1px solid var(--border-subtle);">
+            <span style="font-size:24px;">${emoji}</span>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:14px;font-weight:700;color:var(--stone-800);">${tituloCurso}</div>
+              <div style="font-size:11px;color:var(--stone-500);margin-top:2px;">${mats.length} ${mats.length === 1 ? 'material' : 'materiales'}</div>
+            </div>
+            <button class="btn-secondary" onclick="abrirMaterialModalNuevo('${curso.id}')" style="font-size:12px;padding:7px 12px;">
+              + Agregar material
+            </button>
+          </div>
+          ${matsHtml}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ─── Modal: agregar / editar material ───
+  window.abrirMaterialModalNuevo = function(cursoId) {
+    const curso = _adminCursosCache.find(c => c.id === cursoId);
+    if (!curso) return;
+    document.getElementById('materialModalTitle').textContent = 'Agregar material';
+    document.getElementById('materialModalSubmitText').textContent = 'Agregar';
+    document.getElementById('materialModalCurso').textContent = curso.titulo || 'Sin título';
+    document.getElementById('materialEditCursoId').value = cursoId;
+    document.getElementById('materialEditIdx').value = '-1';
+    document.getElementById('materialTitle').value = '';
+    document.getElementById('materialUrl').value = '';
+    document.getElementById('materialModalOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('materialTitle').focus(), 50);
+  };
+
+  window.editarMaterial = function(cursoId, idx) {
+    const curso = _adminCursosCache.find(c => c.id === cursoId);
+    if (!curso) return;
+    const mat = (curso.materiales || [])[idx];
+    if (!mat) return;
+    document.getElementById('materialModalTitle').textContent = 'Editar material';
+    document.getElementById('materialModalSubmitText').textContent = 'Guardar cambios';
+    document.getElementById('materialModalCurso').textContent = curso.titulo || 'Sin título';
+    document.getElementById('materialEditCursoId').value = cursoId;
+    document.getElementById('materialEditIdx').value = String(idx);
+    document.getElementById('materialTitle').value = mat.titulo || '';
+    document.getElementById('materialUrl').value = mat.url || '';
+    document.getElementById('materialModalOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('materialTitle').focus(), 50);
+  };
+
+  window.cerrarMaterialModal = function() {
+    document.getElementById('materialModalOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  window.eliminarMaterial = function(cursoId, idx) {
+    const curso = _adminCursosCache.find(c => c.id === cursoId);
+    if (!curso) return;
+    const mat = (curso.materiales || [])[idx];
+    if (!mat) return;
+    showModal({
+      type: 'danger',
+      title: '¿Eliminar material?',
+      body: `Se eliminará <b>${escapeHtmlSafe(mat.titulo || 'Sin título')}</b> del curso <b>${escapeHtmlSafe(curso.titulo || '')}</b>.<br><br>El archivo en Drive NO se borra (solo el enlace en el panel).`,
+      confirmText: 'Eliminar',
+      onConfirm: async () => {
+        try {
+          const nuevos = (curso.materiales || []).slice();
+          nuevos.splice(idx, 1);
+          await updateDoc(doc(db, 'cursos', cursoId), { materiales: nuevos });
+          showToast('Material eliminado');
+        } catch (err) {
+          console.error('Error eliminando material:', err);
+          showToast('Error: ' + err.message, 'error');
+        }
+      }
+    });
+  };
+
+  // Submit del modal (crea o edita)
+  const materialForm = document.getElementById('materialModalForm');
+  if (materialForm) {
+    materialForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('materialModalSubmit');
+      btn.disabled = true;
+      try {
+        const cursoId = document.getElementById('materialEditCursoId').value;
+        const idx = parseInt(document.getElementById('materialEditIdx').value, 10);
+        const titulo = document.getElementById('materialTitle').value.trim();
+        const url = document.getElementById('materialUrl').value.trim();
+
+        if (!titulo || !url) {
+          showToast('Completa título y URL', 'error');
+          btn.disabled = false;
+          return;
+        }
+        // Validar URL básica
+        try { new URL(url); } catch(e) {
+          showToast('URL inválida', 'error');
+          btn.disabled = false;
+          return;
+        }
+
+        const curso = _adminCursosCache.find(c => c.id === cursoId);
+        if (!curso) {
+          showToast('Curso no encontrado', 'error');
+          btn.disabled = false;
+          return;
+        }
+
+        const nuevos = (curso.materiales || []).slice();
+        const itemNuevo = { titulo, url };
+        if (idx === -1 || idx < 0) {
+          // Agregar al final
+          nuevos.push(itemNuevo);
+        } else {
+          // Editar
+          nuevos[idx] = itemNuevo;
+        }
+
+        await updateDoc(doc(db, 'cursos', cursoId), { materiales: nuevos });
+        showToast(idx === -1 ? 'Material agregado ✓' : 'Material actualizado ✓');
+        cerrarMaterialModal();
+      } catch (err) {
+        console.error('Error guardando material:', err);
+        showToast('Error: ' + (err.message || 'no se pudo guardar'), 'error');
+      }
+      btn.disabled = false;
+    });
+  }
+
+  // Cerrar modal con ESC o click en overlay
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const ov = document.getElementById('materialModalOverlay');
+      if (ov && ov.style.display === 'flex') cerrarMaterialModal();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    const ov = document.getElementById('materialModalOverlay');
+    if (ov && e.target === ov) cerrarMaterialModal();
+  });
+
+  // ═══════════════════════════════════════════════════
   // CERTIFICATES FORM
   // ═══════════════════════════════════════════════════
   const certForm = document.getElementById('certForm');
@@ -3277,6 +3533,7 @@
     await loadNotifHistory();
     await loadCertsHistory();
     suscribirWebinars();
+    suscribirCursosAdmin();
 
     // Ocultar loader, mostrar app
     setTimeout(() => {
