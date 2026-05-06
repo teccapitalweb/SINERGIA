@@ -13374,17 +13374,30 @@ window.closeCursoModal
     sorted.forEach((curso, idx) => {
       const cursoLocked = !cursoDesbloqueado(idx);
       const cursoDiasFaltan = diasParaDesbloquear(idx);
+      const diasActuales = calcularDiasMembresia();
       (curso.materiales || []).forEach(m => {
-        // Si el material está marcado "disponibleSiempre: true", se ve siempre,
-        // ignorando el lock del curso. Si no, hereda el lock del curso.
-        const siempre = m.disponibleSiempre === true;
+        // Reglas de desbloqueo del material (en este orden):
+        // 1. Si disponibleSiempre === true → siempre desbloqueado
+        // 2. Si tiene desbloquearEnDias (número) → comparar con días de membresía
+        // 3. Sino → hereda del curso (compatibilidad con materiales viejos)
+        let locked, diasFaltan;
+        if (m.disponibleSiempre === true) {
+          locked = false;
+          diasFaltan = 0;
+        } else if (typeof m.desbloquearEnDias === 'number') {
+          locked = diasActuales < m.desbloquearEnDias;
+          diasFaltan = Math.max(0, m.desbloquearEnDias - diasActuales);
+        } else {
+          locked = cursoLocked;
+          diasFaltan = cursoDiasFaltan;
+        }
         todosMateriales.push({
           titulo: m.titulo,
           url: m.url,
           curso: curso.titulo,
           emoji: curso.emoji || '🌾',
-          locked: siempre ? false : cursoLocked,
-          diasFaltan: siempre ? 0 : cursoDiasFaltan
+          locked,
+          diasFaltan
         });
       });
     });

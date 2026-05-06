@@ -1931,20 +1931,21 @@
             <label class="form-label">Disponibilidad para los miembros</label>
             <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
               <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border-subtle);border-radius:10px;cursor:pointer;background:#fff;" id="dispOpt-progresivo">
-                <input type="radio" name="materialDisp" value="progresivo" style="margin-top:3px;flex-shrink:0;" checked>
+                <input type="radio" name="materialDisp" value="progresivo" style="margin-top:3px;flex-shrink:0;" checked onchange="actualizarHintDiaDesbloqueo()">
                 <div>
-                  <div style="font-size:13px;font-weight:600;color:var(--stone-800);">Sigue el desbloqueo del curso</div>
-                  <div style="font-size:11.5px;color:var(--stone-500);margin-top:2px;">El material aparece bloqueado hasta que el usuario desbloquee el curso (recomendado).</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--stone-800);">Sigue el desbloqueo progresivo</div>
+                  <div style="font-size:11.5px;color:var(--stone-500);margin-top:2px;">Se agrega a la cola: aparece después del último material/curso, 10 días después.</div>
                 </div>
               </label>
               <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border-subtle);border-radius:10px;cursor:pointer;background:#fff;" id="dispOpt-siempre">
-                <input type="radio" name="materialDisp" value="siempre" style="margin-top:3px;flex-shrink:0;">
+                <input type="radio" name="materialDisp" value="siempre" style="margin-top:3px;flex-shrink:0;" onchange="actualizarHintDiaDesbloqueo()">
                 <div>
                   <div style="font-size:13px;font-weight:600;color:var(--stone-800);">Siempre disponible</div>
                   <div style="font-size:11.5px;color:var(--stone-500);margin-top:2px;">El material se ve y se puede abrir desde el día 1, ignorando el desbloqueo del curso.</div>
                 </div>
               </label>
             </div>
+            <div id="materialDispHint" style="margin-top:10px;font-size:12px;font-weight:600;padding:8px 10px;background:rgba(99,102,241,0.08);border-radius:8px;border:1px solid rgba(99,102,241,0.2);color:#3730A3;"></div>
           </div>
           <div style="display:flex;gap:8px;margin-top:18px;">
             <button type="submit" class="btn-submit" id="materialModalSubmit" style="flex:1;">
@@ -3216,9 +3217,15 @@
         ? `<div style="padding:14px 16px;color:var(--stone-400);font-size:13px;font-style:italic;">Este curso no tiene materiales aún. Usa "Agregar material" abajo.</div>`
         : mats.map((m, idx) => {
             const siempre = m.disponibleSiempre === true;
-            const dispBadge = siempre
-              ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#D1FAE5;color:#065F46;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:0.04em;">⚡ SIEMPRE DISPONIBLE</span>`
-              : `<span style="display:inline-flex;align-items:center;gap:4px;background:#E0E7FF;color:#3730A3;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:0.04em;">🔒 DESBLOQUEO PROGRESIVO</span>`;
+            const diaAbs = (typeof m.desbloquearEnDias === 'number') ? m.desbloquearEnDias : null;
+            let dispBadge;
+            if (siempre) {
+              dispBadge = `<span style="display:inline-flex;align-items:center;gap:4px;background:#D1FAE5;color:#065F46;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:0.04em;">⚡ SIEMPRE DISPONIBLE</span>`;
+            } else if (diaAbs !== null) {
+              dispBadge = `<span style="display:inline-flex;align-items:center;gap:4px;background:#E0E7FF;color:#3730A3;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:0.04em;">🔒 DESBLOQUEO DÍA ${diaAbs}</span>`;
+            } else {
+              dispBadge = `<span style="display:inline-flex;align-items:center;gap:4px;background:#F3F4F6;color:#4B5563;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:0.04em;">📅 HEREDA DEL CURSO</span>`;
+            }
             return `
             <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border-subtle);flex-wrap:wrap;">
               <div style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -3271,12 +3278,67 @@
     const val = disponibleSiempre === true ? 'siempre' : 'progresivo';
     const radios = document.querySelectorAll('input[name="materialDisp"]');
     radios.forEach(r => { r.checked = (r.value === val); });
+    actualizarHintDiaDesbloqueo();
   }
 
   function getMaterialDisponibilidad() {
     const checked = document.querySelector('input[name="materialDisp"]:checked');
     return checked && checked.value === 'siempre';
   }
+
+  // Calcula el siguiente día absoluto de desbloqueo (máximo actual + 10)
+  // Considera: días por orden de curso (idx * 10) y desbloquearEnDias de materiales
+  function calcularSiguienteDiaDesbloqueo() {
+    let maxDias = 0;
+    // Día del último curso según orden
+    const cursosOrdenados = [..._adminCursosCache].sort((a, b) => (a.orden || 999) - (b.orden || 999));
+    const ultimoIdx = Math.max(0, cursosOrdenados.length - 1);
+    const ultimoCursoDia = ultimoIdx * 10;
+    maxDias = Math.max(maxDias, ultimoCursoDia);
+    // Días de materiales con desbloquearEnDias absoluto
+    _adminCursosCache.forEach(curso => {
+      (curso.materiales || []).forEach(m => {
+        if (m.disponibleSiempre === true) return;
+        if (typeof m.desbloquearEnDias === 'number') {
+          maxDias = Math.max(maxDias, m.desbloquearEnDias);
+        }
+      });
+    });
+    return maxDias + 10;
+  }
+
+  // Hint dinámico: muestra al admin en qué día se desbloqueará el material
+  function actualizarHintDiaDesbloqueo() {
+    const hint = document.getElementById('materialDispHint');
+    if (!hint) return;
+    const siempre = getMaterialDisponibilidad();
+    if (siempre) {
+      hint.textContent = '✓ Visible y abrible desde el día 1.';
+      hint.style.color = '#065F46';
+      return;
+    }
+    // Modo progresivo: calcular día asignado
+    const idxStr = document.getElementById('materialEditIdx').value;
+    const cursoId = document.getElementById('materialEditCursoId').value;
+    const idx = parseInt(idxStr, 10);
+    let diaAsignado = null;
+    if (cursoId && idx >= 0) {
+      // Edición: usar el día existente si lo hay, sino calcular
+      const curso = _adminCursosCache.find(c => c.id === cursoId);
+      const mat = curso ? (curso.materiales || [])[idx] : null;
+      if (mat && typeof mat.desbloquearEnDias === 'number') {
+        diaAsignado = mat.desbloquearEnDias;
+      } else {
+        diaAsignado = calcularSiguienteDiaDesbloqueo();
+      }
+    } else {
+      // Nuevo: calcular el siguiente
+      diaAsignado = calcularSiguienteDiaDesbloqueo();
+    }
+    hint.textContent = `🔒 Se desbloqueará el día ${diaAsignado} (${diaAsignado} días después del registro del miembro).`;
+    hint.style.color = '#3730A3';
+  }
+  window.actualizarHintDiaDesbloqueo = actualizarHintDiaDesbloqueo;
 
   window.abrirMaterialModalNuevo = function(cursoId) {
     const curso = _adminCursosCache.find(c => c.id === cursoId);
@@ -3415,17 +3477,34 @@
         }
 
         const nuevos = (curso.materiales || []).slice();
-        const itemNuevo = {
-          titulo,
-          url,
-          disponibleSiempre: getMaterialDisponibilidad()
-        };
+        const siempre = getMaterialDisponibilidad();
+        // Construir el material nuevo. Reglas:
+        // - Si "siempre" → disponibleSiempre:true, eliminar desbloquearEnDias
+        // - Si "progresivo" → disponibleSiempre:false, asignar desbloquearEnDias:
+        //     - Si edita y ya tiene uno → preservar
+        //     - Si nuevo o sin valor previo → calcular siguiente (max + 10)
+        const itemBase = { titulo, url, disponibleSiempre: siempre };
+        if (siempre) {
+          // Forzar quitar desbloquearEnDias si lo tenía
+          itemBase.desbloquearEnDias = null;
+        } else {
+          let dia;
+          if (idx >= 0 && nuevos[idx] && typeof nuevos[idx].desbloquearEnDias === 'number') {
+            // Edición conservando posición en la cola
+            dia = nuevos[idx].desbloquearEnDias;
+          } else {
+            // Nuevo o cambiando desde "siempre" → al final de la cola
+            dia = calcularSiguienteDiaDesbloqueo();
+          }
+          itemBase.desbloquearEnDias = dia;
+        }
+
         if (idx === -1 || idx < 0) {
           // Agregar al final
-          nuevos.push(itemNuevo);
+          nuevos.push(itemBase);
         } else {
           // Editar (preservar otros campos si los hubiera)
-          nuevos[idx] = { ...nuevos[idx], ...itemNuevo };
+          nuevos[idx] = { ...nuevos[idx], ...itemBase };
         }
 
         await updateDoc(doc(db, 'cursos', cursoId), { materiales: nuevos });
