@@ -4295,24 +4295,28 @@
     .rank-card { padding: 14px 8px; }
     .rank-emoji { font-size: 28px; }
     .rank-name { font-size: 12px; }
-    .cert-mockup-border { padding: 18px 14px; }
-    .cert-mockup-header { gap: 10px; }
-    .cert-mockup-logo { width: 46px; height: 46px; }
-    .cert-mockup-inst-name { font-size: 17px; }
-    .cert-mockup-inst-sub { font-size: 9px; letter-spacing: 0.8px; }
-    .cert-mockup-certifies { font-size: 10px; }
-    .cert-mockup-name { font-size: 22px; }
-    .cert-mockup-text { font-size: 11px; }
-    .cert-mockup-course { font-size: 15px; }
-    .cert-mockup-meta { grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 9px 6px; }
-    .cert-meta-label { font-size: 8px; letter-spacing: 0.4px; }
-    .cert-meta-value { font-size: 10px; word-break: break-all; line-height: 1.25; }
-    .cert-mockup-footer { flex-direction: column; gap: 12px; align-items: center; }
-    .cert-mockup-signature { min-width: 0; width: 100%; max-width: 200px; }
-    .cert-signature-name { font-size: 13px; }
-    .cert-signature-title { font-size: 9px; letter-spacing: 0.6px; }
-    .cert-qr-placeholder { width: 56px; height: 56px; padding: 5px; }
-    .cert-qr-label { font-size: 9px; }
+    .cert-mockup { padding: 8px; border-radius: 12px; }
+    .cert-mockup::before { inset: 8px; border-width: 2px; }
+    .cert-mockup-border { padding: 16px 12px; }
+    .cert-mockup-header { gap: 10px; padding-bottom: 10px; margin-bottom: 12px; }
+    .cert-mockup-logo { width: 42px; height: 42px; border-radius: 10px; }
+    .cert-mockup-inst-name { font-size: 16px; }
+    .cert-mockup-inst-sub { font-size: 8px; letter-spacing: 0.6px; line-height: 1.2; }
+    .cert-mockup-body { padding: 8px 0; }
+    .cert-mockup-certifies { font-size: 9px; margin-bottom: 6px; }
+    .cert-mockup-name { font-size: 22px; margin-bottom: 6px; }
+    .cert-mockup-text { font-size: 11px; margin-bottom: 6px; }
+    .cert-mockup-course { font-size: 15px; margin-bottom: 12px; }
+    .cert-mockup-meta { grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 8px 6px; margin-bottom: 6px; }
+    .cert-meta-label { font-size: 8px; letter-spacing: 0.3px; margin-bottom: 2px; }
+    .cert-meta-value { font-size: 9px; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cert-mockup-footer { flex-direction: row; gap: 10px; padding-top: 12px; align-items: center; justify-content: space-between; }
+    .cert-mockup-qr { flex-shrink: 0; }
+    .cert-qr-placeholder { width: 48px; height: 48px; padding: 4px; margin-bottom: 3px; }
+    .cert-qr-label { font-size: 7px; }
+    .cert-mockup-signature { min-width: 0; flex: 1; }
+    .cert-signature-name { font-size: 12px; }
+    .cert-signature-title { font-size: 8px; letter-spacing: 0.4px; }
     .subscription-card { padding: 24px; border-radius: 22px; }
     .sub-name { font-size: 24px; }
     .sub-price { font-size: 36px; }
