@@ -592,7 +592,7 @@
 
   /* ═══ MODIFICADO: cinta de cursos + confianza (Fase Ads) ═══ */
   .auth-crops{
-    max-width:560px;margin:22px auto 8px;
+    max-width:100%;margin:22px auto 8px;
     -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
     mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
     overflow:hidden;
@@ -611,13 +611,55 @@
     color:var(--teal-700);margin:0 0 4px;font-weight:600;
   }
   .auth-cropscaption b{color:var(--teal-900)}
+  /* Referencias estilo comentarios */
+  .auth-refs{display:grid;gap:10px;max-width:100%;margin:14px auto 0;text-align:left}
+  .auth-ref{display:flex;gap:9px;align-items:flex-start}
+  .auth-ref .avi{
+    width:34px;height:34px;border-radius:50%;flex:none;margin-top:2px;
+    display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;
+    background:linear-gradient(135deg,var(--teal-400),var(--teal-700));
+  }
+  .auth-ref:nth-child(2) .avi{background:linear-gradient(135deg,var(--green-500),var(--green-700))}
+  .auth-ref .bub{
+    position:relative;background:rgba(255,255,255,.85);
+    border:1px solid rgba(13,148,136,.15);
+    border-radius:4px 15px 15px 15px;padding:9px 14px 10px;
+    box-shadow:0 3px 10px rgba(15,118,110,.08);
+  }
+  .auth-ref .bub b{display:block;font-size:12.5px;color:var(--teal-900);font-weight:700}
+  .auth-ref .bub b small{font-weight:500;color:rgba(19,78,74,.55);margin-left:4px;font-size:11px}
+  .auth-ref .bub p{margin:2px 0 0;font-size:13px;line-height:1.45;color:rgba(19,78,74,.85)}
+  .auth-ref .lk{
+    position:absolute;bottom:-9px;right:-5px;
+    display:inline-flex;align-items:center;gap:3px;
+    background:#fff;border:1px solid rgba(13,148,136,.18);
+    border-radius:20px;padding:2px 7px 2px 3px;
+    font-size:10.5px;font-weight:700;color:rgba(19,78,74,.6);
+    box-shadow:0 2px 6px rgba(15,118,110,.14);
+  }
+  .auth-ref .lk i{width:15px;height:15px;border-radius:50%;display:grid;place-items:center;background:var(--teal-600);font-style:normal}
+  .auth-ref .lk svg{width:9px;height:9px;fill:#fff}
+  .auth-ref .meta{display:flex;gap:13px;margin:4px 0 0 13px;font-size:11px;color:rgba(19,78,74,.5)}
+  .auth-ref .meta b{font-weight:700}
+  @media (max-width:640px){.auth-refs{max-width:380px;gap:8px}}
+
+  .auth-free{
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    margin:22px auto 12px;font-size:15px;color:rgba(19,78,74,.8);
+  }
+  .auth-free b{color:var(--teal-700);font-weight:800}
+  .auth-free svg{width:18px;height:18px;flex:none;stroke:#fff;background:var(--teal-600);border-radius:50%;padding:3px}
+  .auth-refs-title{
+    text-align:center;font-size:11px;letter-spacing:2.2px;text-transform:uppercase;
+    color:var(--teal-700);margin:22px 0 0;font-weight:700;
+  }
   .auth-trust{
     text-align:center;font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
-    color:rgba(19,78,74,.55);margin:18px auto 0;max-width:560px;line-height:1.8;
+    color:rgba(19,78,74,.55);margin:18px auto 0;max-width:100%;line-height:1.8;
   }
   .auth-finds{
     display:grid;grid-template-columns:1fr 1fr;gap:10px;
-    max-width:560px;margin:18px auto 0;text-align:left;
+    max-width:100%;margin:18px auto 0;text-align:left;
   }
   .auth-find{
     display:flex;gap:11px;align-items:flex-start;
@@ -640,8 +682,11 @@
   @media (max-width:640px){
     .auth-crops{margin:16px auto 6px}
     .auth-crops img{width:82px;height:82px}
-    .auth-finds{grid-template-columns:1fr;gap:8px;max-width:380px}
+    .auth-finds{grid-template-columns:1fr;gap:8px;max-width:100%}
     .auth-find{padding:10px 13px}
+    .auth-free{font-size:14px;margin:18px auto 10px}
+    .auth-refs .bub p{font-size:12.5px}
+    h1.auth-title{font-size:30px}
   }
 </style>
 </head>
@@ -696,8 +741,8 @@
     PLAN MENSUAL · $199 MXN
   </div>
 
-  <h1 class="auth-title">Accede a tu <em>cuenta VIP</em>.</h1>
-  <p class="auth-sub">Crea tu cuenta gratis y continúa con tu membresía en Sinergia-Agrícola. Esto es lo que te espera adentro:</p>
+  <h1 class="auth-title">Haz que tu cultivo te deje <em>más dinero</em>.</h1>
+  <p class="auth-sub">Apoyos del gobierno, precios al día, calculadoras y cursos de tu cultivo — todo en una cuenta. Créala gratis y mira lo que te espera adentro:</p>
 
   <div class="auth-crops" aria-hidden="true"><div class="ctrack"><img src="img/cursos/mini/aguacate.webp" alt="" loading="lazy"><img src="img/cursos/mini/fresa.webp" alt="" loading="lazy"><img src="img/cursos/mini/habanero.webp" alt="" loading="lazy"><img src="img/cursos/mini/riego.webp" alt="" loading="lazy"><img src="img/cursos/mini/citricos.webp" alt="" loading="lazy"><img src="img/cursos/mini/chiles.webp" alt="" loading="lazy"><img src="img/cursos/mini/maracuya.webp" alt="" loading="lazy"><img src="img/cursos/mini/suelos.webp" alt="" loading="lazy"><img src="img/cursos/mini/plagas-maiz.webp" alt="" loading="lazy"><img src="img/cursos/mini/huertos.webp" alt="" loading="lazy"><img src="img/cursos/mini/nopal.webp" alt="" loading="lazy"><img src="img/cursos/mini/frijol.webp" alt="" loading="lazy"><img src="img/cursos/mini/aguacate.webp" alt="" loading="lazy"><img src="img/cursos/mini/fresa.webp" alt="" loading="lazy"><img src="img/cursos/mini/habanero.webp" alt="" loading="lazy"><img src="img/cursos/mini/riego.webp" alt="" loading="lazy"><img src="img/cursos/mini/citricos.webp" alt="" loading="lazy"><img src="img/cursos/mini/chiles.webp" alt="" loading="lazy"><img src="img/cursos/mini/maracuya.webp" alt="" loading="lazy"><img src="img/cursos/mini/suelos.webp" alt="" loading="lazy"><img src="img/cursos/mini/plagas-maiz.webp" alt="" loading="lazy"><img src="img/cursos/mini/huertos.webp" alt="" loading="lazy"><img src="img/cursos/mini/nopal.webp" alt="" loading="lazy"><img src="img/cursos/mini/frijol.webp" alt="" loading="lazy"></div></div>
   <p class="auth-cropscaption"><b>Mucho más que cursos</b> · esto incluye tu membresía:</p>
@@ -728,6 +773,38 @@
       <div><b>Foro de productores + webinars</b><span>Comunidad agro y sesiones en vivo cada mes</span></div>
     </div>
   </div>
+
+  <!-- ⚠️ BORRADORES: reemplazar con testimonios REALES (pendiente con Britney) antes de pautar fuerte -->
+  <p class="auth-refs-title">Referencias</p>
+  <div class="auth-refs">
+    <div class="auth-ref">
+      <span class="avi">JM</span>
+      <div style="flex:1;">
+        <div class="bub">
+          <b>José Martínez <small>· Productor de aguacate</small></b>
+          <p>Con el buscador de apoyos encontré un programa de fertilizante que ni sabía que existía. Eso solo ya pagó la membresía del año</p>
+          <span class="lk"><i><svg viewBox="0 0 24 24"><path d="M2 10h4v12H2zM22 11c0-1.1-.9-2-2-2h-5.2l.9-4.4v-.3c0-.4-.2-.8-.4-1.1L14.2 2 8.6 7.6c-.4.4-.6.9-.6 1.4v9c0 1.1.9 2 2 2h7c.8 0 1.5-.5 1.8-1.2l2.1-5c.1-.2.1-.5.1-.8v-2z"/></svg></i>11</span>
+        </div>
+        <div class="meta"><b>Me gusta</b><b>Responder</b><span>2 sem</span></div>
+      </div>
+    </div>
+    <div class="auth-ref">
+      <span class="avi">AG</span>
+      <div style="flex:1;">
+        <div class="bub">
+          <b>Ana Gutiérrez <small>· Productora de fresa</small></b>
+          <p>La calculadora de fertilización me quitó las adivinanzas, y los precios del mercado los checo antes de vender</p>
+          <span class="lk"><i><svg viewBox="0 0 24 24"><path d="M2 10h4v12H2zM22 11c0-1.1-.9-2-2-2h-5.2l.9-4.4v-.3c0-.4-.2-.8-.4-1.1L14.2 2 8.6 7.6c-.4.4-.6.9-.6 1.4v9c0 1.1.9 2 2 2h7c.8 0 1.5-.5 1.8-1.2l2.1-5c.1-.2.1-.5.1-.8v-2z"/></svg></i>7</span>
+        </div>
+        <div class="meta"><b>Me gusta</b><b>Responder</b><span>1 mes</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="auth-free">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+    Regístrate <b>completamente gratis</b>
+  </p>
 
   <div class="auth-card">
     <div class="tabs">
@@ -895,14 +972,23 @@
     anual:   { label: 'PLAN ANUAL · $1,990 MXN',   price: 1990, period: 'año' }
   };
   const currentPlan = planData[plan] || planData.mensual;
-  document.getElementById('planChip').textContent = currentPlan.label;
+  // MODIFICADO: chip con ancla de precio real por plan
+  (function(){
+    const chip = document.getElementById('planChip');
+    const p = new URLSearchParams(location.search).get('plan');
+    if (p === 'anual') {
+      chip.textContent = 'PLAN ANUAL · $1,990 MXN · AHORRAS $398';
+    } else if (p === 'mensual') {
+      chip.textContent = 'PLAN MENSUAL · $199 MXN · MENOS DE $7 AL DÍA';
+    } else {
+      chip.textContent = currentPlan.label;
+    }
+  })();
 
   // ─── Helpers ────────────────────────────────────
-  // MODIFICADO: tráfico de anuncios (llega con ?plan=) → registro por default
+  // MODIFICADO: registro siempre por default
   window.addEventListener('DOMContentLoaded', () => {
-    try {
-      if (new URLSearchParams(location.search).get('plan')) window.switchTab('register');
-    } catch(e) {}
+    try { window.switchTab('register'); } catch(e) {}
   });
 
   window.switchTab = function(which) {
