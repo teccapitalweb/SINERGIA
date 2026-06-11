@@ -589,6 +589,36 @@
     h1.auth-title { font-size: 34px; }
     .auth-sub { font-size: 15px; }
   }
+
+  /* ═══ MODIFICADO: cinta de cursos + confianza (Fase Ads) ═══ */
+  .auth-crops{
+    max-width:560px;margin:22px auto 8px;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    overflow:hidden;
+  }
+  .auth-crops .ctrack{display:flex;gap:12px;width:max-content;animation:cropSlide 48s linear infinite}
+  .auth-crops:hover .ctrack{animation-play-state:paused}
+  @keyframes cropSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .auth-crops img{
+    width:104px;height:104px;object-fit:cover;border-radius:14px;flex:none;
+    border:1px solid rgba(13,148,136,.18);
+    box-shadow:0 8px 20px rgba(15,118,110,.14);
+    background:#fff;
+  }
+  .auth-cropscaption{
+    text-align:center;font-size:11px;letter-spacing:2.2px;text-transform:uppercase;
+    color:var(--teal-700);margin:0 0 4px;font-weight:600;
+  }
+  .auth-cropscaption b{color:var(--teal-900)}
+  .auth-trust{
+    text-align:center;font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
+    color:rgba(19,78,74,.55);margin:18px auto 0;max-width:560px;line-height:1.8;
+  }
+  @media (max-width:640px){
+    .auth-crops{margin:16px auto 6px}
+    .auth-crops img{width:82px;height:82px}
+  }
 </style>
 </head>
 <body>
@@ -643,7 +673,10 @@
   </div>
 
   <h1 class="auth-title">Accede a tu <em>cuenta VIP</em>.</h1>
-  <p class="auth-sub">Inicia sesión o crea una cuenta para continuar con tu membresía en Sinergia-Agrícola.</p>
+  <p class="auth-sub">Crea tu cuenta gratis y continúa con tu membresía en Sinergia-Agrícola. Esto es lo que te espera adentro:</p>
+
+  <div class="auth-crops" aria-hidden="true"><div class="ctrack"><img src="img/cursos/mini/aguacate.webp" alt="" loading="lazy"><img src="img/cursos/mini/fresa.webp" alt="" loading="lazy"><img src="img/cursos/mini/habanero.webp" alt="" loading="lazy"><img src="img/cursos/mini/riego.webp" alt="" loading="lazy"><img src="img/cursos/mini/citricos.webp" alt="" loading="lazy"><img src="img/cursos/mini/chiles.webp" alt="" loading="lazy"><img src="img/cursos/mini/maracuya.webp" alt="" loading="lazy"><img src="img/cursos/mini/suelos.webp" alt="" loading="lazy"><img src="img/cursos/mini/plagas-maiz.webp" alt="" loading="lazy"><img src="img/cursos/mini/huertos.webp" alt="" loading="lazy"><img src="img/cursos/mini/nopal.webp" alt="" loading="lazy"><img src="img/cursos/mini/frijol.webp" alt="" loading="lazy"><img src="img/cursos/mini/aguacate.webp" alt="" loading="lazy"><img src="img/cursos/mini/fresa.webp" alt="" loading="lazy"><img src="img/cursos/mini/habanero.webp" alt="" loading="lazy"><img src="img/cursos/mini/riego.webp" alt="" loading="lazy"><img src="img/cursos/mini/citricos.webp" alt="" loading="lazy"><img src="img/cursos/mini/chiles.webp" alt="" loading="lazy"><img src="img/cursos/mini/maracuya.webp" alt="" loading="lazy"><img src="img/cursos/mini/suelos.webp" alt="" loading="lazy"><img src="img/cursos/mini/plagas-maiz.webp" alt="" loading="lazy"><img src="img/cursos/mini/huertos.webp" alt="" loading="lazy"><img src="img/cursos/mini/nopal.webp" alt="" loading="lazy"><img src="img/cursos/mini/frijol.webp" alt="" loading="lazy"></div></div>
+  <p class="auth-cropscaption"><b>Cursos de cultivos reales</b> · webinars en vivo · certificados con QR</p>
 
   <div class="auth-card">
     <div class="tabs">
@@ -758,6 +791,8 @@
 
 </div>
 
+<p class="auth-trust">Pago seguro con Stripe · Acceso inmediato a tu panel · Sin permanencia, cancela cuando quieras</p>
+
 <!-- Toast para mensajes -->
 <div id="toast" class="toast">
   <svg id="toastIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -812,6 +847,13 @@
   document.getElementById('planChip').textContent = currentPlan.label;
 
   // ─── Helpers ────────────────────────────────────
+  // MODIFICADO: tráfico de anuncios (llega con ?plan=) → registro por default
+  window.addEventListener('DOMContentLoaded', () => {
+    try {
+      if (new URLSearchParams(location.search).get('plan')) window.switchTab('register');
+    } catch(e) {}
+  });
+
   window.switchTab = function(which) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelector(`.tab[data-tab="${which}"]`).classList.add('active');
