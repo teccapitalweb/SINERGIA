@@ -313,10 +313,10 @@
   }
 
   .plan-badge-popular {
-    position: absolute;
-    top: -16px;
-    left: 50%;
-    transform: translateX(-50%);
+    /* MODIFICADO: dentro del flujo para que no lo rebane el overflow:hidden */
+    position: static;
+    align-self: center;
+    margin: 0 auto 18px;
     background: linear-gradient(135deg, var(--amber-400), var(--amber-500));
     color: var(--stone-900);
     padding: 9px 18px;
