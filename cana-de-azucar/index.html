@@ -670,15 +670,9 @@
      Si está configurada, el pago se abre EMBEBIDO en esta página.
      Si está vacía o el backend falla, cae al Payment Link (redirect)
      y en último caso a WhatsApp. Nunca se rompe.
-
-     TODO: el endpoint /stripe/cana-de-azucar/checkout-session AÚN NO
-     existe en el backend (se creará cuando Britney tenga el Price ID).
-     Mientras tanto el fetch falla y cae limpiamente al fallback.
-     TODO: pegar link Stripe (STRIPE_LINK) cuando Britney cree el
-     Payment Link del curso de Caña de Azúcar.
      ═══════════════════════════════════════════════════════ */
   var BACKEND_URL = 'https://sinergia-webhook-production.up.railway.app';
-  const STRIPE_LINK = "";
+  const STRIPE_LINK = "https://buy.stripe.com/aFacN54mh7PG9Q1aDJ5c403";
   var WA_FALLBACK = 'https://wa.me/522221035842?text=Hola%2C%20quiero%20inscribirme%20al%20curso%20de%20Ca%C3%B1a%20de%20Az%C3%BAcar';
 
   var overlay = document.getElementById('payOverlay');
