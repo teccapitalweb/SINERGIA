@@ -289,6 +289,49 @@
   .sticky-price span{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6);}
   .sticky-cta .btn{padding:12px 22px;font-size:.92rem;border-radius:11px;}
 
+  /* ============ MODAL CHECKOUT EMBEBIDO ============ */
+  .pay-overlay{
+    position:fixed;inset:0;z-index:100;display:none;
+    background:rgba(6,33,30,.72);backdrop-filter:blur(8px);
+    align-items:flex-end;justify-content:center;
+  }
+  .pay-overlay.open{display:flex;animation:ovFade .25s ease;}
+  @keyframes ovFade{from{opacity:0}to{opacity:1}}
+  .pay-modal{
+    background:#fff;width:100%;max-width:520px;
+    border-radius:22px 22px 0 0;
+    max-height:92vh;display:flex;flex-direction:column;
+    animation:slideUp .35s cubic-bezier(.32,.72,.35,1);
+  }
+  @keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .pay-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;border-bottom:1px solid var(--line);flex-shrink:0;
+  }
+  .pay-head b{font-family:'Archivo';font-size:1rem;color:var(--verde-negro);}
+  .pay-close{
+    background:var(--crema);border:none;cursor:pointer;
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
+    transition:background .15s;
+  }
+  .pay-close:hover{background:#e8ece7;}
+  .pay-body{overflow-y:auto;flex:1;min-height:300px;}
+  .pay-loading{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;padding:70px 20px;color:var(--ink-soft);font-size:.9rem;
+  }
+  .spinner{
+    width:38px;height:38px;border-radius:50%;
+    border:3.5px solid var(--crema);border-top-color:var(--naranja);
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media(min-width:640px){
+    .pay-overlay{align-items:center;padding:24px;}
+    .pay-modal{border-radius:22px;}
+  }
+
   /* ============ DESKTOP ============ */
   @media(min-width:820px){
     .speaker{grid-template-columns:250px 1fr;align-items:start;justify-items:start;text-align:left;}
@@ -583,23 +626,103 @@
   <a class="btn btn-fire js-buy" href="#" rel="noopener">Inscribirme</a>
 </div>
 
+<!-- ============ MODAL DE PAGO EMBEBIDO ============ -->
+<div class="pay-overlay" id="payOverlay" role="dialog" aria-modal="true" aria-label="Pago del curso">
+  <div class="pay-modal">
+    <div class="pay-head">
+      <b>Inscripción · $550 MXN</b>
+      <button class="pay-close" id="payClose" aria-label="Cerrar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="pay-body" id="payBody">
+      <div class="pay-loading" id="payLoading">
+        <div class="spinner"></div>
+        Preparando pago seguro…
+      </div>
+      <div id="stripeCheckoutMount"></div>
+    </div>
+  </div>
+</div>
+
 <script>
   /* ═══════════════════════════════════════════════════════
-     CONFIGURACIÓN DE PAGO — STRIPE PAYMENT LINK
-     1. Crea el Payment Link en el dashboard de Stripe
-        (producto: Curso Chile Habanero · $550 MXN · pago único)
-     2. Pega el link aquí abajo (empieza con https://buy.stripe.com/)
-     Si se deja vacío, los botones caen a WhatsApp como respaldo.
+     CONFIGURACIÓN DE PAGO
+     BACKEND_URL: URL del sinergia-webhook en Railway (sin / final).
+     Si está configurada, el pago se abre EMBEBIDO en esta página.
+     Si está vacía o el backend falla, cae al Payment Link (redirect)
+     y en último caso a WhatsApp. Nunca se rompe.
      ═══════════════════════════════════════════════════════ */
+  var BACKEND_URL = ''; // ← PEGA AQUÍ LA URL DE TU RAILWAY, ej: 'https://sinergia-webhook-production.up.railway.app'
   var STRIPE_LINK = 'https://buy.stripe.com/3cIeVd6up9XO5zLeTZ5c400';
-
   var WA_FALLBACK = 'https://wa.me/522221035842?text=Hola%2C%20quiero%20inscribirme%20al%20curso%20de%20Chile%20Habanero';
-  var buyUrl = STRIPE_LINK && STRIPE_LINK.indexOf('https://') === 0 ? STRIPE_LINK : WA_FALLBACK;
+
+  var overlay = document.getElementById('payOverlay');
+  var payLoading = document.getElementById('payLoading');
+  var mountEl = document.getElementById('stripeCheckoutMount');
+  var stripeJsLoaded = false, checkoutInstance = null, opening = false;
+
+  function loadStripeJs(){
+    return new Promise(function(resolve, reject){
+      if (stripeJsLoaded || window.Stripe) { stripeJsLoaded = true; return resolve(); }
+      var s = document.createElement('script');
+      s.src = 'https://js.stripe.com/v3/';
+      s.onload = function(){ stripeJsLoaded = true; resolve(); };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function fallbackRedirect(){
+    closeModal();
+    window.open(STRIPE_LINK || WA_FALLBACK, '_blank');
+  }
+
+  function closeModal(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if (checkoutInstance) { try { checkoutInstance.destroy(); } catch(e){} checkoutInstance = null; }
+    mountEl.innerHTML = '';
+    payLoading.style.display = 'flex';
+  }
+
+  async function openEmbeddedCheckout(){
+    if (opening) return;
+    // Sin backend configurado → redirect clásico
+    if (!BACKEND_URL || BACKEND_URL.indexOf('https://') !== 0) return fallbackRedirect();
+    opening = true;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    try {
+      var results = await Promise.all([
+        fetch(BACKEND_URL + '/stripe/habanero/checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        }).then(function(r){ if(!r.ok) throw new Error('backend ' + r.status); return r.json(); }),
+        loadStripeJs()
+      ]);
+      var data = results[0];
+      if (!data.clientSecret || !data.publishableKey) throw new Error('respuesta incompleta');
+      var stripeClient = Stripe(data.publishableKey);
+      checkoutInstance = await stripeClient.initEmbeddedCheckout({ clientSecret: data.clientSecret });
+      payLoading.style.display = 'none';
+      checkoutInstance.mount('#stripeCheckoutMount');
+    } catch (err) {
+      console.error('Embedded checkout falló, usando Payment Link:', err);
+      fallbackRedirect();
+    }
+    opening = false;
+  }
+
+  document.getElementById('payClose').addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) closeModal(); });
+
   document.querySelectorAll('.js-buy').forEach(function(a){
-    a.href = buyUrl;
-    a.target = '_blank';
-    a.addEventListener('click', function(){
+    a.href = '#';
+    a.addEventListener('click', function(ev){
+      ev.preventDefault();
       if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', {value:550, currency:'MXN'});
+      openEmbeddedCheckout();
     });
   });
 
