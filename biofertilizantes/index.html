@@ -377,7 +377,6 @@
       <span class="cupo-tag">Cupo limitado</span>
     </div>
 
-    <!-- TODO: pegar link Stripe -->
     <a class="btn btn-fire pulse js-buy" href="#" rel="noopener">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
       QUIERO MI LUGAR
@@ -583,7 +582,6 @@
         <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Reconocimiento institucional con QR y folio válido</div>
         <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Grupo VIP de WhatsApp con otros productores</div>
       </div>
-      <!-- TODO: pegar link Stripe -->
       <a class="btn btn-fire pulse js-buy" href="#" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
         INSCRIBIRME AHORA
@@ -614,7 +612,6 @@
 <!-- ============ STICKY CTA ============ -->
 <div class="sticky-cta" id="stickyCta">
   <div class="sticky-price"><b>$550 MXN</b><span>Inicia 27 de julio</span></div>
-  <!-- TODO: pegar link Stripe -->
   <a class="btn btn-fire js-buy" href="#" rel="noopener">Inscribirme</a>
 </div>
 
@@ -644,12 +641,9 @@
      Si está configurada, el pago se abre EMBEBIDO en esta página.
      Si está vacía o el backend falla, cae al Payment Link (redirect)
      y en último caso a WhatsApp. Nunca se rompe.
-
-     TODO: pegar link Stripe (STRIPE_LINK) y/o configurar BACKEND_URL
-     cuando Britney tenga el producto de Biofertilizantes dado de alta.
      ═══════════════════════════════════════════════════════ */
   var BACKEND_URL = '';
-  var STRIPE_LINK = '';
+  const STRIPE_LINK = "https://buy.stripe.com/28E4gz2e90ne0fr27d5c402";
   var WA_FALLBACK = 'https://wa.me/522221035842?text=Hola%2C%20quiero%20inscribirme%20al%20curso%20de%20Biofertilizantes';
 
   var overlay = document.getElementById('payOverlay');
