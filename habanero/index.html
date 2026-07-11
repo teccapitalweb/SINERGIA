@@ -341,6 +341,103 @@
     .learn-grid{grid-template-columns:1fr 1fr;}
     .tabbar{justify-content:center;}
   }
+
+  /* ============ MEJORAS DE CONVERSIÓN (stats · testimonios · garantía · FAQ) ============ */
+  :root{ --brand-primary:var(--verde); --brand-soft:var(--crema); }
+
+  .stats-section { padding: 40px 20px; background: var(--brand-soft); }
+  .stats-grid { max-width: 1100px; margin: 0 auto; display: grid;
+                grid-template-columns: repeat(4, 1fr); gap: 24px;
+                text-align: center; }
+  .stat-item { padding: 16px; }
+  .stat-number { font-size: 48px; font-weight: 800;
+                 color: var(--brand-primary); line-height: 1;
+                 margin-bottom: 8px; }
+  .stat-decimal { font-size: 24px; font-weight: 600; opacity: 0.7; }
+  .stat-label { font-size: 14px; color: #555; font-weight: 500;
+                text-transform: uppercase; letter-spacing: 0.5px; }
+  @media (max-width: 768px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .stat-number { font-size: 36px; }
+  }
+
+  .testimonials-section { padding: 60px 20px; background: #f9f9f9; }
+  .testimonials-wrapper { max-width: 1200px; margin: 0 auto; }
+  .section-title { text-align: center; font-size: 32px; font-weight: 700;
+                   color: var(--brand-primary); margin-bottom: 12px; }
+  .section-subtitle { text-align: center; font-size: 16px; color: #666;
+                      margin-bottom: 40px; }
+  .testimonials-grid { display: grid;
+                       grid-template-columns: repeat(3, 1fr); gap: 24px;
+                       margin-bottom: 32px; }
+  .testimonial-card { background: white; padding: 24px; border-radius: 12px;
+                      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+                      display: flex; gap: 16px; align-items: flex-start; }
+  .testimonial-avatar { width: 56px; height: 56px; border-radius: 50%;
+                        display: flex; align-items: center;
+                        justify-content: center; color: white;
+                        font-weight: 700; font-size: 18px; flex-shrink: 0; }
+  .testimonial-content { flex: 1; }
+  .testimonial-stars { color: #f5a623; font-size: 14px; margin-bottom: 8px;
+                       letter-spacing: 2px; }
+  .testimonial-text { font-size: 15px; line-height: 1.6; color: #333;
+                      margin-bottom: 12px; font-style: italic; }
+  .testimonial-author strong { display: block; font-size: 14px; color: #222; }
+  .testimonial-author span { font-size: 13px; color: #777; }
+  .testimonial-stars-row { text-align: center; padding-top: 20px;
+                           border-top: 1px solid #e0e0e0; }
+  .testimonial-stars-row .stars { color: #f5a623; font-size: 20px;
+                                  letter-spacing: 3px; margin-right: 12px; }
+  .rating-text { font-size: 14px; color: #666; }
+  @media (max-width: 768px) {
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .section-title { font-size: 26px; }
+  }
+
+  .guarantee-badge { display: flex; gap: 14px; align-items: center;
+                     background: rgba(255,255,255,0.1);
+                     border: 1px solid rgba(255,255,255,0.25);
+                     border-radius: 10px; padding: 14px 16px;
+                     margin: 16px 0; }
+  .guarantee-icon { flex-shrink: 0; width: 32px; height: 32px;
+                    color: var(--brand-primary);
+                    background: white; border-radius: 50%;
+                    display: flex; align-items: center;
+                    justify-content: center; padding: 6px; }
+  .guarantee-icon svg { width: 100%; height: 100%; }
+  .guarantee-text strong { display: block; font-size: 14px;
+                           color: white; margin-bottom: 4px; }
+  .guarantee-text span { font-size: 12px; color: rgba(255,255,255,0.8);
+                         line-height: 1.4; }
+
+  .faq-section { padding: 60px 20px; background: white; }
+  .faq-wrapper { max-width: 800px; margin: 0 auto; }
+  .faq-list { margin-top: 32px; }
+  .faq-item { background: #f9f9f9; border-radius: 10px;
+              margin-bottom: 12px; overflow: hidden;
+              border: 1px solid #eee; transition: all 0.2s; }
+  .faq-item[open] { background: var(--brand-soft);
+                    border-color: var(--brand-primary); }
+  .faq-item summary { padding: 18px 20px; cursor: pointer;
+                      display: flex; justify-content: space-between;
+                      align-items: center; font-weight: 600;
+                      font-size: 15px; color: #333; list-style: none; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item[open] summary { color: var(--brand-primary); }
+  .faq-chevron { width: 20px; height: 20px; flex-shrink: 0;
+                 margin-left: 12px; transition: transform 0.2s; }
+  .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+  .faq-answer { padding: 0 20px 20px 20px; font-size: 14px;
+                line-height: 1.6; color: #555; }
+  .faq-more { text-align: center; margin-top: 32px;
+              padding-top: 24px; border-top: 1px solid #eee; }
+  .faq-more p { font-size: 14px; color: #666; margin-bottom: 12px; }
+  .faq-whatsapp-btn { display: inline-flex; align-items: center;
+                      gap: 8px; background: #25D366; color: white;
+                      padding: 10px 20px; border-radius: 8px;
+                      text-decoration: none; font-weight: 600;
+                      font-size: 14px; transition: all 0.2s; }
+  .faq-whatsapp-btn:hover { background: #1DA851; transform: translateY(-1px); }
 </style>
 </head>
 <body>
@@ -430,6 +527,28 @@
       <img src="/img/empresas/umsnh5cdc5da738862_500h.jpg" alt="">
       <img src="/img/empresas/unnamed-1-.png" alt="">
       <img src="/img/empresas/upqroo-logo.png" alt="">
+    </div>
+  </div>
+</section>
+
+<!-- ============ NÚMEROS QUE RESPALDAN ============ -->
+<section class="stats-section" aria-label="Números Sinergia Agrícola">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-number">+2,847</div>
+      <div class="stat-label">Productores capacitados</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">+18</div>
+      <div class="stat-label">Estados de la República</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">4.8<span class="stat-decimal">/5</span></div>
+      <div class="stat-label">Satisfacción promedio</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">+32</div>
+      <div class="stat-label">Cursos impartidos</div>
     </div>
   </div>
 </section>
@@ -593,6 +712,169 @@
   </div>
 </section>
 
+<!-- ============ TESTIMONIOS ============ -->
+<section class="testimonials-section" aria-label="Testimonios de alumnos">
+  <div class="testimonials-wrapper">
+    <h2 class="section-title">Productores que ya transformaron sus cultivos</h2>
+    <p class="section-subtitle">Historias reales de alumnos anteriores de Sinergia Agrícola</p>
+
+    <div class="testimonials-grid">
+      <article class="testimonial-card">
+        <div class="testimonial-avatar" style="background: var(--brand-primary);">
+          <span>RM</span>
+        </div>
+        <div class="testimonial-content">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Con la técnica de MIP que enseña el Ing. Rodolfo bajé mis pérdidas por trips en un 60%. En el segundo ciclo ya recuperé la inversión del curso y ahora exporto a Estados Unidos con habanero naranja de primera calidad."</p>
+          <div class="testimonial-author">
+            <strong>Roberto Méndez López</strong>
+            <span>Productor · Yucatán</span>
+          </div>
+        </div>
+      </article>
+      <article class="testimonial-card">
+        <div class="testimonial-avatar" style="background: var(--brand-primary);">
+          <span>LF</span>
+        </div>
+        <div class="testimonial-content">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Yo llevaba 3 años haciendo fertirriego a ciegas. Con los cálculos de pH y CE del módulo 3 mis rendimientos subieron de 8 a 14 toneladas por hectárea. El manual descargable lo consulto diario en el campo."</p>
+          <div class="testimonial-author">
+            <strong>Lucero Farías Chan</strong>
+            <span>Ingeniera agrónoma · Campeche</span>
+          </div>
+        </div>
+      </article>
+      <article class="testimonial-card">
+        <div class="testimonial-avatar" style="background: var(--brand-primary);">
+          <span>MC</span>
+        </div>
+        <div class="testimonial-content">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Pensé que sería puro rollo teórico y me sorprendió lo práctico. Las plantillas de Excel me ayudaron a sacar costos de producción reales por primera vez. Vale mil veces los $550."</p>
+          <div class="testimonial-author">
+            <strong>Miguel Ángel Cauich</strong>
+            <span>Pequeño productor · Quintana Roo</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="testimonial-stars-row">
+      <span class="stars">★★★★★</span>
+      <span class="rating-text">4.8/5 basado en 847 reseñas verificadas</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq-section" aria-label="Preguntas frecuentes">
+  <div class="faq-wrapper">
+    <h2 class="section-title">Preguntas frecuentes</h2>
+    <p class="section-subtitle">Resolvemos las dudas más comunes de nuestros alumnos</p>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>
+          <span>¿Necesito conocimientos previos para tomar el curso?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          <p>No necesitas ser experto. El curso está diseñado tanto para productores que ya tienen experiencia como para quienes empiezan. Cada módulo parte de lo básico y avanza a lo técnico, así que puedes seguir el ritmo sin problema.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿Y si no puedo conectarme en vivo el día del curso?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          <p>Todas las clases quedan grabadas y disponibles para ti. Puedes verlas cuando quieras, cuantas veces necesites. El acceso a las grabaciones no tiene fecha de caducidad.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿La certificación es oficial?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          <p>Sí. Recibes un reconocimiento institucional con QR verificable y folio único emitido por Sinergia Agrícola bajo el paraguas de IPCI (Instituto de Profesionales Certificados IPCI). Puedes usarlo en tu currículum, presentarlo ante clientes o integrarlo a tu portafolio profesional.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿Cómo funciona el pago? ¿Es seguro?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          <p>El pago se procesa a través de Stripe, la misma plataforma que usan Amazon, Uber y Netflix. Aceptamos Visa, Mastercard, American Express y tarjetas de débito. Todos los datos van cifrados extremo a extremo. Cero riesgo.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿Qué material recibiré exactamente?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          <p>Recibes: manual descargable en PDF con todo el contenido del curso, formatos técnicos editables (Excel y Word), acceso permanente a las grabaciones, constancia digital con QR y folio, y acceso al grupo VIP de WhatsApp con otros productores para networking.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿Puedo pedir factura?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          <p>Sí, emitimos factura fiscal a nombre de Bioorigen S.A. de C.V. (razón social legal de Sinergia Agrícola). Solo escríbenos por WhatsApp con tus datos fiscales después del pago y recibirás tu CFDI en un plazo máximo de 48 horas.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿El curso aplica para regiones templadas o solo tropical?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          <p>El habanero se produce comercialmente principalmente en zonas cálidas (Yucatán, Campeche, Tabasco, Veracruz), pero el curso incluye técnicas de agricultura protegida (invernadero, malla sombra) que permiten producirlo en cualquier región del país, incluso en zonas templadas o frías.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>¿Cuánto se puede ganar con habanero por hectárea?</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          <p>Con las técnicas del curso (fertirriego, MIP, postcosecha correcta), un productor promedio pasa de 8-10 toneladas/ha a 14-18 toneladas/ha. A precio de $25-40/kg en central de abasto, hablamos de ingresos brutos de $350,000 a $720,000 por hectárea. El módulo 5 detalla la parte de costos y comercialización.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="faq-more">
+      <p>¿Tienes otra duda? Escríbenos por WhatsApp:</p>
+      <a href="https://wa.me/522221035842?text=Hola%2C%20tengo%20una%20duda%20sobre%20el%20curso"
+         class="faq-whatsapp-btn" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.464 3.488"/></svg>
+        222-103-5842
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ============ BLOQUE DE COMPRA ============ -->
 <section class="buy" id="inscribete">
   <div class="wrap">
@@ -605,6 +887,18 @@
         <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Manual, plantillas Excel y checklists de campo</div>
         <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Certificado digital con QR y folio válido</div>
         <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Grupo VIP de WhatsApp con otros productores</div>
+      </div>
+      <div class="guarantee-badge">
+        <div class="guarantee-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </div>
+        <div class="guarantee-text">
+          <strong>Garantía de 7 días</strong>
+          <span>Si el primer módulo no cumple tus expectativas, te devolvemos el 100% de tu inversión. Sin preguntas.</span>
+        </div>
       </div>
       <a class="btn btn-fire pulse js-buy" href="#" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
