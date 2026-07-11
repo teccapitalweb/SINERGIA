@@ -703,15 +703,9 @@
      Si está configurada, el pago se abre EMBEBIDO en esta página.
      Si está vacía o el backend falla, cae al Payment Link (redirect)
      y en último caso a WhatsApp. Nunca se rompe.
-
-     TODO Britney: pegar el Payment Link en STRIPE_LINK cuando el
-     producto exista en Stripe. Mientras tanto el fallback es WhatsApp.
-     TODO equipo webhook: el endpoint /stripe/soluciones-nutritivas/
-     checkout-session aún no existe; hasta entonces el modal cae al
-     fallback (comportamiento esperado).
      ═══════════════════════════════════════════════════════ */
   var BACKEND_URL = 'https://sinergia-webhook-production.up.railway.app';
-  const STRIPE_LINK = "";
+  const STRIPE_LINK = "https://buy.stripe.com/3cI7sL9GBc5W7HTaDJ5c405";
   var WA_FALLBACK = 'https://wa.me/522221035842?text=Hola%2C%20tengo%20una%20duda%20sobre%20el%20curso%20de%20Soluciones%20Nutritivas';
 
   var overlay = document.getElementById('payOverlay');
