@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Curso: Elaboración y Aplicación de Biofertilizantes en Cultivos | Sinergia Agrícola</title>
-<meta name="description" content="Curso en vivo el 27 de julio con el Ing. Agr. José Ángel de la Cruz Hernández. Cupo limitado. $550 MXN. Reconocimiento con QR y folio válido.">
+<meta name="description" content="Curso en video con el Ing. Agr. José Ángel de la Cruz Hernández. Acceso inmediato al aula. Oferta de lanzamiento $550 MXN. Certificado con QR verificable.">
 
 <!-- Open Graph para Facebook Ads -->
 <!-- TODO: Britney — subir assets/promo-social.jpg para que el og:image funcione -->
 <meta property="og:title" content="Curso: Elaboración y Aplicación de Biofertilizantes en Cultivos">
-<meta property="og:description" content="En vivo · 27 de julio · $550 MXN · Cupo limitado · Reconocimiento institucional con QR">
+<meta property="og:description" content="Videos con acceso inmediato · Oferta $1,050 → $550 MXN · Solo 10 cupos · Certificado con QR verificable">
 <meta property="og:image" content="https://sinergiamexico.it.com/biofertilizantes/assets/promo-social.jpg">
 <meta property="og:url" content="https://sinergiamexico.it.com/biofertilizantes/">
 <meta property="og:type" content="website">
@@ -63,76 +63,97 @@
   }
   .btn-fire:active{transform:translateY(4px);box-shadow:0 2px 0 #0b2e0f;}
   .btn-fire:hover{transform:translateY(-2px);}
-  .pulse{animation:pulse 2.2s infinite;}
-  @keyframes pulse{
-    0%,100%{box-shadow:0 6px 0 #0b2e0f, 0 16px 30px -8px rgba(46,125,50,.5);}
-    50%{box-shadow:0 6px 0 #0b2e0f, 0 16px 44px -4px rgba(46,125,50,.85);}
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
   }
 
-  /* ============ HERO ============ */
-  .hero{
-    background:
-      radial-gradient(90% 90% at 100% 0%, rgba(46,125,50,.3), transparent 55%),
-      linear-gradient(170deg, #1e5a24 0%, var(--base-osc) 45%, var(--base-negro) 100%);
-    color:#fff;text-align:center;
-    padding:38px 0 46px;position:relative;overflow:hidden;
+  /* ============ HERO NUEVO ============ */
+  .hero-nuevo {
+    padding: 40px 20px 60px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
+    position: relative;
+    overflow: hidden;
   }
-  .live-pill{
-    display:inline-flex;align-items:center;gap:8px;
-    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);
-    padding:7px 16px;border-radius:100px;font-size:.8rem;font-weight:700;
-    letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px;
+  .hero-nuevo::before {
+    content: "";
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(46,125,50,0.15) 0%, transparent 70%);
+    border-radius: 50%;
   }
-  .live-dot{width:8px;height:8px;border-radius:50%;background:#ff3b3b;animation:blink 1.4s infinite;}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-  .hero h1{
-    font-size:clamp(2rem,7.5vw,3.6rem);font-weight:900;text-transform:uppercase;
-    max-width:18ch;margin:0 auto 10px;
+  .hero-badges-top { display: flex; gap: 12px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
+  .badge-oferta {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white; padding: 8px 20px; border-radius: 24px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(247,147,30,0.3);
+    animation: pulse 2s infinite;
   }
-  .hero h1 em{color:var(--hi);font-style:normal;}
-  .hero-sub{
-    color:rgba(255,255,255,.85);font-size:clamp(.98rem,3vw,1.12rem);
-    max-width:46ch;margin:0 auto 22px;line-height:1.55;
+  .badge-cupos {
+    background: linear-gradient(135deg, #388e3c, #1b5e20);
+    color: white; padding: 8px 20px; border-radius: 24px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(46,125,50,0.3);
   }
-  .hero-sub b{color:#fff;}
-
-  .hero-img{
-    max-width:520px;margin:0 auto 24px;border-radius:18px;overflow:hidden;
-    aspect-ratio:16/9;
-    border:3px solid var(--brand-primary);
-    box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
-    transform:rotate(-1.2deg);
+  .hero-container {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+    align-items: center; position: relative; z-index: 1;
   }
-  .hero-img video{width:100%;height:100%;object-fit:cover;display:block;}
-
-  /* Countdown */
-  .count-label{
-    font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--hi);font-weight:700;margin-bottom:10px;
+  .hero-titulo { font-size: 48px; font-weight: 800; line-height: 1.1; color: #1a1a1a; margin-bottom: 20px; }
+  .hero-titulo .highlight {
+    color: #2e7d32;
+    background-image: linear-gradient(180deg, transparent 70%, #e8f5e9 70%, #e8f5e9 94%, transparent 94%);
+    padding: 0 2px; border-radius: 4px;
   }
-  .countdown{
-    display:flex;justify-content:center;gap:10px;margin-bottom:26px;
+  .hero-subtitulo { font-size: 18px; color: #555; line-height: 1.6; margin-bottom: 32px; }
+  .hero-precio {
+    background: white; padding: 24px; border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(46,125,50,0.15);
+    border: 2px solid #e8f5e9; margin-bottom: 24px; text-align: center;
   }
-  .count-box{
-    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
-    border-radius:12px;padding:10px 0;width:70px;
+  .precio-tachado { color: #999; text-decoration: line-through; font-size: 18px; margin-bottom: 4px; }
+  .precio-ahora { display: flex; justify-content: center; align-items: baseline; gap: 4px; margin-bottom: 8px; }
+  .precio-ahora .moneda { font-size: 32px; color: #2e7d32; font-weight: 600; }
+  .precio-ahora .numero { font-size: 72px; color: #2e7d32; font-weight: 900; line-height: 1; }
+  .precio-ahora .mxn { font-size: 20px; color: #999; font-weight: 600; }
+  .precio-ahorro {
+    color: #b45309; font-weight: 700; font-size: 15px;
+    background: #fff7ed; padding: 6px 12px; border-radius: 20px; display: inline-block;
   }
-  .count-box b{font-family:'Archivo';font-size:1.7rem;font-weight:800;display:block;}
-  .count-box span{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);}
-
-  .hero-price-row{
-    display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:8px;
+  .hero-beneficios-rapidos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 32px; }
+  .benef { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; font-weight: 500; }
+  .benef span {
+    width: 24px; height: 24px; background: #388e3c; color: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;
   }
-  .hero-price{
-    font-family:'Archivo';font-weight:900;font-size:clamp(2.4rem,9vw,3.4rem);color:var(--hi);
+  .hero-cta {
+    width: 100%; padding: 20px;
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    color: white; border: none; border-radius: 12px;
+    font-size: 18px; font-weight: 700; font-family: inherit; cursor: pointer;
+    display: flex; justify-content: center; align-items: center; gap: 12px;
+    box-shadow: 0 8px 24px rgba(46,125,50,0.4);
+    transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
   }
-  .hero-price small{font-size:.38em;font-weight:700;color:rgba(255,255,255,.7);vertical-align:middle;}
-  .cupo-tag{
-    background:var(--acc);color:#fff;font-weight:800;font-size:.78rem;
-    padding:8px 14px;border-radius:8px;text-transform:uppercase;letter-spacing:.05em;
-    transform:rotate(2deg);
+  .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(46,125,50,0.5); }
+  .cta-flecha { font-size: 24px; transition: transform 0.2s; }
+  .hero-cta:hover .cta-flecha { transform: translateX(4px); }
+  .hero-garantia-mini { text-align: center; font-size: 13px; color: #666; margin-top: 12px; }
+  .hero-video-wrapper {
+    width: 100%; aspect-ratio: 16/9; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(46,125,50,0.25); position: relative;
   }
-  .hero-note{font-size:.82rem;color:rgba(255,255,255,.6);margin-top:14px;}
+  .hero-video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+  .hero-video-etiqueta { text-align: center; margin-top: 12px; color: #666; font-size: 14px; font-weight: 500; }
+  @media (max-width: 768px) {
+    .hero-container { grid-template-columns: 1fr; gap: 40px; }
+    .hero-titulo { font-size: 36px; }
+    .precio-ahora .numero { font-size: 56px; }
+    .hero-beneficios-rapidos { grid-template-columns: 1fr; }
+  }
 
   /* ============ LOGOS ============ */
   .trusted{background:var(--crema);padding:38px 0 34px;border-bottom:1px solid var(--line);}
@@ -154,32 +175,33 @@
   }
   .track img:hover{filter:none;opacity:1;}
 
-  /* ============ TABS ============ */
-  .tabs-section{padding:56px 0 30px;}
-  .tabs-head{text-align:center;margin-bottom:30px;}
-  .tabs-head h2{font-size:clamp(1.5rem,5vw,2.2rem);color:var(--base-negro);font-weight:800;}
-  .tabbar{
-    display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;
-    border-bottom:2px solid var(--line);margin-bottom:30px;
-    scrollbar-width:none;
+  /* ============ TABS NUEVAS ============ */
+  .tabs-section-nueva { padding: 60px 20px; background: white; }
+  .tabs-container { max-width: 1000px; margin: 0 auto; }
+  .tabs-titulo { text-align: center; font-size: 36px; font-weight: 800; color: #1a1a1a; margin-bottom: 40px; }
+  .tabs-nav {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    background: #f5f5f5; padding: 8px; border-radius: 16px; margin-bottom: 32px;
   }
-  .tabbar::-webkit-scrollbar{display:none;}
-  .tab-btn{
-    background:none;border:none;cursor:pointer;
-    font-family:'Archivo';font-weight:700;font-size:.98rem;color:var(--ink-soft);
-    padding:14px 18px;white-space:nowrap;position:relative;flex-shrink:0;
-    transition:color .2s;
+  .tab-btn {
+    background: transparent; border: none; padding: 16px 12px; border-radius: 12px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: inherit; font-size: 14px; font-weight: 600; color: #666; transition: all 0.2s;
   }
-  .tab-btn::after{
-    content:"";position:absolute;left:0;right:0;bottom:-2px;height:3px;
-    background:var(--acc);border-radius:3px 3px 0 0;
-    transform:scaleX(0);transition:transform .25s ease;
+  .tab-btn:hover { background: rgba(46,125,50,0.06); color: #2e7d32; }
+  .tab-btn.active { background: white; color: #2e7d32; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .tab-icon { font-size: 24px; }
+  .tab-panel { display: none; animation: fadeIn 0.3s; }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-  .tab-btn.active{color:var(--base-negro);}
-  .tab-btn.active::after{transform:scaleX(1);}
-  .tab-panel{display:none;animation:fadeUp .35s ease;}
-  .tab-panel.active{display:block;}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @media (max-width: 768px) {
+    .tabs-nav { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 12px 8px; font-size: 12px; }
+    .tab-icon { font-size: 20px; }
+  }
 
   /* Tab: Qué aprenderás */
   .learn-grid{display:grid;gap:12px;}
@@ -243,33 +265,104 @@
   .inc-vip{border:1.5px solid var(--acc);position:relative;}
   .inc-vip .inc-ic{background:linear-gradient(135deg,var(--acc),var(--acc-osc));}
 
-  /* ============ BLOQUE DE COMPRA ============ */
-  .buy{padding:26px 0 60px;}
-  .buy-card{
-    background:linear-gradient(160deg,#1e5a24,var(--base-negro));
-    border-radius:26px;padding:40px 24px;text-align:center;color:#fff;
-    position:relative;overflow:hidden;
+  /* ============ SECCION CONTACTO/WHATSAPP ============ */
+  .contacto-section { padding: 60px 20px; background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%); }
+  .contacto-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .contacto-left h2 { font-size: 32px; color: #1a1a1a; margin-bottom: 16px; font-weight: 800; }
+  .contacto-left p { font-size: 17px; color: #666; line-height: 1.6; margin-bottom: 32px; }
+  .contacto-botones { display: flex; flex-direction: column; gap: 12px; }
+  .btn-whatsapp {
+    background: #25D366; color: white; padding: 18px 24px; border-radius: 12px;
+    text-decoration: none; font-weight: 700; font-size: 16px;
+    display: flex; align-items: center; gap: 12px; transition: all 0.2s;
+    box-shadow: 0 8px 24px rgba(37,211,102,0.3);
   }
-  .buy-card::before{
-    content:"";position:absolute;inset:0;
-    background:radial-gradient(70% 60% at 85% 10%, rgba(102,187,106,.28), transparent 60%);
+  .btn-whatsapp:hover { background: #1DA851; transform: translateY(-2px); }
+  .btn-numero { margin-left: auto; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 14px; }
+  .btn-grupo {
+    background: white; color: #2e7d32; border: 2px solid #2e7d32;
+    padding: 18px 24px; border-radius: 12px; text-decoration: none;
+    font-weight: 700; font-size: 16px; text-align: center; transition: all 0.2s;
   }
-  .buy-card > *{position:relative;}
-  .buy-tag{
-    display:inline-block;background:var(--hi);color:var(--base-negro);
-    font-family:'Archivo';font-weight:800;font-size:.78rem;letter-spacing:.08em;
-    text-transform:uppercase;padding:8px 16px;border-radius:8px;margin-bottom:16px;
-    transform:rotate(-1.5deg);
+  .btn-grupo:hover { background: #2e7d32; color: white; }
+  .contacto-right { display: flex; flex-direction: column; gap: 16px; }
+  .contacto-card {
+    background: white; padding: 20px; border-radius: 12px;
+    display: flex; gap: 16px; align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;
   }
-  .buy-price{font-family:'Archivo';font-weight:900;font-size:clamp(3rem,12vw,4.4rem);color:var(--hi);line-height:1;}
-  .buy-price small{font-size:.32em;color:rgba(255,255,255,.7);font-weight:700;}
-  .buy-date{margin:8px 0 24px;font-size:.95rem;color:rgba(255,255,255,.8);font-weight:600;}
-  .buy-includes{
-    display:grid;gap:9px;max-width:340px;margin:0 auto 28px;text-align:left;
+  .contacto-card-icon { font-size: 40px; flex-shrink: 0; }
+  .contacto-card-text strong { display: block; color: #1a1a1a; font-size: 16px; margin-bottom: 4px; }
+  .contacto-card-text span { color: #666; font-size: 14px; line-height: 1.4; }
+  @media (max-width: 768px) { .contacto-container { grid-template-columns: 1fr; } }
+
+  /* ============ BLOQUE DE COMPRA WOW ============ */
+  .compra-final-wow {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    position: relative; overflow: hidden;
   }
-  .buy-includes div{display:flex;gap:10px;align-items:center;font-size:.92rem;font-weight:500;}
-  .buy-includes svg{flex-shrink:0;color:var(--hi);}
-  .garantia{margin-top:16px;font-size:.8rem;color:rgba(255,255,255,.55);}
+  .compra-final-wow::before {
+    content: ""; position: absolute; top: -50%; right: -50%;
+    width: 100%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+  }
+  .compra-container {
+    max-width: 600px; margin: 0 auto; background: white;
+    border-radius: 24px; padding: 40px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+    position: relative; z-index: 1;
+  }
+  .compra-badge {
+    display: inline-block; background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white; padding: 8px 20px; border-radius: 24px;
+    font-weight: 700; font-size: 13px; margin-bottom: 16px;
+  }
+  .compra-header h2 { font-size: 32px; color: #1a1a1a; font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
+  .compra-header p { color: #666; font-size: 16px; margin-bottom: 32px; }
+  .compra-precio-mega {
+    text-align: center; padding: 32px 0;
+    border-top: 2px dashed #e8f5e9; border-bottom: 2px dashed #e8f5e9; margin-bottom: 32px;
+  }
+  .precio-mega-tachado { color: #999; text-decoration: line-through; font-size: 18px; margin-bottom: 8px; }
+  .precio-mega-actual { display: flex; justify-content: center; align-items: baseline; gap: 4px; margin-bottom: 12px; }
+  .mega-moneda { font-size: 40px; color: #2e7d32; font-weight: 700; }
+  .mega-numero { font-size: 96px; color: #2e7d32; font-weight: 900; line-height: 1; }
+  .mega-mxn { font-size: 24px; color: #999; font-weight: 600; }
+  .precio-mega-ahorro {
+    background: #fff7ed; color: #b45309; padding: 8px 20px; border-radius: 20px;
+    display: inline-block; font-weight: 700; font-size: 15px;
+  }
+  .compra-lista { list-style: none; padding: 0; margin: 0 0 32px 0; }
+  .compra-lista li {
+    padding: 12px 0; font-size: 15px; color: #333;
+    border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; gap: 12px;
+  }
+  .compra-garantia {
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    padding: 16px; border-radius: 12px; display: flex; gap: 12px; align-items: center;
+    margin-bottom: 24px; border: 2px solid #a5d6a7;
+  }
+  .garantia-icon { font-size: 32px; }
+  .garantia-text strong { display: block; color: #1b5e20; font-size: 15px; }
+  .garantia-text span { color: #33691e; font-size: 13px; }
+  .compra-cta-mega {
+    width: 100%; padding: 24px;
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    color: white; border: none; border-radius: 16px;
+    font-size: 20px; font-weight: 800; font-family: inherit; cursor: pointer;
+    display: flex; justify-content: center; align-items: center; gap: 16px;
+    box-shadow: 0 12px 32px rgba(46,125,50,0.4);
+    transition: all 0.2s; text-transform: uppercase; margin-bottom: 16px;
+  }
+  .compra-cta-mega:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(46,125,50,0.5); }
+  .compra-metodos { text-align: center; color: #666; font-size: 13px; margin-bottom: 24px; }
+  .compra-cupos { padding: 20px; background: #fff3e0; border-radius: 12px; margin-bottom: 20px; border: 2px solid #ffcc80; }
+  .cupos-progress { height: 8px; background: #ffe0b2; border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+  .cupos-bar { height: 100%; background: linear-gradient(90deg, #ff6b35, #2e7d32); border-radius: 4px; animation: cupos-pulse 2s infinite; }
+  @keyframes cupos-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+  .cupos-text { text-align: center; color: #e65100; font-size: 14px; }
+  .compra-disclaimer-bioorigen { font-size: 11px; color: #999; text-align: center; margin-top: 16px; line-height: 1.4; }
 
   /* ============ FOOTER ============ */
   footer{background:var(--base-negro);color:rgba(255,255,255,.5);padding:28px 0 108px;font-size:.78rem;text-align:center;}
@@ -343,9 +436,7 @@
     .speaker{grid-template-columns:250px 1fr;align-items:start;justify-items:start;text-align:left;}
     .speaker-stats{justify-content:flex-start;}
     .inc-grid{grid-template-columns:1fr 1fr;}
-    .buy-card{padding:52px 60px;}
     .learn-grid{grid-template-columns:1fr 1fr;}
-    .tabbar{justify-content:center;}
   }
 
   /* ============ MEJORAS DE CONVERSIÓN (stats · testimonios · garantía · FAQ) ============ */
@@ -449,49 +540,64 @@
 <body>
 
 <!-- ============ HERO ============ -->
-<header class="hero">
-  <div class="wrap">
-    <div class="live-pill"><span class="live-dot"></span> Curso en vivo · Clases online</div>
-    <h1>Elaboración y aplicación de <em>biofertilizantes</em></h1>
-    <p class="hero-sub">Bocashi, lombricomposta, biol y supermagro: elabora y aplica biofertilizantes en tus cultivos con el <b>Ing. Agr. José Ángel de la Cruz Hernández</b>.</p>
-
-    <div class="hero-img" style="position:relative;">
-      <video id="heroVideoBiofert" src="assets/video-hero.mp4" poster="assets/poster-hero.jpg"
-             autoplay muted loop playsinline preload="metadata"
-             style="width:100%;display:block;"></video>
-      <button id="soundBtnBiofert" aria-label="Activar sonido"
-        style="position:absolute;bottom:12px;right:12px;z-index:2;cursor:pointer;
-               display:flex;align-items:center;gap:8px;
-               background:rgba(7,35,12,.85);backdrop-filter:blur(6px);
-               border:1px solid rgba(255,255,255,.3);border-radius:100px;
-               color:#fff;font-family:'Archivo';font-weight:700;font-size:.78rem;
-               padding:9px 16px;">
-        <svg id="icMutedBiofert" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H3v6h3l5 4V5z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><path d="M22 9l-6 6M16 9l6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <svg id="icSoundBiofert" width="16" height="16" viewBox="0 0 24 24" fill="none" style="display:none;"><path d="M11 5L6 9H3v6h3l5 4V5z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span id="soundLabelBiofert">Activar sonido</span>
-      </button>
-    </div>
-
-    <p class="count-label">Iniciamos el 27 de julio · faltan</p>
-    <div class="countdown" id="countdown">
-      <div class="count-box"><b id="cd-d">--</b><span>días</span></div>
-      <div class="count-box"><b id="cd-h">--</b><span>hrs</span></div>
-      <div class="count-box"><b id="cd-m">--</b><span>min</span></div>
-      <div class="count-box"><b id="cd-s">--</b><span>seg</span></div>
-    </div>
-
-    <div class="hero-price-row">
-      <span class="hero-price">$550 <small>MXN</small></span>
-      <span class="cupo-tag">Cupo limitado</span>
-    </div>
-
-    <a class="btn btn-fire pulse js-buy" href="#" rel="noopener">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
-      QUIERO MI LUGAR
-    </a>
-    <p class="hero-note">Pago seguro con tarjeta vía Stripe · Reconocimiento institucional con QR y folio válido</p>
+<!-- ============ HERO NUEVO ============ -->
+<section class="hero-nuevo">
+  <div class="hero-badges-top">
+    <span class="badge-oferta">&#128293; OFERTA POR LANZAMIENTO</span>
+    <span class="badge-cupos">&#9889; Solo quedan 10 cupos</span>
   </div>
-</header>
+
+  <div class="hero-container">
+    <div class="hero-left">
+      <h1 class="hero-titulo">
+        Domina la elaboraci&oacute;n <span class="highlight">rentable</span>
+        de <span class="highlight">biofertilizantes</span> desde tu casa
+      </h1>
+      <p class="hero-subtitulo">
+        Aprende con el Ing. Agr. Jos&eacute; &Aacute;ngel de la Cruz Hern&aacute;ndez c&oacute;mo
+        producir biofertilizantes de calidad para reducir tu dependencia
+        qu&iacute;mica y aumentar tu rentabilidad. Accede a los videos desde el
+        momento en que te inscribes.
+      </p>
+
+      <div class="hero-precio">
+        <div class="precio-tachado">Antes $1,050 MXN</div>
+        <div class="precio-ahora">
+          <span class="moneda">$</span>
+          <span class="numero">550</span>
+          <span class="mxn">MXN</span>
+        </div>
+        <div class="precio-ahorro">&#127881; Ahorras $500 pesos (48% OFF)</div>
+      </div>
+
+      <div class="hero-beneficios-rapidos">
+        <div class="benef"><span>&#10003;</span> Acceso inmediato al aula</div>
+        <div class="benef"><span>&#10003;</span> Videos on-demand para siempre</div>
+        <div class="benef"><span>&#10003;</span> Certificado con QR verificable</div>
+        <div class="benef"><span>&#10003;</span> Grupo VIP de WhatsApp</div>
+      </div>
+
+      <button class="hero-cta js-buy">
+        INSCRIBIRME AHORA POR $550
+        <span class="cta-flecha">&rarr;</span>
+      </button>
+
+      <div class="hero-garantia-mini">
+        &#128737;&#65039; Garant&iacute;a de satisfacci&oacute;n 7 d&iacute;as &middot; Pago seguro con Stripe
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-video-wrapper">
+        <video src="assets/video-hero.mp4" poster="assets/poster-hero.jpg"
+               controls autoplay muted loop playsinline preload="metadata"></video>
+      </div>
+      <div class="hero-video-etiqueta">
+        &#128249; Preview del curso
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ============ EMPRESAS QUE CONFÍAN ============ -->
 <section class="trusted">
@@ -559,19 +665,31 @@
   </div>
 </section>
 
-<!-- ============ TABS ============ -->
-<section class="tabs-section">
-  <div class="wrap">
-    <div class="tabs-head">
-      <h2>Todo sobre el curso</h2>
+<!-- ============ TABS NUEVAS ============ -->
+<section class="tabs-section-nueva">
+  <div class="tabs-container">
+    <h2 class="tabs-titulo">Todo sobre este curso</h2>
+
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="aprenderas">
+        <span class="tab-icon">&#127919;</span>
+        <span class="tab-label">Qu&eacute; aprender&aacute;s</span>
+      </button>
+      <button class="tab-btn" data-tab="ponente">
+        <span class="tab-icon">&#128104;&#8205;&#127979;</span>
+        <span class="tab-label">Ponente</span>
+      </button>
+      <button class="tab-btn" data-tab="incluye">
+        <span class="tab-icon">&#127873;</span>
+        <span class="tab-label">Qu&eacute; incluye</span>
+      </button>
+      <button class="tab-btn" data-tab="temario">
+        <span class="tab-icon">&#128218;</span>
+        <span class="tab-label">Temario</span>
+      </button>
     </div>
 
-    <div class="tabbar" role="tablist">
-      <button class="tab-btn active" data-tab="aprenderas" role="tab">Qué aprenderás</button>
-      <button class="tab-btn" data-tab="incluye" role="tab">Qué incluye</button>
-      <button class="tab-btn" data-tab="temario" role="tab">Temario</button>
-      <button class="tab-btn" data-tab="ponente" role="tab">Ponente</button>
-    </div>
+    <div class="tabs-content">
 
     <!-- TAB: QUÉ APRENDERÁS -->
     <div class="tab-panel active" id="tab-aprenderas">
@@ -595,34 +713,42 @@
       </div>
     </div>
 
-    <!-- TAB: QUÉ INCLUYE -->
-    <div class="tab-panel" id="tab-incluye">
-      <div class="inc-grid">
-        <div class="inc-card">
-          <div class="inc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="#fff" stroke-width="1.7"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></div>
-          <div><h4>Material digital del curso</h4><p>Todo el contenido de los 5 módulos en material digital descargable.</p></div>
+<!-- TAB: PONENTE -->
+    <div class="tab-panel" id="tab-ponente">
+      <div class="speaker">
+        <div class="speaker-photo">
+          <img src="assets/ponente.jpg" alt="Ing. José Ángel de la Cruz Hernández" class="ponente-foto" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         </div>
-        <div class="inc-card">
-          <div class="inc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#fff" stroke-width="1.7"/><path d="M3 9h18M9 9v11M15 9v11" stroke="#fff" stroke-width="1.5"/></svg></div>
-          <div><h4>Formatos técnicos descargables</h4><p>Formatos técnicos listos para aplicar en tu producción.</p></div>
-        </div>
-        <div class="inc-card">
-          <div class="inc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 11l2 2 4-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
-          <div><h4>5 días en vivo por Google Meet</h4><p>Un módulo por día, curso online en vivo con el ponente.</p></div>
-        </div>
-        <div class="inc-card">
-          <div class="inc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1" stroke="#fff" stroke-width="1.6"/><rect x="13" y="4" width="7" height="7" rx="1" stroke="#fff" stroke-width="1.6"/><rect x="4" y="13" width="7" height="7" rx="1" stroke="#fff" stroke-width="1.6"/><path d="M13 13h3v3h-3zM17 17h3v3h-3z" stroke="#fff" stroke-width="1.5"/></svg></div>
-          <div><h4>Constancia digital con QR</h4><p>Reconocimiento institucional con código QR y folio válido, verificable en línea.</p></div>
-        </div>
-        <div class="inc-card">
-          <div class="inc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="1.7"/><path d="M8 12l3 3 5-6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div><h4>Acceso a las grabaciones</h4><p>Si no puedes en vivo, las sesiones quedan grabadas y disponibles para verlas después.</p></div>
-        </div>
-        <div class="inc-card inc-vip">
-          <div class="inc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M17 20a5 5 0 00-10 0" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="9" r="4" stroke="#fff" stroke-width="1.7"/><path d="M20 8v4M22 10h-4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></div>
-          <div><h4>Grupo VIP de WhatsApp</h4><p>Comunidad exclusiva de alumnos: dudas, avisos y networking con otros productores.</p></div>
+        <div>
+          <h3>Ing. Agr. José Ángel de la Cruz Hernández</h3>
+          <span class="speaker-role">Ingeniero Agrónomo Zootecnista · U. Autónoma Chapingo</span>
+          <p>Ingeniero Agrónomo Zootecnista por la Universidad Autónoma Chapingo, con formación continua en producción agropecuaria, manejo animal, biofertilizantes y agricultura sustentable. Profesional con enfoque integral en los sectores agrícola y pecuario, especializado en producción animal, manejo de cultivos, asesoría técnica, bioseguridad, nutrición y capacitación a productores rurales.</p>
+          <p>Cuenta con más de 30 años de experiencia profesional en producción agropecuaria, asesoría técnica, supervisión operativa y docencia. Ha desempeñado cargos de responsabilidad en empresas e instituciones del sector agropecuario en Puebla, Chiapas y Veracruz, destacando su labor en granjas avícolas, proyectos de extensión rural, invernaderos forestales y asesoría independiente en la región de Tehuacán.</p>
+          <p>Reconocido por su trayectoria técnica y formativa como ponente en congresos nacionales e internacionales, capacitador regional y miembro activo de plataformas agropecuarias especializadas.</p>
+          <div class="speaker-stats">
+            <span class="chip">30+ años en campo</span>
+            <span class="chip">U. Autónoma Chapingo</span>
+            <span class="chip">Ponente internacional</span>
+          </div>
         </div>
       </div>
+    </div>
+
+
+        <!-- TAB: QUÉ INCLUYE -->
+    <div class="tab-panel" id="tab-incluye">
+      <ul class="compra-lista">
+        <li>&#9989; 5 m&oacute;dulos completos en video HD</li>
+        <li>&#9989; Acceso inmediato al aula al pagar</li>
+        <li>&#9989; Videos disponibles 24/7 desde cualquier dispositivo</li>
+        <li>&#9989; Material PDF descargable de cada m&oacute;dulo</li>
+        <li>&#9989; Ejercicios pr&aacute;cticos para reforzar</li>
+        <li>&#9989; Certificado con QR verificable al terminar</li>
+        <li>&#9989; Grupo VIP de WhatsApp con productores</li>
+        <li>&#9989; Actualizaciones de contenido de por vida</li>
+        <li>&#9989; Soporte por WhatsApp para dudas t&eacute;cnicas</li>
+        <li>&#9989; Garant&iacute;a de satisfacci&oacute;n de 7 d&iacute;as</li>
+      </ul>
     </div>
 
     <!-- TAB: TEMARIO -->
@@ -694,26 +820,8 @@
     </div>
 
     <!-- TAB: PONENTE -->
-    <div class="tab-panel" id="tab-ponente">
-      <div class="speaker">
-        <div class="speaker-photo">
-          <img src="assets/ponente.jpg" alt="Ing. José Ángel de la Cruz Hernández" class="ponente-foto" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
-        </div>
-        <div>
-          <h3>Ing. Agr. José Ángel de la Cruz Hernández</h3>
-          <span class="speaker-role">Ingeniero Agrónomo Zootecnista · U. Autónoma Chapingo</span>
-          <p>Ingeniero Agrónomo Zootecnista por la Universidad Autónoma Chapingo, con formación continua en producción agropecuaria, manejo animal, biofertilizantes y agricultura sustentable. Profesional con enfoque integral en los sectores agrícola y pecuario, especializado en producción animal, manejo de cultivos, asesoría técnica, bioseguridad, nutrición y capacitación a productores rurales.</p>
-          <p>Cuenta con más de 30 años de experiencia profesional en producción agropecuaria, asesoría técnica, supervisión operativa y docencia. Ha desempeñado cargos de responsabilidad en empresas e instituciones del sector agropecuario en Puebla, Chiapas y Veracruz, destacando su labor en granjas avícolas, proyectos de extensión rural, invernaderos forestales y asesoría independiente en la región de Tehuacán.</p>
-          <p>Reconocido por su trayectoria técnica y formativa como ponente en congresos nacionales e internacionales, capacitador regional y miembro activo de plataformas agropecuarias especializadas.</p>
-          <div class="speaker-stats">
-            <span class="chip">30+ años en campo</span>
-            <span class="chip">U. Autónoma Chapingo</span>
-            <span class="chip">Ponente internacional</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
+    </div><!-- /tabs-content -->
   </div>
 </section>
 
@@ -880,39 +988,118 @@
   </div>
 </section>
 
-<!-- ============ BLOQUE DE COMPRA ============ -->
-<section class="buy" id="inscribete">
-  <div class="wrap">
-    <div class="buy-card">
-      <span class="buy-tag">Inscripciones abiertas</span>
-      <div class="buy-price">$550 <small>MXN</small></div>
-      <p class="buy-date">Pago único · Iniciamos el 27 de julio</p>
-      <div class="buy-includes">
-        <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> 5 días en vivo por Google Meet + grabaciones</div>
-        <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Material digital y formatos técnicos descargables</div>
-        <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Reconocimiento institucional con QR y folio válido</div>
-        <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Grupo VIP de WhatsApp con otros productores</div>
+<!-- ============ CONTACTO / WHATSAPP ============ -->
+<section class="contacto-section">
+  <div class="contacto-container">
+    <div class="contacto-left">
+      <h2>&iquest;Tienes dudas sobre biofertilizantes?</h2>
+      <p>Habla directo con nuestro equipo especializado en biofertilizantes.
+      Resolvemos tus dudas por WhatsApp en menos de 15 minutos.</p>
+
+      <div class="contacto-botones">
+        <a href="https://wa.me/522221035842?text=Hola%2C%20tengo%20una%20duda%20sobre%20el%20curso%20de%20Biofertilizantes"
+           class="btn-whatsapp" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.464 3.488"/></svg>
+          WhatsApp directo
+          <span class="btn-numero">222-103-5842</span>
+        </a>
+
+        <a href="https://wa.me/522221035842?text=Hola%2C%20quiero%20unirme%20al%20grupo%20VIP%20de%20Biofertilizantes"
+           class="btn-grupo" target="_blank" rel="noopener">
+          &#128101; Unirme al Grupo VIP
+        </a>
       </div>
-      <div class="guarantee-badge">
-        <div class="guarantee-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <polyline points="9 12 11 14 15 10"/>
-          </svg>
-        </div>
-        <div class="guarantee-text">
-          <strong>Garantía de 7 días</strong>
-          <span>Si el primer módulo no cumple tus expectativas, te devolvemos el 100% de tu inversión. Sin preguntas.</span>
+    </div>
+
+    <div class="contacto-right">
+      <div class="contacto-card">
+        <div class="contacto-card-icon">&#128172;</div>
+        <div class="contacto-card-text">
+          <strong>Respuesta r&aacute;pida</strong>
+          <span>Contestamos en menos de 15 min de 9AM a 8PM</span>
         </div>
       </div>
-      <a class="btn btn-fire pulse js-buy" href="#" rel="noopener">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
-        INSCRIBIRME AHORA
-      </a>
-      <p class="garantia">Pago seguro procesado por Stripe · El cupo se asigna por orden de pago</p>
-      <p style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px;line-height:1.4;">
-        El cargo aparecerá como "Bioorigen S.A. de C.V." en el recibo de Stripe y como "SINERGIA BIOFERT" en tu banco.
-      </p>
+      <div class="contacto-card">
+        <div class="contacto-card-icon">&#127891;</div>
+        <div class="contacto-card-text">
+          <strong>Asesor&iacute;a personalizada</strong>
+          <span>Te ayudamos a elegir si este curso es para ti</span>
+        </div>
+      </div>
+      <div class="contacto-card">
+        <div class="contacto-card-icon">&#127873;</div>
+        <div class="contacto-card-text">
+          <strong>Descuentos por grupos</strong>
+          <span>3+ personas: consulta precio especial</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BLOQUE DE COMPRA WOW ============ -->
+<section class="compra-final-wow" id="inscribete">
+  <div class="compra-container">
+    <div class="compra-header">
+      <span class="compra-badge">&#127873; OFERTA POR LANZAMIENTO</span>
+      <h2>Empieza a producir biofertilizantes de calidad HOY</h2>
+      <p>Acceso inmediato al aula. Sin esperas. Sin fechas.</p>
+    </div>
+
+    <div class="compra-precio-mega">
+      <div class="precio-mega-tachado">Valor real: $1,050 MXN</div>
+      <div class="precio-mega-actual">
+        <span class="mega-moneda">$</span>
+        <span class="mega-numero">550</span>
+        <span class="mega-mxn">MXN</span>
+      </div>
+      <div class="precio-mega-ahorro">
+        &#127881; AHORRAS $500 &middot; Descuento del 48%
+      </div>
+    </div>
+
+    <ul class="compra-lista">
+        <li>&#9989; 5 m&oacute;dulos completos en video HD</li>
+        <li>&#9989; Acceso inmediato al aula al pagar</li>
+        <li>&#9989; Videos disponibles 24/7 desde cualquier dispositivo</li>
+        <li>&#9989; Material PDF descargable de cada m&oacute;dulo</li>
+        <li>&#9989; Ejercicios pr&aacute;cticos para reforzar</li>
+        <li>&#9989; Certificado con QR verificable al terminar</li>
+        <li>&#9989; Grupo VIP de WhatsApp con productores</li>
+        <li>&#9989; Actualizaciones de contenido de por vida</li>
+        <li>&#9989; Soporte por WhatsApp para dudas t&eacute;cnicas</li>
+        <li>&#9989; Garant&iacute;a de satisfacci&oacute;n de 7 d&iacute;as</li>
+    </ul>
+
+    <div class="compra-garantia">
+      <div class="garantia-icon">&#128737;&#65039;</div>
+      <div class="garantia-text">
+        <strong>Garant&iacute;a de 7 d&iacute;as</strong>
+        <span>Si no cumple tus expectativas, te devolvemos el 100%</span>
+      </div>
+    </div>
+
+    <button class="compra-cta-mega js-buy">
+      QUIERO MI ACCESO AHORA
+      <span>&rarr;</span>
+    </button>
+
+    <div class="compra-metodos">
+      &#128179; Aceptamos: Visa &middot; Mastercard &middot; AMEX &middot; OXXO &middot; SPEI
+    </div>
+
+    <div class="compra-cupos">
+      <div class="cupos-progress">
+        <div class="cupos-bar" style="width: 68%"></div>
+      </div>
+      <div class="cupos-text">
+        &#128293; Solo quedan <strong>10 cupos</strong> disponibles
+      </div>
+    </div>
+
+    <div class="compra-disclaimer-bioorigen">
+      Cargo aparecer&aacute; como "Bioorigen S.A. de C.V." en el recibo de
+      Stripe y como "SINERGIA BIOFERT" en tu banco.
     </div>
   </div>
 </section>
@@ -940,7 +1127,7 @@
 
 <!-- ============ STICKY CTA ============ -->
 <div class="sticky-cta" id="stickyCta">
-  <div class="sticky-price"><b>$550 MXN</b><span>Inicia 27 de julio</span></div>
+  <div class="sticky-price"><b>$550 MXN</b><span>Acceso inmediato</span></div>
   <a class="btn btn-fire js-buy" href="#" rel="noopener">Inscribirme</a>
 </div>
 
@@ -1044,50 +1231,14 @@
     });
   });
 
-  // ===== Sonido del video del hero =====
-  var heroVidB = document.getElementById('heroVideoBiofert');
-  var soundBtnB = document.getElementById('soundBtnBiofert');
-  if (heroVidB && soundBtnB) {
-    soundBtnB.addEventListener('click', function(){
-      heroVidB.muted = !heroVidB.muted;
-      var on = !heroVidB.muted;
-      document.getElementById('icMutedBiofert').style.display = on ? 'none' : 'block';
-      document.getElementById('icSoundBiofert').style.display = on ? 'block' : 'none';
-      document.getElementById('soundLabelBiofert').textContent = on ? 'Silenciar' : 'Activar sonido';
-      if (on) { heroVidB.currentTime = 0; heroVidB.play(); }
-    });
-  }
-
-  // ===== Countdown al 27 de julio 2026 =====
-  var target = new Date('2026-07-27T00:00:00-06:00').getTime();
-  function pad(n){return n<10?'0'+n:n;}
-  function tick(){
-    var diff = target - Date.now();
-    if(diff <= 0){
-      document.getElementById('cd-d').textContent='0';
-      document.getElementById('cd-h').textContent='00';
-      document.getElementById('cd-m').textContent='00';
-      document.getElementById('cd-s').textContent='00';
-      document.querySelector('.count-label').textContent='¡El curso ya comenzó! Pregunta por disponibilidad';
-      return;
-    }
-    document.getElementById('cd-d').textContent = Math.floor(diff/86400000);
-    document.getElementById('cd-h').textContent = pad(Math.floor(diff%86400000/3600000));
-    document.getElementById('cd-m').textContent = pad(Math.floor(diff%3600000/60000));
-    document.getElementById('cd-s').textContent = pad(Math.floor(diff%60000/1000));
-    setTimeout(tick, 1000);
-  }
-  tick();
-
   // ===== Tabs =====
-  var tabBtns = document.querySelectorAll('.tab-btn');
-  var panels = document.querySelectorAll('.tab-panel');
-  tabBtns.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      tabBtns.forEach(function(b){b.classList.remove('active');});
-      panels.forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
-      document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+      document.getElementById(`tab-${target}`).classList.add('active');
     });
   });
 
