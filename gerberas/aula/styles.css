@@ -134,21 +134,21 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
   gap: var(--space-4);
 }
 .header-logo { display: flex; align-items: center; gap: var(--space-3); }
-.logo-mark { color: var(--rose-500); display: flex; }
-.logo-text { line-height: 1.2; }
+.logo-mark { color: var(--rose-600); display: flex; }
+.logo-text { display: flex; flex-direction: column; gap: 0; line-height: 1; }
 .logo-text strong {
-  display: block;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: var(--neutral-900);
 }
 .logo-text span {
+  margin-top: 2px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--rose-700);
+  letter-spacing: 0.15em;
+  color: var(--rose-600);
 }
 .header-user { display: flex; align-items: center; gap: var(--space-3); }
 .user-avatar {
@@ -196,31 +196,70 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
 .breadcrumb .sep { color: var(--neutral-300); display: flex; }
 
 /* ═══════════ HERO DEL CURSO ═══════════ */
-.curso-hero { max-width: 1180px; margin: 0 auto; padding: var(--space-8) var(--space-6) var(--space-4); }
+.curso-hero {
+  background: var(--neutral-25);
+  padding: var(--space-10) var(--space-6) var(--space-4);
+}
 .curso-hero-container {
+  max-width: 1180px;
+  margin: 0 auto;
   background: var(--neutral-0);
   border: 1px solid var(--rose-100);
   border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-rose-md);
+  box-shadow: var(--shadow-rose-sm);
   padding: var(--space-10);
   display: grid;
-  grid-template-columns: 60fr 40fr;
-  gap: var(--space-12);
+  grid-template-columns: 1fr 480px;
+  gap: var(--space-10);
   align-items: center;
   animation: riseIn 400ms var(--ease-out) both;
 }
-.curso-badge {
+
+/* Grupo de badges con contexto */
+.curso-meta {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+.meta-badge {
   display: inline-flex; align-items: center; gap: var(--space-2);
-  background: var(--rose-50);
-  color: var(--rose-700);
-  padding: 5px 12px 5px 10px;
+  padding: 6px 12px;
   border-radius: 100px;
   font-size: 12px; font-weight: 600;
-  letter-spacing: 0.03em;
-  margin-bottom: var(--space-5);
+  letter-spacing: 0.02em;
 }
+.meta-badge.status { background: var(--rose-50); color: var(--rose-700); }
+.meta-badge.status::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--rose-500);
+  animation: breath 2s ease-in-out infinite;
+}
+.meta-badge.level,
+.meta-badge.duration { background: var(--neutral-100); color: var(--neutral-700); }
+.meta-badge svg { color: var(--neutral-500); }
 .dot-live { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: breath 2s ease-in-out infinite; }
-.curso-hero-info h1 { margin-bottom: var(--space-3); }
+
+/* Título con énfasis */
+.curso-titulo {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--neutral-900);
+  margin-bottom: var(--space-3);
+}
+.curso-titulo .highlight {
+  color: var(--rose-600);
+  /* Trazo de resalte bajo el texto: gradiente en el propio span para que
+     quede detrás de las letras sin sacar el pseudo-elemento del flujo. */
+  background-image: linear-gradient(180deg, transparent 70%, var(--rose-100) 70%, var(--rose-100) 94%, transparent 94%);
+  padding: 0 2px;
+  border-radius: 4px;
+}
+
 .curso-ponente {
   display: flex; align-items: center; gap: var(--space-2);
   color: var(--neutral-500);
@@ -266,49 +305,71 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
 
 .btn-continuar {
   display: inline-flex; align-items: center; gap: var(--space-3);
-  background: linear-gradient(180deg, var(--rose-600), var(--rose-700));
+  max-width: fit-content;
+  background: linear-gradient(135deg, var(--rose-600), var(--rose-700));
   color: var(--neutral-0);
-  padding: 14px 22px;
+  padding: var(--space-4) var(--space-6);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-rose-md), inset 0 1px 0 rgba(255,255,255,0.16);
-  transition: all 150ms ease-out;
+  transition: all 200ms var(--ease-out);
 }
 .btn-continuar:hover { transform: translateY(-2px); box-shadow: var(--shadow-rose-lg), inset 0 1px 0 rgba(255,255,255,0.2); }
-.btn-continuar .btn-label { display: block; font-size: 15px; font-weight: 600; letter-spacing: -0.005em; }
-.btn-continuar .btn-sub {
-  display: block; font-size: 12px; font-weight: 500;
-  color: rgba(255,255,255,0.72); margin-top: 1px;
-}
+.btn-continuar-info { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.btn-continuar-titulo { font-size: 15px; font-weight: 600; letter-spacing: -0.005em; }
+.btn-continuar-subtitulo { font-size: 12px; font-weight: 400; opacity: 0.85; }
 
+/* Preview del curso — thumbnail con carácter */
 .hero-video-preview {
+  position: relative;
   width: 100%;
   aspect-ratio: 16/9;
-  background: linear-gradient(150deg, var(--rose-100), var(--rose-50) 70%);
-  border: 1px solid var(--rose-100);
+  background: linear-gradient(135deg, var(--rose-100), var(--rose-50));
+  border: 1px solid var(--rose-200);
   border-radius: var(--radius-xl);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: var(--space-3);
-  color: var(--rose-700);
-  box-shadow: var(--shadow-sm);
+  overflow: hidden;
   cursor: pointer;
-  transition: all 200ms var(--ease-out);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: all 300ms var(--ease-out);
 }
-.hero-video-preview:hover { box-shadow: var(--shadow-md); border-color: var(--rose-200); }
-.hero-video-preview:hover .play-ring { transform: scale(1.04); box-shadow: var(--shadow-rose-md); }
-.play-ring {
-  width: 64px; height: 64px;
+.hero-video-preview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, var(--rose-200) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, var(--rose-300) 0%, transparent 50%);
+  opacity: 0.3;
+}
+.hero-video-preview:hover { transform: translateY(-4px); box-shadow: var(--shadow-rose-lg); }
+.hero-video-preview:hover .play-button-hero { transform: scale(1.1); }
+.play-button-hero {
+  position: relative;
+  z-index: 2;
+  width: 80px; height: 80px;
   border-radius: 50%;
   background: var(--neutral-0);
-  border: 1px solid var(--rose-200);
   display: flex; align-items: center; justify-content: center;
-  color: var(--rose-600);
-  box-shadow: var(--shadow-rose-sm);
-  transition: all 200ms var(--ease-out);
+  box-shadow: var(--shadow-lg);
+  transition: transform 300ms var(--ease-out);
 }
+.play-button-hero svg { width: 32px; height: 32px; color: var(--rose-600); margin-left: 4px; }
 .hero-video-label {
-  font-size: 12px; font-weight: 500;
-  text-transform: uppercase; letter-spacing: 0.05em;
+  position: absolute;
+  z-index: 2;
+  bottom: var(--space-4); left: var(--space-4); right: var(--space-4);
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; font-weight: 500;
+  color: var(--neutral-700);
+}
+.hero-video-badge {
+  background: var(--neutral-0);
+  border: 1px solid var(--rose-200);
   color: var(--rose-700);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 /* ═══════════ SECCIONES ═══════════ */
@@ -870,8 +931,12 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
 }
 
 /* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 1080px) {
+  .curso-hero-container { grid-template-columns: 1fr; gap: var(--space-8); padding: var(--space-8); }
+}
 @media (max-width: 900px) {
-  .curso-hero-container { grid-template-columns: 1fr; gap: var(--space-8); padding: var(--space-6); }
+  .curso-hero-container { padding: var(--space-6); }
+  .curso-titulo { font-size: 30px; }
   .modulos-grid, .recursos-grid { grid-template-columns: 1fr; }
   .modulo-layout { grid-template-columns: 1fr; gap: var(--space-6); }
   .sidebar-modulos { position: static; }
