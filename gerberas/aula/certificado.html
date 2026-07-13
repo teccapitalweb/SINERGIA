@@ -5,102 +5,204 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Certificado · Aula Gerberas | Sinergia Agrícola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- HEADER FIJO -->
-  <header class="aula-header">
-    <div class="header-container">
-      <div class="header-logo">
-        <div class="logo-mark">🌸</div>
-        <div class="logo-text">
-          <strong>Sinergia</strong>
-          <span>Agrícola</span>
-        </div>
+
+<!-- ═══════ HEADER ═══════ -->
+<header class="aula-header">
+  <div class="header-container">
+    <a class="header-logo" href="index.html">
+      <span class="logo-mark">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2.6"/>
+          <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z"/>
+          <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(45 12 12)"/>
+          <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(90 12 12)"/>
+          <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(135 12 12)"/>
+          <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(180 12 12)"/>
+          <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(225 12 12)"/>
+          <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(270 12 12)"/>
+          <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(315 12 12)"/>
+        </svg>
+      </span>
+      <span class="logo-text">
+        <strong>Sinergia</strong>
+        <span>Agrícola</span>
+      </span>
+    </a>
+
+    <div class="header-user">
+      <div class="user-avatar">JP</div>
+      <div class="user-info">
+        <strong>Juan Pérez</strong>
+        <span>Alumno activo</span>
       </div>
-      <div class="header-user">
-        <div class="user-avatar">JP</div>
-        <div class="user-info">
-          <strong>Juan Pérez</strong>
-          <span>Alumno activo</span>
-        </div>
-        <button class="btn-salir">Salir</button>
+      <button class="btn-salir">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>
+        </svg>
+        Salir
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════ BREADCRUMB ═══════ -->
+<nav class="breadcrumb">
+  <a href="index.html">Aula</a>
+  <span class="sep">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </span>
+  Certificado
+</nav>
+
+<div class="certificado-page">
+  <h1>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 9L12 5 2 9l10 4 10-4z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/>
+    </svg>
+    Tu certificado de finalización
+  </h1>
+
+  <!-- Estado con checkpoints -->
+  <div class="certificado-estado">
+    <div class="estado-head">
+      <strong>Se emite al completar los 5 módulos</strong>
+      <span class="tnum">2 de 5 completados</span>
+    </div>
+    <div class="checkpoints">
+      <div class="checkpoint hecho">
+        <span class="cp-line"></span>
+        <span class="cp-dot">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>
+        <span class="cp-label">Establecimiento</span>
       </div>
-    </div>
-  </header>
-
-  <!-- BREADCRUMB -->
-  <nav class="breadcrumb">
-    <a href="index.html">Aula</a><span class="sep">›</span>Certificado
-  </nav>
-
-  <div class="certificado-page">
-    <h1>🎓 Tu certificado de finalización</h1>
-
-    <!-- ESTADO -->
-    <div class="certificado-estado">
-      <strong>Certificado disponible al completar los 5 módulos</strong>
-      <span>Has completado 2 de 5 módulos. ¡Sigue así!</span>
-    </div>
-
-    <!-- PREVIEW DEL DIPLOMA -->
-    <div class="diploma">
-      <div class="diploma-logo">🌸</div>
-      <div class="diploma-marca">Sinergia Agrícola</div>
-
-      <p class="diploma-otorga">
-        Sinergia Agrícola otorga el presente<br>reconocimiento a:
-      </p>
-
-      <div class="diploma-alumno">Juan Pérez</div>
-
-      <p class="diploma-por">Por haber completado satisfactoriamente el curso:</p>
-
-      <div class="diploma-curso">CULTIVO Y MANEJO DE GERBERAS</div>
-
-      <p class="diploma-detalles">
-        Impartido por: Dr. Marco Antonio Villegas Olguín<br>
-        Duración: 5 módulos técnicos<br>
-        Fecha de emisión: [PENDIENTE]
-      </p>
-
-      <div class="diploma-folio">Folio único: SIN-GER-2026-042</div>
-
-      <div class="diploma-firma">Firma del ponente</div>
-
-      <div class="diploma-sellos">
-        <div class="sello">
-          <span class="sello-icon">▦</span>
-          <span>QR de<br>verificación</span>
-        </div>
-        <div class="sello">
-          <span class="sello-icon">🏛</span>
-          <span>Sello<br>IPCI</span>
-        </div>
+      <div class="checkpoint hecho">
+        <span class="cp-line"></span>
+        <span class="cp-dot">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>
+        <span class="cp-label">Riego y nutrición</span>
       </div>
-    </div>
-
-    <!-- ACCIONES -->
-    <div class="certificado-acciones">
-      <button class="deshabilitado" disabled>📥 Descargar PDF</button>
-      <button class="deshabilitado" disabled>🔗 Compartir en LinkedIn</button>
-      <a class="verificar" href="https://sinergiamexico.it.com/verificar/SIN-GER-2026-042" target="_blank" rel="noopener">✅ Verificar autenticidad</a>
+      <div class="checkpoint actual">
+        <span class="cp-line"></span>
+        <span class="cp-dot tnum">3</span>
+        <span class="cp-label">Plagas</span>
+      </div>
+      <div class="checkpoint">
+        <span class="cp-line"></span>
+        <span class="cp-dot tnum">4</span>
+        <span class="cp-label">Cosecha</span>
+      </div>
+      <div class="checkpoint">
+        <span class="cp-line"></span>
+        <span class="cp-dot tnum">5</span>
+        <span class="cp-label">Comercialización</span>
+      </div>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="aula-footer">
-    <div class="footer-container">
-      <div class="footer-brand">
-        <strong>Sinergia Agrícola</strong>
-        <span>· TEC CAPITAL Group · IPCI</span>
-      </div>
-      <div class="footer-links">
-        <a href="#">Ayuda</a>
-        <a href="#">Contacto</a>
-        <a href="../index.html">Página del curso</a>
-      </div>
+  <!-- Diploma -->
+  <div class="diploma">
+    <span class="diploma-logo">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="2.6"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(45 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(90 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(135 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(180 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(225 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(270 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(315 12 12)"/>
+      </svg>
+    </span>
+    <div class="diploma-marca">Sinergia Agrícola</div>
+
+    <p class="diploma-otorga">
+      Sinergia Agrícola otorga el presente<br>reconocimiento a
+    </p>
+
+    <div class="diploma-alumno">Juan Pérez</div>
+
+    <p class="diploma-por">Por haber completado satisfactoriamente el curso</p>
+
+    <div class="diploma-curso">Cultivo y Manejo de Gerberas</div>
+
+    <p class="diploma-detalles">
+      Impartido por el Dr. Marco Antonio Villegas Olguín<br>
+      Duración: 5 módulos técnicos · Fecha de emisión: pendiente
+    </p>
+
+    <div class="diploma-folio">Folio SIN-GER-2026-042</div>
+
+    <div class="diploma-pie">
+      <span class="qr-marco">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 21h1M21 14h.01"/>
+        </svg>
+      </span>
+
+      <span class="diploma-firma">
+        <svg width="90" height="26" viewBox="0 0 90 26" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 18c6-10 9 4 13-4s6 8 11 2 7 5 12-3 8 6 14-1 9 3 13-2"/>
+        </svg>
+        <span class="firma-linea">Firma del ponente</span>
+      </span>
+
+      <span class="sello-ipci">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21h18M5 21V10M9 21V10M15 21V10M19 21V10M2 10l10-6 10 6"/>
+        </svg>
+        IPCI
+      </span>
     </div>
-  </footer>
+  </div>
+
+  <!-- Acciones -->
+  <div class="certificado-acciones">
+    <button class="cert-btn deshabilitado" disabled>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
+      </svg>
+      Descargar PDF
+    </button>
+    <button class="cert-btn deshabilitado" disabled>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
+      </svg>
+      Compartir en LinkedIn
+    </button>
+    <a class="cert-btn verificar" href="https://sinergiamexico.it.com/validar-certificado.html?folio=SIN-GER-2026-042" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
+      </svg>
+      Verificar autenticidad
+    </a>
+  </div>
+</div>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="aula-footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <strong>Sinergia Agrícola</strong> · TEC CAPITAL Group · IPCI
+    </div>
+    <div class="footer-links">
+      <a href="#">Ayuda</a>
+      <a href="#">Contacto</a>
+      <a href="../index.html">Página del curso</a>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
