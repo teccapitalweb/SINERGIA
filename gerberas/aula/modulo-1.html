@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Módulo 3: Plagas y enfermedades · Aula Gerberas | Sinergia Agrícola</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- HEADER FIJO -->
+  <header class="aula-header">
+    <div class="header-container">
+      <div class="header-logo">
+        <div class="logo-mark">🌸</div>
+        <div class="logo-text">
+          <strong>Sinergia</strong>
+          <span>Agrícola</span>
+        </div>
+      </div>
+      <div class="header-user">
+        <div class="user-avatar">JP</div>
+        <div class="user-info">
+          <strong>Juan Pérez</strong>
+          <span>Alumno activo</span>
+        </div>
+        <button class="btn-salir">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <nav class="breadcrumb">
+    <a href="index.html">Aula</a><span class="sep">›</span>Módulo 3: Plagas y enfermedades
+  </nav>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="modulo-layout">
+    <!-- COLUMNA IZQUIERDA: VIDEO + INFO -->
+    <main>
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          title="Módulo 3: Plagas, enfermedades y manejo preventivo"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+
+      <div class="modulo-titulo-bloque">
+        <h1>Módulo 3: Plagas, enfermedades y manejo preventivo</h1>
+        <div class="modulo-datos">
+          <span>⏱ 42 minutos</span>
+          <span>📋 6 subtemas</span>
+          <span class="en-curso">▶ En progreso · 60%</span>
+        </div>
+        <p class="modulo-descripcion">
+          En este módulo el Dr. Marco Antonio Villegas Olguín te enseña a identificar
+          a tiempo las principales plagas de la gerbera —trips, pulgones, mosca blanca
+          y ácaros— y las enfermedades más frecuentes en raíces, hojas y flores.
+          Aprenderás estrategias de monitoreo del cultivo, manejo preventivo para
+          reducir pérdidas y cómo hacer aplicaciones correctas de productos
+          fitosanitarios sin comprometer la calidad comercial de tu flor.
+        </p>
+      </div>
+
+      <!-- SUBTEMAS -->
+      <section class="panel">
+        <h2>Subtemas de este módulo</h2>
+        <ul class="subtemas-lista">
+          <li><label><input type="checkbox" checked> Identificación temprana de las principales plagas</label></li>
+          <li><label><input type="checkbox" checked> Manejo de trips, pulgones, mosca blanca y ácaros</label></li>
+          <li><label><input type="checkbox" checked> Enfermedades más frecuentes en raíces, hojas y flores</label></li>
+          <li><label><input type="checkbox"> Manejo preventivo para reducir pérdidas</label></li>
+          <li><label><input type="checkbox"> Estrategias de monitoreo del cultivo</label></li>
+          <li><label><input type="checkbox"> Aplicaciones correctas de productos fitosanitarios</label></li>
+        </ul>
+      </section>
+
+      <!-- NOTAS -->
+      <section class="panel">
+        <h2>Notas del módulo</h2>
+        <textarea class="notas-textarea" id="notasModulo" placeholder="Escribe aquí tus notas de este módulo… (ej. dosis, productos que ya usas, dudas para el grupo VIP)"></textarea>
+        <button class="btn-guardar-notas" id="btnGuardarNotas">Guardar notas</button>
+      </section>
+
+      <!-- NAVEGACIÓN -->
+      <div class="nav-modulos">
+        <a href="modulo-1.html">← Módulo anterior</a>
+        <button class="btn-completar" id="btnCompletar">✅ Marcar como completado</button>
+        <a href="modulo-1.html">Siguiente módulo →</a>
+      </div>
+
+      <a class="btn-duda-whatsapp"
+         href="https://wa.me/522221035842?text=Hola%2C%20tengo%20una%20duda%20del%20M%C3%B3dulo%203%20del%20curso%20de%20Gerberas"
+         target="_blank" rel="noopener">
+        💬 ¿Tienes dudas de este módulo? Escríbenos por WhatsApp
+      </a>
+    </main>
+
+    <!-- COLUMNA DERECHA: SIDEBAR DE MÓDULOS -->
+    <aside class="sidebar-modulos">
+      <h2>Contenido del curso</h2>
+
+      <a href="modulo-1.html" class="sidebar-item hecho">
+        <span class="sidebar-num">✓</span>
+        <span class="sidebar-info">
+          <strong>Establecimiento del cultivo</strong>
+          <span>45 min · Completado</span>
+        </span>
+      </a>
+
+      <a href="modulo-1.html" class="sidebar-item hecho">
+        <span class="sidebar-num">✓</span>
+        <span class="sidebar-info">
+          <strong>Riego, nutrición y manejo</strong>
+          <span>38 min · Completado</span>
+        </span>
+      </a>
+
+      <a href="modulo-1.html" class="sidebar-item actual">
+        <span class="sidebar-num">03</span>
+        <span class="sidebar-info">
+          <strong>Plagas y manejo preventivo</strong>
+          <span>42 min · Estás aquí</span>
+        </span>
+      </a>
+
+      <a href="modulo-1.html" class="sidebar-item">
+        <span class="sidebar-num">04</span>
+        <span class="sidebar-info">
+          <strong>Cosecha e hidratación</strong>
+          <span>51 min · Disponible</span>
+        </span>
+      </a>
+
+      <a href="modulo-1.html" class="sidebar-item">
+        <span class="sidebar-num">05</span>
+        <span class="sidebar-info">
+          <strong>Producción rentable</strong>
+          <span>35 min · Disponible</span>
+        </span>
+      </a>
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="aula-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <strong>Sinergia Agrícola</strong>
+        <span>· TEC CAPITAL Group · IPCI</span>
+      </div>
+      <div class="footer-links">
+        <a href="#">Ayuda</a>
+        <a href="#">Contacto</a>
+        <a href="../index.html">Página del curso</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Feedback visual de mockup (sin persistencia todavía)
+    var btnNotas = document.getElementById('btnGuardarNotas');
+    btnNotas.addEventListener('click', function(){
+      btnNotas.textContent = '✓ Notas guardadas';
+      setTimeout(function(){ btnNotas.textContent = 'Guardar notas'; }, 2000);
+    });
+    var btnCompletar = document.getElementById('btnCompletar');
+    btnCompletar.addEventListener('click', function(){
+      btnCompletar.textContent = '✓ Módulo completado';
+    });
+  </script>
+</body>
+</html>
