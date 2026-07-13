@@ -13,6 +13,8 @@
 <meta property="og:image" content="https://sinergiamexico.it.com/gerberas/assets/promo-social.jpg">
 <meta property="og:url" content="https://sinergiamexico.it.com/gerberas/">
 <meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sinergiamexico.it.com/gerberas/assets/promo-social.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -94,13 +96,14 @@
   }
   .hero-sub b{color:#fff;}
 
-  .hero-icon{
-    width:132px;height:132px;margin:0 auto 24px;border-radius:50%;
-    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-    display:flex;align-items:center;justify-content:center;
+  .hero-img{
+    max-width:520px;margin:0 auto 24px;border-radius:18px;overflow:hidden;
+    aspect-ratio:16/9;
+    border:3px solid var(--brand-primary);
     box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
+    transform:rotate(-1.2deg);
   }
+  .hero-img video{width:100%;height:100%;object-fit:cover;display:block;}
 
   /* Countdown */
   .count-label{
@@ -452,25 +455,21 @@
     <h1>Cultivo y manejo de <em>gerberas</em></h1>
     <p class="hero-sub">Sustratos, riego, nutrición, plagas y comercialización de flor cortada con el <b>Dr. Marco Antonio Villegas Olguín</b>.</p>
 
-    <div class="hero-icon">
-      <!-- Gerbera thin-line SVG -->
-      <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#f8bbd0" stroke-width="1.1" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="2.4"/>
-        <g>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(30 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(60 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(90 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(120 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(150 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(180 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(210 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(240 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(270 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(300 12 12)"/>
-          <path d="M12 9.4C10.9 7.8 10.9 4.4 12 2.6C13.1 4.4 13.1 7.8 12 9.4Z" transform="rotate(330 12 12)"/>
-        </g>
-      </svg>
+    <div class="hero-img" style="position:relative;">
+      <video id="heroVideoGerberas" src="assets/video-hero.mp4" poster="assets/poster-hero.jpg"
+             autoplay muted loop playsinline preload="metadata"
+             style="width:100%;display:block;"></video>
+      <button id="soundBtnGerberas" aria-label="Activar sonido"
+        style="position:absolute;bottom:12px;right:12px;z-index:2;cursor:pointer;
+               display:flex;align-items:center;gap:8px;
+               background:rgba(43,6,25,.85);backdrop-filter:blur(6px);
+               border:1px solid rgba(255,255,255,.3);border-radius:100px;
+               color:#fff;font-family:'Archivo';font-weight:700;font-size:.78rem;
+               padding:9px 16px;">
+        <svg id="icMutedGerberas" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H3v6h3l5 4V5z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><path d="M22 9l-6 6M16 9l6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg id="icSoundGerberas" width="16" height="16" viewBox="0 0 24 24" fill="none" style="display:none;"><path d="M11 5L6 9H3v6h3l5 4V5z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span id="soundLabelGerberas">Activar sonido</span>
+      </button>
     </div>
 
     <p class="count-label">Iniciamos el 27 de julio · faltan</p>
@@ -1049,6 +1048,20 @@
       openEmbeddedCheckout();
     });
   });
+
+  // ===== Sonido del video del hero =====
+  var heroVidG = document.getElementById('heroVideoGerberas');
+  var soundBtnG = document.getElementById('soundBtnGerberas');
+  if (heroVidG && soundBtnG) {
+    soundBtnG.addEventListener('click', function(){
+      heroVidG.muted = !heroVidG.muted;
+      var on = !heroVidG.muted;
+      document.getElementById('icMutedGerberas').style.display = on ? 'none' : 'block';
+      document.getElementById('icSoundGerberas').style.display = on ? 'block' : 'none';
+      document.getElementById('soundLabelGerberas').textContent = on ? 'Silenciar' : 'Activar sonido';
+      if (on) { heroVidG.currentTime = 0; heroVidG.play(); }
+    });
+  }
 
   // ===== Countdown al 27 de julio 2026 =====
   var target = new Date('2026-07-27T00:00:00-06:00').getTime();
