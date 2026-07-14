@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <script src="guard.js"></script>
+  <script src="progreso.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Aula · Cultivo de Gerberas | Sinergia Agrícola</title>
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
 
@@ -51,71 +52,22 @@
   </div>
 </header>
 
-<!-- ═══════ HERO DEL CURSO ═══════ -->
+<!-- ═══════ HERO — lo pinta progreso.js según el avance real ═══════ -->
 <section class="curso-hero">
   <div class="curso-hero-container">
-    <div class="curso-hero-info">
-      <div class="curso-meta">
-        <span class="meta-badge status">Curso activo</span>
-        <span class="meta-badge level">Nivel intermedio</span>
-        <span class="meta-badge duration">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
-          </svg>
-          <span class="tnum">5 módulos · 3 h 30 min</span>
-        </span>
-      </div>
-
-      <h1 class="curso-titulo">Cultivo y Manejo de <span class="highlight">Gerberas</span></h1>
-
-      <p class="curso-ponente">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
-        </svg>
-        Con el Dr. Marco Antonio Villegas Olguín
-      </p>
-
-      <div class="progreso-container">
-        <div class="progreso-header">
-          <span>Tu progreso</span>
-          <strong class="tnum">40% completado</strong>
-        </div>
-        <div class="progreso-bar">
-          <div class="progreso-fill" style="width: 40%"></div>
-        </div>
-        <div class="progreso-stats">
-          <span class="tnum">2 de 5 módulos completados</span>
-          <span class="sep-dot"></span>
-          <span class="tnum">~2 h 30 min restantes</span>
-        </div>
-      </div>
-
-      <a href="modulo-3.html" class="btn-continuar">
-        <svg class="btn-continuar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 4.5l12 7.5-12 7.5V4.5z"/>
-        </svg>
-        <span class="btn-continuar-info">
-          <span class="btn-continuar-titulo">Continuar aprendiendo</span>
-          <span class="btn-continuar-subtitulo">Módulo 3 · Plagas y enfermedades</span>
-        </span>
-      </a>
+    <div class="curso-hero-info" id="heroInfo">
+      <div class="skeleton sk-bloque" style="height: 260px;" aria-hidden="true"></div>
     </div>
-
-    <div class="curso-hero-visual">
-      <div class="hero-video-preview">
-        <span class="play-button-hero">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7 4.5l12 7.5-12 7.5V4.5z"/>
-          </svg>
-        </span>
-        <span class="hero-video-label">
-          <span class="tnum">Preview del curso · 2:30 min</span>
-          <span class="hero-video-badge">GRATIS</span>
-        </span>
-      </div>
+    <div class="curso-hero-visual" id="heroVisual">
+      <div class="skeleton sk-bloque" style="height: 220px;" aria-hidden="true"></div>
     </div>
   </div>
 </section>
+
+<!-- ═══════ RACHA ═══════ -->
+<div class="racha-wrap">
+  <div class="racha" id="racha"></div>
+</div>
 
 <!-- ═══════ MÓDULOS ═══════ -->
 <section class="modulos-section">
@@ -124,136 +76,7 @@
       <h2>Módulos del curso</h2>
       <p>Todos los módulos están desbloqueados. Puedes verlos en el orden que prefieras.</p>
     </div>
-
-    <div class="modulos-grid">
-
-      <!-- 01 · completado -->
-      <a href="modulo-1.html" class="modulo-card completado">
-        <div class="modulo-ring">
-          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-            <circle class="ring-track" cx="28" cy="28" r="25" stroke-width="2"/>
-            <circle class="ring-fill" cx="28" cy="28" r="25" stroke-width="2" stroke-dasharray="157" stroke-dashoffset="0"/>
-          </svg>
-          <span class="modulo-check">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 6L9 17l-5-5"/>
-            </svg>
-          </span>
-        </div>
-        <div class="modulo-info">
-          <span class="modulo-status">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-            Completado
-          </span>
-          <h3>Establecimiento del cultivo</h3>
-          <p>Selección de variedades, preparación del terreno, sustratos y sistemas de cultivo.</p>
-          <div class="modulo-meta">
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="tnum">45 min</span></span>
-            <span class="meta-dot"></span>
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="tnum">8 subtemas</span></span>
-          </div>
-        </div>
-      </a>
-
-      <!-- 02 · completado -->
-      <a href="modulo-2.html" class="modulo-card completado">
-        <div class="modulo-ring">
-          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-            <circle class="ring-track" cx="28" cy="28" r="25" stroke-width="2"/>
-            <circle class="ring-fill" cx="28" cy="28" r="25" stroke-width="2" stroke-dasharray="157" stroke-dashoffset="0"/>
-          </svg>
-          <span class="modulo-check">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 6L9 17l-5-5"/>
-            </svg>
-          </span>
-        </div>
-        <div class="modulo-info">
-          <span class="modulo-status">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-            Completado
-          </span>
-          <h3>Riego, nutrición y manejo</h3>
-          <p>Manejo eficiente del riego, requerimientos nutricionales y bioestimulantes.</p>
-          <div class="modulo-meta">
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="tnum">38 min</span></span>
-            <span class="meta-dot"></span>
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="tnum">7 subtemas</span></span>
-          </div>
-        </div>
-      </a>
-
-      <!-- 03 · en progreso (anillo al 60%) -->
-      <a href="modulo-3.html" class="modulo-card en-progreso">
-        <div class="modulo-ring">
-          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-            <circle class="ring-track" cx="28" cy="28" r="25" stroke-width="2"/>
-            <circle class="ring-fill" cx="28" cy="28" r="25" stroke-width="2" stroke-dasharray="157" stroke-dashoffset="63"/>
-          </svg>
-          <span class="modulo-num tnum">03</span>
-        </div>
-        <div class="modulo-info">
-          <span class="modulo-status">
-            <span class="dot-live"></span>
-            En progreso · <span class="tnum">60%</span>
-          </span>
-          <h3>Plagas, enfermedades y manejo preventivo</h3>
-          <p>Identificación de plagas, manejo de trips, pulgones y aplicaciones fitosanitarias.</p>
-          <div class="modulo-meta">
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="tnum">42 min</span></span>
-            <span class="meta-dot"></span>
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="tnum">6 subtemas</span></span>
-          </div>
-        </div>
-      </a>
-
-      <!-- 04 · disponible -->
-      <a href="modulo-4.html" class="modulo-card disponible">
-        <div class="modulo-ring">
-          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-            <circle class="ring-track" cx="28" cy="28" r="25" stroke-width="2"/>
-          </svg>
-          <span class="modulo-num tnum">04</span>
-        </div>
-        <div class="modulo-info">
-          <span class="modulo-status">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l12 7.5-12 7.5V4.5z"/></svg>
-            Disponible
-          </span>
-          <h3>Cosecha, postcosecha e hidratación</h3>
-          <p>Momento ideal, técnicas de corte, soluciones hidratantes y producción en maceta.</p>
-          <div class="modulo-meta">
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="tnum">51 min</span></span>
-            <span class="meta-dot"></span>
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="tnum">15 subtemas</span></span>
-          </div>
-        </div>
-      </a>
-
-      <!-- 05 · disponible -->
-      <a href="modulo-5.html" class="modulo-card disponible">
-        <div class="modulo-ring">
-          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-            <circle class="ring-track" cx="28" cy="28" r="25" stroke-width="2"/>
-          </svg>
-          <span class="modulo-num tnum">05</span>
-        </div>
-        <div class="modulo-info">
-          <span class="modulo-status">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l12 7.5-12 7.5V4.5z"/></svg>
-            Disponible
-          </span>
-          <h3>Producción rentable y comercialización</h3>
-          <p>Indicadores de calidad, programación anual y clasificación comercial.</p>
-          <div class="modulo-meta">
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="tnum">35 min</span></span>
-            <span class="meta-dot"></span>
-            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="tnum">5 subtemas</span></span>
-          </div>
-        </div>
-      </a>
-
-    </div>
+    <div class="modulos-grid-v2" id="gridModulos"></div>
   </div>
 </section>
 
@@ -274,14 +97,15 @@
           </svg>
         </span>
         <div class="recurso-info">
-          <h3>Materiales descargables</h3>
-          <p>6 archivos con guías, plantillas y directorios</p>
+          <h3>Materiales del curso</h3>
+          <p>6 archivos · Manual, recetario, calculadora y más</p>
         </div>
         <span class="recurso-arrow">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </span>
       </a>
 
+      <!-- El texto y la barra los pinta progreso.js -->
       <a href="certificado.html" class="recurso-card acento-certificado">
         <span class="recurso-icono">
           <!-- graduation cap -->
@@ -290,24 +114,26 @@
           </svg>
         </span>
         <div class="recurso-info">
-          <h3>Certificado</h3>
-          <p>Disponible al completar los 5 módulos</p>
+          <h3>Tu certificado</h3>
+          <p id="certTexto">Disponible al completar los 5 módulos</p>
+          <span class="recurso-mini-barra" id="certBarra"><i></i></span>
         </div>
         <span class="recurso-arrow">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </span>
       </a>
 
+      <!-- TODO: falta el enlace REAL del grupo (chat.whatsapp.com/…).
+           Hoy esto abre un chat 1-a-1 con el 222 103 5842, no un grupo. -->
       <a href="https://wa.me/522221035842?text=Hola%2C%20soy%20alumno%20del%20curso%20de%20Gerberas" target="_blank" rel="noopener" class="recurso-card acento-whatsapp">
         <span class="recurso-icono">
-          <!-- WhatsApp oficial -->
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.464 3.488"/>
           </svg>
         </span>
         <div class="recurso-info">
-          <h3>Grupo VIP WhatsApp</h3>
-          <p>Networking con otros productores</p>
+          <h3>Grupo VIP de WhatsApp</h3>
+          <p>Resuelve dudas con otros productores</p>
         </div>
         <span class="recurso-arrow">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -323,8 +149,8 @@
           </svg>
         </span>
         <div class="recurso-info">
-          <h3>Soporte técnico</h3>
-          <p>Ayuda con la plataforma</p>
+          <h3>Soporte</h3>
+          <p>¿Problemas con la plataforma?</p>
         </div>
         <span class="recurso-arrow">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -348,6 +174,236 @@
     </div>
   </div>
 </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var P = window.Progreso.init();
+  var CURSO = P.CURSO;
+
+  var SVG = {
+    play: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5l12 7.5-12 7.5V4.5z"/></svg>',
+    playChico: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l12 7.5-12 7.5V4.5z"/></svg>',
+    check: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    flecha: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>',
+    flechaChica: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>',
+    reloj: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    relojChico: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    lista: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>',
+    listaChica: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>',
+    descarga: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>',
+    diploma: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 5 2 9l10 4 10-4z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg>',
+    checkGrande: '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    persona: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+  };
+
+  var pct = P.getPorcentaje();
+  var hechos = P.getModulosCompletados();
+  var faltan = P.TOTAL_MODULOS - hechos;
+  var siguiente = P.getUltimoModulo();
+  var metaSig = P.metaModulo(siguiente);
+  var restantes = P.getMinutosRestantes();
+
+  var tituloCurso = 'Cultivo y Manejo de <span class="highlight">Gerberas</span>';
+  var ponente = '<p class="curso-ponente">' + SVG.persona + ' Con el ' + CURSO.ponente + '</p>';
+
+  // ── HERO ────────────────────────────────────────────────────────────
+  var heroInfo = document.getElementById('heroInfo');
+  var heroVisual = document.getElementById('heroVisual');
+
+  function anillo(porcentaje, esOro) {
+    var r = 74;
+    var circ = 2 * Math.PI * r;
+    var offset = circ * (1 - porcentaje / 100);
+    var centro = esOro
+      ? '<span class="anillo-check">' + SVG.checkGrande + '</span>'
+      : '<span class="anillo-pct tnum">' + porcentaje + '%</span><span class="anillo-lbl">Completado</span>';
+
+    return '' +
+      '<div class="anillo-wrap">' +
+        '<div class="anillo">' +
+          '<svg width="100%" height="100%" viewBox="0 0 168 168" fill="none">' +
+            '<circle class="anillo-track" cx="84" cy="84" r="' + r + '" stroke-width="12"/>' +
+            '<circle class="anillo-fill' + (esOro ? ' oro' : '') + '" cx="84" cy="84" r="' + r + '" stroke-width="12" ' +
+              'stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + circ.toFixed(1) + '" data-offset="' + offset.toFixed(1) + '"/>' +
+          '</svg>' +
+          '<div class="anillo-centro">' + centro + '</div>' +
+        '</div>' +
+        '<span class="anillo-lbl tnum">' + hechos + ' de ' + P.TOTAL_MODULOS + ' módulos</span>' +
+      '</div>';
+  }
+
+  if (hechos === 0) {
+    // ── ESTADO A · recién llegado ──
+    heroInfo.innerHTML =
+      '<div class="hero-estado activo">' +
+        '<div class="curso-meta"><span class="badge-estado empezar">Empieza aquí</span></div>' +
+        '<h1 class="curso-titulo">' + tituloCurso + '</h1>' +
+        ponente +
+        '<a href="modulo-1.html" class="btn-hero">' + SVG.play +
+          '<span class="btn-hero-txt">' +
+            '<span class="btn-hero-titulo">Comenzar el curso</span>' +
+            '<span class="btn-hero-sub">Módulo 1 · ' + P.metaModulo(1).titulo + '</span>' +
+          '</span>' +
+        '</a>' +
+      '</div>';
+
+    heroVisual.innerHTML =
+      '<div class="curso-datos-card">' +
+        '<h3>Tu acceso incluye</h3>' +
+        '<ul>' +
+          '<li>' + SVG.lista + '<span>5 módulos en video</span></li>' +
+          '<li>' + SVG.reloj + '<span class="tnum">' + P.formatoTiempo(CURSO.totalMinutos) + ' de video</span></li>' +
+          '<li>' + SVG.descarga + '<span class="tnum">' + CURSO.materiales + ' materiales descargables</span></li>' +
+          '<li>' + SVG.diploma + '<span>Certificado con folio IPCI</span></li>' +
+        '</ul>' +
+      '</div>';
+
+  } else if (hechos < P.TOTAL_MODULOS) {
+    // ── ESTADO B · a medias ──
+    heroInfo.innerHTML =
+      '<div class="hero-estado activo">' +
+        '<div class="curso-meta"><span class="badge-estado progreso"><span class="dot-live"></span>En progreso</span></div>' +
+        '<h1 class="curso-titulo">' + tituloCurso + '</h1>' +
+        ponente +
+        '<div class="progreso-container">' +
+          '<div class="progreso-header">' +
+            '<span>Tu progreso</span>' +
+            '<strong class="tnum">' + pct + '% completado</strong>' +
+          '</div>' +
+          '<div class="progreso-bar"><div class="progreso-fill" id="barraHero" style="width:0%"></div></div>' +
+          '<div class="progreso-stats">' +
+            '<span class="tnum">' + hechos + ' de ' + P.TOTAL_MODULOS + ' módulos completados</span>' +
+            '<span class="sep-dot"></span>' +
+            '<span class="tnum">' + P.formatoTiempo(restantes) + ' restantes</span>' +
+          '</div>' +
+        '</div>' +
+        '<a href="modulo-' + siguiente + '.html" class="btn-hero">' + SVG.play +
+          '<span class="btn-hero-txt">' +
+            '<span class="btn-hero-titulo">Continuar</span>' +
+            '<span class="btn-hero-sub">Módulo ' + siguiente + ' · ' + metaSig.titulo + '</span>' +
+          '</span>' +
+        '</a>' +
+      '</div>';
+
+    heroVisual.innerHTML = anillo(pct, false);
+
+  } else {
+    // ── ESTADO C · curso completo ──
+    heroInfo.innerHTML =
+      '<div class="hero-estado activo">' +
+        '<div class="curso-meta"><span class="badge-estado completo">¡Curso completado!</span></div>' +
+        '<h1 class="curso-titulo">' + tituloCurso + '</h1>' +
+        '<p class="curso-ponente">Completaste los 5 módulos del curso. Tu certificado con folio IPCI ya te está esperando.</p>' +
+        '<a href="certificado.html" class="btn-hero dorado">' + SVG.diploma +
+          '<span class="btn-hero-txt">' +
+            '<span class="btn-hero-titulo">Solicitar mi certificado</span>' +
+            '<span class="btn-hero-sub">Impartido por ' + CURSO.ponente + '</span>' +
+          '</span>' +
+        '</a>' +
+      '</div>';
+
+    heroVisual.innerHTML = anillo(100, true);
+  }
+
+  // ── RACHA ───────────────────────────────────────────────────────────
+  var racha = document.getElementById('racha');
+  var puntos = '';
+  for (var i = 1; i <= P.TOTAL_MODULOS; i++) {
+    puntos += '<span class="racha-punto' + (P.getEstadoModulo(i) === 'completado' ? ' hecho' : '') + '"></span>';
+  }
+
+  if (P.estaCompleto()) {
+    racha.className = 'racha completa';
+    racha.innerHTML =
+      '<span class="racha-txt"><strong>Completaste los 5 módulos</strong> · Tu certificado te espera</span>' +
+      '<span class="racha-puntos">' + puntos + '</span>' +
+      '<a href="certificado.html" class="racha-link">Ver mi certificado ' + SVG.flechaChica + '</a>';
+  } else {
+    racha.className = 'racha';
+    racha.innerHTML =
+      '<span class="racha-txt">' +
+        '<strong>Llevas ' + hechos + ' de ' + P.TOTAL_MODULOS + ' módulos</strong> · ' +
+        'Te ' + (faltan === 1 ? 'falta 1 módulo' : 'faltan ' + faltan + ' módulos') + ' para tu certificado' +
+      '</span>' +
+      '<span class="racha-puntos">' + puntos + '</span>';
+  }
+
+  // ── TARJETAS DE MÓDULO ──────────────────────────────────────────────
+  var grid = document.getElementById('gridModulos');
+
+  var BADGES = {
+    'sin-empezar': { clase: 'sin-empezar', ico: SVG.playChico, txt: 'Empezar' },
+    'empezado':    { clase: 'empezado',    ico: SVG.playChico, txt: 'Continuar' },
+    'completado':  { clase: 'completado',  ico: SVG.check,     txt: 'Completado' }
+  };
+
+  grid.innerHTML = CURSO.modulos.map(function (m) {
+    var estado = P.getEstadoModulo(m.n);
+    var subHechos = P.getSubtemasHechos(m.n);
+    var pctSub = m.subtemas ? Math.round((subHechos / m.subtemas) * 100) : 0;
+    var badge = BADGES[estado];
+    if (estado === 'empezado' && subHechos > 0) badge = { clase: 'empezado', ico: SVG.playChico, txt: 'Continuar · ' + pctSub + '%' };
+
+    var num = String(m.n).padStart(2, '0');
+    var barraVisible = (estado === 'empezado' && subHechos > 0);
+
+    return '' +
+      '<a href="modulo-' + m.n + '.html" class="card-modulo">' +
+        '<div class="card-thumb">' +
+          '<img src="' + P.miniatura(m.video) + '" alt="" loading="lazy" ' +
+               'onerror="this.parentNode.classList.add(\'sin-imagen\')">' +
+          '<span class="card-thumb-fallback"><span class="card-thumb-num tnum">' + num + '</span></span>' +
+          '<span class="card-play"><span>' + SVG.play + '</span></span>' +
+          '<span class="card-thumb-barra' + (barraVisible ? '' : ' oculta') + '"><i style="width:' + (barraVisible ? pctSub : 0) + '%"></i></span>' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<h3 class="card-titulo"><span class="card-num">' + num + '</span>' + m.titulo + '</h3>' +
+          '<p class="card-desc">' + m.desc + '</p>' +
+          '<div class="card-meta">' +
+            '<span>' + SVG.relojChico + ' <span class="tnum">' + m.min + ' min</span></span>' +
+            '<span class="meta-dot"></span>' +
+            '<span>' + SVG.listaChica + ' <span class="tnum">' +
+              (subHechos > 0 && estado !== 'completado'
+                ? subHechos + ' de ' + m.subtemas + ' subtemas'
+                : m.subtemas + ' subtemas') +
+            '</span></span>' +
+          '</div>' +
+          '<div class="card-pie">' +
+            '<span class="card-badge ' + badge.clase + '">' + badge.ico + badge.txt + '</span>' +
+            '<span class="card-flecha">' + SVG.flecha + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</a>';
+  }).join('');
+
+  // ── TARJETA DE CERTIFICADO ──────────────────────────────────────────
+  var certTexto = document.getElementById('certTexto');
+  var certBarra = document.getElementById('certBarra');
+
+  if (P.estaCompleto()) {
+    certTexto.textContent = '¡Listo para solicitar!';
+    certTexto.classList.add('dorado');
+    certBarra.style.display = 'none';
+  } else {
+    certTexto.textContent = 'Disponible al completar los 5 módulos (te ' +
+      (faltan === 1 ? 'falta 1' : 'faltan ' + faltan) + ')';
+  }
+
+  // ── Animaciones de entrada (barra y anillo se llenan al pintar) ─────
+  requestAnimationFrame(function () {
+    var barra = document.getElementById('barraHero');
+    if (barra) barra.style.width = pct + '%';
+
+    var aro = document.querySelector('.anillo-fill');
+    if (aro) aro.setAttribute('stroke-dashoffset', aro.getAttribute('data-offset'));
+
+    var mini = certBarra ? certBarra.querySelector('i') : null;
+    if (mini) mini.style.width = pct + '%';
+  });
+})();
+</script>
 
 </body>
 </html>
