@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <script src="guard.js"></script>
+  <script src="progreso.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Módulo 5 · Métodos de aplicación — Aula Biofertilizantes | Sinergia Agrícola</title>
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
-<body>
+<body data-modulo="5">
 
 <!-- ═══════ HEADER ═══════ -->
 <header class="aula-header">
@@ -80,15 +81,7 @@
           <span class="tnum">40 minutos</span>
         </span>
         <span class="meta-dot"></span>
-        <span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
-          <span class="tnum">6 subtemas</span>
-        </span>
-        <span class="meta-dot"></span>
-        <span class="proximamente-tag">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          Próximamente
-        </span>
+        <span class="estado-modulo" id="estadoModulo"></span>
       </div>
       <p class="modulo-descripcion">
         Cómo y con qué aplicar: métodos y herramientas, frecuencia, dosis y estrategias según el entorno —campo abierto, invernaderos, praderas, jardines, árboles frutales e hidroponía—, evaluación de resultados en cada sistema y el protocolo de Buenas Prácticas Agrícolas (BPA).
@@ -97,7 +90,10 @@
 
     <!-- Subtemas -->
     <section class="panel">
-      <h2>Subtemas de este módulo</h2>
+      <div class="subtemas-head">
+        <h2>Subtemas de este módulo</h2>
+        <span class="subtemas-contador" id="subtemasContador"></span>
+      </div>
       <ul class="subtemas-lista">
         <li>
           <button class="subtema" type="button" aria-pressed="false">
@@ -142,27 +138,15 @@
     <section class="panel">
       <h2>Notas del módulo</h2>
       <textarea class="notas-textarea" id="notasModulo" placeholder="Tus notas de este módulo — dosis, productos que ya usas, dudas para el grupo VIP…"></textarea>
-      <button class="btn-guardar-notas" id="btnGuardarNotas">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>
-        </svg>
-        <span>Guardar notas</span>
-      </button>
+      <div class="notas-pie">
+        <span class="notas-estado" id="notasEstado"></span>
+      </div>
     </section>
 
-    <!-- Navegación -->
-    <div class="nav-modulos">
-      <a href="modulo-4.html" class="nav-btn prev">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 19l-7-7 7-7"/></svg>
-        Módulo anterior
-      </a>
-      <button class="btn-completar" id="btnCompletar">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-        <span>Marcar como completado</span>
-      </button>
-      <span></span>
-    </div>
+    <!-- Navegación (la pinta progreso.js) -->
+    <div class="nav-sticky" id="navSticky"></div>
 
+    
     <a class="btn-duda-whatsapp"
        href="https://wa.me/522221035842?text=Hola%2C%20tengo%20una%20duda%20del%20m%C3%B3dulo%205%20de%20Biofertilizantes"
        target="_blank" rel="noopener">
@@ -176,8 +160,9 @@
   <!-- Sidebar -->
   <aside class="sidebar-modulos">
     <h2>Contenido del curso</h2>
+    <div class="sidebar-progreso" id="sidebarProgreso"></div>
 
-    <a href="modulo-1.html" class="sidebar-item hecho">
+    <a href="modulo-1.html" class="sidebar-item">
       <span class="sidebar-num"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
       <span class="sidebar-info">
         <strong>Fertilizantes y biofertilizantes</strong>
@@ -185,7 +170,7 @@
       </span>
     </a>
 
-    <a href="modulo-2.html" class="sidebar-item hecho">
+    <a href="modulo-2.html" class="sidebar-item">
       <span class="sidebar-num"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
       <span class="sidebar-info">
         <strong>Criterios y evaluación</strong>
@@ -209,7 +194,7 @@
       </span>
     </a>
 
-    <a href="modulo-5.html" class="sidebar-item actual">
+    <a href="modulo-5.html" class="sidebar-item">
       <span class="sidebar-num tnum">05</span>
       <span class="sidebar-info">
         <strong>Métodos de aplicación</strong>
@@ -217,6 +202,27 @@
       </span>
     </a>
   </aside>
+</div>
+
+
+<!-- Modal de curso completado -->
+<div class="modal-fondo" id="modalCompleto" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+  <div class="modal-caja">
+    <span class="modal-icono">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </span>
+    <h2 id="modalTitulo">¡Completaste el curso!</h2>
+    <p>Terminaste los 5 módulos de Elaboración y Aplicación de Biofertilizantes. Ya puedes solicitar tu certificado.</p>
+    <div class="modal-acciones">
+      <a href="certificado.html" class="modal-btn principal">
+        Solicitar certificado
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <button class="modal-btn secundario" id="modalSeguir">Seguir explorando</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════ FOOTER ═══════ -->
@@ -234,26 +240,205 @@
 </footer>
 
 <script>
-  // Preview: interacciones locales, sin persistencia todavía.
-  document.querySelectorAll('.subtema').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var hecho = btn.classList.toggle('hecho');
-      btn.setAttribute('aria-pressed', hecho ? 'true' : 'false');
+(function () {
+  'use strict';
+
+  var N = Number(document.body.dataset.modulo);
+  var P = window.Progreso.init();
+  var meta = P.metaModulo(N);
+
+  // Abrir el módulo ya cuenta como "visto".
+  P.marcarVisto(N);
+
+  var SVG = {
+    check: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    checkDibujo: '<svg class="check-dibujado" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    play: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l12 7.5-12 7.5V4.5z"/></svg>',
+    izq: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 19l-7-7 7-7"/></svg>',
+    der: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>',
+    diploma: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 5 2 9l10 4 10-4z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg>',
+    guardado: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>'
+  };
+
+  // ── SUBTEMAS ────────────────────────────────────────────────────────
+  var subtemas = Array.prototype.slice.call(document.querySelectorAll('.subtema'));
+  var contador = document.getElementById('subtemasContador');
+
+  function pintarContador() {
+    var hechos = P.getSubtemasHechos(N);
+    if (contador) {
+      contador.innerHTML = '<strong class="tnum">' + hechos + '</strong> de <span class="tnum">' +
+        subtemas.length + '</span> subtemas completados';
+    }
+  }
+
+  function pintarSubtema(btn, hecho) {
+    btn.classList.toggle('hecho', hecho);
+    btn.setAttribute('aria-pressed', hecho ? 'true' : 'false');
+  }
+
+  subtemas.forEach(function (btn, i) {
+    pintarSubtema(btn, P.getSubtemas(N)[i] === true);
+    btn.addEventListener('click', function () {
+      var ahora = P.toggleSubtema(N, i);
+      pintarSubtema(btn, ahora);
+      pintarContador();
+      pintarSidebar();
     });
   });
+  pintarContador();
 
-  var btnNotas = document.getElementById('btnGuardarNotas');
-  var labelNotas = btnNotas.querySelector('span');
-  btnNotas.addEventListener('click', function(){
-    labelNotas.textContent = 'Notas guardadas';
-    setTimeout(function(){ labelNotas.textContent = 'Guardar notas'; }, 2000);
-  });
+  // ── ESTADO DEL MÓDULO (cabecera) ────────────────────────────────────
+  var estadoEl = document.getElementById('estadoModulo');
+  var TXT_ESTADO = {
+    'completado':  { ico: SVG.check, txt: 'Completado' },
+    'empezado':    { ico: SVG.play,  txt: 'En progreso' },
+    'sin-empezar': { ico: SVG.play,  txt: 'Disponible' }
+  };
 
-  var btnCompletar = document.getElementById('btnCompletar');
-  btnCompletar.addEventListener('click', function(){
-    btnCompletar.classList.add('hecho');
-    btnCompletar.querySelector('span').textContent = 'Módulo completado';
-  });
+  function pintarEstadoCabecera() {
+    if (!estadoEl) return;
+    var e = P.getEstadoModulo(N);
+    estadoEl.className = 'estado-modulo ' + e;
+    estadoEl.innerHTML = TXT_ESTADO[e].ico + ' ' + TXT_ESTADO[e].txt;
+  }
+  pintarEstadoCabecera();
+
+  // ── SIDEBAR CON PROGRESO REAL ───────────────────────────────────────
+  var sidebarProgreso = document.getElementById('sidebarProgreso');
+
+  function pintarSidebar() {
+    var pct = P.getPorcentaje();
+    if (sidebarProgreso) {
+      sidebarProgreso.innerHTML =
+        '<div class="sidebar-progreso-head">' +
+          '<span>Tu progreso</span><strong class="tnum">' + pct + '%</strong>' +
+        '</div>' +
+        '<div class="sidebar-progreso-bar"><i style="width:' + pct + '%"></i></div>';
+    }
+
+    document.querySelectorAll('.sidebar-item').forEach(function (item) {
+      var m = Number((item.getAttribute('href') || '').replace(/\D/g, ''));
+      if (!m) return;
+      var info = P.metaModulo(m);
+      var estado = P.getEstadoModulo(m);
+      var esActual = (m === N);
+
+      item.className = 'sidebar-item' + (esActual ? ' actual' : '') + (estado === 'completado' ? ' hecho' : '');
+
+      var num = item.querySelector('.sidebar-num');
+      if (num) {
+        if (estado === 'completado') num.innerHTML = SVG.check;
+        else { num.textContent = String(m).padStart(2, '0'); num.classList.add('tnum'); }
+      }
+
+      var linea = item.querySelector('.sidebar-info span');
+      if (linea) {
+        var etiqueta = esActual ? 'Estás aquí'
+          : estado === 'completado' ? 'Completado'
+          : estado === 'empezado' ? P.getSubtemasHechos(m) + ' de ' + info.subtemas + ' subtemas'
+          : 'Disponible';
+        linea.textContent = info.min + ' min · ' + etiqueta;
+      }
+
+      // Barra fina bajo los módulos empezados (pero no completados)
+      var vieja = item.querySelector('.sidebar-mini-barra');
+      if (vieja) vieja.remove();
+      if (estado === 'empezado' && P.getSubtemasHechos(m) > 0) {
+        var pctM = Math.round((P.getSubtemasHechos(m) / info.subtemas) * 100);
+        var barra = document.createElement('span');
+        barra.className = 'sidebar-mini-barra';
+        barra.innerHTML = '<i style="width:' + pctM + '%"></i>';
+        var cont = item.querySelector('.sidebar-info');
+        if (cont) cont.appendChild(barra);
+      }
+    });
+  }
+  pintarSidebar();
+
+  // ── NOTAS CON AUTOGUARDADO ──────────────────────────────────────────
+  var textarea = document.getElementById('notasModulo');
+  var notasEstado = document.getElementById('notasEstado');
+  var temporizador = null;
+
+  if (textarea) {
+    textarea.value = P.getNota(N);
+
+    textarea.addEventListener('input', function () {
+      if (notasEstado) {
+        notasEstado.className = 'notas-estado visible';
+        notasEstado.textContent = 'Escribiendo…';
+      }
+      clearTimeout(temporizador);
+      temporizador = setTimeout(function () {
+        P.setNota(N, textarea.value);
+        if (notasEstado) {
+          notasEstado.className = 'notas-estado visible guardado';
+          notasEstado.innerHTML = SVG.guardado + ' Guardado';
+        }
+      }, 2000);
+    });
+  }
+
+  // ── MODAL ───────────────────────────────────────────────────────────
+  var modal = document.getElementById('modalCompleto');
+  function abrirModal() { if (modal) modal.classList.add('abierto'); }
+  function cerrarModal() { if (modal) modal.classList.remove('abierto'); }
+
+  if (modal) {
+    modal.addEventListener('click', function (ev) { if (ev.target === modal) cerrarModal(); });
+    var btnCerrar = document.getElementById('modalSeguir');
+    if (btnCerrar) btnCerrar.addEventListener('click', cerrarModal);
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape') cerrarModal();
+    });
+  }
+
+  // ── BARRA INFERIOR FIJA ─────────────────────────────────────────────
+  var nav = document.getElementById('navSticky');
+
+  function pintarNav() {
+    var completado = P.getEstadoModulo(N) === 'completado';
+    var esUltimo = (N === P.TOTAL_MODULOS);
+
+    var prev = N > 1
+      ? '<a href="modulo-' + (N - 1) + '.html" class="nav-sticky-btn prev">' + SVG.izq + ' Módulo anterior</a>'
+      : '<span class="hueco"></span>';
+
+    var next = esUltimo
+      ? '<a href="certificado.html" class="nav-sticky-btn next dorado">' + SVG.diploma + ' Ver mi certificado</a>'
+      : '<a href="modulo-' + (N + 1) + '.html" class="nav-sticky-btn next">Siguiente módulo ' + SVG.der + '</a>';
+
+    nav.innerHTML =
+      prev +
+      '<button class="btn-completar-v2' + (completado ? ' hecho' : '') + '" id="btnCompletar">' +
+        (completado ? SVG.checkDibujo + ' <span>Módulo completado</span>'
+                    : SVG.checkDibujo + ' <span>Marcar como completado</span>') +
+      '</button>' +
+      next;
+
+    document.getElementById('btnCompletar').addEventListener('click', function () {
+      var yaEstaba = P.getEstadoModulo(N) === 'completado';
+      if (yaEstaba) {
+        // Permitir desmarcar: el alumno manda sobre su propio progreso.
+        P.marcarCompletado(N, false);
+        pintarNav(); pintarSidebar(); pintarEstadoCabecera();
+        return;
+      }
+
+      P.marcarCompletado(N, true);
+      pintarNav(); pintarSidebar(); pintarEstadoCabecera();
+
+      var btn = document.getElementById('btnCompletar');
+      btn.classList.add('pulso');
+      setTimeout(function () { btn.classList.remove('pulso'); }, 700);
+
+      // ¿Era el último que le faltaba?
+      if (P.estaCompleto()) setTimeout(abrirModal, 420);
+    });
+  }
+  pintarNav();
+})();
 </script>
 </body>
 </html>
