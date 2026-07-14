@@ -1,0 +1,23 @@
+# Normalización de texto por defecto
+* text=auto
+
+# Binarios: nunca convertir saltos de línea
+*.pdf   binary
+*.xlsx  binary
+*.xls   binary
+*.docx  binary
+*.zip   binary
+*.mp4   binary
+*.mov   binary
+*.webm  binary
+*.jpg   binary
+*.jpeg  binary
+*.png   binary
+*.gif   binary
+*.webp  binary
+*.svg   text
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
