@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <script src="guard.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Certificado · Aula Biofertilizantes | Sinergia Agrícola</title>
@@ -36,9 +37,9 @@
     </a>
 
     <div class="header-user">
-      <div class="user-avatar">JP</div>
+      <div class="user-avatar" aria-hidden="true"></div>
       <div class="user-info">
-        <strong>Juan Pérez</strong>
+        <strong>Alumno</strong>
         <span>Alumno activo</span>
       </div>
       <button class="btn-salir">
@@ -128,7 +129,7 @@
       Sinergia Agrícola otorga el presente<br>reconocimiento a
     </p>
 
-    <div class="diploma-alumno">Juan Pérez</div>
+    <div class="diploma-alumno" data-alumno-nombre>Alumno</div>
 
     <p class="diploma-por">Por haber completado satisfactoriamente el curso</p>
 

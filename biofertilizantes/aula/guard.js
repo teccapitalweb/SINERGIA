@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   Guardia del aula · Gerberas
+   Guardia del aula · Biofertilizantes
    Se carga en el <head> de todas las páginas del aula EXCEPTO acceso.html.
    Corta el acceso casual: si no hay token, saca al visitante a la puerta.
    No es una barrera criptográfica — ver nota en el reporte.
@@ -8,23 +8,10 @@
    aula, y un alumno con dos cursos puede tener las dos sesiones a la vez.
    ═══════════════════════════════════════════════════════════ */
 (function () {
-  var CURSO = 'gerberas';
+  var CURSO = 'biofertilizantes';
   var TOKEN = 'sinergia_aula_token_' + CURSO;
   var EMAIL = 'sinergia_aula_email_' + CURSO;
   var NOMBRE = 'sinergia_aula_nombre_' + CURSO;
-
-  // Migración de las claves sin sufijo (las únicas que existieron, y solo para
-  // gerberas): quien ya tenía sesión abierta no la pierde con este cambio.
-  try {
-    if (!localStorage.getItem(TOKEN) && localStorage.getItem('sinergia_aula_token')) {
-      localStorage.setItem(TOKEN, localStorage.getItem('sinergia_aula_token'));
-      localStorage.setItem(EMAIL, localStorage.getItem('sinergia_aula_email') || '');
-      localStorage.setItem(NOMBRE, localStorage.getItem('sinergia_aula_nombre') || '');
-    }
-    localStorage.removeItem('sinergia_aula_token');
-    localStorage.removeItem('sinergia_aula_email');
-    localStorage.removeItem('sinergia_aula_nombre');
-  } catch (e) { /* almacenamiento bloqueado */ }
 
   var token = null;
   try { token = localStorage.getItem(TOKEN); } catch (e) { /* almacenamiento bloqueado */ }
