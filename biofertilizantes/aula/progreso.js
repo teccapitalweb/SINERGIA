@@ -62,7 +62,7 @@
         corto: 'Fermentación',
         desc: 'Manejo de pH, conductividad, envasado y combinación de biofertilizantes.',
         min: 45,
-        subtemas: 5,
+        subtemas: 9,
         video: '1UHTu8ljMi_EF6aC5IgyO0DMPL4gHxhxC'
       },
       {
@@ -71,7 +71,7 @@
         corto: 'Aplicación',
         desc: 'Aplicación en campo abierto, invernaderos, praderas, jardines, frutales e hidroponía.',
         min: 40,
-        subtemas: 6,
+        subtemas: 4,
         video: null   // ⏳ video en producción — la tarjeta muestra "Próximamente"
       }
     ]
@@ -187,9 +187,18 @@
           ultimaVez: mod.ultimaVez || null
         };
       }
+      // El temario puede cambiar (un módulo pasa de 5 a 9 subtemas). Si el
+      // array guardado tiene otra longitud, viene de un temario viejo: sus
+      // posiciones ya NO corresponden a los mismos temas, así que se descarta
+      // entero en vez de arrastrar marcas que ahora significan otra cosa.
+      // Vale igual para lo que llega del backend y para el respaldo local:
+      // los dos pasan por aquí.
       var subs = (datos.subtemas || {})[m.n];
-      if (Array.isArray(subs)) {
+      if (Array.isArray(subs) && subs.length === m.subtemas) {
         for (var i = 0; i < m.subtemas; i++) base.subtemas[m.n][i] = !!subs[i];
+      } else if (Array.isArray(subs) && subs.length > 0) {
+        console.warn('[progreso] Módulo ' + m.n + ': el temario cambió (' +
+          subs.length + ' → ' + m.subtemas + ' subtemas). Se reinician sus marcas.');
       }
       var nota = (datos.notas || {})[m.n];
       if (typeof nota === 'string') base.notas[m.n] = nota;

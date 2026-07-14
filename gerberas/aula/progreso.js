@@ -20,7 +20,7 @@
   var CURSO = {
     slug: 'gerberas',
     titulo: 'Cultivo y Manejo de Gerberas',
-    ponente: 'Dr. Marco Antonio Villegas Olguín',
+    ponente: 'Ing. Irene del Pilar García Pérez',
     totalMinutos: 211,           // 45+38+42+51+35 = 3 h 31 min
     materiales: 6,
     modulos: [
@@ -182,9 +182,18 @@
           ultimaVez: mod.ultimaVez || null
         };
       }
+      // El temario puede cambiar (un módulo pasa de 5 a 9 subtemas). Si el
+      // array guardado tiene otra longitud, viene de un temario viejo: sus
+      // posiciones ya NO corresponden a los mismos temas, así que se descarta
+      // entero en vez de arrastrar marcas que ahora significan otra cosa.
+      // Vale igual para lo que llega del backend y para el respaldo local:
+      // los dos pasan por aquí.
       var subs = (datos.subtemas || {})[m.n];
-      if (Array.isArray(subs)) {
+      if (Array.isArray(subs) && subs.length === m.subtemas) {
         for (var i = 0; i < m.subtemas; i++) base.subtemas[m.n][i] = !!subs[i];
+      } else if (Array.isArray(subs) && subs.length > 0) {
+        console.warn('[progreso] Módulo ' + m.n + ': el temario cambió (' +
+          subs.length + ' → ' + m.subtemas + ' subtemas). Se reinician sus marcas.');
       }
       var nota = (datos.notas || {})[m.n];
       if (typeof nota === 'string') base.notas[m.n] = nota;
