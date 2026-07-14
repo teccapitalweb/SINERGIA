@@ -3,12 +3,14 @@
    Se carga en el <head> de todas las páginas del aula (después de guard.js).
 
    ── DÓNDE VIVE EL PROGRESO ──
-   Hoy: localStorage, con clave por curso y por alumno.
-   Mañana: Firestore, contra el email del alumno.
+   En Firestore (colección progreso_alumnos), contra el email del alumno.
+   localStorage queda solo como RESPALDO si el backend no responde.
 
-   TODA la persistencia está en _cargar() y _guardar(). Para migrar al
-   backend NO hay que tocar nada más: se reescriben esas dos funciones
-   (async + fetch al API) y el resto de la API pública sigue igual.
+   El backend saca el email y el curso DEL JWT del aula, nunca del body:
+   nadie puede escribir el progreso de otro alumno.
+
+   init() es la única función async de la API. Hace UNA llamada y deja todo
+   en memoria; los getters siguen siendo síncronos.
    ═══════════════════════════════════════════════════════════ */
 (function (global) {
   'use strict';
@@ -77,29 +79,81 @@
   }
 
   // ── CAPA DE PERSISTENCIA ───────────────────────────────────────────
-  // ⚠️  El único punto que toca el almacenamiento. Cambiar SOLO esto
-  //     para migrar a Firestore.
-  function _clave(email) {
+  // El progreso vive en Firestore. localStorage queda como RESPALDO: si el
+  // backend no responde, el alumno sigue avanzando y se sube después.
+  //
+  // El backend saca el email y el curso DEL TOKEN, no de lo que enviemos.
+  // Aquí solo mandamos el documento de progreso.
+  var BACKEND = 'https://sinergia-webhook-production.up.railway.app';
+  var ESPERA_GUARDADO = 1000;   // debounce del autoguardado
+  var ESPERA_REINTENTO = 6000;  // si el backend falla, se reintenta
+
+  function _token() {
+    try { return localStorage.getItem('sinergia_aula_token_' + CURSO.slug) || ''; }
+    catch (e) { return ''; }
+  }
+
+  function _claveLocal(email) {
     return 'sinergia_progreso_' + CURSO.slug + '_' + String(email || '').trim().toLowerCase();
   }
 
-  function _cargar(email) {
+  function _cargarLocal(email) {
     try {
-      var crudo = localStorage.getItem(_clave(email));
+      var crudo = localStorage.getItem(_claveLocal(email));
       return crudo ? JSON.parse(crudo) : null;
     } catch (e) {
-      return null; // almacenamiento bloqueado o JSON corrupto: arrancamos limpio
+      return null;
     }
   }
 
-  function _guardar(email, datos) {
-    try {
-      localStorage.setItem(_clave(email), JSON.stringify(datos));
-      return true;
-    } catch (e) {
-      console.warn('[progreso] No se pudo guardar:', e.message);
-      return false;
-    }
+  function _guardarLocal(email, datos) {
+    try { localStorage.setItem(_claveLocal(email), JSON.stringify(datos)); return true; }
+    catch (e) { return false; }
+  }
+
+  function _borrarLocal(email) {
+    try { localStorage.removeItem(_claveLocal(email)); } catch (e) { /* nada */ }
+  }
+
+  // Token caducado o manipulado: de vuelta a la puerta.
+  function _sesionCaducada() {
+    try { localStorage.removeItem('sinergia_aula_token_' + CURSO.slug); } catch (e) { /* nada */ }
+    window.location.replace('acceso.html');
+  }
+
+  // GET: devuelve { datos, nuevo }. Lanza si el backend no responde.
+  function _cargarRemoto() {
+    return fetch(BACKEND + '/aula/progreso', {
+      headers: { 'Authorization': 'Bearer ' + _token() }
+    }).then(function (r) {
+      if (r.status === 401) { _sesionCaducada(); throw new Error('sesión caducada'); }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (j) {
+      return { datos: j.progreso, nuevo: !!j.nuevo };
+    });
+  }
+
+  // PUT: true si quedó guardado en Firestore. El % y el flag 'completado'
+  // NO se envían: los calcula el backend (si no, cualquiera se auto-certifica).
+  function _guardarRemoto(datos, conKeepalive) {
+    return fetch(BACKEND + '/aula/progreso', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + _token()
+      },
+      keepalive: !!conKeepalive,
+      body: JSON.stringify({
+        modulos: datos.modulos,
+        subtemas: datos.subtemas,
+        notas: datos.notas,
+        ultimoModulo: datos.ultimoModulo
+      })
+    }).then(function (r) {
+      if (r.status === 401) { _sesionCaducada(); return false; }
+      return r.ok;
+    });
   }
   // ── FIN DE LA CAPA DE PERSISTENCIA ─────────────────────────────────
 
@@ -145,11 +199,73 @@
   // ── ESTADO EN MEMORIA ──────────────────────────────────────────────
   var emailActual = null;
   var datos = _vacio();
+  var sinConexion = false;   // el backend no contesta
+  var pendiente = false;     // hay cambios sin subir
+  var temporizador = null;
 
+  // ¿Este progreso tiene algo dentro? (para decidir si migrarlo)
+  function _tieneAvance(d) {
+    return CURSO.modulos.some(function (m) {
+      var mod = d.modulos[m.n];
+      return (mod && (mod.visto || mod.completado)) ||
+             (d.subtemas[m.n] || []).some(Boolean) ||
+             (d.notas[m.n] || '') !== '';
+    });
+  }
+
+  // Aviso discreto: el alumno merece saber que está trabajando sin red.
+  function _avisoSinConexion(mostrar) {
+    var id = 'avisoSinConexion';
+    var el = document.getElementById(id);
+    if (!mostrar) { if (el) el.remove(); return; }
+    if (el || !document.body) return;
+    el = document.createElement('div');
+    el.id = id;
+    el.textContent = 'Trabajando sin conexión · tu avance se guarda en este dispositivo';
+    el.setAttribute('style',
+      'position:fixed;left:16px;bottom:16px;z-index:90;padding:9px 15px;' +
+      'border-radius:999px;background:rgba(17,24,39,0.88);color:#fff;' +
+      'font-size:12.5px;font-family:system-ui,-apple-system,sans-serif;' +
+      'box-shadow:0 6px 20px rgba(0,0,0,0.18)');
+    document.body.appendChild(el);
+  }
+
+  function _subir() {
+    if (!emailActual) return;
+    _guardarRemoto(datos).then(function (ok) {
+      pendiente = !ok;
+      sinConexion = !ok;
+      _avisoSinConexion(!ok);
+      if (!ok) {
+        clearTimeout(temporizador);
+        temporizador = setTimeout(_subir, ESPERA_REINTENTO);  // reintento
+      }
+    }).catch(function () {
+      pendiente = true;
+      sinConexion = true;
+      _avisoSinConexion(true);
+      clearTimeout(temporizador);
+      temporizador = setTimeout(_subir, ESPERA_REINTENTO);
+    });
+  }
+
+  // Cada cambio: caché en memoria → respaldo local inmediato → backend con
+  // debounce. Marcar 5 subtemas seguidos = UNA sola llamada al backend.
   function persistir() {
     datos.actualizado = new Date().toISOString();
-    _guardar(emailActual, datos);
+    _guardarLocal(emailActual, datos);   // el avance NUNCA se pierde
+    pendiente = true;
+    clearTimeout(temporizador);
+    temporizador = setTimeout(_subir, ESPERA_GUARDADO);
   }
+
+  // Si cierra la pestaña con cambios sin subir, un último intento.
+  window.addEventListener('pagehide', function () {
+    if (pendiente && emailActual) {
+      clearTimeout(temporizador);
+      _guardarRemoto(datos, true);
+    }
+  });
 
   function emailDelGuard() {
     try {
@@ -165,12 +281,44 @@
     TOTAL_MODULOS: TOTAL_MODULOS,
     metaModulo: metaModulo,
 
-    // Sin argumento, toma el email de la sesión que dejó guard.js.
+    // ÚNICA función async de la API. Hace una sola llamada al backend y deja
+    // el progreso en memoria; todos los getters siguen siendo SÍNCRONOS, así
+    // que las páginas no se rompen ni se congelan esperando a la red.
     init: function (email) {
       emailActual = String(email || emailDelGuard() || '').trim().toLowerCase();
-      datos = _sanear(_cargar(emailActual));
-      return this;
+
+      // Respaldo inmediato: si el backend no contesta, seguimos con esto.
+      var local = _sanear(_cargarLocal(emailActual));
+      datos = local;
+
+      var self = this;
+      return _cargarRemoto().then(function (r) {
+        var remoto = _sanear(r.datos);
+
+        if (r.nuevo && _tieneAvance(local)) {
+          // MIGRACIÓN: lo que ya llevaba en este navegador sube una vez.
+          datos = local;
+          return _guardarRemoto(datos).then(function (ok) {
+            if (ok) _borrarLocal(emailActual);
+            sinConexion = false;
+            return self;
+          });
+        }
+
+        datos = remoto;
+        _borrarLocal(emailActual);   // ya vive en el backend
+        sinConexion = false;
+        return self;
+      }).catch(function (e) {
+        // Backend caído: el aula sigue funcionando con el respaldo local.
+        sinConexion = true;
+        _avisoSinConexion(true);
+        console.warn('[progreso] Sin backend, usando respaldo local:', e.message);
+        return self;
+      });
     },
+
+    estaSinConexion: function () { return sinConexion; },
 
     marcarVisto: function (n) {
       var m = datos.modulos[n];

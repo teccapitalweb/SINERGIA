@@ -167,10 +167,10 @@
 </footer>
 
 <script>
-(function () {
+(async function () {
   'use strict';
 
-  var P = window.Progreso.init();
+  var P = await window.Progreso.init();
   var hechos = P.getModulosCompletados();
   var faltan = P.TOTAL_MODULOS - hechos;
   var completo = P.estaCompleto();

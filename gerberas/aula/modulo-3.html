@@ -239,11 +239,11 @@
 </footer>
 
 <script>
-(function () {
+(async function () {
   'use strict';
 
   var N = Number(document.body.dataset.modulo);
-  var P = window.Progreso.init();
+  var P = await window.Progreso.init();
   var meta = P.metaModulo(N);
 
   // Abrir el módulo ya cuenta como "visto".
