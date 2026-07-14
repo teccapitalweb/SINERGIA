@@ -303,15 +303,24 @@
       datos = local;
 
       var self = this;
+      var localCrudo = _cargarLocal(emailActual);
+
       return _cargarRemoto().then(function (r) {
         var remoto = _sanear(r.datos);
 
-        if (r.nuevo && _tieneAvance(local)) {
-          // MIGRACIÓN: lo que ya llevaba en este navegador sube una vez.
+        // ¿El respaldo local es MÁS NUEVO que el servidor? Entonces son
+        // cambios que nunca llegaron a subir (backend caído, PUT fallido…).
+        // Mandan ellos, y los subimos. Nunca se pisa lo del alumno.
+        var fechaLocal = localCrudo && localCrudo.actualizado ? Date.parse(localCrudo.actualizado) : 0;
+        var fechaRemota = r.datos && r.datos.actualizado ? Date.parse(r.datos.actualizado) : 0;
+        var localGana = _tieneAvance(local) && (r.nuevo || fechaLocal > fechaRemota);
+
+        if (localGana) {
+          // Migración (backend vacío) o rescate (cambios sin subir).
           datos = local;
           return _guardarRemoto(datos).then(function (ok) {
             if (ok) _borrarLocal(emailActual);
-            sinConexion = false;
+            sinConexion = !ok;
             return self;
           });
         }
