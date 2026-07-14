@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Acceso al aula · Cultivo de Gerberas | Sinergia Agrícola</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <style>
+    .acceso-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-5);
+      background:
+        radial-gradient(60% 50% at 50% 0%, var(--rose-50), transparent 70%),
+        var(--neutral-25);
+    }
+    .acceso-card {
+      width: 100%;
+      max-width: 460px;
+      background: var(--neutral-0);
+      border: 1px solid var(--rose-100);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-rose-sm);
+      padding: var(--space-10);
+      text-align: center;
+      animation: riseIn 400ms var(--ease-out) both;
+    }
+    .acceso-logo { display: flex; justify-content: center; margin-bottom: var(--space-5); color: var(--rose-600); }
+    .acceso-card h1 { font-size: 26px; margin-bottom: var(--space-2); }
+    .acceso-curso {
+      font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--rose-700);
+      margin-bottom: var(--space-5);
+    }
+    .acceso-texto { font-size: 15px; color: var(--neutral-500); margin-bottom: var(--space-6); }
+    .acceso-form { display: flex; flex-direction: column; gap: var(--space-3); text-align: left; }
+    .acceso-form label {
+      font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--neutral-500);
+    }
+    .acceso-input {
+      width: 100%;
+      padding: 15px 16px;
+      font-family: inherit;
+      font-size: 16px;
+      color: var(--neutral-900);
+      background: var(--neutral-25);
+      border: 1px solid var(--neutral-200);
+      border-radius: var(--radius-md);
+      transition: all 150ms ease-out;
+    }
+    .acceso-input::placeholder { color: var(--neutral-400); }
+    .acceso-input:focus {
+      outline: none;
+      border-color: var(--rose-500);
+      background: var(--neutral-0);
+      box-shadow: var(--shadow-rose-sm);
+    }
+    .acceso-btn {
+      width: 100%;
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+      padding: 15px 20px;
+      background: linear-gradient(135deg, var(--rose-600), var(--rose-700));
+      color: var(--neutral-0);
+      border-radius: var(--radius-lg);
+      font-size: 15px; font-weight: 600;
+      box-shadow: var(--shadow-rose-md), inset 0 1px 0 rgba(255,255,255,0.16);
+      transition: all 200ms var(--ease-out);
+    }
+    .acceso-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-rose-lg); }
+    .acceso-btn:disabled { opacity: 0.6; cursor: progress; }
+    .spinner-mini {
+      width: 15px; height: 15px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      animation: girar 700ms linear infinite;
+    }
+    @keyframes girar { to { transform: rotate(360deg); } }
+
+    .acceso-error {
+      display: none;
+      margin-top: var(--space-6);
+      padding: var(--space-5);
+      background: var(--neutral-50);
+      border: 1px solid var(--neutral-200);
+      border-radius: var(--radius-lg);
+      text-align: left;
+    }
+    .acceso-error.visible { display: block; animation: riseIn 250ms var(--ease-out) both; }
+    .acceso-error p {
+      display: flex; align-items: flex-start; gap: var(--space-2);
+      font-size: 14px; color: var(--neutral-700);
+      margin-bottom: var(--space-4);
+    }
+    .acceso-error p svg { color: var(--warning-500); margin-top: 1px; }
+    .error-acciones { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+    .error-acciones a {
+      flex: 1; min-width: 150px;
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+      padding: 11px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13.5px; font-weight: 600;
+      transition: all 150ms ease-out;
+    }
+    .btn-wa { background: var(--green-600); color: var(--neutral-0); box-shadow: 0 4px 12px rgba(5,150,105,0.2); }
+    .btn-wa:hover { transform: translateY(-1px); }
+    .btn-landing { border: 1px solid var(--neutral-200); background: var(--neutral-0); color: var(--neutral-700); }
+    .btn-landing:hover { border-color: var(--rose-300); color: var(--rose-700); }
+
+    .acceso-pie {
+      margin-top: var(--space-6);
+      font-size: 12.5px;
+      color: var(--neutral-500);
+    }
+    .acceso-pie a { color: var(--rose-700); font-weight: 600; }
+    .acceso-pie a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="acceso-wrap">
+  <div class="acceso-card">
+    <span class="acceso-logo">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="2.6"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(45 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(90 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(135 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(180 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(225 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(270 12 12)"/>
+        <path d="M12 9.4C11 7.9 11 5 12 3.4C13 5 13 7.9 12 9.4Z" transform="rotate(315 12 12)"/>
+      </svg>
+    </span>
+
+    <h1>Accede a tu curso</h1>
+    <div class="acceso-curso">Cultivo y Manejo de Gerberas</div>
+    <p class="acceso-texto">Ingresa el correo con el que realizaste tu compra.</p>
+
+    <form class="acceso-form" id="formAcceso" novalidate>
+      <label for="email">Correo electrónico</label>
+      <input class="acceso-input" type="email" id="email" name="email"
+             placeholder="tucorreo@ejemplo.com" autocomplete="email" autofocus required>
+      <button class="acceso-btn" type="submit" id="btnEntrar">
+        <span id="btnTexto">Entrar al curso</span>
+      </button>
+    </form>
+
+    <div class="acceso-error" id="bloqueError">
+      <p>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>
+        </svg>
+        <span id="textoError">No encontramos una compra de este curso con ese correo.</span>
+      </p>
+      <div class="error-acciones">
+        <a class="btn-wa" href="https://wa.me/522221035842?text=Hola%2C%20compr%C3%A9%20el%20curso%20de%20Gerberas%20y%20no%20puedo%20entrar%20al%20aula" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.464 3.488"/>
+          </svg>
+          Escribir por WhatsApp
+        </a>
+        <a class="btn-landing" href="../index.html">Ver el curso</a>
+      </div>
+    </div>
+
+    <p class="acceso-pie">
+      ¿Compraste con otro correo?
+      <a href="https://wa.me/522221035842?text=Hola%2C%20compr%C3%A9%20el%20curso%20de%20Gerberas%20con%20otro%20correo" target="_blank" rel="noopener">Escríbenos por WhatsApp.</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  var BACKEND = 'https://sinergia-webhook-production.up.railway.app';
+  var CURSO = 'gerberas';
+
+  var form = document.getElementById('formAcceso');
+  var input = document.getElementById('email');
+  var btn = document.getElementById('btnEntrar');
+  var btnTexto = document.getElementById('btnTexto');
+  var bloqueError = document.getElementById('bloqueError');
+  var textoError = document.getElementById('textoError');
+
+  function mostrarError(msg) {
+    textoError.textContent = msg;
+    bloqueError.classList.add('visible');
+  }
+
+  function cargando(activo) {
+    btn.disabled = activo;
+    btnTexto.textContent = activo ? 'Verificando…' : 'Entrar al curso';
+  }
+
+  form.addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    bloqueError.classList.remove('visible');
+
+    var email = input.value.trim().toLowerCase();
+    if (!email || email.indexOf('@') === -1) {
+      mostrarError('Escribe un correo válido.');
+      return;
+    }
+
+    cargando(true);
+    try {
+      var r = await fetch(BACKEND + '/aula/verificar-acceso', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, curso: CURSO })
+      });
+
+      if (r.status === 429) {
+        mostrarError('Demasiados intentos. Espera unos minutos e inténtalo de nuevo.');
+        cargando(false);
+        return;
+      }
+
+      var data = await r.json();
+
+      if (data.acceso) {
+        localStorage.setItem('sinergia_aula_token', data.token);
+        localStorage.setItem('sinergia_aula_email', data.alumno.email);
+        localStorage.setItem('sinergia_aula_nombre', data.alumno.nombre || data.alumno.email);
+        window.location.replace('index.html');
+        return;
+      }
+
+      mostrarError(data.mensaje || 'No encontramos una compra de este curso con ese correo.');
+    } catch (err) {
+      console.error('Error verificando acceso:', err);
+      mostrarError('No pudimos conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.');
+    }
+    cargando(false);
+  });
+</script>
+
+</body>
+</html>
