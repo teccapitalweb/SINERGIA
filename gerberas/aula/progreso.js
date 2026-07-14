@@ -16,58 +16,65 @@
   'use strict';
 
   // ── Datos del curso ────────────────────────────────────────────────
-  // Duraciones y nº de subtemas verificados contra las páginas reales.
+  // Temario OFICIAL del curso (documento de Sinergia). 5 subtemas por módulo.
+  // Los videos se reasignaron por CONTENIDO, no por el número que diga la
+  // diapositiva (ver reporte). El módulo 5 aún no tiene video grabado.
   var CURSO = {
     slug: 'gerberas',
     titulo: 'Cultivo y Manejo de Gerberas',
     ponente: 'Ing. Irene del Pilar García Pérez',
-    totalMinutos: 211,           // 45+38+42+51+35 = 3 h 31 min
+    totalMinutos: 209,           // 45+38+51+35+40
     materiales: 6,
     modulos: [
       {
         n: 1,
-        titulo: 'Establecimiento del cultivo',
-        corto: 'Establecimiento',
-        desc: 'Selección de variedades, preparación del terreno, sustratos y sistemas de cultivo.',
+        titulo: 'Introducción al cultivo de gerbera: potencial productivo y comercial',
+        corto: 'Introducción',
+        desc: 'Cómo es la planta, qué variedades demanda el mercado, qué clima y suelo necesita, y cómo decidir entre campo abierto e invernadero según tu objetivo comercial.',
         min: 45,
-        subtemas: 8,
+        subtemas: 5,
         video: '1FhFZxSlA8WlJmNtHV-LqsP0W4JcTp_p-'
       },
       {
         n: 2,
-        titulo: 'Riego, nutrición y manejo del cultivo',
-        corto: 'Riego y nutrición',
-        desc: 'Manejo eficiente del riego, requerimientos nutricionales y bioestimulantes.',
+        titulo: 'Propagación y manejo de vivero',
+        corto: 'Propagación',
+        desc: 'Los métodos de propagación, el manejo del vivero, el control de calidad antes del trasplante y cómo planificar la densidad de plantación según busques flor de corte o maceta.',
         min: 38,
-        subtemas: 7,
-        video: '1aIdV91gWCAsHrTwA7xTWyKo0lYlsVbuT'
+        subtemas: 5,
+        video: '1aIdV91gWCAsHrTwA7xTWyKo0lYlsVbuT',
+        // Video de densidad de plantación (subtema 5), como complementario.
+        videoComplementario: {
+          id: '1Hz1B_ccaJJpB8mzk3MdwUYmXICioQ_TV',
+          titulo: 'Planificación de la densidad de plantación'
+        }
       },
       {
         n: 3,
-        titulo: 'Plagas, enfermedades y manejo preventivo',
-        corto: 'Plagas',
-        desc: 'Identificación de plagas, manejo de trips y pulgones, y aplicaciones fitosanitarias.',
-        min: 42,
-        subtemas: 6,
-        video: '1Hz1B_ccaJJpB8mzk3MdwUYmXICioQ_TV'
-      },
-      {
-        n: 4,
-        titulo: 'Cosecha, postcosecha e hidratación',
-        corto: 'Cosecha',
-        desc: 'Momento ideal de corte, soluciones hidratantes y producción en maceta.',
+        titulo: 'Nutrición, riego y manejo de suelo o sustratos',
+        corto: 'Nutrición y riego',
+        desc: 'Cómo nutrir la gerbera etapa por etapa, qué sustratos usar en maceta, qué sistema de riego conviene, y cómo mantener el pH y la conductividad en su punto para flor de calidad comercial.',
         min: 51,
-        subtemas: 8,
+        subtemas: 5,
         video: '1ZV6XLEhjxZp5pTJ6zrxc-R7f6w9zDCyR'
       },
       {
-        n: 5,
-        titulo: 'Producción rentable y comercialización',
-        corto: 'Comercialización',
-        desc: 'Indicadores de calidad, programación anual y clasificación comercial.',
+        n: 4,
+        titulo: 'Control integrado de plagas y enfermedades',
+        corto: 'Plagas',
+        desc: 'Identificar a tiempo las plagas y enfermedades que más dañan la gerbera, y manejarlas con criterio: monitoreo, control biológico y cultural primero, y agroquímicos solo cuando hace falta.',
         min: 35,
         subtemas: 5,
         video: '1tQl5mBC8CxuXqKcgukoRyBXmzhFLycJv'
+      },
+      {
+        n: 5,
+        titulo: 'Cosecha, poscosecha y comercialización',
+        corto: 'Cosecha',
+        desc: 'Cuándo y cómo cosechar, cómo manejar la postcosecha para que la flor dure, cómo empacar, y por qué canales vender para obtener el mejor precio.',
+        min: 40,
+        subtemas: 5,
+        video: null   // ⏳ video en producción — la tarjeta muestra "Próximamente"
       }
     ]
   };

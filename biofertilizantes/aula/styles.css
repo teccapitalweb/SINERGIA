@@ -1522,3 +1522,50 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   AJUSTES v5 · pantalla completa · clave del módulo
+   ═══════════════════════════════════════════════════════════ */
+
+/* Botón de pantalla completa sobre el video */
+.btn-fullscreen {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: rgba(17,24,39,0.6);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+  opacity: 0.82;
+  transition: opacity 160ms ease, background 160ms ease, transform 160ms ease;
+}
+.btn-fullscreen:hover { opacity: 1; background: rgba(17,24,39,0.82); transform: translateY(-1px); }
+.video-shell:hover .btn-fullscreen { opacity: 1; }
+.btn-fullscreen .fs-txt { line-height: 1; }
+.video-shell:fullscreen { border-radius: 0; display: flex; align-items: center; justify-content: center; }
+.video-shell:fullscreen iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+@media (max-width: 640px) { .btn-fullscreen .fs-txt { display: none; } }
+
+/* Tarjeta "Clave de este módulo" en el sidebar */
+.clave-modulo {
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, var(--verde-50), var(--neutral-0) 75%);
+  border: 1px solid var(--verde-200);
+}
+.clave-modulo-cab {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--verde-700);
+  margin-bottom: 9px;
+}
+.clave-modulo p { font-size: 13.5px; line-height: 1.55; color: var(--neutral-700); margin: 0; }

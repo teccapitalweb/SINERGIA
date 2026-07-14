@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Módulo 4 · Fermentación y calidad — Aula Biofertilizantes | Sinergia Agrícola</title>
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body data-modulo="4">
 
@@ -70,6 +70,10 @@
         allowfullscreen
         loading="lazy"
         title="Módulo 4 · Tiempos de fermentación, degradación y calidad"></iframe>
+      <button class="btn-fullscreen" id="btnFullscreen" type="button" aria-label="Pantalla completa">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M8 21H5a2 2 0 01-2-2v-3M16 21h3a2 2 0 002-2v-3"/></svg>
+        <span class="fs-txt">Pantalla completa</span>
+      </button>
     </div>
 
     <div class="modulo-titulo-bloque">
@@ -218,6 +222,13 @@
         <span class="tnum">40 min · Próximamente</span>
       </span>
     </a>
+    <div class="clave-modulo">
+      <div class="clave-modulo-cab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.6.5 1 .9 1 1.8h6c0-.9.4-1.3 1-1.8A7 7 0 0012 2z"/></svg>
+        Clave de este módulo
+      </div>
+      <p>El tiempo es un ingrediente más. Aplicar un preparado inmaduro puede quemar tu cultivo en vez de nutrirlo.</p>
+    </div>
   </aside>
 </div>
 
@@ -455,6 +466,24 @@
     });
   }
   pintarNav();
+
+  // ── PANTALLA COMPLETA ───────────────────────────────────────────────
+  var btnFs = document.getElementById('btnFullscreen');
+  var shell = document.querySelector('.video-shell');
+  if (btnFs && shell) {
+    btnFs.addEventListener('click', function () {
+      if (document.fullscreenElement) { document.exitFullscreen(); return; }
+      // El contenedor primero (el botón sigue visible en fullscreen); si el
+      // navegador no lo permite con el iframe dentro, cae al iframe.
+      var ifr = shell.querySelector('iframe');
+      var pedir = function (el) {
+        return (el && el.requestFullscreen) ? el.requestFullscreen() : Promise.reject();
+      };
+      // El contenedor primero; si el navegador no lo permite con el iframe
+      // dentro, cae al iframe; si tampoco, no revienta la consola.
+      pedir(shell).catch(function () { return pedir(ifr); }).catch(function () {});
+    });
+  }
 })();
 </script>
 </body>

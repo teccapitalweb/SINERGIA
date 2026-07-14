@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Aula · Cultivo de Gerberas | Sinergia Agrícola</title>
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 
@@ -206,7 +206,7 @@
   var restantes = P.getMinutosRestantes();
 
   var tituloCurso = 'Cultivo y Manejo de <span class="highlight">Gerberas</span>';
-  var ponente = '<p class="curso-ponente">' + SVG.persona + ' Con el ' + CURSO.ponente + '</p>';
+  var ponente = '<p class="curso-ponente">' + SVG.persona + ' Con la ' + CURSO.ponente + '</p>';
 
   // ── HERO ────────────────────────────────────────────────────────────
   var heroInfo = document.getElementById('heroInfo');
@@ -339,25 +339,43 @@
     'completado':  { clase: 'completado',  ico: SVG.check,     txt: 'Completado' }
   };
 
+  // Reloj para el módulo sin video (portada "Próximamente").
+  var SVG_RELOJ_GRANDE = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var SVG_RELOJ_CHICO = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+
   grid.innerHTML = CURSO.modulos.map(function (m) {
     var estado = P.getEstadoModulo(m.n);
     var subHechos = P.getSubtemasHechos(m.n);
     var pctSub = m.subtemas ? Math.round((subHechos / m.subtemas) * 100) : 0;
-    var badge = BADGES[estado];
-    if (estado === 'empezado' && subHechos > 0) badge = { clase: 'empezado', ico: SVG.playChico, txt: 'Continuar · ' + pctSub + '%' };
+    var sinVideo = !m.video;
+
+    // El módulo sin video anuncia "Próximamente" mientras no lo haya empezado.
+    var badge;
+    if (estado === 'completado') badge = BADGES.completado;
+    else if (estado === 'empezado') badge = { clase: 'empezado', ico: SVG.playChico, txt: subHechos > 0 ? 'Continuar · ' + pctSub + '%' : 'Continuar' };
+    else if (sinVideo) badge = { clase: 'sin-empezar', ico: SVG_RELOJ_CHICO, txt: 'Próximamente' };
+    else badge = BADGES['sin-empezar'];
 
     var num = String(m.n).padStart(2, '0');
     var barraVisible = (estado === 'empezado' && subHechos > 0);
 
-    return '' +
-      '<a href="modulo-' + m.n + '.html" class="card-modulo">' +
-        '<div class="card-thumb">' +
+    var thumb = sinVideo
+      ? '<div class="card-thumb sin-imagen">' +
+          '<span class="card-thumb-fallback"><span class="card-thumb-num tnum">' + num + '</span></span>' +
+          '<span class="card-play"><span>' + SVG_RELOJ_GRANDE + '</span></span>' +
+          '<span class="card-thumb-etiqueta">Video en producción</span>' +
+        '</div>'
+      : '<div class="card-thumb">' +
           '<img src="' + P.miniatura(m.video) + '" alt="" loading="lazy" ' +
                'onerror="this.parentNode.classList.add(\'sin-imagen\')">' +
           '<span class="card-thumb-fallback"><span class="card-thumb-num tnum">' + num + '</span></span>' +
           '<span class="card-play"><span>' + SVG.play + '</span></span>' +
           '<span class="card-thumb-barra' + (barraVisible ? '' : ' oculta') + '"><i style="width:' + (barraVisible ? pctSub : 0) + '%"></i></span>' +
-        '</div>' +
+        '</div>';
+
+    return '' +
+      '<a href="modulo-' + m.n + '.html" class="card-modulo">' +
+        thumb +
         '<div class="card-body">' +
           '<h3 class="card-titulo"><span class="card-num">' + num + '</span>' + m.titulo + '</h3>' +
           '<p class="card-desc">' + m.desc + '</p>' +

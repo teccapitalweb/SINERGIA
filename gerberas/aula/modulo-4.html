@@ -6,8 +6,8 @@
   <script src="progreso.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
-  <title>Módulo 4 · Cosecha e hidratación — Aula Gerberas | Sinergia Agrícola</title>
-  <link rel="stylesheet" href="styles.css?v=4">
+  <title>Módulo 4 · Control integrado de plagas y enfermedades — Aula Gerberas | Sinergia Agrícola</title>
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body data-modulo="4">
 
@@ -56,34 +56,39 @@
   <span class="sep">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
   </span>
-  Módulo 4 · Cosecha e hidratación
+  Módulo 4 · Control integrado de plagas y enfermedades
 </nav>
 
 <!-- ═══════ LAYOUT ═══════ -->
 <div class="modulo-layout">
 
   <main>
-    <div class="video-shell">
+        <div class="video-shell">
       <iframe
-        src="https://drive.google.com/file/d/1ZV6XLEhjxZp5pTJ6zrxc-R7f6w9zDCyR/preview"
+        src="https://drive.google.com/file/d/1tQl5mBC8CxuXqKcgukoRyBXmzhFLycJv/preview"
         allow="autoplay; encrypted-media"
         allowfullscreen
         loading="lazy"
-        title="Módulo 4 · Cosecha, postcosecha e hidratación"></iframe>
+        title="Módulo 4 · Control integrado de plagas y enfermedades"></iframe>
+      <button class="btn-fullscreen" id="btnFullscreen" type="button" aria-label="Pantalla completa">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M8 21H5a2 2 0 01-2-2v-3M16 21h3a2 2 0 002-2v-3"/></svg>
+        <span class="fs-txt">Pantalla completa</span>
+      </button>
     </div>
 
+    
     <div class="modulo-titulo-bloque">
-      <h1>Cosecha, postcosecha e hidratación</h1>
+      <h1>Control integrado de plagas y enfermedades</h1>
       <div class="modulo-datos">
         <span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          <span class="tnum">51 minutos</span>
+          <span class="tnum">35 minutos</span>
         </span>
         <span class="meta-dot"></span>
         <span class="estado-modulo" id="estadoModulo"></span>
       </div>
       <p class="modulo-descripcion">
-        El momento del corte y todo lo que pasa después: clasificación por calidad, cómo evitar daños mecánicos, soluciones hidratantes y preservantes, conservación en frío y transporte. Aquí se decide la vida en florero de tu flor y, con ella, si el cliente vuelve.
+        Identificar a tiempo las plagas y enfermedades que más dañan la gerbera, y manejarlas con criterio: monitoreo, control biológico y cultural primero, y uso responsable de agroquímicos solo cuando hace falta.
       </p>
     </div>
 
@@ -97,49 +102,31 @@
         <li>
           <button class="subtema" type="button" aria-pressed="false">
             <span class="check-box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="subtema-txt">Momento ideal para cosechar y técnicas de corte</span>
+            <span class="subtema-txt">Principales plagas: trips, ácaros, pulgones y minadores</span>
           </button>
         </li>
         <li>
           <button class="subtema" type="button" aria-pressed="false">
             <span class="check-box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="subtema-txt">Clasificación y selección por calidad</span>
+            <span class="subtema-txt">Enfermedades comunes: fusarium, botrytis, mildiu y pudriciones radiculares</span>
           </button>
         </li>
         <li>
           <button class="subtema" type="button" aria-pressed="false">
             <span class="check-box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="subtema-txt">Manejo para evitar daños mecánicos</span>
+            <span class="subtema-txt">Estrategias de manejo integrado (MIP): monitoreo, control biológico y cultural</span>
           </button>
         </li>
         <li>
           <button class="subtema" type="button" aria-pressed="false">
             <span class="check-box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="subtema-txt">Soluciones hidratantes y preservantes</span>
+            <span class="subtema-txt">Uso responsable de agroquímicos y productos bio-racionales</span>
           </button>
         </li>
         <li>
           <button class="subtema" type="button" aria-pressed="false">
             <span class="check-box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="subtema-txt">Conservación en cuarto frío y transporte</span>
-          </button>
-        </li>
-        <li>
-          <button class="subtema" type="button" aria-pressed="false">
-            <span class="check-box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="subtema-txt">Cómo aumentar la vida en florero</span>
-          </button>
-        </li>
-        <li>
-          <button class="subtema" type="button" aria-pressed="false">
-            <span class="check-box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="subtema-txt">Producción en maceta: preparación para venta</span>
-          </button>
-        </li>
-        <li>
-          <button class="subtema" type="button" aria-pressed="false">
-            <span class="check-box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            <span class="subtema-txt">Presentación comercial y cuidados en punto de venta</span>
+            <span class="subtema-txt">Bioseguridad y protocolos sanitarios</span>
           </button>
         </li>
       </ul>
@@ -176,7 +163,7 @@
     <a href="modulo-1.html" class="sidebar-item">
       <span class="sidebar-num"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
       <span class="sidebar-info">
-        <strong>Establecimiento del cultivo</strong>
+        <strong>Introducción al cultivo</strong>
         <span class="tnum">45 min · Completado</span>
       </span>
     </a>
@@ -184,7 +171,7 @@
     <a href="modulo-2.html" class="sidebar-item">
       <span class="sidebar-num"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
       <span class="sidebar-info">
-        <strong>Riego, nutrición y manejo</strong>
+        <strong>Propagación y vivero</strong>
         <span class="tnum">38 min · Completado</span>
       </span>
     </a>
@@ -192,7 +179,7 @@
     <a href="modulo-3.html" class="sidebar-item">
       <span class="sidebar-num tnum">03</span>
       <span class="sidebar-info">
-        <strong>Plagas y manejo preventivo</strong>
+        <strong>Nutrición, riego y suelo</strong>
         <span class="tnum">42 min · Disponible</span>
       </span>
     </a>
@@ -200,7 +187,7 @@
     <a href="modulo-4.html" class="sidebar-item">
       <span class="sidebar-num tnum">04</span>
       <span class="sidebar-info">
-        <strong>Cosecha e hidratación</strong>
+        <strong>Plagas y enfermedades</strong>
         <span class="tnum">51 min · Estás aquí</span>
       </span>
     </a>
@@ -208,10 +195,17 @@
     <a href="modulo-5.html" class="sidebar-item">
       <span class="sidebar-num tnum">05</span>
       <span class="sidebar-info">
-        <strong>Producción rentable</strong>
+        <strong>Cosecha y comercialización</strong>
         <span class="tnum">35 min · Disponible</span>
       </span>
     </a>
+    <div class="clave-modulo">
+      <div class="clave-modulo-cab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.6.5 1 .9 1 1.8h6c0-.9.4-1.3 1-1.8A7 7 0 0012 2z"/></svg>
+        Clave de este módulo
+      </div>
+      <p>El mejor tratamiento es el que no tienes que aplicar. Este módulo te enseña a prevenir y monitorear antes de tener que curar.</p>
+    </div>
   </aside>
 </div>
 
@@ -449,6 +443,24 @@
     });
   }
   pintarNav();
+
+  // ── PANTALLA COMPLETA ───────────────────────────────────────────────
+  var btnFs = document.getElementById('btnFullscreen');
+  var shell = document.querySelector('.video-shell');
+  if (btnFs && shell) {
+    btnFs.addEventListener('click', function () {
+      if (document.fullscreenElement) { document.exitFullscreen(); return; }
+      // El contenedor primero (el botón sigue visible en fullscreen); si el
+      // navegador no lo permite con el iframe dentro, cae al iframe.
+      var ifr = shell.querySelector('iframe');
+      var pedir = function (el) {
+        return (el && el.requestFullscreen) ? el.requestFullscreen() : Promise.reject();
+      };
+      // El contenedor primero; si el navegador no lo permite con el iframe
+      // dentro, cae al iframe; si tampoco, no revienta la consola.
+      pedir(shell).catch(function () { return pedir(ifr); }).catch(function () {});
+    });
+  }
 })();
 </script>
 </body>
