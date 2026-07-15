@@ -1555,9 +1555,7 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
 @media (max-width: 900px) { .materiales-lista { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .materiales-hero { grid-template-columns: auto 1fr; padding-top: var(--space-6); } .materiales-contador { grid-column: 1 / -1; justify-self: start; } .materiales-lista { grid-template-columns: 1fr; margin-top: var(--space-2); } .material-row { min-height: auto; } }
 
-@media (max-width: 640px) {
-  .video-shell { aspect-ratio: 16 / 10; border-radius: var(--radius-lg); }
-}
+@media (max-width: 640px) { .video-shell { border-radius: var(--radius-lg); } }
 
 /* Video complementario (módulo 2: densidad de plantación) */
 .video-comp {

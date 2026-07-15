@@ -1555,9 +1555,7 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
    AJUSTES v5 · pantalla completa · clave del módulo
    ═══════════════════════════════════════════════════════════ */
 
-@media (max-width: 640px) {
-  .video-shell { aspect-ratio: 16 / 10; border-radius: var(--radius-lg); }
-}
+@media (max-width: 640px) { .video-shell { border-radius: var(--radius-lg); } }
 
 /* Tarjeta "Clave de este módulo" en el sidebar */
 .clave-modulo {
