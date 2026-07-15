@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Módulo 5 · Métodos de aplicación — Aula Biofertilizantes | Sinergia Agrícola</title>
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body data-modulo="5">
 
@@ -435,22 +435,6 @@
   pintarNav();
 
   // ── PANTALLA COMPLETA ───────────────────────────────────────────────
-  var btnFs = document.getElementById('btnFullscreen');
-  var shell = document.querySelector('.video-shell');
-  if (btnFs && shell) {
-    btnFs.addEventListener('click', function () {
-      if (document.fullscreenElement) { document.exitFullscreen(); return; }
-      // El contenedor primero (el botón sigue visible en fullscreen); si el
-      // navegador no lo permite con el iframe dentro, cae al iframe.
-      var ifr = shell.querySelector('iframe');
-      var pedir = function (el) {
-        return (el && el.requestFullscreen) ? el.requestFullscreen() : Promise.reject();
-      };
-      // El contenedor primero; si el navegador no lo permite con el iframe
-      // dentro, cae al iframe; si tampoco, no revienta la consola.
-      pedir(shell).catch(function () { return pedir(ifr); }).catch(function () {});
-    });
-  }
 })();
 </script>
 </body>

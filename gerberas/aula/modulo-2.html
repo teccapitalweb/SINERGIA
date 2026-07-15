@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Módulo 2 · Propagación y manejo de vivero — Aula Gerberas | Sinergia Agrícola</title>
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body data-modulo="2">
 
@@ -70,10 +70,6 @@
         allowfullscreen
         loading="lazy"
         title="Módulo 2 · Propagación y manejo de vivero"></iframe>
-      <button class="btn-fullscreen" id="btnFullscreen" type="button" aria-label="Pantalla completa">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M8 21H5a2 2 0 01-2-2v-3M16 21h3a2 2 0 002-2v-3"/></svg>
-        <span class="fs-txt">Pantalla completa</span>
-      </button>
     </div>
 
     <details class="video-comp">
@@ -457,22 +453,6 @@
   pintarNav();
 
   // ── PANTALLA COMPLETA ───────────────────────────────────────────────
-  var btnFs = document.getElementById('btnFullscreen');
-  var shell = document.querySelector('.video-shell');
-  if (btnFs && shell) {
-    btnFs.addEventListener('click', function () {
-      if (document.fullscreenElement) { document.exitFullscreen(); return; }
-      // El contenedor primero (el botón sigue visible en fullscreen); si el
-      // navegador no lo permite con el iframe dentro, cae al iframe.
-      var ifr = shell.querySelector('iframe');
-      var pedir = function (el) {
-        return (el && el.requestFullscreen) ? el.requestFullscreen() : Promise.reject();
-      };
-      // El contenedor primero; si el navegador no lo permite con el iframe
-      // dentro, cae al iframe; si tampoco, no revienta la consola.
-      pedir(shell).catch(function () { return pedir(ifr); }).catch(function () {});
-    });
-  }
 })();
 </script>
 </body>

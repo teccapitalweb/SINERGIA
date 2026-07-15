@@ -520,10 +520,12 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
 .video-shell iframe {
   position: absolute;
   inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   border: 0;
   display: block;
+  pointer-events: auto;
 }
 
 /* Modulo sin video todavia */
@@ -1553,31 +1555,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
    AJUSTES v5 · pantalla completa · clave del módulo
    ═══════════════════════════════════════════════════════════ */
 
-/* Botón de pantalla completa sobre el video */
-.btn-fullscreen {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  z-index: 3;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  background: rgba(17,24,39,0.6);
-  color: #fff;
-  font-size: 12.5px;
-  font-weight: 600;
-  backdrop-filter: blur(4px);
-  opacity: 0.82;
-  transition: opacity 160ms ease, background 160ms ease, transform 160ms ease;
+@media (max-width: 640px) {
+  .video-shell { aspect-ratio: 16 / 10; border-radius: var(--radius-lg); }
 }
-.btn-fullscreen:hover { opacity: 1; background: rgba(17,24,39,0.82); transform: translateY(-1px); }
-.video-shell:hover .btn-fullscreen { opacity: 1; }
-.btn-fullscreen .fs-txt { line-height: 1; }
-.video-shell:fullscreen { border-radius: 0; display: flex; align-items: center; justify-content: center; }
-.video-shell:fullscreen iframe { inset: 0; width: 100%; height: 100%; }
-@media (max-width: 640px) { .btn-fullscreen .fs-txt { display: none; } }
 
 /* Tarjeta "Clave de este módulo" en el sidebar */
 .clave-modulo {
