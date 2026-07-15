@@ -474,6 +474,8 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
 .recurso-card.acento-whatsapp    .recurso-icono { background: var(--green-50); color: var(--green-600); }
 .recurso-card.acento-soporte     { border-left-color: var(--purple-500); }
 .recurso-card.acento-soporte     .recurso-icono { background: var(--purple-50); color: var(--purple-500); }
+.recurso-soporte-amplio { grid-column: 1 / -1; background: linear-gradient(100deg, var(--neutral-0), var(--purple-50)); }
+.recurso-soporte-amplio .recurso-info p { max-width: 58ch; }
 .recurso-info h3 { font-size: 15px; margin-bottom: 2px; }
 .recurso-info p { font-size: 13px; color: var(--neutral-500); }
 .recurso-arrow { color: var(--neutral-400); display: flex; transition: all 200ms var(--ease-out); }
