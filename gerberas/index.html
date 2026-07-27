@@ -933,13 +933,13 @@
       </p>
 
       <div class="hero-precio">
-        <div class="precio-tachado">Antes $1,050 MXN</div>
+        <div class="precio-tachado">Antes $<span data-precio="antes">1,050</span> MXN</div>
         <div class="precio-ahora">
           <span class="moneda">$</span>
-          <span class="numero">550</span>
+          <span class="numero" data-precio="numero">550</span>
           <span class="mxn">MXN</span>
         </div>
-        <div class="precio-ahorro">🎉 Ahorras $500 pesos (48% OFF)</div>
+        <div class="precio-ahorro">🎉 Ahorras $<span data-precio="ahorras">500</span> pesos (<span data-precio="descuento">48</span>% OFF)</div>
       </div>
 
       <div class="hero-beneficios-rapidos">
@@ -950,7 +950,7 @@
       </div>
 
       <button class="hero-cta js-buy">
-        INSCRIBIRME AHORA POR $550
+        INSCRIBIRME AHORA POR $<span data-precio="numero">550</span>
         <span class="cta-flecha">→</span>
       </button>
 
@@ -1263,14 +1263,14 @@
     </div>
 
     <div class="compra-precio-mega">
-      <div class="precio-mega-tachado">Valor real: $1,050 MXN</div>
+      <div class="precio-mega-tachado">Valor real: $<span data-precio="antes">1,050</span> MXN</div>
       <div class="precio-mega-actual">
         <span class="mega-moneda">$</span>
-        <span class="mega-numero">550</span>
+        <span class="mega-numero" data-precio="numero">550</span>
         <span class="mega-mxn">MXN</span>
       </div>
       <div class="precio-mega-ahorro">
-        🎉 AHORRAS $500 · Descuento del 48%
+        🎉 AHORRAS $<span data-precio="ahorras">500</span> · Descuento del <span data-precio="descuento">48</span>%
       </div>
     </div>
 
@@ -1343,7 +1343,7 @@
 
 <!-- ============ STICKY CTA ============ -->
 <div class="sticky-cta" id="stickyCta">
-  <div class="sticky-price"><b>$550 MXN</b><span>Acceso inmediato</span></div>
+  <div class="sticky-price"><b data-precio="formato">$550 MXN</b><span>Acceso inmediato</span></div>
   <a class="btn btn-fire js-buy" href="#" rel="noopener">Inscribirme</a>
 </div>
 
@@ -1351,7 +1351,7 @@
 <div class="pay-overlay" id="payOverlay" role="dialog" aria-modal="true" aria-label="Pago del curso">
   <div class="pay-modal">
     <div class="pay-head">
-      <b>Inscripción · $550 MXN</b>
+      <b>Inscripción · <span data-precio="formato">$550 MXN</span></b>
       <button class="pay-close" id="payClose" aria-label="Cerrar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
       </button>
@@ -1442,7 +1442,10 @@
     a.href = '#';
     a.addEventListener('click', function(ev){
       ev.preventDefault();
-      if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', {value:550, currency:'MXN'});
+      // El 550 es el respaldo: si precios.json no cargó, el píxel sigue
+      // reportando el valor correcto en vez de undefined.
+      var valorPixel = (window.Precios && Precios.precio()) || 550;
+      if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', {value: valorPixel, currency:'MXN'});
       openEmbeddedCheckout();
     });
   });
@@ -1474,6 +1477,11 @@
     });
   },{threshold:.25}).observe(document.getElementById('inscribete'));
 </script>
+
+<!-- Precio centralizado: precios.json manda sobre los [data-precio].
+     Si no carga, la página se queda con los números del HTML. -->
+<script src="../precios.js"></script>
+<script>Precios.init('gerberas');</script>
 
 </body>
 </html>

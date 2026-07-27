@@ -1,0 +1,18 @@
+{
+  "_leeme": [
+    "Precio ANUNCIADO de cada curso. Un solo lugar para las 5 landings.",
+    "OJO: esto NO cobra. El monto que se le carga al alumno vive en el objeto",
+    "Price de Stripe (backend sinergia-webhook, server.js). Cambiar un numero",
+    "aqui cambia lo que dice la pagina, no lo que cobra la tarjeta: hay que",
+    "cambiarlo tambien en Stripe.",
+    "'antes' es el precio tachado. En null cuando el curso no anuncia rebaja:",
+    "habanero, cana-de-azucar y soluciones-nutritivas nunca la han anunciado.",
+    "El ahorro y el % OFF NO se guardan: precios.js los calcula solo."
+  ],
+
+  "gerberas":              { "precio": 550, "antes": 1050, "moneda": "MXN" },
+  "biofertilizantes":      { "precio": 550, "antes": 1050, "moneda": "MXN" },
+  "habanero":              { "precio": 550, "antes": null, "moneda": "MXN" },
+  "cana-de-azucar":        { "precio": 550, "antes": null, "moneda": "MXN" },
+  "soluciones-nutritivas": { "precio": 550, "antes": null, "moneda": "MXN" }
+}

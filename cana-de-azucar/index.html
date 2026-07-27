@@ -476,7 +476,7 @@
     </div>
 
     <div class="hero-price-row">
-      <span class="hero-price">$550 <small>MXN</small></span>
+      <span class="hero-price">$<span data-precio="numero">550</span> <small>MXN</small></span>
       <span class="cupo-tag">Cupo limitado</span>
     </div>
 
@@ -877,7 +877,7 @@
   <div class="wrap">
     <div class="buy-card">
       <span class="buy-tag">Inscripciones abiertas</span>
-      <div class="buy-price">$550 <small>MXN</small></div>
+      <div class="buy-price">$<span data-precio="numero">550</span> <small>MXN</small></div>
       <p class="buy-date">Pago único · Iniciamos el 20 de julio</p>
       <div class="buy-includes">
         <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> 5 días en vivo por Google Meet + grabaciones</div>
@@ -932,7 +932,7 @@
 
 <!-- ============ STICKY CTA ============ -->
 <div class="sticky-cta" id="stickyCta">
-  <div class="sticky-price"><b>$550 MXN</b><span>Inicia 20 de julio</span></div>
+  <div class="sticky-price"><b data-precio="formato">$550 MXN</b><span>Inicia 20 de julio</span></div>
   <a class="btn btn-fire js-buy" href="#" rel="noopener">Inscribirme</a>
 </div>
 
@@ -940,7 +940,7 @@
 <div class="pay-overlay" id="payOverlay" role="dialog" aria-modal="true" aria-label="Pago del curso">
   <div class="pay-modal">
     <div class="pay-head">
-      <b>Inscripción · $550 MXN</b>
+      <b>Inscripción · <span data-precio="formato">$550 MXN</span></b>
       <button class="pay-close" id="payClose" aria-label="Cerrar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
       </button>
@@ -1031,7 +1031,10 @@
     a.href = '#';
     a.addEventListener('click', function(ev){
       ev.preventDefault();
-      if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', {value:550, currency:'MXN'});
+      // El 550 es el respaldo: si precios.json no cargó, el píxel sigue
+      // reportando el valor correcto en vez de undefined.
+      var valorPixel = (window.Precios && Precios.precio()) || 550;
+      if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', {value: valorPixel, currency:'MXN'});
       openEmbeddedCheckout();
     });
   });
@@ -1085,6 +1088,11 @@
     });
   },{threshold:.25}).observe(document.getElementById('inscribete'));
 </script>
+
+<!-- Precio centralizado: precios.json manda sobre los [data-precio].
+     Si no carga, la página se queda con los números del HTML. -->
+<script src="../precios.js"></script>
+<script>Precios.init('cana-de-azucar');</script>
 
 </body>
 </html>
