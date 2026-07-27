@@ -21,7 +21,13 @@
   // ── Datos del curso ────────────────────────────────────────────────
   // Duraciones y nº de subtemas CONTADOS de las páginas reales (el mockup
   // decía otra cosa en los módulos 3, 4 y 5 — ver reporte).
-  // El módulo 5 todavía no tiene video: video = null.
+  //
+  // ── PROVEEDOR DE VIDEO ──
+  // `video` es el GUID del video en Bunny Stream (librería 713551), NO un id
+  // de Google Drive. De ahí salen el embed del módulo y la miniatura del
+  // dashboard (ver Progreso.miniatura).
+  // El módulo 5 todavía no tiene video: video = null. Su tarjeta cae al
+  // bloque verde de "Próximamente" y no pasa por la miniatura.
   var CURSO = {
     slug: 'biofertilizantes',
     titulo: 'Elaboración y Aplicación de Biofertilizantes',
@@ -36,7 +42,7 @@
         desc: 'Introducción a los conceptos, tipos, presentaciones y diferencias entre fertilizantes, abonos y biofertilizantes.',
         min: 45,
         subtemas: 5,
-        video: '1PWKyKc0BvRF7ji793krMmO5IcuPGqdOF'
+        video: '573d362b-7d72-4292-a568-e60089854555'
       },
       {
         n: 2,
@@ -45,7 +51,7 @@
         desc: 'Diagnóstico agroecológico, análisis de sistemas de siembra y calendarización del uso.',
         min: 38,
         subtemas: 5,
-        video: '1c0zW46PRM4c_I_2wb3A9UzDPoBJNxFHb'
+        video: 'f7a42c9b-46c4-4296-8388-7951a3784d8d'
       },
       {
         n: 3,
@@ -54,7 +60,7 @@
         desc: 'Biol, compostas, tés, purines y caldos. Insumos, equipos y formulación por etapa fenológica.',
         min: 52,
         subtemas: 8,
-        video: '1ewOyeeVRjWbvWPYXBX6JkXRhe5fg70Zq'
+        video: '58221f78-821a-492c-bfff-4a34fef7dfc1'
       },
       {
         n: 4,
@@ -63,7 +69,7 @@
         desc: 'Manejo de pH, conductividad, envasado y combinación de biofertilizantes.',
         min: 45,
         subtemas: 9,
-        video: '1UHTu8ljMi_EF6aC5IgyO0DMPL4gHxhxC'
+        video: '6c74338b-c584-46bd-b36c-128bc8b3bc0b'
       },
       {
         n: 5,
@@ -470,10 +476,14 @@
     return m + ' min';
   };
 
-  // Miniatura del video en Drive. Si el módulo no tiene video (o Drive
-  // bloquea el hotlink), la tarjeta cae al bloque verde de fallback.
-  Progreso.miniatura = function (idVideo) {
-    return idVideo ? 'https://drive.google.com/thumbnail?id=' + idVideo + '&sz=w400' : '';
+  // Miniatura que Bunny genera para cada video. Espera un GUID de la librería
+  // 713551 (el campo `video` del catálogo), no un id de Drive. Si el módulo no
+  // tiene video —el 5—, devuelve cadena vacía y la tarjeta cae al bloque verde
+  // de fallback, igual que antes.
+  var CDN_BUNNY = 'https://vz-27b248ac-a8d.b-cdn.net';
+
+  Progreso.miniatura = function (guidVideo) {
+    return guidVideo ? CDN_BUNNY + '/' + guidVideo + '/thumbnail.jpg' : '';
   };
 
   global.Progreso = Progreso;
