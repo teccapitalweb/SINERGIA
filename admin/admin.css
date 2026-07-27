@@ -357,6 +357,54 @@ select {
 }
 .btn-whatsapp:hover { background: #1eb855; }
 
+/* ═══ MODAL DE CAMBIO DE PRECIO ═══ */
+.modal-fondo {
+  position: fixed; inset: 0; z-index: 120;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(15, 20, 26, 0.55);
+}
+.modal-fondo.visible { display: flex; }
+.modal-caja {
+  width: 100%; max-width: 440px;
+  padding: 22px 24px 20px;
+  border-radius: var(--r-lg);
+  background: var(--g-0);
+  box-shadow: var(--sombra-md);
+}
+.modal-caja h2 { font-size: 17px; margin-bottom: 4px; }
+.modal-caja > .celda-tenue { font-size: 13px; margin-bottom: 16px; }
+.campo-modal { display: block; margin-bottom: 12px; }
+.campo-modal span {
+  display: block; margin-bottom: 5px;
+  font-size: 12px; font-weight: 600; color: var(--g-600);
+}
+.campo-modal input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--g-300);
+  border-radius: var(--r-md);
+  background: var(--g-0);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.campo-modal input:focus { outline: 2px solid var(--g-900); outline-offset: -1px; }
+.modal-error {
+  min-height: 18px;
+  color: #991b1b; font-size: 12.5px; font-weight: 600;
+  margin-bottom: 6px;
+}
+.modal-aviso {
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--ambar-50);
+  color: #92400e;
+  font-size: 12.5px; line-height: 1.5;
+  margin-bottom: 16px;
+}
+.modal-botones { display: flex; gap: 10px; justify-content: flex-end; }
+
 /* ═══ NOTAS EXPLICATIVAS (pantalla de precios) ═══ */
 .lista-notas { margin: 0; padding-left: 18px; color: var(--g-600); font-size: 13.5px; }
 .lista-notas li { margin-bottom: 8px; line-height: 1.55; }

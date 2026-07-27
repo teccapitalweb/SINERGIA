@@ -33,6 +33,13 @@
 (function (global) {
   'use strict';
 
+  // ── DE DÓNDE SALE EL PRECIO (en este orden) ──
+  // 1. El backend (GET /precios). Es la fuente viva: el panel escribe ahí y
+  //    el cambio se ve sin volver a publicar el sitio.
+  // 2. precios.json del repo. Respaldo si el backend no responde.
+  // 3. Lo escrito en el HTML. Si los dos fallan, no se toca nada.
+  var URL_BACKEND = 'https://sinergia-webhook-production.up.railway.app/precios';
+
   // precios.json vive junto a este script. Se resuelve desde la URL del
   // propio <script> para que dé igual si la página está en /gerberas/,
   // en /habanero/ o en la raíz.
@@ -120,9 +127,8 @@
   // Siempre resuelve —nunca rechaza— para que una landing pueda llamar
   // init() sin .catch() y no ensuciar la consola con un unhandled rejection.
   // Se sabe si funcionó por el .ok del resultado o por Precios.cargado().
-  Precios.init = function (cursoSlug) {
-    slug = cursoSlug;
-    return fetch(URL_JSON, { cache: 'no-cache' })
+  function pedir(url, cursoSlug) {
+    return fetch(url, { cache: 'no-cache' })
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
@@ -130,18 +136,36 @@
       .then(function (json) {
         var d = json && json[cursoSlug];
         if (!d || typeof d.precio !== 'number') {
-          throw new Error('precios.json no trae precio válido para "' + cursoSlug + '"');
+          throw new Error('sin precio válido para "' + cursoSlug + '"');
         }
+        return d;
+      });
+  }
+
+  Precios.init = function (cursoSlug) {
+    slug = cursoSlug;
+    var origen = null;
+
+    return pedir(URL_BACKEND, cursoSlug)
+      .then(function (d) { origen = 'backend'; return d; })
+      .catch(function (errBackend) {
+        // El backend puede estar dormido o caído: no es motivo para dejar de
+        // pintar el precio. Se intenta el archivo del repo.
+        console.warn('[Precios] El backend no respondió (' + errBackend.message +
+                     '). Se intenta precios.json.');
+        return pedir(URL_JSON, cursoSlug).then(function (d) { origen = 'precios.json'; return d; });
+      })
+      .then(function (d) {
         datos = d;
         return new Promise(function (res) {
           cuandoHayaDOM(function () {
-            res({ ok: true, curso: cursoSlug, precio: d.precio, elementos: Precios.pintar() });
+            res({ ok: true, curso: cursoSlug, precio: d.precio, origen: origen, elementos: Precios.pintar() });
           });
         });
       })
       .catch(function (err) {
         // A propósito no se toca el DOM: el HTML ya trae el precio bueno.
-        console.warn('[Precios] No se pudo leer ' + URL_JSON + ' (' + err.message +
+        console.warn('[Precios] Ni el backend ni ' + URL_JSON + ' respondieron (' + err.message +
                      '). La landing se queda con los precios escritos en el HTML.');
         return { ok: false, curso: cursoSlug, error: err.message, elementos: 0 };
       });

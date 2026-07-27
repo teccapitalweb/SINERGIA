@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Precios · Panel Sinergia Agrícola</title>
-  <link rel="stylesheet" href="admin.css?v=2">
+  <link rel="stylesheet" href="admin.css?v=3">
 </head>
 <body>
 
@@ -77,25 +77,75 @@
     </section>
 
     <section class="panel-caja">
+      <div class="panel-cabecera"><h2>Historial de cambios</h2></div>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr><th>Curso</th><th>Cambio</th><th>Cuándo</th><th>Quién</th><th>Price nuevo</th></tr>
+          </thead>
+          <tbody id="tbodyHistorial">
+            <tr><td colspan="5" class="cargando">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel-caja">
       <div class="panel-cabecera"><h2>Dónde vive cada precio</h2></div>
       <div class="panel-cuerpo">
         <ul class="lista-notas">
-          <li><strong>Precio (web)</strong> — sale de <code>precios.json</code>, leído por HTTP
-              desde <span id="fuenteJson" class="celda-tenue">…</span>. Es la misma copia que
-              usan las 5 landings.</li>
+          <li><strong>Precio (web)</strong> — sale de <span id="fuenteJson" class="celda-tenue">…</span>.
+              Las landings lo piden al backend y usan <code>precios.json</code> solo como respaldo.</li>
           <li><strong>Precio cobrado</strong> — sale del objeto Price de Stripe (cuenta
               Bioorigen), consultado en vivo. Es lo que de verdad se carga a la tarjeta.</li>
           <li><strong>Estado</strong> — compara los dos. Si difieren, la landing está
               prometiendo un precio distinto del que se cobra.</li>
-          <li>Esta pantalla <strong>no modifica nada</strong>. Cambiar precios llega en la fase 3.</li>
+          <li>Un Price de Stripe <strong>no se puede editar</strong>: cambiar el precio crea uno
+              nuevo y mueve el puntero. El viejo se queda, sin borrar, porque las compras
+              pasadas apuntan a él.</li>
         </ul>
       </div>
     </section>
   </main>
 </div>
 
+<!-- ═══════ MODAL DE CAMBIO DE PRECIO ═══════ -->
+<div class="modal-fondo" id="modalFondo">
+  <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+    <h2 id="modalTitulo">Cambiar precio</h2>
+    <p class="celda-tenue" id="modalActual">—</p>
+
+    <label class="campo-modal">
+      <span>Nuevo precio (MXN)</span>
+      <input type="number" id="nuevoPrecio" inputmode="numeric" min="50" max="50000" step="1" autocomplete="off">
+    </label>
+
+    <label class="campo-modal">
+      <span>Escríbelo otra vez para confirmar</span>
+      <input type="number" id="nuevoPrecio2" inputmode="numeric" min="50" max="50000" step="1" autocomplete="off">
+    </label>
+
+    <label class="campo-modal">
+      <span>Precio “antes” (opcional, déjalo vacío si no hay oferta)</span>
+      <input type="number" id="nuevoAntes" inputmode="numeric" min="0" max="50000" step="1" autocomplete="off">
+    </label>
+
+    <div class="modal-error" id="modalError"></div>
+
+    <div class="modal-aviso">
+      Esto cambia el <strong>cobro real en Stripe</strong> y lo que muestran las landings.
+      Se te enviará un correo de aviso y queda registrado.
+    </div>
+
+    <div class="modal-botones">
+      <button class="btn" id="btnCancelar">Cancelar</button>
+      <button class="btn primario" id="btnConfirmar" disabled>Confirmar cambio</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
-import { iniciarPanel, api, esc } from './admin.js';
+import { iniciarPanel, api, esc, aviso } from './admin.js';
 
 // El backend manda pesos, no centavos: no se puede reutilizar pesos() de
 // admin.js, que divide entre 100.
@@ -110,34 +160,131 @@ const ESTADOS = {
   desconocido:    { clase: 'oro',   txt: '? sin comparar' }
 };
 
-iniciarPanel(async function () {
+// Los mismos topes que aplica el backend. Aquí son cortesía, no seguridad:
+// quien manda es la validación del servidor.
+const MIN = 50, MAX = 50000;
+
+const $ = id => document.getElementById(id);
+let cursoEnEdicion = null;
+
+// ── Modal ──────────────────────────────────────────────────────────
+function abrirModal(slug, c) {
+  cursoEnEdicion = slug;
+  $('modalTitulo').textContent = 'Cambiar precio de ' + c.titulo;
+  $('modalActual').textContent =
+    'Ahora: ' + mxn(c.precio_cobro_real, c.moneda_stripe || c.moneda) + ' en Stripe · ' +
+    mxn(c.precio_mostrado, c.moneda) + ' en la web';
+  $('nuevoPrecio').value = '';
+  $('nuevoPrecio2').value = '';
+  $('nuevoAntes').value = c.antes === null || c.antes === undefined ? '' : c.antes;
+  $('modalError').textContent = '';
+  $('btnConfirmar').disabled = true;
+  $('btnConfirmar').textContent = 'Confirmar cambio';
+  $('modalFondo').classList.add('visible');
+  $('nuevoPrecio').focus();
+}
+
+function cerrarModal() {
+  $('modalFondo').classList.remove('visible');
+  cursoEnEdicion = null;
+}
+
+// Revalida en cada tecla. Devuelve el precio si todo cuadra, o null.
+function revalidar() {
+  const a = $('nuevoPrecio').value.trim();
+  const b = $('nuevoPrecio2').value.trim();
+  const antes = $('nuevoAntes').value.trim();
+  const err = $('modalError');
+  const btn = $('btnConfirmar');
+
+  const fallar = (msg) => { err.textContent = msg; btn.disabled = true; return null; };
+
+  if (!a) return fallar('');
+  const n = Number(a);
+  if (!Number.isInteger(n)) return fallar('El precio debe ser un número entero de pesos.');
+  if (n < MIN) return fallar(`El precio no puede ser menor a $${MIN} MXN.`);
+  if (n > MAX) return fallar(`El precio no puede ser mayor a $${MAX.toLocaleString('es-MX')} MXN.`);
+
+  if (!b) return fallar('Escribe el precio otra vez para confirmar.');
+  if (a !== b) return fallar('Los dos precios no coinciden.');
+
+  let antesNum = null;
+  if (antes) {
+    antesNum = Number(antes);
+    if (!Number.isInteger(antesNum)) return fallar('El precio “antes” debe ser un entero.');
+    if (antesNum <= n) return fallar('El precio “antes” debe ser mayor que el precio nuevo.');
+    if (antesNum > MAX) return fallar(`El precio “antes” no puede superar $${MAX.toLocaleString('es-MX')} MXN.`);
+  }
+
+  err.textContent = '';
+  btn.disabled = false;
+  return { precio: n, antes: antesNum };
+}
+
+['nuevoPrecio', 'nuevoPrecio2', 'nuevoAntes'].forEach(id => {
+  $(id).addEventListener('input', revalidar);
+});
+$('btnCancelar').addEventListener('click', cerrarModal);
+$('modalFondo').addEventListener('click', ev => { if (ev.target === $('modalFondo')) cerrarModal(); });
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Escape' && $('modalFondo').classList.contains('visible')) cerrarModal();
+});
+
+$('btnConfirmar').addEventListener('click', async () => {
+  const v = revalidar();
+  if (!v || !cursoEnEdicion) return;
+
+  const btn = $('btnConfirmar');
+  btn.disabled = true;
+  btn.textContent = 'Cambiando…';
+  $('modalError').textContent = '';
+
+  try {
+    const r = await api('/admin/precios/cambiar', {
+      method: 'POST',
+      body: JSON.stringify({ curso: cursoEnEdicion, nuevo_precio: v.precio, nuevo_antes: v.antes })
+    });
+    cerrarModal();
+    aviso(`${r.curso}: $${r.precio_viejo ?? '?'} → $${r.precio_nuevo}` +
+          (r.correo_enviado ? ' · aviso enviado' : ' · el correo de aviso NO salió'), !r.correo_enviado);
+    await cargar();
+  } catch (e) {
+    // No se refresca la tabla a propósito: si falló, nada cambió.
+    $('modalError').textContent = e.message;
+    btn.disabled = false;
+    btn.textContent = 'Confirmar cambio';
+  }
+});
+
+// ── Carga de la tabla ──────────────────────────────────────────────
+async function cargar() {
   const datos = await api('/admin/panel/precios');
 
-  document.getElementById('fuenteJson').textContent = datos.fuentePreciosWeb || '(desconocido)';
+  $('fuenteJson').textContent = datos.fuentePreciosWeb || '(desconocido)';
+  $('selloLectura').textContent = datos.origenPriceIds
+    ? 'Price IDs: ' + datos.origenPriceIds
+    : '';
 
-  // Si precios.json no se pudo leer, hay que decirlo fuerte: sin él, la
-  // columna "web" queda vacía y el estado no significa nada.
-  const aviso = document.getElementById('avisoFuente');
-  aviso.innerHTML = datos.errorPreciosWeb
-    ? `<div class="alerta roja">No se pudo leer <strong>precios.json</strong>
+  const banda = $('avisoFuente');
+  banda.innerHTML = datos.errorPreciosWeb
+    ? `<div class="alerta roja">No se pudo leer el precio mostrado
          (${esc(datos.errorPreciosWeb)}). La columna “Precio (web)” va vacía y
          el estado no se puede calcular.</div>`
     : '';
 
   const cursos = datos.cursos || {};
   const slugs = Object.keys(cursos);
-  const tb = document.getElementById('tbodyPrecios');
 
   // Un solo desincronizado ya es motivo de alarma arriba de la tabla.
   const rotos = slugs.filter(s => cursos[s].estado === 'desincronizado');
   if (rotos.length) {
-    aviso.innerHTML += `<div class="alerta roja">
+    banda.innerHTML += `<div class="alerta roja">
       <strong>${rotos.length}</strong> curso(s) con el precio de la landing distinto
       del que cobra Stripe: ${esc(rotos.join(', '))}.
     </div>`;
   }
 
-  tb.innerHTML = slugs.length ? slugs.map(slug => {
+  $('tbodyPrecios').innerHTML = slugs.length ? slugs.map(slug => {
     const c = cursos[slug];
     const e = ESTADOS[c.estado] || ESTADOS.desconocido;
     return `
@@ -158,13 +305,48 @@ iniciarPanel(async function () {
         </td>
         <td><span class="tag ${e.clase}">${e.txt}</span></td>
         <td>${c.aula_lista ? '<span class="tag ok">lista</span>' : '<span class="tag">sin aula</span>'}</td>
-        <td>
-          <button class="btn chico futuro" disabled title="Disponible próximamente (fase 3)">
-            Cambiar precio
-          </button>
-        </td>
+        <td><button class="btn chico" data-cambiar="${esc(slug)}">Cambiar precio</button></td>
       </tr>`;
   }).join('') : '<tr><td colspan="7" class="vacio">El backend no devolvió cursos.</td></tr>';
+
+  $('tbodyPrecios').querySelectorAll('[data-cambiar]').forEach(btn => {
+    btn.addEventListener('click', () => abrirModal(btn.dataset.cambiar, cursos[btn.dataset.cambiar]));
+  });
+}
+
+// ── Historial ──────────────────────────────────────────────────────
+async function cargarHistorial() {
+  const tb = $('tbodyHistorial');
+  try {
+    const r = await api('/admin/panel/precios/historial');
+    tb.innerHTML = (r.cambios || []).length
+      ? r.cambios.map(h => `
+        <tr>
+          <td class="celda-principal">${esc(h.curso)}</td>
+          <td class="tnum">$${h.precio_viejo ?? '?'} → <strong>$${h.precio_nuevo}</strong></td>
+          <td class="celda-tenue tnum">${esc(hace(h.cuando))}</td>
+          <td class="celda-tenue">${esc(h.quien)}</td>
+          <td class="celda-tenue">${esc(h.price_id_nuevo || '—')}</td>
+        </tr>`).join('')
+      : '<tr><td colspan="5" class="vacio">Todavía no se ha cambiado ningún precio.</td></tr>';
+  } catch (e) {
+    tb.innerHTML = `<tr><td colspan="5" class="vacio">No se pudo leer el historial: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+function hace(iso) {
+  if (!iso) return '—';
+  const min = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (min < 1) return 'hace un momento';
+  if (min < 60) return `hace ${min} min`;
+  const h = Math.round(min / 60);
+  if (h < 24) return `hace ${h} h`;
+  return new Date(iso).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+iniciarPanel(async function () {
+  await cargar();
+  cargarHistorial();
 });
 </script>
 
