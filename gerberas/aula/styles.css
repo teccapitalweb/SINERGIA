@@ -539,6 +539,19 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
   transform: none;
 }
 
+/* Celular en horizontal (la postura natural para ver video). Entre el
+   breadcrumb y la barra .nav-sticky quedan ~230 px de alto útil: sin tope, el
+   reproductor se sale de la pantalla y su barra de controles cae bajo el
+   pliegue, tapada además por la barra inferior. Se limita el ANCHO —no el
+   alto— para que aspect-ratio siga calculando el 16/9 exacto. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .video-shell-bunny {
+    max-width: calc((100vh - 232px) * 16 / 9);
+    max-width: calc((100svh - 232px) * 16 / 9);
+    margin-inline: auto;
+  }
+}
+
 /* Modulo sin video todavia */
 .video-proximamente {
   background: linear-gradient(150deg, var(--rose-100), var(--rose-50) 70%);
