@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Precios · Panel Sinergia Agrícola</title>
+  <link rel="stylesheet" href="admin.css?v=2">
+</head>
+<body>
+
+<!-- ═══════ LOGIN ═══════ -->
+<div id="pantallaLogin">
+  <div class="login-caja">
+    <h1>Panel de Sinergia</h1>
+    <p>Acceso restringido. Entra con tu cuenta de Google.</p>
+    <button class="btn-google" id="btnEntrar">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.65l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0012 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09a6.6 6.6 0 010-4.18V7.07H2.18a11 11 0 000 9.86l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1a11 11 0 00-9.82 6.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Entrar con Google
+    </button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ═══════ PANEL ═══════ -->
+<div id="panel">
+  <header class="topbar">
+    <span class="topbar-marca">Sinergia <span>· Panel</span></span>
+    <nav class="topbar-nav">
+      <a href="index.html">Resumen</a>
+      <a href="alumnos.html">Alumnos</a>
+      <a href="precios.html" class="activo">Precios</a>
+    </nav>
+    <div class="topbar-user">
+      <span class="topbar-email" id="emailAdmin"></span>
+      <button class="btn-salir" id="btnSalir">Salir</button>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <h1 class="titulo-pagina">Precios</h1>
+    <p class="subtitulo">
+      Un curso tiene el precio en dos sitios: el que <strong>ve</strong> el alumno en la
+      landing y el que se le <strong>cobra</strong> en Stripe. Aquí se comparan.
+    </p>
+
+    <div class="alertas" id="avisoFuente"></div>
+
+    <section class="panel-caja">
+      <div class="panel-cabecera">
+        <h2>Precio por curso</h2>
+        <span class="celda-tenue" id="selloLectura">Solo lectura</span>
+      </div>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Curso</th>
+              <th>Precio (web)</th>
+              <th>Antes</th>
+              <th>Precio cobrado (Stripe)</th>
+              <th>Estado</th>
+              <th>Aula</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyPrecios">
+            <tr><td colspan="7" class="cargando">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel-caja">
+      <div class="panel-cabecera"><h2>Dónde vive cada precio</h2></div>
+      <div class="panel-cuerpo">
+        <ul class="lista-notas">
+          <li><strong>Precio (web)</strong> — sale de <code>precios.json</code>, leído por HTTP
+              desde <span id="fuenteJson" class="celda-tenue">…</span>. Es la misma copia que
+              usan las 5 landings.</li>
+          <li><strong>Precio cobrado</strong> — sale del objeto Price de Stripe (cuenta
+              Bioorigen), consultado en vivo. Es lo que de verdad se carga a la tarjeta.</li>
+          <li><strong>Estado</strong> — compara los dos. Si difieren, la landing está
+              prometiendo un precio distinto del que se cobra.</li>
+          <li>Esta pantalla <strong>no modifica nada</strong>. Cambiar precios llega en la fase 3.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import { iniciarPanel, api, esc } from './admin.js';
+
+// El backend manda pesos, no centavos: no se puede reutilizar pesos() de
+// admin.js, que divide entre 100.
+function mxn(n, moneda) {
+  if (n === null || n === undefined) return '—';
+  return '$' + Number(n).toLocaleString('es-MX') + ' ' + (moneda || 'MXN');
+}
+
+const ESTADOS = {
+  sincronizado:   { clase: 'ok',    txt: '✓ sincronizado' },
+  desincronizado: { clase: 'error', txt: '⚠ DESINCRONIZADO' },
+  desconocido:    { clase: 'oro',   txt: '? sin comparar' }
+};
+
+iniciarPanel(async function () {
+  const datos = await api('/admin/panel/precios');
+
+  document.getElementById('fuenteJson').textContent = datos.fuentePreciosWeb || '(desconocido)';
+
+  // Si precios.json no se pudo leer, hay que decirlo fuerte: sin él, la
+  // columna "web" queda vacía y el estado no significa nada.
+  const aviso = document.getElementById('avisoFuente');
+  aviso.innerHTML = datos.errorPreciosWeb
+    ? `<div class="alerta roja">No se pudo leer <strong>precios.json</strong>
+         (${esc(datos.errorPreciosWeb)}). La columna “Precio (web)” va vacía y
+         el estado no se puede calcular.</div>`
+    : '';
+
+  const cursos = datos.cursos || {};
+  const slugs = Object.keys(cursos);
+  const tb = document.getElementById('tbodyPrecios');
+
+  // Un solo desincronizado ya es motivo de alarma arriba de la tabla.
+  const rotos = slugs.filter(s => cursos[s].estado === 'desincronizado');
+  if (rotos.length) {
+    aviso.innerHTML += `<div class="alerta roja">
+      <strong>${rotos.length}</strong> curso(s) con el precio de la landing distinto
+      del que cobra Stripe: ${esc(rotos.join(', '))}.
+    </div>`;
+  }
+
+  tb.innerHTML = slugs.length ? slugs.map(slug => {
+    const c = cursos[slug];
+    const e = ESTADOS[c.estado] || ESTADOS.desconocido;
+    return `
+      <tr>
+        <td>
+          <div class="celda-principal">${esc(c.titulo)}</div>
+          <div class="celda-tenue">${esc(slug)}</div>
+        </td>
+        <td class="tnum">${mxn(c.precio_mostrado, c.moneda)}</td>
+        <td class="tnum celda-tenue">${
+          c.antes === null ? '<span class="celda-tenue">(sin oferta)</span>' : mxn(c.antes, c.moneda)
+        }</td>
+        <td class="tnum">
+          ${mxn(c.precio_cobro_real, c.moneda_stripe || c.moneda)}
+          ${c.precio_stripe_activo === false ? '<span class="tag error">price inactivo</span>' : ''}
+          ${c.error_stripe ? `<div class="celda-tenue">${esc(c.error_stripe)}</div>` : ''}
+          <div class="celda-tenue">${esc(c.precio_stripe_id)}</div>
+        </td>
+        <td><span class="tag ${e.clase}">${e.txt}</span></td>
+        <td>${c.aula_lista ? '<span class="tag ok">lista</span>' : '<span class="tag">sin aula</span>'}</td>
+        <td>
+          <button class="btn chico futuro" disabled title="Disponible próximamente (fase 3)">
+            Cambiar precio
+          </button>
+        </td>
+      </tr>`;
+  }).join('') : '<tr><td colspan="7" class="vacio">El backend no devolvió cursos.</td></tr>';
+});
+</script>
+
+</body>
+</html>

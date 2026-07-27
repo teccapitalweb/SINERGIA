@@ -301,6 +301,8 @@ select {
 }
 .btn:hover:not(:disabled) { background: var(--g-50); }
 .btn:disabled { opacity: 0.55; cursor: progress; }
+/* Botón que aún no existe (no está "cargando"): el cursor debe decirlo. */
+.btn.futuro:disabled { cursor: not-allowed; }
 .btn.primario {
   background: var(--g-900); color: var(--g-0); border-color: var(--g-900);
 }
@@ -354,6 +356,17 @@ select {
   font-weight: 700;
 }
 .btn-whatsapp:hover { background: #1eb855; }
+
+/* ═══ NOTAS EXPLICATIVAS (pantalla de precios) ═══ */
+.lista-notas { margin: 0; padding-left: 18px; color: var(--g-600); font-size: 13.5px; }
+.lista-notas li { margin-bottom: 8px; line-height: 1.55; }
+.lista-notas li:last-child { margin-bottom: 0; }
+.lista-notas code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--g-100);
+  font-size: 12.5px;
+}
 
 /* ═══ ESTADOS ═══ */
 .cargando, .vacio {
