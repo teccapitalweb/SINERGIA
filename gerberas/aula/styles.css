@@ -528,6 +528,17 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [tabindex]:focus-
   pointer-events: auto;
 }
 
+/* Variante Bunny Stream (módulo 1 de gerberas, prueba de migración).
+   El reproductor de Bunny ya viene limpio: no necesita recorte de branding.
+   Se fija el encuadre completo para que este módulo quede aislado de
+   cualquier ajuste futuro sobre .video-shell que sirva a los videos de Drive. */
+.video-shell-bunny iframe {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+}
+
 /* Modulo sin video todavia */
 .video-proximamente {
   background: linear-gradient(150deg, var(--rose-100), var(--rose-50) 70%);
