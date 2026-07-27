@@ -18,7 +18,16 @@
   // ── Datos del curso ────────────────────────────────────────────────
   // Temario OFICIAL del curso (documento de Sinergia). 5 subtemas por módulo.
   // Los videos se reasignaron por CONTENIDO, no por el número que diga la
-  // diapositiva (ver reporte). El módulo 5 aún no tiene video grabado.
+  // diapositiva (ver reporte).
+  //
+  // ── PROVEEDOR DE VIDEO ──
+  // `video` es el GUID del video en Bunny Stream (librería 713551), NO un id
+  // de Google Drive. De ahí salen tanto el embed del módulo como la miniatura
+  // del dashboard (ver Progreso.miniatura). Los cinco módulos están en Bunny.
+  //
+  // La excepción es `videoComplementario` del módulo 2: ese sigue en Drive y
+  // lleva `proveedor: 'drive'` para que nadie lo pase por Progreso.miniatura(),
+  // que ahora arma URLs de Bunny.
   var CURSO = {
     slug: 'gerberas',
     titulo: 'Cultivo y Manejo de Gerberas',
@@ -33,7 +42,7 @@
         desc: 'Cómo es la planta, qué variedades demanda el mercado, qué clima y suelo necesita, y cómo decidir entre campo abierto e invernadero según tu objetivo comercial.',
         min: 45,
         subtemas: 5,
-        video: '1FhFZxSlA8WlJmNtHV-LqsP0W4JcTp_p-'
+        video: 'ec34e35b-2f24-43cc-80fc-ed953711ed31'
       },
       {
         n: 2,
@@ -42,9 +51,11 @@
         desc: 'Los métodos de propagación, el manejo del vivero, el control de calidad antes del trasplante y cómo planificar la densidad de plantación según busques flor de corte o maceta.',
         min: 38,
         subtemas: 5,
-        video: '1aIdV91gWCAsHrTwA7xTWyKo0lYlsVbuT',
+        video: '198e8290-5f35-4bb9-9969-a02d3b2d82a7',
         // Video de densidad de plantación (subtema 5), como complementario.
+        // Único video del aula que sigue en Drive: no hay copia en Bunny.
         videoComplementario: {
+          proveedor: 'drive',
           id: '1Hz1B_ccaJJpB8mzk3MdwUYmXICioQ_TV',
           titulo: 'Planificación de la densidad de plantación'
         }
@@ -56,7 +67,7 @@
         desc: 'Cómo nutrir la gerbera etapa por etapa, qué sustratos usar en maceta, qué sistema de riego conviene, y cómo mantener el pH y la conductividad en su punto para flor de calidad comercial.',
         min: 51,
         subtemas: 5,
-        video: '1ZV6XLEhjxZp5pTJ6zrxc-R7f6w9zDCyR'
+        video: '15596cd7-395a-4335-8024-e6f405ce60ce'
       },
       {
         n: 4,
@@ -65,7 +76,7 @@
         desc: 'Identificar a tiempo las plagas y enfermedades que más dañan la gerbera, y manejarlas con criterio: monitoreo, control biológico y cultural primero, y agroquímicos solo cuando hace falta.',
         min: 35,
         subtemas: 5,
-        video: '1tQl5mBC8CxuXqKcgukoRyBXmzhFLycJv'
+        video: 'a2bd8e0f-422d-49ca-8eae-de2dee632c26'
       },
       {
         n: 5,
@@ -74,7 +85,7 @@
         desc: 'Cuándo y cómo cosechar, cómo manejar la postcosecha para que la flor dure, cómo empacar, y por qué canales vender para obtener el mejor precio.',
         min: 40,
         subtemas: 5,
-        video: null   // ⏳ video en producción — la tarjeta muestra "Próximamente"
+        video: '309de5a8-b5be-499a-aee5-080ee3b0a3ad'
       }
     ]
   };
@@ -465,10 +476,14 @@
     return m + ' min';
   };
 
-  // Miniatura del video en Drive. Si Drive bloquea el hotlink, la página
-  // cae al fallback con gradiente (ver onerror en las tarjetas).
-  Progreso.miniatura = function (idVideo) {
-    return 'https://drive.google.com/thumbnail?id=' + idVideo + '&sz=w400';
+  // Miniatura que Bunny genera para cada video. Espera un GUID de la librería
+  // 713551 (el campo `video` del catálogo), no un id de Drive. Si algún día
+  // falla, la página cae al fallback con gradiente (ver onerror en las
+  // tarjetas del dashboard).
+  var CDN_BUNNY = 'https://vz-27b248ac-a8d.b-cdn.net';
+
+  Progreso.miniatura = function (guidVideo) {
+    return CDN_BUNNY + '/' + guidVideo + '/thumbnail.jpg';
   };
 
   global.Progreso = Progreso;
