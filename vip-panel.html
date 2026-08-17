@@ -12514,9 +12514,9 @@
   let cursosFromFirestore = [];
   let currentFilter = 'all';
 
-  // PRIMERA CLASE GRATIS GLOBAL:
-  // Sólo la primera sesión del primer curso del catálogo se puede reproducir
-  // sin membresía. El mismo orden se usa en las cards y en el detalle.
+  // PRIMERA CLASE GRATIS POR CURSO:
+  // Cada curso permite reproducir su primera sesión sin membresía. Todas las
+  // demás sesiones, materiales y certificados conservan el paywall.
   function ordenarCursosCatalogo(cursos = cursosFromFirestore) {
     return [...cursos].sort((a, b) => {
       const oA = a.orden || 999;
@@ -12528,13 +12528,9 @@
     });
   }
 
-  function obtenerPrimerCursoConClase() {
-    return ordenarCursosCatalogo().find(c => Array.isArray(c.sesiones) && c.sesiones.length > 0) || null;
-  }
-
   function esPrimeraClaseGratis(cursoId, sesionIndex) {
-    const primero = obtenerPrimerCursoConClase();
-    return !!primero && primero.id === cursoId && Number(sesionIndex) === 0;
+    const curso = cursosFromFirestore.find(c => c.id === cursoId);
+    return Number(sesionIndex) === 0 && Array.isArray(curso?.sesiones) && !!curso.sesiones[0];
   }
 
   window.mostrarPaywallCurso = function(cursoId) {
@@ -12808,6 +12804,7 @@
       const nivel = (c.nivel || 'Básico').toUpperCase();
       const nSes = (c.sesiones || []).length;
       const nMat = (c.materiales || []).length;
+      const esInvitado = window.isVIP !== true;
       const locked = !c._unlocked;
       const esCursoGratis = window.isVIP !== true && esPrimeraClaseGratis(c.id, 0);
 
@@ -12819,16 +12816,20 @@
         ? `<div class="course-tile-cover" style="background:url('${portadaFinal}') center/cover;"><div class="course-tile-cover-overlay"></div></div>`
         : `<div class="course-tile-cover" style="background:linear-gradient(135deg,#F0FDFA,#CCFBF1);display:flex;align-items:center;justify-content:center;font-size:72px;">${emoji}</div>`;
 
-      const statusBadge = locked
+      const statusBadge = esInvitado
+        ? `<div class="course-tile-unlock-badge"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>PRUEBA GRATIS</div>`
+        : locked
         ? `<div class="course-tile-lock-badge" title="Desbloquea en ${c._diasFaltantes} días"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>`
         : `<div class="course-tile-unlock-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>DISPONIBLE</div>`;
 
-      const bottomText = locked
+      const bottomText = esInvitado
+        ? `<span>🎁 Primera clase gratis · resto para miembros</span>`
+        : locked
         ? `<span>🔒 Se desbloquea en <b>${c._diasFaltantes} ${c._diasFaltantes === 1 ? 'día' : 'días'}</b></span>`
         : `<span>✓ Disponible ahora</span>`;
 
       return `
-        <article class="course-tile ${locked ? 'locked' : ''}" onclick="openCursoModal('${c.id}')">
+        <article class="course-tile ${!esInvitado && locked ? 'locked' : ''}" onclick="openCursoModal('${c.id}')">
           ${portadaHtml}
           ${esCursoGratis ? '<div class="course-tile-free-badge">1 CLASE GRATIS</div>' : ''}
           ${statusBadge}
@@ -12985,6 +12986,13 @@
          </h3>
          <div class="">
            ${materiales.map(m => {
+             if (window.isVIP !== true) {
+               return `<div class="material-item paywall-locked" style="cursor:pointer;" onclick="showVipUpsell('material')">
+                 <div class="material-item-icon" style="background:var(--stone-200);color:var(--stone-500);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                 <div class="material-item-title">${escapeHtml(m.titulo)}</div>
+                 <div class="material-item-download">ACTIVA TU MEMBRESÍA</div>
+               </div>`;
+             }
              if (locked) {
                return `<div class="material-item" style="opacity:0.6;cursor:not-allowed;">
                  <div class="material-item-icon" style="background:var(--stone-200);color:var(--stone-500);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
@@ -15139,7 +15147,7 @@
   }
 
   window.abrirVisor = async function(url, titulo, tipo, opciones = {}) {
-    // Sólo la vista previa autorizada (primera clase del primer curso)
+    // Sólo la vista previa autorizada (primera clase de cada curso)
     // puede saltar el paywall. Materiales y las demás clases siguen protegidos.
     const esPreviewGratis = tipo === 'video' && opciones?.primeraClaseGratis === true;
     if (window.isVIP !== true && !esPreviewGratis) {
