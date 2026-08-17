@@ -1,5 +1,5 @@
 /* Service Worker · Sinergia Agrícola VIP (PWA) */
-const CACHE = 'sinergia-pwa-v1';
+const CACHE = 'sinergia-pwa-v2';
 const ASSETS = [
   './', 'index.html', 'vip-auth.html', 'vip-panel.html', 'planes.html',
   'manifest.json', 'img/logo.png', 'img/pwa-192.png', 'img/pwa-512.png'
@@ -24,7 +24,7 @@ self.addEventListener('fetch', (e) => {
   if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
     e.respondWith(
       fetch(req).then((res) => { const cp = res.clone(); caches.open(CACHE).then((c) => c.put(req, cp)); return res; })
-        .catch(() => caches.match(req).then((r) => r || caches.match('index.html')))
+        .catch(() => caches.match(req).then((r) => r || caches.match('vip-auth.html')))
     );
     return;
   }

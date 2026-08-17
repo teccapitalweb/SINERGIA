@@ -1,8 +1,7 @@
 /* PWA install · Sinergia Agrícola VIP
    - Registra el service worker
-   - Muestra un popup para instalar la app (panel y auth)
-   - "Más tarde": vuelve a aparecer pasados 3 días
-   - Si ya está instalada: no muestra nada nunca más
+   - La instalación se abre únicamente desde el botón visible de la interfaz
+   - Si ya está instalada, el botón desaparece
 */
 (function () {
   'use strict';
@@ -32,9 +31,18 @@
     return (Date.now() - last) >= COOLDOWN;
   }
   function snooze() { ls(K_LAST, String(Date.now())); }
-  function markInstalled() { ls(K_INSTALLED, '1'); hide(); }
+  function refreshInstallButtons() {
+    document.querySelectorAll('[data-pwa-install]').forEach(function (btn) {
+      btn.style.display = installed() ? 'none' : '';
+    });
+  }
+  function markInstalled() { ls(K_INSTALLED, '1'); hide(); refreshInstallButtons(); }
 
-  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; });
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferred = e;
+    refreshInstallButtons();
+  });
   window.addEventListener('appinstalled', function () { markInstalled(); });
 
   // ---------- UI ----------
@@ -72,8 +80,8 @@
     if (ov) { ov.classList.remove('on'); setTimeout(function () { if (ov && ov.parentNode) ov.parentNode.removeChild(ov); }, 300); }
   }
 
-  function show() {
-    if (shown || !canShow() || document.getElementById('sa-pwa-ov')) return;
+  function show(force) {
+    if (shown || (!force && !canShow()) || document.getElementById('sa-pwa-ov')) return;
     shown = true;
     injectStyles();
     var ov = document.createElement('div');
@@ -123,6 +131,21 @@
     document.getElementById('sa-pwa-ok').onclick = function () { snooze(); hide(); };
   }
 
+  function renderManual() {
+    var c = document.getElementById('sa-pwa-content');
+    if (!c) return;
+    c.innerHTML =
+      '<ol class="sa-pwa-steps">' +
+        '<li><span class="n">1</span><span>Abre el <b>menú de tu navegador</b>.</span></li>' +
+        '<li><span class="n">2</span><span>Elige <b>“Instalar aplicación”</b> o <b>“Agregar a pantalla de inicio”</b>.</span></li>' +
+        '<li><span class="n">3</span><span>Confirma la instalación. ¡Listo!</span></li>' +
+      '</ol>' +
+      '<div class="sa-pwa-btns">' +
+        '<button class="sa-pwa-btn sa-pwa-go" id="sa-pwa-ok">Entendido</button>' +
+      '</div>';
+    document.getElementById('sa-pwa-ok').onclick = hide;
+  }
+
   function onInstall() {
     if (deferred) {
       deferred.prompt();
@@ -134,14 +157,19 @@
     } else if (isIOS) {
       renderIOS(); // iOS no soporta instalación automática: mostrar pasos
     } else {
-      // Navegador sin prompt disponible: posponer
-      snooze(); hide();
+      // Algunos navegadores requieren usar su propio menú.
+      renderManual();
     }
   }
 
-  // Disparar al cargar (delay para dar chance a beforeinstallprompt)
-  window.addEventListener('load', function () {
+  window.sinergiaInstallApp = function () {
     if (installed()) return;
-    setTimeout(function () { if (canShow()) show(); }, 1200);
+    shown = false;
+    show(true);
+  };
+
+  // Sin popup automático: sólo se actualiza el botón de instalación.
+  window.addEventListener('load', function () {
+    refreshInstallButtons();
   });
 })();

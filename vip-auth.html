@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Acceso · Membresía VIP · Sinergia-Agrícola</title>
 <meta name="description" content="Inicia sesión o crea una cuenta para acceder a tu membresía VIP de Sinergia-Agrícola.">
 <meta name="theme-color" content="#0F766E">
@@ -577,7 +577,8 @@
      RESPONSIVE
      ═══════════════════════════════════════════════ */
   @media (max-width: 768px) {
-    .topbar { padding: 20px 20px; }
+    body { min-height: 100dvh; }
+    .topbar { padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 14px; }
     .back-link span { display: none; }
     .brand-text span:first-child { font-size: 13px; }
     .brand-text span:last-child { font-size: 10px; }
@@ -586,10 +587,18 @@
     .step-label { font-size: 10px; }
     .step { min-width: 70px; }
     .step-circle { width: 38px; height: 38px; font-size: 13px; }
-    .main-wrap { padding: 12px 16px 60px; }
+    .main-wrap { padding: 12px 14px calc(42px + env(safe-area-inset-bottom, 0px)); }
     .auth-card { padding: 28px 24px; border-radius: 22px; }
     h1.auth-title { font-size: 34px; }
     .auth-sub { font-size: 15px; }
+    input, select, textarea { font-size: 16px; }
+  }
+
+  @media (max-width: 380px) {
+    .auth-card { padding: 24px 18px; border-radius: 20px; }
+    h1.auth-title { font-size: 28px; }
+    .auth-sub { font-size: 14px; margin-bottom: 28px; }
+    .tab { padding-inline: 10px; }
   }
 
   /* ═══ MODIFICADO: cinta de cursos + confianza (Fase Ads) ═══ */
@@ -969,6 +978,7 @@
   // ─── Detectar plan por URL ──────────────────────
   const params = new URLSearchParams(window.location.search);
   const plan = params.get('plan') || 'mensual';
+  const launchedFromPwa = params.get('source') === 'pwa';
   const planData = {
     mensual: { label: 'PLAN MENSUAL · $199 MXN', price: 199, period: 'mes' },
     anual:   { label: 'PLAN ANUAL · $1,990 MXN',   price: 1990, period: 'año' }
@@ -988,9 +998,10 @@
   })();
 
   // ─── Helpers ────────────────────────────────────
-  // MODIFICADO: registro siempre por default
+  // En la app instalada se abre el acceso; en la web comercial se conserva
+  // el registro como pestaña inicial.
   window.addEventListener('DOMContentLoaded', () => {
-    try { window.switchTab('register'); } catch(e) {}
+    try { window.switchTab(launchedFromPwa ? 'login' : 'register'); } catch(e) {}
   });
 
   window.switchTab = function(which) {
@@ -1175,14 +1186,15 @@
 
   // ─── AUTO-REDIRECT si ya hay sesión ─────────────
   onAuthStateChanged(auth, (user) => {
-    if (user && !window.__authInProgress) {
-      // Si ya hay sesión activa al cargar la página, preguntamos si quiere continuar
-      // (no hacemos auto-redirect para no molestar si el usuario vino a propósito)
+    if (user && launchedFromPwa && !window.__authInProgress) {
+      // La app instalada entra directamente si la sesión sigue vigente.
+      window.__authInProgress = true;
+      routeAfterAuth(user);
     }
   });
 </script>
 
 <!-- MODIFICADO: PWA instalable + popup -->
-<script src="pwa-install.js" defer></script>
+<script src="pwa-install.js?v=2" defer></script>
 </body>
 </html>

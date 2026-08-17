@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Panel VIP · Sinergia-Agrícola</title>
 <meta name="theme-color" content="#0F766E">
 <link rel="manifest" href="manifest.json">
@@ -7166,10 +7166,20 @@
     color: white;
   }
   @media (max-width: 540px) {
-    .vip-cta-floating { flex-direction: row; padding: 12px; gap: 10px; }
+    .vip-cta-floating {
+      bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+      width: calc(100% - 24px);
+      flex-direction: row;
+      padding: 10px 11px;
+      gap: 8px;
+      border-radius: 15px;
+      animation: none;
+    }
+    .vip-cta-floating-icon { font-size: 22px; }
     .vip-cta-floating-text strong { font-size: 12px; }
     .vip-cta-floating-text span { display: none; }
     .vip-cta-floating-btn { padding: 8px 12px; font-size: 11px; }
+    .vip-cta-floating-close { width: 32px; height: 32px; }
   }
 
   /* ═══════════════════════════════════════════════════════════
@@ -7352,10 +7362,44 @@
   }
   @media (max-width: 640px) {
     .visor-overlay { padding: 0; }
-    .visor-modal { height: 100vh; max-width: 100%; border-radius: 0; }
+    .visor-modal { height: 100vh; height: 100dvh; max-width: 100%; border-radius: 0; }
     .visor-btn-action span { display: none; }
     .visor-btn-action { padding: 8px 10px; }
     .visor-title { font-size: 13px; }
+
+    /* Los videos Bunny conservan 16:9 y se centran; los PDFs sí usan toda
+       la altura. Esto evita las franjas vacías gigantes en teléfonos. */
+    .visor-overlay.video-mode { align-items: center; padding: 0 10px; }
+    .visor-overlay.video-mode .visor-modal {
+      width: 100%;
+      height: auto;
+      max-height: 100vh;
+      max-height: 100dvh;
+      border-radius: 14px;
+    }
+    .visor-overlay.video-mode .visor-header { min-height: 52px; padding: 8px 10px 8px 12px; }
+    .visor-overlay.video-mode .visor-frame-wrap {
+      flex: 0 0 auto;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+    .visor-overlay.video-mode .visor-frame { height: 100%; background: #000; }
+    .visor-overlay.video-mode .visor-cover-popup { display: none; }
+  }
+
+  @media (max-width: 960px) and (orientation: landscape) {
+    .visor-overlay.video-mode { padding: 0; }
+    .visor-overlay.video-mode .visor-modal {
+      width: min(100vw, calc((100dvh - 52px) * 1.7778));
+      height: 100dvh;
+      border-radius: 0;
+    }
+    .visor-overlay.video-mode .visor-frame-wrap {
+      height: calc(100dvh - 52px);
+      width: 100%;
+      aspect-ratio: auto;
+    }
   }
 
   .btn-login-invitado {
@@ -10011,6 +10055,107 @@
     .exp-breakdown-card { padding: 18px; }
   }
 
+  /* ═ Mobile hardening: teléfono compacto, notch y teclado de iOS ═ */
+  @media (max-width: 768px) {
+    html, body, .app, .main, .content, .tab-panel {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+    html, body { overflow-x: hidden; }
+    img, video, iframe, canvas { max-width: 100%; }
+    input, select, textarea { font-size: 16px; }
+
+    .topbar {
+      height: calc(64px + env(safe-area-inset-top, 0px));
+      padding: env(safe-area-inset-top, 0px) 12px 0;
+      gap: 8px;
+    }
+    .topbar-actions { gap: 6px; }
+    .topbar-btn { width: 36px; height: 36px; flex: 0 0 36px; }
+    .topbar-greeting { overflow: hidden; }
+
+    .content {
+      padding: 16px 14px calc(92px + env(safe-area-inset-bottom, 0px));
+      overflow-x: clip;
+    }
+    .content > *, .tab-panel > * { min-width: 0; max-width: 100%; }
+
+    .mobile-nav {
+      min-height: 72px;
+      padding: 7px 6px max(8px, env(safe-area-inset-bottom, 8px));
+      gap: 2px;
+    }
+    .mobile-nav-item { min-height: 52px; padding: 7px 2px; }
+    .mobile-nav-item span { font-size: 9px; }
+
+    .courses-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    .course-filters {
+      margin-inline: -14px;
+      padding-inline: 14px;
+      scroll-padding-inline: 14px;
+      scroll-snap-type: x proximity;
+    }
+    .filter-chip { flex: 0 0 auto; scroll-snap-align: start; }
+
+    .curso-modal-overlay { align-items: flex-start; padding: 10px; }
+    .curso-modal { max-height: calc(100dvh - 20px); overflow-y: auto; border-radius: 22px; }
+    .curso-modal-hero { padding: 26px 18px 22px; }
+    .curso-modal-body { padding: 20px 18px 26px; }
+    .sesion-item { gap: 10px; padding: 12px; }
+    .sesion-numero { width: 36px; height: 36px; }
+    .sesion-icon-right { width: 30px; height: 30px; }
+    .sesion-titulo, .material-item-title { overflow-wrap: anywhere; }
+
+    .perfil-card { padding: 20px 16px; }
+    .perfil-info { min-width: 0; width: 100%; }
+    .perfil-name, .perfil-email, .pf-value { max-width: 100%; overflow-wrap: anywhere; }
+    .perfil-fields { width: 100%; }
+
+    .subscription-card, .merc-search-card { max-width: 100%; overflow: hidden; }
+    .sub-action-title { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; }
+    .sub-action-badge { margin-left: 0 !important; white-space: nowrap; }
+    .notif-panel {
+      position: fixed;
+      top: calc(58px + env(safe-area-inset-top, 0px));
+      left: 10px;
+      right: 10px;
+      width: auto;
+      max-height: calc(100dvh - 86px);
+    }
+  }
+
+  @media (max-width: 380px) {
+    .topbar-name { font-size: 14px; }
+    .topbar-actions { gap: 4px; }
+    .topbar-btn { width: 34px; height: 34px; flex-basis: 34px; }
+    .widget-welcome { padding: 24px 20px; }
+    .course-tile-free-badge { padding: 6px 9px; font-size: 9px; }
+    .course-tile-unlock-badge { padding: 6px 8px; font-size: 9px; }
+  }
+
+  /* Teléfonos en horizontal: conservar navegación y espacio útil de app. */
+  @media (orientation: landscape) and (max-width: 960px) and (max-height: 500px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .sidebar { display: none; }
+    .mobile-nav { display: flex; min-height: 58px; padding-block: 4px; }
+    .mobile-nav-item { min-height: 48px; padding-block: 4px; }
+    .mobile-drawer-overlay { display: block !important; }
+    .mobile-drawer { display: flex !important; width: min(58vw, 340px); }
+    .topbar { height: 56px; padding: 0 14px; }
+    .content { padding: 12px 14px 72px; }
+    .courses-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .curso-modal-overlay { padding: 6px; }
+    .curso-modal { max-height: calc(100dvh - 12px); }
+    .vip-cta-floating { bottom: 64px; }
+  }
+
+  body.mobile-drawer-open .vip-cta-floating { display: none !important; }
+
+  @media (display-mode: standalone) {
+    [data-pwa-install] { display: none !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -10226,6 +10371,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         <span class="topbar-btn-badge" id="notifBellBadge" style="display:none;"></span>
         <span class="notif-count-pill" id="notifCountPill" style="display:none;"></span>
+      </button>
+      <button class="topbar-btn topbar-install-btn" data-pwa-install onclick="sinergiaInstallApp()" title="Instalar aplicación" aria-label="Instalar aplicación">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M5 21h14a2 2 0 0 0 2-2v-3"/><path d="M3 16v3a2 2 0 0 0 2 2"/></svg>
       </button>
       <button class="topbar-btn topbar-theme-toggle" id="themeToggleMobile" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
         <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -11537,7 +11685,7 @@
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z"/></svg>
             </div>
             <div class="sub-action-text">
-              <div class="sub-action-title">Plan Anual — $1,990 MXN/año <span style="background: var(--amber-500); color: white; padding: 2px 8px; border-radius: 100px; font-size: 10px; margin-left: 6px;">MÁS POPULAR</span></div>
+              <div class="sub-action-title"><span>Plan Anual — $1,990 MXN/año</span><span class="sub-action-badge" style="background: var(--amber-500); color: white; padding: 2px 8px; border-radius: 100px; font-size: 10px; margin-left: 6px;">MÁS POPULAR</span></div>
               <div class="sub-action-sub">Ahorras $398 MXN · 2 meses gratis vs mensual</div>
             </div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:var(--amber-600);"><polyline points="9 18 15 12 9 6"/></svg>
@@ -12151,6 +12299,7 @@
     const drawer = document.getElementById('mobileDrawer');
     if (overlay) overlay.classList.add('active');
     if (drawer) drawer.classList.add('active');
+    document.body.classList.add('mobile-drawer-open');
     document.body.style.overflow = 'hidden';
   };
 
@@ -12159,6 +12308,7 @@
     const drawer = document.getElementById('mobileDrawer');
     if (overlay) overlay.classList.remove('active');
     if (drawer) drawer.classList.remove('active');
+    document.body.classList.remove('mobile-drawer-open');
     document.body.style.overflow = '';
   };
 
@@ -12177,7 +12327,8 @@
   window.addEventListener('resize', () => {
     if (_drawerResizeTimer) clearTimeout(_drawerResizeTimer);
     _drawerResizeTimer = setTimeout(() => {
-      if (window.innerWidth > 768) {
+      const esTelefonoHorizontal = window.matchMedia('(orientation: landscape) and (max-width: 960px) and (max-height: 500px)').matches;
+      if (window.innerWidth > 768 && !esTelefonoHorizontal) {
         const drawer = document.getElementById('mobileDrawer');
         if (drawer && drawer.classList.contains('active')) {
           cerrarMobileDrawer();
@@ -15040,6 +15191,7 @@
     }
     // Botón pantalla completa: solo en clases (videos), oculto en material
     if (fsBtn) fsBtn.style.display = (tipo === 'video') ? '' : 'none';
+    overlay.classList.toggle('video-mode', tipo === 'video');
     overlay.classList.add('visible');
     document.body.style.overflow = 'hidden';
 
@@ -15059,6 +15211,7 @@
       }
     } catch(e) { /* silencio */ }
     overlay.classList.remove('visible');
+    overlay.classList.remove('video-mode');
     frame.src = '';
     document.body.style.overflow = '';
   };
@@ -15951,9 +16104,17 @@
     return false;
   };
 
+  window.cerrarVipCta = function() {
+    const banner = document.getElementById('vipCtaFloating');
+    if (banner) banner.style.display = 'none';
+    try { sessionStorage.setItem('sinergia_vip_cta_closed', '1'); } catch (e) {}
+  };
+
   // Mostrar banner flotante si NO es VIP
   setTimeout(() => {
-    if (!window.isVIP) {
+    let cerrado = false;
+    try { cerrado = sessionStorage.getItem('sinergia_vip_cta_closed') === '1'; } catch (e) {}
+    if (!window.isVIP && !cerrado) {
       const banner = document.getElementById('vipCtaFloating');
       if (banner) banner.style.display = 'flex';
     }
@@ -20334,7 +20495,7 @@
     Ver planes
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="9 18 15 12 9 6"/></svg>
   </a>
-  <button class="vip-cta-floating-close" onclick="document.getElementById('vipCtaFloating').style.display='none';" aria-label="Cerrar">×</button>
+  <button class="vip-cta-floating-close" onclick="cerrarVipCta()" aria-label="Cerrar">×</button>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -20971,6 +21132,6 @@
 </script>
 
 <!-- MODIFICADO: PWA instalable + popup -->
-<script src="pwa-install.js" defer></script>
+<script src="pwa-install.js?v=2" defer></script>
 </body>
 </html>
