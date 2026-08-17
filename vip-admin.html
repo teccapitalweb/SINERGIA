@@ -2018,6 +2018,9 @@
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Nuevo curso
         </button>
+        <button id="syncBunnyCatalogBtn" onclick="sincronizarCatalogoBunny()" style="background:#111827;color:#fff;border:1px solid rgba(255,255,255,0.3);padding:11px 20px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+          ▶ Sincronizar 48 videos Bunny
+        </button>
       </div>
 
       <div id="coursesList" style="display:flex;flex-direction:column;gap:14px;">
@@ -2349,6 +2352,7 @@
 <!-- ═══════════════════════════════════════════════════════════
      SCRIPT: Firebase + lógica admin completa
      ═══════════════════════════════════════════════════════════ -->
+<script src="assets/sinergia-bunny-catalog.js"></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -3382,6 +3386,97 @@
   let _adminCursosCache = [];
   let _adminCursosUnsub = null;
 
+  function normalizarTituloBunny(valor) {
+    return String(valor || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function buscarCursoBunny(titulo, catalogo) {
+    const objetivo = normalizarTituloBunny(titulo);
+    const exacto = catalogo.find(c => normalizarTituloBunny(c.titulo) === objetivo);
+    if (exacto) return exacto;
+    const incluido = catalogo.filter(c => {
+      const candidato = normalizarTituloBunny(c.titulo);
+      return candidato.includes(objetivo) || objetivo.includes(candidato);
+    });
+    if (incluido.length === 1) return incluido[0];
+    const palabras = new Set(objetivo.split(' ').filter(p => p.length > 2));
+    const puntuados = catalogo.map(c => {
+      const otras = new Set(normalizarTituloBunny(c.titulo).split(' ').filter(p => p.length > 2));
+      const comunes = [...palabras].filter(p => otras.has(p)).length;
+      const union = new Set([...palabras, ...otras]).size || 1;
+      return { curso: c, score: comunes / union };
+    }).sort((a, b) => b.score - a.score);
+    return puntuados[0]?.score >= 0.6 && puntuados[0].score > (puntuados[1]?.score || 0)
+      ? puntuados[0].curso
+      : null;
+  }
+
+  window.sincronizarCatalogoBunny = async function() {
+    const catalogo = Array.isArray(window.SINERGIA_BUNNY_CATALOG)
+      ? window.SINERGIA_BUNNY_CATALOG
+      : [];
+    if (catalogo.length === 0) {
+      showToast('No se encontró el catálogo local de Bunny', 'error');
+      return;
+    }
+    if (_adminCursosCache.length === 0) {
+      showToast('Primero deben existir los cursos en Firestore', 'error');
+      return;
+    }
+    if (!window.confirm('Se reemplazarán las referencias de video por Bunny. Los materiales, títulos, orden y progreso se conservarán. ¿Continuar?')) return;
+
+    const btn = document.getElementById('syncBunnyCatalogBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Sincronizando…'; }
+    try {
+      const usados = new Set();
+      const vinculados = [];
+      const sinCoincidencia = [];
+      for (const curso of _adminCursosCache) {
+        const bunny = buscarCursoBunny(curso.titulo, catalogo.filter(c => !usados.has(c.collectionId)));
+        if (!bunny) {
+          sinCoincidencia.push(curso.titulo || curso.id);
+          continue;
+        }
+        usados.add(bunny.collectionId);
+        const anteriores = Array.isArray(curso.sesiones) ? curso.sesiones : [];
+        const sesiones = bunny.sesiones.map((sesion, idx) => {
+          const anterior = anteriores[idx] || {};
+          const driveUrlAnterior = anterior.driveUrlAnterior || anterior.url || '';
+          const resultado = {
+            ...anterior,
+            numero: sesion.numero || (idx + 1),
+            titulo: sesion.titulo || anterior.titulo || `Clase ${idx + 1}`,
+            provider: 'bunny',
+            videoId: sesion.videoId
+          };
+          delete resultado.url;
+          if (driveUrlAnterior) resultado.driveUrlAnterior = driveUrlAnterior;
+          return resultado;
+        });
+        await updateDoc(doc(db, 'cursos', curso.id), {
+          sesiones,
+          bunnyCollectionId: bunny.collectionId,
+          bunnySincronizadoEn: serverTimestamp()
+        });
+        vinculados.push({ curso: curso.titulo, videos: sesiones.length });
+      }
+      const total = vinculados.reduce((suma, item) => suma + item.videos, 0);
+      if (sinCoincidencia.length) {
+        console.warn('[Bunny sync] Cursos sin coincidencia:', sinCoincidencia);
+        showToast(`${total} videos sincronizados. ${sinCoincidencia.length} curso(s) requieren revisión.`, 'error');
+      } else {
+        showToast(`${total} videos Bunny sincronizados en ${vinculados.length} cursos ✓`);
+      }
+    } catch (error) {
+      console.error('[Bunny sync]', error);
+      showToast('No se pudo sincronizar: ' + (error.message || 'error desconocido'), 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '▶ Sincronizar 48 videos Bunny'; }
+    }
+  };
+
   function suscribirCursosAdmin() {
     if (_adminCursosUnsub) return;
     try {
@@ -3832,7 +3927,7 @@
                   <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:${sIdx === 0 ? '0' : '1px solid #F3F4F6'};">
                     <span style="background:#EDE9FE;color:#6D28D9;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0;">CLASE ${s.numero || (sIdx + 1)}</span>
                     <span style="flex:1;font-size:13px;color:var(--stone-700);">${escapeHtmlSafe(s.titulo || 'Sin título')}</span>
-                    ${s.url ? `<a href="${escapeHtmlSafe(s.url)}" target="_blank" rel="noopener" style="font-size:11px;color:#7C3AED;text-decoration:none;flex-shrink:0;">🔗 Abrir</a>` : `<span style="font-size:11px;color:var(--stone-400);">Sin URL</span>`}
+                    ${s.videoId ? `<span style="font-size:11px;font-weight:700;color:#065F46;background:#D1FAE5;padding:3px 8px;border-radius:6px;">▶ BUNNY</span>` : (s.url ? `<a href="${escapeHtmlSafe(s.url)}" target="_blank" rel="noopener" style="font-size:11px;color:#7C3AED;text-decoration:none;flex-shrink:0;">🔗 Abrir</a>` : `<span style="font-size:11px;color:var(--stone-400);">Sin video</span>`)}
                   </div>
                 `).join('')}
               </div>`
@@ -3869,7 +3964,9 @@
         <span style="background:#EDE9FE;color:#6D28D9;font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;flex-shrink:0;margin-top:4px;">CLASE ${idx + 1}</span>
         <div style="flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;">
           <input type="text" placeholder="Título de la clase" value="${escapeHtmlSafe(s.titulo || '')}" oninput="actualizarSesion(${idx}, 'titulo', this.value)" class="form-input" style="font-size:13px;padding:8px 10px;">
-          <input type="url" placeholder="URL del video (Drive, YouTube, etc.)" value="${escapeHtmlSafe(s.url || '')}" oninput="actualizarSesion(${idx}, 'url', this.value)" class="form-input" style="font-size:13px;padding:8px 10px;">
+          ${s.videoId
+            ? `<input type="text" value="Bunny · ${escapeHtmlSafe(s.videoId)}" class="form-input" style="font-size:12px;padding:8px 10px;background:#ECFDF5;color:#065F46;" readonly>`
+            : `<input type="url" placeholder="URL del video (Drive, YouTube, etc.)" value="${escapeHtmlSafe(s.url || '')}" oninput="actualizarSesion(${idx}, 'url', this.value)" class="form-input" style="font-size:13px;padding:8px 10px;">`}
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
           <button type="button" onclick="moverSesion(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Subir" style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;${idx === 0 ? 'opacity:0.4;cursor:not-allowed;' : ''}">▲</button>
@@ -3942,11 +4039,7 @@
     document.getElementById('cursoDuracion').value = curso.duracion || 10;
     setCursoDisponibilidad(curso.disponibleSiempre === true);
     // Clonar sesiones para editar sin tocar la cache
-    _cursoEditandoSesiones = (curso.sesiones || []).map(s => ({
-      numero: s.numero,
-      titulo: s.titulo || '',
-      url: s.url || ''
-    }));
+    _cursoEditandoSesiones = (curso.sesiones || []).map(s => ({ ...s }));
     renderSesionesEnModal();
     document.getElementById('cursoModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -3998,25 +4091,41 @@
           return;
         }
 
-        // Validar sesiones: cada una con título y URL válida
+        // Validar sesiones: cada una puede apuntar a Bunny o a una URL heredada.
         const sesionesLimpias = [];
         for (let i = 0; i < _cursoEditandoSesiones.length; i++) {
           const s = _cursoEditandoSesiones[i];
-          if (!s.titulo || !s.url) {
-            showToast(`Clase ${i + 1}: completa título y URL`, 'error');
+          const videoId = String(s.videoId || '').trim();
+          const url = String(s.url || '').trim();
+          if (!s.titulo || (!videoId && !url)) {
+            showToast(`Clase ${i + 1}: completa título y video`, 'error');
             btn.disabled = false;
             return;
           }
-          try { new URL(s.url); } catch(e) {
-            showToast(`Clase ${i + 1}: URL inválida`, 'error');
+          if (videoId && !/^[0-9a-f-]{36}$/i.test(videoId)) {
+            showToast(`Clase ${i + 1}: ID de Bunny inválido`, 'error');
             btn.disabled = false;
             return;
           }
-          sesionesLimpias.push({
+          if (!videoId) {
+            try { new URL(url); } catch(e) {
+              showToast(`Clase ${i + 1}: URL inválida`, 'error');
+              btn.disabled = false;
+              return;
+            }
+          }
+          const sesionLimpia = {
             numero: i + 1,
-            titulo: s.titulo.trim(),
-            url: s.url.trim()
-          });
+            titulo: s.titulo.trim()
+          };
+          if (videoId) {
+            sesionLimpia.provider = 'bunny';
+            sesionLimpia.videoId = videoId;
+            if (s.driveUrlAnterior) sesionLimpia.driveUrlAnterior = s.driveUrlAnterior;
+          } else {
+            sesionLimpia.url = url;
+          }
+          sesionesLimpias.push(sesionLimpia);
         }
 
         const data = {

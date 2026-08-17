@@ -11938,6 +11938,7 @@
 <!-- ═══════════════════════════════════════════════════════════
      FIREBASE + LÓGICA DEL PANEL
      ═══════════════════════════════════════════════════════════ -->
+<script src="assets/sinergia-bunny-catalog.js"></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -12409,8 +12410,9 @@
       }
       // La vista previa no acumula progreso ni emite certificados.
       window._sesionCtx = null;
-      abrirVisor(sesion.url || '', sesion.titulo || (`Sesión ${sesion.numero || 1}`), 'video', {
-        primeraClaseGratis: true
+      abrirVisor(sesion.videoId || sesion.url || '', sesion.titulo || (`Sesión ${sesion.numero || 1}`), 'video', {
+        primeraClaseGratis: true,
+        videoId: sesion.videoId || ''
       });
       return;
     }
@@ -12431,7 +12433,9 @@
     }
 
     window._sesionCtx = { cursoId, sIdx, total: sesiones.length };
-    abrirVisor(sesion.url || '', sesion.titulo || (`Sesión ${sesion.numero || (sIdx + 1)}`), 'video');
+    abrirVisor(sesion.videoId || sesion.url || '', sesion.titulo || (`Sesión ${sesion.numero || (sIdx + 1)}`), 'video', {
+      videoId: sesion.videoId || ''
+    });
   };
 
   // Calcula qué cursos están desbloqueados según días desde activación
@@ -14983,7 +14987,7 @@
               .replace(/\/view$/, '/preview');
   }
 
-  window.abrirVisor = function(url, titulo, tipo, opciones = {}) {
+  window.abrirVisor = async function(url, titulo, tipo, opciones = {}) {
     // Sólo la vista previa autorizada (primera clase del primer curso)
     // puede saltar el paywall. Materiales y las demás clases siguen protegidos.
     const esPreviewGratis = tipo === 'video' && opciones?.primeraClaseGratis === true;
@@ -14999,10 +15003,41 @@
     const fsBtn = document.getElementById('visorFullscreen');
     if (!overlay || !frame) return;
 
-    const previewUrl = convertirUrlDrive(url);
+    const videoId = opciones?.videoId || (tipo === 'video' && /^[0-9a-f-]{36}$/i.test(url) ? url : '');
+    let previewUrl = convertirUrlDrive(url);
+    if (tipo === 'video' && videoId) {
+      try {
+        frame.src = 'about:blank';
+        const headers = { 'Content-Type': 'application/json' };
+        if (auth.currentUser) {
+          headers.Authorization = 'Bearer ' + await auth.currentUser.getIdToken();
+        }
+        const response = await fetch(`${BACKEND_URL_CERT}/api/bunny/embed-token`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ videoId })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.embedUrl) {
+          if (response.status === 403) {
+            showVipUpsell('curso');
+            return;
+          }
+          throw new Error(data.error || `Error HTTP ${response.status}`);
+        }
+        previewUrl = data.embedUrl;
+      } catch (error) {
+        console.error('[Bunny player]', error);
+        showToast('No se pudo abrir la clase. Intenta nuevamente.', 'error');
+        return;
+      }
+    }
     frame.src = previewUrl;
     titleEl.textContent = titulo || 'Visor';
-    if (dlEl) dlEl.href = url;
+    if (dlEl) {
+      dlEl.style.display = videoId ? 'none' : '';
+      if (!videoId) dlEl.href = url;
+    }
     // Botón pantalla completa: solo en clases (videos), oculto en material
     if (fsBtn) fsBtn.style.display = (tipo === 'video') ? '' : 'none';
     overlay.classList.add('visible');
@@ -15160,7 +15195,7 @@
 
   // Mostrar botón "Marcar como visto" solo cuando hay una sesión de curso abierta
   const originalAbrirVisor = window.abrirVisor;
-  window.abrirVisor = function(url, titulo, tipo, opciones) {
+  window.abrirVisor = async function(url, titulo, tipo, opciones) {
     const result = originalAbrirVisor.apply(this, arguments);
     const btn = document.getElementById('visorMarkSeen');
     if (btn) {
@@ -15170,7 +15205,7 @@
         if (btn) btn.style.display = (tipo === 'video' && window._sesionCtx) ? 'inline-flex' : 'none';
       }, 50);
     }
-    return result;
+    return await result;
   };
 
   // Cerrar visor con ESC
