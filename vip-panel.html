@@ -11938,7 +11938,7 @@
 <!-- ═══════════════════════════════════════════════════════════
      FIREBASE + LÓGICA DEL PANEL
      ═══════════════════════════════════════════════════════════ -->
-<script src="assets/sinergia-bunny-catalog.js"></script>
+<script src="assets/sinergia-bunny-catalog-v2.js"></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -16173,11 +16173,64 @@
     // updateTopbarTime() removido — banner "En línea · fecha" eliminado
     startCountdown();
 
+    // ═ Aplicar el catálogo Bunny verificado ═
+    // Firestore conserva materiales, progreso e IDs. La ficha, portada y
+    // sesiones visibles se toman del catálogo auditado para no mostrar cursos
+    // antiguos de Drive ni colecciones duplicadas bajo un título incorrecto.
+    function normalizarTituloCatalogo(valor) {
+      return String(valor || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    }
+
+    function aplicarCatalogoBunny(cursosFirestore) {
+      const catalogo = Array.isArray(window.SINERGIA_BUNNY_CATALOG)
+        ? window.SINERGIA_BUNNY_CATALOG
+        : [];
+      if (!catalogo.length) {
+        console.warn('[Bunny] No se cargó el catálogo verificado.');
+        return cursosFirestore;
+      }
+
+      return cursosFirestore.map(curso => {
+        const objetivo = normalizarTituloCatalogo(curso.titulo);
+        const coincidencias = catalogo.filter(item => {
+          const candidato = normalizarTituloCatalogo(item.titulo);
+          return candidato === objetivo || candidato.includes(objetivo) || objetivo.includes(candidato);
+        });
+        if (coincidencias.length !== 1) return null;
+
+        const bunny = coincidencias[0];
+        const anteriores = Array.isArray(curso.sesiones) ? curso.sesiones : [];
+        const sesiones = bunny.sesiones.map((sesion, idx) => {
+          const anterior = anteriores[idx] || {};
+          const { url, ...datosAnteriores } = anterior;
+          return {
+            ...datosAnteriores,
+            ...sesion,
+            ...(anterior.driveUrlAnterior || url
+              ? { driveUrlAnterior: anterior.driveUrlAnterior || url }
+              : {})
+          };
+        });
+
+        return {
+          ...curso,
+          ...bunny,
+          id: curso.id,
+          bunnyCollectionId: bunny.collectionId,
+          sesiones
+        };
+      }).filter(Boolean);
+    }
+
     // ═ Suscribirse a cursos de Firestore (tiempo real) ═
     const cursosRef = collection(db, 'cursos');
     const cursosQuery = query(cursosRef, orderBy('createdAt', 'asc'));
     onSnapshot(cursosQuery, (snap) => {
-      cursosFromFirestore = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      cursosFromFirestore = aplicarCatalogoBunny(
+        snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      );
       renderCourses(currentFilter);
       renderMaterial();
       renderContinuaAprendiendo();
