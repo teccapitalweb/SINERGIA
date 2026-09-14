@@ -749,7 +749,7 @@
 <!-- Main content -->
 <div class="main-wrap">
   <div id="planChip" class="plan-chip">
-    PLAN MENSUAL · $199 MXN
+    REGÍSTRATE GRATIS
   </div>
 
   <h1 class="auth-title">Haz que tu cultivo te deje <em>más dinero</em>.</h1>
@@ -979,23 +979,6 @@
   const params = new URLSearchParams(window.location.search);
   const plan = params.get('plan') || 'mensual';
   const launchedFromPwa = params.get('source') === 'pwa';
-  const planData = {
-    mensual: { label: 'PLAN MENSUAL · $199 MXN', price: 199, period: 'mes' },
-    anual:   { label: 'PLAN ANUAL · $1,990 MXN',   price: 1990, period: 'año' }
-  };
-  const currentPlan = planData[plan] || planData.mensual;
-  // MODIFICADO: chip con ancla de precio real por plan
-  (function(){
-    const chip = document.getElementById('planChip');
-    const p = new URLSearchParams(location.search).get('plan');
-    if (p === 'anual') {
-      chip.textContent = 'PLAN ANUAL · $1,990 MXN · AHORRAS $398';
-    } else if (p === 'mensual') {
-      chip.textContent = 'PLAN MENSUAL · $199 MXN · MENOS DE $7 AL DÍA';
-    } else {
-      chip.textContent = currentPlan.label;
-    }
-  })();
 
   // ─── Helpers ────────────────────────────────────
   // En la app instalada se abre el acceso; en la web comercial se conserva

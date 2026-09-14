@@ -12514,23 +12514,46 @@
   let cursosFromFirestore = [];
   let currentFilter = 'all';
 
-  // PRIMERA CLASE GRATIS POR CURSO:
-  // Cada curso permite reproducir su primera sesión sin membresía. Todas las
-  // demás sesiones, materiales y certificados conservan el paywall.
+  const COURSE_UNLOCK_INTERVAL_DAYS = 6;
+  const FREE_CLASS_COUNT = 4;
+  const FREE_MATERIAL_COUNT = 1;
+
   function ordenarCursosCatalogo(cursos = cursosFromFirestore) {
     return [...cursos].sort((a, b) => {
-      const oA = a.orden || 999;
-      const oB = b.orden || 999;
-      if (oA !== oB) return oA - oB;
+      const oA = Number(a.orden);
+      const oB = Number(b.orden);
+      const ordenA = Number.isFinite(oA) ? oA : 999;
+      const ordenB = Number.isFinite(oB) ? oB : 999;
+      if (ordenA !== ordenB) return ordenA - ordenB;
       const tA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
       const tB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
       return tA - tB;
     });
   }
 
-  function esPrimeraClaseGratis(cursoId, sesionIndex) {
-    const curso = cursosFromFirestore.find(c => c.id === cursoId);
-    return Number(sesionIndex) === 0 && Array.isArray(curso?.sesiones) && !!curso.sesiones[0];
+  function primerCursoGratisId() {
+    const primero = ordenarCursosCatalogo().find(curso =>
+      curso.activo !== false &&
+      curso.publicado !== false &&
+      curso.marcarProximamente !== true &&
+      Array.isArray(curso.sesiones) &&
+      curso.sesiones.length > 0
+    );
+    return primero ? String(primero.id) : '';
+  }
+
+  function esClaseGratis(cursoId, sesionIndex) {
+    const indice = Number(sesionIndex);
+    return indice >= 0 &&
+      indice < FREE_CLASS_COUNT &&
+      String(cursoId) === primerCursoGratisId();
+  }
+
+  function esMaterialGratis(cursoId, materialIndex) {
+    const indice = Number(materialIndex);
+    return indice >= 0 &&
+      indice < FREE_MATERIAL_COUNT &&
+      String(cursoId) === primerCursoGratisId();
   }
 
   window.mostrarPaywallCurso = function(cursoId) {
@@ -12539,7 +12562,7 @@
     const textoMateriales = totalMateriales === 1 ? '1 material' : `${totalMateriales} materiales`;
     showVipUpsell('curso', {
       titulo: 'Desbloquea todas las clases',
-      descripcion: `Disfruta gratis la primera clase. Activa tu membresía para abrir las demás clases y ${textoMateriales} del curso.`
+      descripcion: `Las primeras 4 clases y el primer material del primer curso son gratis. Activa tu membresía para abrir las demás clases y ${textoMateriales} del curso.`
     });
   };
 
@@ -12551,31 +12574,25 @@
     if (!curso || !sesion) return;
 
     if (window.isVIP !== true) {
-      if (!esPrimeraClaseGratis(cursoId, sIdx)) {
+      if (!esClaseGratis(cursoId, sIdx)) {
         mostrarPaywallCurso(cursoId);
         return;
       }
       // La vista previa no acumula progreso ni emite certificados.
       window._sesionCtx = null;
       abrirVisor(sesion.videoId || sesion.url || '', sesion.titulo || (`Sesión ${sesion.numero || 1}`), 'video', {
-        primeraClaseGratis: true,
+        claseGratis: true,
         videoId: sesion.videoId || ''
       });
       return;
     }
 
-    // Para miembros se conserva el desbloqueo por antigüedad y por sesión previa.
+    // Para miembros, todas las clases se abren juntas cuando llega el día del curso.
     const sorted = ordenarCursosCatalogo();
     const indexCurso = sorted.findIndex(c => c.id === cursoId);
     const cursoLocked = !cursoDesbloqueado(indexCurso, curso);
     if (cursoLocked) {
       mostrarBloqueoSesion('curso', diasParaDesbloquear(indexCurso, curso));
-      return;
-    }
-    const progresoKey = `curso_progreso_${cursoId}`;
-    const vistas = JSON.parse(localStorage.getItem(progresoKey) || '[]');
-    if (sIdx > 0 && !vistas.includes(sIdx - 1)) {
-      mostrarBloqueoSesion('previa', 0);
       return;
     }
 
@@ -12593,19 +12610,18 @@
     return Math.max(0, dias);
   }
 
-  // Un curso se desbloquea cada 10 días según su orden de creación
-  // Curso 1: día 0, Curso 2: día 10, Curso 3: día 20, ...
-  // EXCEPCIÓN: si el curso tiene disponibleSiempre:true, se ve desde el día 1
+  // Un curso se desbloquea cada 6 días desde la activación de la membresía:
+  // curso 1 día 0, curso 2 día 6, curso 3 día 12, curso 4 día 18, etc.
   function cursoDesbloqueado(indexCurso, curso) {
-    if (curso && curso.disponibleSiempre === true) return true;
+    if (window.isVIP !== true) return String(curso?.id || '') === primerCursoGratisId();
     const dias = calcularDiasMembresia();
-    return dias >= (indexCurso * 10);
+    return dias >= (indexCurso * COURSE_UNLOCK_INTERVAL_DAYS);
   }
 
   function diasParaDesbloquear(indexCurso, curso) {
-    if (curso && curso.disponibleSiempre === true) return 0;
+    if (window.isVIP !== true) return null;
     const dias = calcularDiasMembresia();
-    return Math.max(0, (indexCurso * 10) - dias);
+    return Math.max(0, (indexCurso * COURSE_UNLOCK_INTERVAL_DAYS) - dias);
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -12806,7 +12822,7 @@
       const nMat = (c.materiales || []).length;
       const esInvitado = window.isVIP !== true;
       const locked = !c._unlocked;
-      const esCursoGratis = window.isVIP !== true && esPrimeraClaseGratis(c.id, 0);
+      const esCursoGratis = esInvitado && String(c.id) === primerCursoGratisId();
 
       // Portada automática según tema del curso (si no tiene c.portada)
       const portadaAuto = obtenerPortadaCurso(c.titulo || '');
@@ -12816,22 +12832,26 @@
         ? `<div class="course-tile-cover" style="background:url('${portadaFinal}') center/cover;"><div class="course-tile-cover-overlay"></div></div>`
         : `<div class="course-tile-cover" style="background:linear-gradient(135deg,#F0FDFA,#CCFBF1);display:flex;align-items:center;justify-content:center;font-size:72px;">${emoji}</div>`;
 
-      const statusBadge = esInvitado
+      const statusBadge = esCursoGratis
         ? `<div class="course-tile-unlock-badge"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>PRUEBA GRATIS</div>`
+        : esInvitado
+        ? `<div class="course-tile-lock-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>`
         : locked
         ? `<div class="course-tile-lock-badge" title="Desbloquea en ${c._diasFaltantes} días"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>`
         : `<div class="course-tile-unlock-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>DISPONIBLE</div>`;
 
-      const bottomText = esInvitado
-        ? `<span>🎁 Primera clase gratis · resto para miembros</span>`
+      const bottomText = esCursoGratis
+        ? `<span>🎁 4 clases y 1 material gratis</span>`
+        : esInvitado
+        ? `<span>🔒 Disponible con membresía</span>`
         : locked
         ? `<span>🔒 Se desbloquea en <b>${c._diasFaltantes} ${c._diasFaltantes === 1 ? 'día' : 'días'}</b></span>`
         : `<span>✓ Disponible ahora</span>`;
 
       return `
-        <article class="course-tile ${!esInvitado && locked ? 'locked' : ''}" onclick="openCursoModal('${c.id}')">
+        <article class="course-tile ${locked ? 'locked' : ''}" onclick="openCursoModal('${c.id}')">
           ${portadaHtml}
-          ${esCursoGratis ? '<div class="course-tile-free-badge">1 CLASE GRATIS</div>' : ''}
+          ${esCursoGratis ? '<div class="course-tile-free-badge">4 CLASES GRATIS</div>' : ''}
           ${statusBadge}
           <div class="course-tile-body">
             <div class="course-tile-rating">
@@ -12909,18 +12929,12 @@
 
     const sesionesHtml = sesiones.length
       ? sesiones.map((s, sIdx) => {
-          // Lógica de desbloqueo progresivo:
-          // - Si el curso está bloqueado (por fecha), TODAS bloqueadas
-          // - Si no, la primera siempre desbloqueada; las demás solo si la anterior está vista
+          // Al llegar el día del curso, todas sus clases se habilitan.
+          // Sin membresía solo son gratuitas las primeras cuatro del primer curso.
           const yaVista = sesionesVistas.includes(sIdx);
-          const esGratis = window.isVIP !== true && esPrimeraClaseGratis(cursoId, sIdx);
+          const esGratis = window.isVIP !== true && esClaseGratis(cursoId, sIdx);
           const requiereMembresia = window.isVIP !== true && !esGratis;
-          let sesionLocked = window.isVIP === true ? locked : requiereMembresia;
-          let motivoLocked = 'curso';
-          if (window.isVIP === true && !locked && sIdx > 0 && !sesionesVistas.includes(sIdx - 1)) {
-            sesionLocked = true;
-            motivoLocked = 'previa';
-          }
+          const sesionLocked = window.isVIP === true ? locked : requiereMembresia;
 
           const clickAttr = `onclick="abrirSesionCurso('${cursoId}', ${sIdx})"`;
 
@@ -12929,10 +12943,8 @@
             metaText = 'GRATIS · CLIC PARA VER';
           } else if (requiereMembresia) {
             metaText = '🔒 ACTIVA TU MEMBRESÍA PARA VER';
-          } else if (sesionLocked && motivoLocked === 'curso') {
+          } else if (sesionLocked && window.isVIP === true) {
             metaText = 'BLOQUEADA · SE DESBLOQUEA EN ' + diasFaltan + ' DÍAS';
-          } else if (sesionLocked && motivoLocked === 'previa') {
-            metaText = '🔒 COMPLETA LA SESIÓN ANTERIOR';
           } else if (yaVista) {
             metaText = '✓ COMPLETADA';
           } else {
@@ -12985,8 +12997,9 @@
            Material descargable
          </h3>
          <div class="">
-           ${materiales.map(m => {
-             if (window.isVIP !== true) {
+           ${materiales.map((m, mIdx) => {
+             const materialGratis = window.isVIP !== true && esMaterialGratis(cursoId, mIdx);
+             if (window.isVIP !== true && !materialGratis) {
                return `<div class="material-item paywall-locked" style="cursor:pointer;" onclick="showVipUpsell('material')">
                  <div class="material-item-icon" style="background:var(--stone-200);color:var(--stone-500);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
                  <div class="material-item-title">${escapeHtml(m.titulo)}</div>
@@ -13000,10 +13013,10 @@
                  <div class="material-item-download">BLOQUEADO</div>
                </div>`;
              }
-             return `<div class="material-item" style="cursor:pointer;" onclick="abrirVisor('${(m.url || '').replace(/'/g, "\'")}', '${escapeHtml(m.titulo).replace(/'/g, "\'")}', 'pdf')">
+             return `<div class="material-item" style="cursor:pointer;" onclick="abrirVisor('${(m.url || '').replace(/'/g, "\'")}', '${escapeHtml(m.titulo).replace(/'/g, "\'")}', 'pdf', { materialGratis: ${materialGratis} })">
                <div class="material-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
                <div class="material-item-title">${escapeHtml(m.titulo)}</div>
-               <div class="material-item-download">VER ↗</div></div>`;
+               <div class="material-item-download">${materialGratis ? 'GRATIS · VER ↗' : 'VER ↗'}</div></div>`;
            }).join('')}
          </div>`
       : '';
@@ -13020,7 +13033,7 @@
         <div class="curso-modal-meta">
           <span class="curso-modal-meta-badge">📊 ${escapeHtml(curso.nivel || '')}</span>
           <span class="curso-modal-meta-badge">⏱️ ${curso.duracion || 0}h</span>
-          <span class="curso-modal-meta-badge">${window.isVIP !== true && esPrimeraClaseGratis(cursoId, 0) ? '🎁 Primera clase gratis' : (locked ? '🔒 Desbloquea en ' + diasFaltan + ' días' : '✅ Disponible')}</span>
+          <span class="curso-modal-meta-badge">${window.isVIP !== true && String(cursoId) === primerCursoGratisId() ? '🎁 4 clases y 1 material gratis' : (window.isVIP !== true ? '🔒 Requiere membresía' : (locked ? '🔒 Desbloquea en ' + diasFaltan + ' días' : '✅ Disponible'))}</span>
         </div>
       </div>
       <div class="curso-modal-body">
@@ -13649,48 +13662,26 @@
     if (!grid) return;
 
     // Juntar todos los materiales de todos los cursos con su estado de desbloqueo
-    const sorted = [...cursosFromFirestore].sort((a, b) => {
-      const oA = a.orden || 999;
-      const oB = b.orden || 999;
-      if (oA !== oB) return oA - oB;
-      return (a.createdAt?.toDate?.().getTime() || 0) - (b.createdAt?.toDate?.().getTime() || 0);
-    });
+    const sorted = ordenarCursosCatalogo();
 
     const todosMateriales = [];
     sorted.forEach((curso, idx) => {
       const cursoLocked = !cursoDesbloqueado(idx, curso);
       const cursoDiasFaltan = diasParaDesbloquear(idx, curso);
-      const diasActuales = calcularDiasMembresia();
-      // Día absoluto en que el curso se desbloquea (para ordenar)
-      // Si el curso es disponibleSiempre, lo tratamos como día 0
-      const cursoDiaAbs = (curso.disponibleSiempre === true) ? 0 : (idx * 10);
-      (curso.materiales || []).forEach(m => {
-        // Reglas de desbloqueo del material (en este orden):
-        // 1. Si disponibleSiempre === true → siempre desbloqueado (día 0)
-        // 2. Si tiene desbloquearEnDias (número) → comparar con días de membresía
-        // 3. Sino → hereda del curso (compatibilidad con materiales viejos)
-        let locked, diasFaltan, diaAbs;
-        if (m.disponibleSiempre === true) {
-          locked = false;
-          diasFaltan = 0;
-          diaAbs = 0;
-        } else if (typeof m.desbloquearEnDias === 'number') {
-          locked = diasActuales < m.desbloquearEnDias;
-          diasFaltan = Math.max(0, m.desbloquearEnDias - diasActuales);
-          diaAbs = m.desbloquearEnDias;
-        } else {
-          locked = cursoLocked;
-          diasFaltan = cursoDiasFaltan;
-          diaAbs = cursoDiaAbs;
-        }
+      const cursoDiaAbs = idx * COURSE_UNLOCK_INTERVAL_DAYS;
+      (curso.materiales || []).forEach((m, materialIndex) => {
+        const gratis = window.isVIP !== true && esMaterialGratis(curso.id, materialIndex);
+        const locked = window.isVIP === true ? cursoLocked : !gratis;
         todosMateriales.push({
           titulo: m.titulo,
           url: m.url,
           curso: curso.titulo,
           emoji: curso.emoji || '🌾',
           locked,
-          diasFaltan,
-          diaAbs
+          diasFaltan: cursoDiasFaltan,
+          diaAbs: cursoDiaAbs,
+          gratis,
+          requiereMembresia: window.isVIP !== true && !gratis
         });
       });
     });
@@ -13719,21 +13710,21 @@
             <div class="material-type">${m.emoji} ${escapeHtml(m.curso)}</div>
             <div class="material-title">${escapeHtml(m.titulo)}</div>
             <div class="material-meta">
-              <span>🔒 En ${m.diasFaltan} ${m.diasFaltan === 1 ? 'día' : 'días'}</span>
+              <span>${m.requiereMembresia ? '🔒 Activa tu membresía' : `🔒 En ${m.diasFaltan} ${m.diasFaltan === 1 ? 'día' : 'días'}`}</span>
               <span class="material-download" style="color:var(--stone-500);">Bloqueado</span>
             </div>
           </div>
         `;
       }
       return `
-        <div class="material-card" style="text-decoration:none;color:inherit;display:block;cursor:pointer;" onclick="abrirVisor('${(m.url || '').replace(/'/g, "\\'")}', '${escapeHtml(m.titulo).replace(/'/g, "\\'")}', 'pdf')">
+        <div class="material-card" style="text-decoration:none;color:inherit;display:block;cursor:pointer;" onclick="abrirVisor('${(m.url || '').replace(/'/g, "\\'")}', '${escapeHtml(m.titulo).replace(/'/g, "\\'")}', 'pdf', { materialGratis: ${m.gratis} })">
           <div class="material-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           </div>
           <div class="material-type">${m.emoji} ${escapeHtml(m.curso)}</div>
           <div class="material-title">${escapeHtml(m.titulo)}</div>
           <div class="material-meta">
-            <span>PDF · Disponible</span>
+            <span>${m.gratis ? 'PDF · GRATIS' : 'PDF · Disponible'}</span>
             <span class="material-download">
               Ver
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -15147,9 +15138,11 @@
   }
 
   window.abrirVisor = async function(url, titulo, tipo, opciones = {}) {
-    // Sólo la vista previa autorizada (primera clase de cada curso)
-    // puede saltar el paywall. Materiales y las demás clases siguen protegidos.
-    const esPreviewGratis = tipo === 'video' && opciones?.primeraClaseGratis === true;
+    // Sólo las cuatro clases y el primer material gratuitos del primer curso
+    // pueden saltar el paywall de la vista previa.
+    const esPreviewGratis =
+      (tipo === 'video' && opciones?.claseGratis === true) ||
+      (tipo === 'pdf' && opciones?.materialGratis === true);
     if (window.isVIP !== true && !esPreviewGratis) {
       showVipUpsell(tipo === 'video' ? 'curso' : 'material');
       return;
@@ -19852,44 +19845,6 @@
   }
 </style>
 
-<div class="guest-splash-overlay" id="guestSplashOverlay" onclick="if(event.target===this)cerrarGuestSplash()">
-  <div class="guest-splash-card">
-    <button class="guest-splash-close" onclick="cerrarGuestSplash()" aria-label="Cerrar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
-    <div class="guest-splash-hero">
-      <div class="guest-splash-tag" id="guestSplashTag">HERRAMIENTA VIP</div>
-      <span class="guest-splash-emoji" id="guestSplashEmoji">🌱</span>
-      <h2 class="guest-splash-title" id="guestSplashTitle">Título</h2>
-      <p class="guest-splash-subtitle" id="guestSplashSubtitle">Subtítulo</p>
-    </div>
-    <div class="guest-splash-body">
-      <div class="guest-splash-invite">
-        <span class="guest-splash-invite-icon">✨</span>
-        <span class="guest-splash-invite-text" id="guestSplashInvite">Mensaje de invitación</span>
-      </div>
-      <ul class="guest-splash-benefits" id="guestSplashBenefits">
-        <!-- Se renderiza con JS -->
-      </ul>
-      <div class="guest-splash-price">
-        <div class="guest-splash-price-label">Membresía VIP Sinergia</div>
-        <div class="guest-splash-price-amount">$199 <span>MXN/mes</span></div>
-        <div class="guest-splash-price-note">Cancela cuando quieras · Sin permanencia</div>
-      </div>
-      <div class="guest-splash-actions">
-        <button class="guest-splash-btn primary" onclick="haceVIPDesdeSplash()">
-          🚀 Quiero ser miembro VIP
-        </button>
-        <button class="guest-splash-btn secondary" onclick="cerrarGuestSplash()">
-          Seguir explorando
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ═══════════════════════════════════════════════════════════
      TOAST DE ACTIVACIÓN POR ADMIN
      Aparece cuando el coordinador activa la membresía desde el
@@ -20305,8 +20260,9 @@
     }
   };
 
-  // Pestañas que muestran splash (solo las VIP relevantes)
-  const GUEST_SPLASH_TABS = Object.keys(GUEST_SPLASH_MESSAGES);
+  // Los popups automáticos por pestaña se retiraron. Los avisos de acceso
+  // siguen apareciendo únicamente cuando se intenta usar una función VIP.
+  const GUEST_SPLASH_TABS = [];
 
   // Determina si el usuario actual es invitado (no logueado o no VIP)
   function esInvitadoSinergia() {
@@ -20496,11 +20452,11 @@
 <div class="vip-cta-floating" id="vipCtaFloating" style="display:none;">
   <div class="vip-cta-floating-icon">⭐</div>
   <div class="vip-cta-floating-text">
-    <strong>Estás viendo una vista previa</strong>
-    <span>Suscríbete para desbloquear todo el contenido</span>
+    <strong>4 clases y 1 material gratuitos</strong>
+    <span>Empieza gratis con el primer curso de Sinergia</span>
   </div>
-  <a href="vip.html" class="vip-cta-floating-btn">
-    Ver planes
+  <a href="vip-auth.html" class="vip-cta-floating-btn">
+    Regístrate gratis
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="9 18 15 12 9 6"/></svg>
   </a>
   <button class="vip-cta-floating-close" onclick="cerrarVipCta()" aria-label="Cerrar">×</button>
