@@ -1,8 +1,9 @@
 /* Service Worker · Sinergia Agrícola VIP (PWA) */
-const CACHE = 'sinergia-pwa-v2';
+const CACHE = 'sinergia-pwa-v3';
 const ASSETS = [
   './', 'index.html', 'vip-auth.html', 'vip-panel.html', 'planes.html',
-  'manifest.json', 'img/logo.png', 'img/pwa-192.png', 'img/pwa-512.png'
+  'manifest.json', 'img/logo.png', 'img/pwa-192.png', 'img/pwa-512.png',
+  'onboarding-tour.css', 'onboarding-tour.js'
 ];
 self.addEventListener('install', (e) => {
   e.waitUntil(
