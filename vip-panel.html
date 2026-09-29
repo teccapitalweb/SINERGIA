@@ -13870,12 +13870,8 @@
     const nextEl = document.getElementById('subNextDate');
     const sinceEl = document.getElementById('subSince');
 
-    let fechaExpiracion;
-    if (member?.expiraEn) {
-      fechaExpiracion = member.expiraEn.toDate ? member.expiraEn.toDate() : new Date(member.expiraEn);
-    } else if (member?.proximaRenovacion) {
-      fechaExpiracion = member.proximaRenovacion.toDate ? member.proximaRenovacion.toDate() : new Date(member.proximaRenovacion);
-    } else {
+    let fechaExpiracion = fechaVigenciaMiembro(member);
+    if (!fechaExpiracion) {
       const createdAt = member?.createdAt?.toDate?.() || new Date();
       const periodDays = plan === 'anual' ? 365 : 30;
       fechaExpiracion = new Date(createdAt);
@@ -16239,6 +16235,17 @@
   let isVIP = false;       // Tiene membresía activa
   let isLoggedIn = false;  // Tiene sesión Firebase
 
+  function fechaVigenciaMiembro(member = {}) {
+    const valor = member.cancelacionProgramada === true
+      ? (member.fechaFinAcceso || member.proximaRenovacion || member.expiraEn)
+      : (member.stripeSubscriptionId || member.origen === 'stripe')
+        ? (member.proximaRenovacion || member.fechaProximaRenovacion || member.expiraEn)
+        : (member.expiraEn || member.fechaFinAcceso || member.proximaRenovacion);
+    if (!valor) return null;
+    const fecha = valor.toDate ? valor.toDate() : new Date(valor);
+    return Number.isNaN(fecha.getTime()) ? null : fecha;
+  }
+
   // ─── Init: 3 estados (invitado / logueado sin VIP / VIP activo) ──────────
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -16250,11 +16257,11 @@
           memberData = snap.data();
           // ─── VERIFICACIÓN DE EXPIRACIÓN AUTOMÁTICA ───
           // Si la membresía tiene fecha de expiración y ya pasó, desactivar.
-          if (memberData.activa === true && memberData.expiraEn) {
+          if (memberData.activa === true) {
             try {
-              const expira = memberData.expiraEn.toDate ? memberData.expiraEn.toDate() : new Date(memberData.expiraEn);
+              const expira = fechaVigenciaMiembro(memberData);
               const ahora = new Date();
-              if (expira < ahora) {
+              if (expira && expira < ahora) {
                 // Membresía expirada → desactivar automáticamente
                 await updateDoc(doc(db, 'miembros', user.uid), {
                   activa: false,
