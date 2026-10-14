@@ -1201,6 +1201,19 @@
     margin-bottom: 24px;
   }
 
+  .nav-ext { width: 13px; height: 13px; margin-left: auto; opacity: .45; flex-shrink: 0; }
+  .nav-item:hover .nav-ext { opacity: .9; }
+  .menu-btn { display: none; flex-shrink: 0; }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-titles { min-width: 0; }
+  .sidebar-backdrop {
+    position: fixed; inset: 0; background: rgba(28,25,23,.55);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    z-index: 55; display: none;
+  }
+  .sidebar-backdrop.show { display: block; }
+  .config-note { font-size: 12px; color: var(--stone-500); line-height: 1.5; margin-top: 12px; }
+
   /* Responsive */
   @media (max-width: 1024px) {
     :root { --sidebar-w: 220px; }
@@ -1210,7 +1223,14 @@
   }
   @media (max-width: 768px) {
     .app { grid-template-columns: 1fr; }
-    .sidebar { display: none; }
+    .sidebar {
+      position: fixed; left: 0; top: 0; bottom: 0; width: 280px; height: auto;
+      transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1);
+      z-index: 60; overflow-y: auto;
+    }
+    .sidebar.open { transform: translateX(0); box-shadow: 0 0 60px rgba(0,0,0,.45); }
+    .menu-btn { display: flex; }
+    .topbar-label { display: none; }
     .content { padding: 20px 14px 30px; }
     .topbar { padding: 0 18px; }
     .panel-title { font-size: 22px; }
@@ -1506,6 +1526,8 @@
 
 <div class="app" id="app" style="display:none;">
 
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
 <!-- ═══════════════════════════════════════════════════════════
      SIDEBAR
      ═══════════════════════════════════════════════════════════ -->
@@ -1527,40 +1549,61 @@
   </div>
 
   <nav class="sidebar-nav">
-    <div class="nav-label">Análisis</div>
+    <div class="nav-label">Resumen</div>
     <button class="nav-item active" data-tab="dashboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
       <span class="nav-item-text">Dashboard</span>
     </button>
 
-    <div class="nav-label">Gestión</div>
+    <div class="nav-label">Personas</div>
     <button class="nav-item" data-tab="members">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="nav-item-text">Miembros</span>
       <span id="navMembersCount" class="nav-item-count">0</span>
     </button>
-    <button class="nav-item" data-tab="notifications">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      <span class="nav-item-text">Notificaciones</span>
+    <button class="nav-item" data-tab="certificates">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+      <span class="nav-item-text">Certificados</span>
+    </button>
+
+    <div class="nav-label">Contenido</div>
+    <button class="nav-item" data-tab="courses">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span class="nav-item-text">Videoteca</span>
+      <span id="navCoursesCount" class="nav-item-count">0</span>
+    </button>
+    <button class="nav-item" data-tab="materials">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span class="nav-item-text">Materiales</span>
     </button>
     <button class="nav-item" data-tab="webinars">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
       <span class="nav-item-text">Webinars</span>
       <span id="navWebinarsCount" class="nav-item-count">0</span>
     </button>
-    <button class="nav-item" data-tab="materials">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      <span class="nav-item-text">Materiales</span>
+
+    <div class="nav-label">Comunicación</div>
+    <button class="nav-item" data-tab="notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span class="nav-item-text">Notificaciones</span>
     </button>
-    <button class="nav-item" data-tab="courses">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      <span class="nav-item-text">Videoteca</span>
-      <span id="navCoursesCount" class="nav-item-count">0</span>
-    </button>
-    <button class="nav-item" data-tab="certificates">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-      <span class="nav-item-text">Certificados</span>
-    </button>
+
+    <div class="nav-label">Cursos y ventas</div>
+    <a class="nav-item" href="admin/index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+      <span class="nav-item-text">Ventas</span>
+      <svg class="nav-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+    </a>
+    <a class="nav-item" href="admin/alumnos.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+      <span class="nav-item-text">Alumnos</span>
+      <svg class="nav-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+    </a>
+    <a class="nav-item" href="admin/precios.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      <span class="nav-item-text">Precios</span>
+      <svg class="nav-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+    </a>
 
     <div class="nav-label">Sistema</div>
     <button class="nav-item" data-tab="config">
@@ -1587,8 +1630,13 @@
 <main class="main">
   <div class="topbar">
     <div class="topbar-left">
-      <div class="topbar-label">SISTEMA ACTIVO · <span id="topbarDate">...</span></div>
-      <div id="topbarTitle" class="topbar-title">Dashboard</div>
+      <button class="tb-btn menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-titles">
+        <div class="topbar-label">SISTEMA ACTIVO · <span id="topbarDate">...</span></div>
+        <div id="topbarTitle" class="topbar-title">Dashboard</div>
+      </div>
     </div>
     <div class="topbar-actions">
       <button class="tb-btn" title="Refrescar" onclick="loadMembers()">
@@ -1620,7 +1668,7 @@
             <div class="stat-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
-            <span id="statDelta1" class="stat-delta up">+0%</span>
+            <span id="statDelta1" class="stat-delta flat">REGISTRADOS</span>
           </div>
           <div id="stat-total" class="stat-value">0</div>
           <div class="stat-label">TOTAL MIEMBROS</div>
@@ -1630,7 +1678,7 @@
             <div class="stat-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
-            <span id="statDelta2" class="stat-delta up">+0%</span>
+            <span id="statDelta2" class="stat-delta up">0% DEL TOTAL</span>
           </div>
           <div id="stat-active" class="stat-value">0</div>
           <div class="stat-label">MEMBRESÍAS ACTIVAS</div>
@@ -1643,7 +1691,7 @@
             <span class="stat-delta flat">MXN</span>
           </div>
           <div id="stat-revenue" class="stat-value">$0</div>
-          <div class="stat-label">INGRESOS MENSUALES</div>
+          <div class="stat-label" title="Estimación: miembros activos que pagan × su precio. No incluye regalos.">INGRESO MENSUAL EST.</div>
         </div>
         <div class="stat-card violet">
           <div class="stat-head">
@@ -1670,10 +1718,10 @@
             <div class="stat-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             </div>
-            <span class="stat-delta flat">INACT.</span>
+            <span class="stat-delta flat">SIN PAGO</span>
           </div>
           <div id="stat-inactive" class="stat-value">0</div>
-          <div class="stat-label">PENDIENTES DE PAGO</div>
+          <div class="stat-label">SIN MEMBRESÍA ACTIVA</div>
         </div>
       </div>
 
@@ -1713,29 +1761,6 @@
           <!-- Se llena con JS -->
         </div>
       </div>
-
-      <!-- Mantenimiento: limpiar expirados -->
-      <div class="widget-box" style="margin-top:18px;">
-        <div class="widget-head">
-          <span class="widget-name">Mantenimiento</span>
-          <span style="font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--stone-400);letter-spacing:0.08em;">SISTEMA</span>
-        </div>
-        <div style="padding:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-          <div style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </div>
-          <div style="flex:1;min-width:240px;">
-            <div style="font-size:14px;font-weight:700;color:var(--stone-800);">Desactivar miembros expirados</div>
-            <div style="font-size:12.5px;color:var(--stone-500);margin-top:3px;line-height:1.45;">
-              Revisa miembros manuales/regalo cuya fecha de expiración ya venció y los desactiva. <b id="expiradosPendientes" style="color:#D97706;">— pendientes</b> (auto-cron corre cada hora).
-            </div>
-          </div>
-          <button id="btnLimpiarExpirados" onclick="ejecutarLimpiezaExpirados()" class="btn-secondary" style="font-size:13px;padding:10px 16px;flex-shrink:0;">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            Limpiar ahora
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -1757,7 +1782,7 @@
         <div class="chip-filter">
           <button class="chip active" data-filter="all">Todos <span id="chipAll" style="margin-left:4px;">0</span></button>
           <button class="chip" data-filter="active">Activos <span id="chipActive" style="margin-left:4px;">0</span></button>
-          <button class="chip" data-filter="inactive">Pendientes <span id="chipInactive" style="margin-left:4px;">0</span></button>
+          <button class="chip" data-filter="inactive">Inactivos <span id="chipInactive" style="margin-left:4px;">0</span></button>
           <button class="chip" data-filter="mensual">Mensuales</button>
           <button class="chip" data-filter="anual">Anuales</button>
         </div>
@@ -2261,7 +2286,30 @@
       <div class="panel-head">
         <div class="panel-head-info">
           <h2 class="panel-title">Configuración del <em>sistema</em></h2>
-          <p class="panel-sub">Estado de las integraciones, variantes y credenciales del sistema.</p>
+          <p class="panel-sub">Servicios conectados, mantenimiento y administradores autorizados.</p>
+        </div>
+      </div>
+
+      <!-- Mantenimiento: limpiar expirados -->
+      <div class="widget-box" style="margin-bottom:18px;">
+        <div class="widget-head">
+          <span class="widget-name">Mantenimiento</span>
+          <span style="font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--stone-400);letter-spacing:0.08em;">SISTEMA</span>
+        </div>
+        <div style="padding:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div style="flex:1;min-width:240px;">
+            <div style="font-size:14px;font-weight:700;color:var(--stone-800);">Desactivar miembros expirados</div>
+            <div style="font-size:12.5px;color:var(--stone-500);margin-top:3px;line-height:1.45;">
+              Revisa miembros manuales/regalo cuya fecha de expiración ya venció y los desactiva. <b id="expiradosPendientes" style="color:#D97706;">— pendientes</b> (auto-cron corre cada hora).
+            </div>
+          </div>
+          <button id="btnLimpiarExpirados" onclick="ejecutarLimpiezaExpirados()" class="btn-secondary" style="font-size:13px;padding:10px 16px;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Limpiar ahora
+          </button>
         </div>
       </div>
 
@@ -2294,55 +2342,23 @@
         <div class="config-card">
           <div class="config-card-head">
             <div class="config-icon" style="background:linear-gradient(135deg,var(--teal-100),var(--teal-300));color:var(--teal-700);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
             </div>
-            Shopify
+            Pagos y servidor
           </div>
           <div class="config-item">
-            <span class="config-key">Tienda</span>
-            <span class="config-val ok">pfueck-wm</span>
+            <span class="config-key">Pasarela de pago</span>
+            <span class="config-val">Stripe</span>
           </div>
           <div class="config-item">
-            <span class="config-key">Variant mensual</span>
-            <span class="config-val">45404375842870</span>
+            <span class="config-key">Servidor (backend)</span>
+            <span class="config-val" title="sinergia-webhook-production.up.railway.app">Railway</span>
           </div>
           <div class="config-item">
-            <span class="config-key">Variant anual</span>
-            <span class="config-val">45404452388918</span>
+            <span class="config-key">Eventos de pago</span>
+            <span class="config-val">Webhook de Stripe</span>
           </div>
-          <div class="config-item">
-            <span class="config-key">Precio mensual</span>
-            <span class="config-val">$199 MXN</span>
-          </div>
-          <div class="config-item">
-            <span class="config-key">Precio anual</span>
-            <span class="config-val">$1,990 MXN</span>
-          </div>
-        </div>
-
-        <div class="config-card">
-          <div class="config-card-head">
-            <div class="config-icon" style="background:linear-gradient(135deg,#EDE9FE,var(--violet-400));color:var(--violet-600);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12H2a10 10 0 0 1 20 0h-3"/><path d="M2 12a10 10 0 0 0 20 0"/><circle cx="12" cy="12" r="4"/></svg>
-            </div>
-            Webhook Railway
-          </div>
-          <div class="config-item">
-            <span class="config-key">Estado</span>
-            <span class="config-val warn">⚠ Pendiente</span>
-          </div>
-          <div class="config-item">
-            <span class="config-key">URL prevista</span>
-            <span class="config-val">sinergia-webhook.up.railway.app</span>
-          </div>
-          <div class="config-item">
-            <span class="config-key">Evento</span>
-            <span class="config-val">orders/paid</span>
-          </div>
-          <div class="config-item">
-            <span class="config-key">Acción</span>
-            <span class="config-val">Marca activa: true</span>
-          </div>
+          <div class="config-note">Los precios de los cursos se editan en <a href="admin/precios.html" style="color:var(--teal-700);font-weight:700;">Cursos y ventas → Precios</a>.</div>
         </div>
 
         <div class="config-card">
@@ -2390,6 +2406,7 @@
           <div id="adminsList">
             <!-- Se llena con JS -->
           </div>
+          <div class="config-note">Para agregar o quitar administradores hay que editar la lista en el código (vip-admin.html y el servidor).</div>
         </div>
       </div>
     </div>
@@ -2560,13 +2577,30 @@
       'dashboard': 'Dashboard',
       'members': 'Gestión de miembros',
       'notifications': 'Notificaciones',
+      'webinars': 'Webinars en vivo',
+      'materials': 'Materiales por curso',
+      'courses': 'Videoteca',
       'certificates': 'Emisión de certificados',
       'config': 'Configuración del sistema'
     };
     const titleEl = document.getElementById('topbarTitle');
     if (titleEl) titleEl.textContent = titles[tabName] || tabName;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    cerrarMenuMovil();
   };
+
+  // Menú lateral en celular (cajón que se abre con el botón de la barra superior)
+  function setMenuMovil(abierto) {
+    document.querySelector('.sidebar')?.classList.toggle('open', abierto);
+    document.getElementById('sidebarBackdrop')?.classList.toggle('show', abierto);
+    document.getElementById('menuBtn')?.setAttribute('aria-expanded', String(abierto));
+  }
+  function cerrarMenuMovil() { setMenuMovil(false); }
+  document.getElementById('menuBtn')?.addEventListener('click', () => {
+    setMenuMovil(!document.querySelector('.sidebar')?.classList.contains('open'));
+  });
+  document.getElementById('sidebarBackdrop')?.addEventListener('click', cerrarMenuMovil);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarMenuMovil(); });
 
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -2890,8 +2924,11 @@
     const mensuales = allMembers.filter(m => m.activa && m.plan !== 'anual').length;
     const anuales = allMembers.filter(m => m.activa && m.plan === 'anual').length;
 
-    // Revenue aproximado: mensuales × $199 + anuales × $165.83 (anual/12)
-    const revenue = Math.round(mensuales * 199 + anuales * (1990/12));
+    // Ingreso estimado: solo cuentan miembros que pagan (los regalos no suman)
+    const pagantes = allMembers.filter(m => m.activa && !m.esRegalo && m.plan !== 'regalo');
+    const pagMensuales = pagantes.filter(m => m.plan !== 'anual').length;
+    const pagAnuales = pagantes.filter(m => m.plan === 'anual').length;
+    const revenue = Math.round(pagMensuales * 199 + pagAnuales * (1990/12));
 
     // Nuevos este mes
     const now = new Date();
@@ -2909,7 +2946,7 @@
     document.getElementById('stat-annual').textContent = anuales;
     document.getElementById('stat-inactive').textContent = inactive;
 
-    // Deltas simples placeholder
+    document.getElementById('statDelta2').textContent = (total ? Math.round(active / total * 100) : 0) + '% DEL TOTAL';
     document.getElementById('statDelta4').textContent = '+' + newThisMonth;
 
     // Chips counters
