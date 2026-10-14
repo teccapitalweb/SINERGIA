@@ -1224,6 +1224,55 @@
   .sidebar-backdrop.show { display: block; }
   .config-note { font-size: 12px; color: var(--stone-500); line-height: 1.5; margin-top: 12px; }
 
+  /* Videoteca (catálogo de cursos) */
+  .vt-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .vt-actions .btn-primary, .vt-actions .btn-secondary { padding: 11px 18px; font-size: 13px; border-radius: 100px; }
+  .vt-kpis { margin-bottom: 18px; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); }
+  .vt-kpis .stat-card { padding: 16px 18px; }
+  .vt-kpis .stat-value { font-size: 28px; }
+  .vt-orden { width: auto; min-width: 190px; padding-top: 9px; padding-bottom: 9px; border-radius: 100px; }
+  .vt-vista { display: inline-flex; background: white; border: 1px solid rgba(13,148,136,0.14); border-radius: 100px; padding: 3px; margin-left: auto; }
+  .vt-vista button { width: 34px; height: 30px; border-radius: 100px; display: flex; align-items: center; justify-content: center; color: var(--stone-500); }
+  .vt-vista button svg { width: 15px; height: 15px; }
+  .vt-vista button.active { background: linear-gradient(135deg, var(--teal-600), var(--teal-800)); color: white; }
+  .vt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+  .vt-grid.vt-lista { grid-template-columns: 1fr; gap: 12px; }
+  .vt-vacio { grid-column: 1 / -1; padding: 40px 20px; text-align: center; color: var(--stone-500); font-size: 14px; background: white; border: 1px dashed var(--stone-300); border-radius: 18px; }
+  .vt-card { background: white; border: 1px solid rgba(13,148,136,0.12); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s; }
+  .vt-card:hover { box-shadow: 0 14px 30px rgba(13,148,136,0.12); transform: translateY(-2px); }
+  .vt-cover { position: relative; aspect-ratio: 16 / 9; background: linear-gradient(135deg, var(--teal-600), var(--teal-800)); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+  .vt-cover.oculto { background: linear-gradient(135deg, var(--stone-500), var(--stone-700)); }
+  .vt-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .vt-cover.oculto img { filter: grayscale(.85); opacity: .85; }
+  .vt-ini { font-family: var(--font-display); font-weight: 800; font-size: 34px; letter-spacing: -0.02em; color: rgba(255,255,255,.9); }
+  .vt-chip { position: absolute; top: 10px; left: 10px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 4px 9px; border-radius: 100px; background: rgba(255,255,255,.95); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .vt-chip.ok { color: var(--green-700); }
+  .vt-chip.warn { color: var(--amber-700); }
+  .vt-body { padding: 16px 18px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+  .vt-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .vt-tag { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 3px 8px; border-radius: 6px; background: var(--stone-100); color: var(--stone-600); }
+  .vt-tag.nivel { background: #FEF3C7; color: var(--amber-700); }
+  .vt-tag.dia { background: rgba(20,184,166,.12); color: var(--teal-700); }
+  .vt-title { font-family: var(--font-display); font-size: 16px; font-weight: 800; letter-spacing: -0.01em; color: var(--stone-900); line-height: 1.25; }
+  .vt-desc { font-size: 12.5px; color: var(--stone-500); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .vt-stats { font-size: 12px; color: var(--stone-600); font-weight: 600; }
+  .vt-aviso { font-size: 12px; line-height: 1.45; color: var(--amber-700); background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 8px 10px; }
+  .vt-ses { font-size: 12.5px; }
+  .vt-ses summary { cursor: pointer; color: var(--teal-700); font-weight: 700; list-style: none; }
+  .vt-ses summary::-webkit-details-marker { display: none; }
+  .vt-ses ol { margin: 8px 0 0; padding-left: 20px; color: var(--stone-700); display: flex; flex-direction: column; gap: 4px; }
+  .vt-fila { display: flex; gap: 8px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--stone-100); }
+  .vt-fila .btn-secondary { padding: 8px 14px; font-size: 12px; border-radius: 100px; }
+  .vt-fila .vt-borrar { margin-left: auto; color: var(--rose-600); background: rgba(244,63,94,.08); }
+  .vt-fila .vt-borrar:hover { background: rgba(244,63,94,.16); }
+  .vt-lista .vt-card { flex-direction: row; }
+  .vt-lista .vt-cover { width: 200px; aspect-ratio: auto; min-height: 130px; }
+  .vt-match { margin-top: 8px; font-size: 12px; line-height: 1.5; padding: 9px 12px; border-radius: 10px; display: none; align-items: center; gap: 10px; }
+  .vt-match.ok { display: flex; background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+  .vt-match.warn { display: flex; background: #FFFBEB; color: var(--amber-700); border: 1px solid #FDE68A; }
+  .vt-match img { width: 64px; height: 36px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .vt-nota { font-size: 12px; color: var(--stone-500); line-height: 1.5; background: var(--stone-50); border: 1px solid var(--stone-200); border-radius: 10px; padding: 10px 12px; }
+
   /* Responsive */
   @media (max-width: 1024px) {
     :root { --sidebar-w: 220px; }
@@ -1232,6 +1281,9 @@
     .m-email { max-width: 160px; }
   }
   @media (max-width: 768px) {
+    .vt-vista { margin-left: 0; }
+    .vt-lista .vt-card { flex-direction: column; }
+    .vt-lista .vt-cover { width: 100%; aspect-ratio: 16 / 9; }
     .app { grid-template-columns: 1fr; }
     .sidebar {
       position: fixed; left: 0; top: 0; bottom: 0; width: 280px; height: auto;
@@ -2092,27 +2144,48 @@
       <div class="panel-head">
         <div class="panel-head-info">
           <h2 class="panel-title">Gestión de la <em>videoteca</em></h2>
-          <p class="panel-sub">Crea cursos, edita sus datos y administra las clases (sesiones) de cada uno. Aparecen en la pestaña <b>Videoteca</b> del panel VIP.</p>
+          <p class="panel-sub">Aquí ves qué cursos están publicados para los miembros y cuáles no. Un curso se publica cuando su título coincide con uno del catálogo de Bunny.</p>
         </div>
       </div>
 
-      <!-- Card destacada: nuevo curso -->
-      <div style="background:linear-gradient(135deg,#7C3AED,#A855F7);border-radius:14px;padding:18px 20px;margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(139,92,246,0.25);">
-        <div style="flex:1;min-width:240px;color:#fff;">
-          <div style="font-size:15px;font-weight:800;margin-bottom:4px;">Crear curso nuevo</div>
-          <div style="font-size:13px;opacity:0.9;">Agrega un curso completo con título, descripción y sesiones (clases).</div>
-        </div>
-        <button onclick="abrirCursoModalNuevo()" style="background:#fff;color:#5B21B6;border:none;padding:11px 20px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <div class="vt-actions">
+        <button type="button" class="btn-primary" onclick="abrirCursoModalNuevo()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Nuevo curso
         </button>
-        <button id="syncBunnyCatalogBtn" onclick="sincronizarCatalogoBunny()" style="background:#111827;color:#fff;border:1px solid rgba(255,255,255,0.3);padding:11px 20px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-          ▶ Sincronizar 48 videos Bunny
-        </button>
+        <button type="button" class="btn-secondary" id="syncBunnyCatalogBtn" onclick="sincronizarCatalogoBunny()">Sincronizar videos Bunny</button>
       </div>
 
-      <div id="coursesList" style="display:flex;flex-direction:column;gap:14px;">
-        <div style="padding:24px;text-align:center;color:var(--stone-400);font-size:13px;background:#fff;border-radius:14px;border:1px solid var(--border-subtle);">Cargando cursos...</div>
+      <div class="stats-grid vt-kpis" id="vtKpis"></div>
+
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="vtBuscar" class="search-input" placeholder="Buscar curso por título o descripción..." oninput="vtSet('busca', this.value)">
+        </div>
+        <div class="chip-filter" id="vtEstadoChips">
+          <button type="button" class="chip active" data-vt="todos" onclick="vtSet('estado','todos')">Todos <span id="vtCntTodos" style="margin-left:4px;">0</span></button>
+          <button type="button" class="chip" data-vt="publicados" onclick="vtSet('estado','publicados')">Publicados <span id="vtCntPub" style="margin-left:4px;">0</span></button>
+          <button type="button" class="chip" data-vt="ocultos" onclick="vtSet('estado','ocultos')">Ocultos <span id="vtCntOcu" style="margin-left:4px;">0</span></button>
+        </div>
+        <select id="vtOrden" class="form-select vt-orden" onchange="vtSet('orden', this.value)" aria-label="Ordenar cursos">
+          <option value="orden">Orden de desbloqueo</option>
+          <option value="titulo">Título A-Z</option>
+          <option value="horas">Más horas</option>
+          <option value="clases">Más clases</option>
+        </select>
+        <div class="vt-vista" id="vtVista">
+          <button type="button" data-vista="grid" class="active" onclick="vtSet('vista','grid')" aria-label="Vista de tarjetas" title="Tarjetas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </button>
+          <button type="button" data-vista="list" onclick="vtSet('vista','list')" aria-label="Vista de lista" title="Lista">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="coursesList" class="vt-grid">
+        <div class="vt-vacio">Cargando cursos…</div>
       </div>
     </div>
 
@@ -2130,6 +2203,7 @@
           <div class="form-group">
             <label class="form-label" for="cursoTitle">Título del curso</label>
             <input type="text" id="cursoTitle" class="form-input" placeholder="Ej: Manejo Integrado de Plagas en Aguacate" maxlength="120" required>
+            <div id="cursoCatalogoInfo" class="vt-match"></div>
           </div>
 
           <div class="form-group">
@@ -2137,11 +2211,7 @@
             <textarea id="cursoDesc" class="form-input" rows="3" placeholder="Descripción breve del curso (qué aprenderá el estudiante)" maxlength="500"></textarea>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-            <div class="form-group">
-              <label class="form-label" for="cursoEmoji">Emoji</label>
-              <input type="text" id="cursoEmoji" class="form-input" placeholder="🌾" maxlength="4">
-            </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
             <div class="form-group">
               <label class="form-label" for="cursoNivel">Nivel</label>
               <select id="cursoNivel" class="form-select">
@@ -2156,26 +2226,7 @@
             </div>
           </div>
 
-          <!-- Disponibilidad del curso -->
-          <div class="form-group">
-            <label class="form-label">Disponibilidad para los miembros</label>
-            <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
-              <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border-subtle);border-radius:10px;cursor:pointer;background:#fff;">
-                <input type="radio" name="cursoDisp" value="progresivo" style="margin-top:3px;flex-shrink:0;" checked>
-                <div>
-                  <div style="font-size:13px;font-weight:600;color:var(--stone-800);">Sigue desbloqueo progresivo</div>
-                  <div style="font-size:11.5px;color:var(--stone-500);margin-top:2px;">Se desbloquea según el orden del curso (10 días entre uno y el siguiente).</div>
-                </div>
-              </label>
-              <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border-subtle);border-radius:10px;cursor:pointer;background:#fff;">
-                <input type="radio" name="cursoDisp" value="siempre" style="margin-top:3px;flex-shrink:0;">
-                <div>
-                  <div style="font-size:13px;font-weight:600;color:var(--stone-800);">Disponible ahora (modo prueba)</div>
-                  <div style="font-size:11.5px;color:var(--stone-500);margin-top:2px;">El curso se ve y se puede ver de inmediato. Útil para verificar que las clases funcionen antes de lanzarlo.</div>
-                </div>
-              </label>
-            </div>
-          </div>
+          <div class="vt-nota" style="margin-bottom:14px;">El desbloqueo es automático: a cada miembro se le abre un curso nuevo cada 6 días desde que se activa, según el orden del catálogo.</div>
 
           <!-- Sección de sesiones (clases) -->
           <div style="background:#F9FAFB;border:1px solid var(--border-subtle);border-radius:12px;padding:14px;margin-top:8px;margin-bottom:16px;">
@@ -3635,7 +3686,7 @@
       console.error('[Bunny sync]', error);
       showToast('No se pudo sincronizar: ' + (error.message || 'error desconocido'), 'error');
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = '▶ Sincronizar 48 videos Bunny'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Sincronizar videos Bunny'; }
     }
   };
 
@@ -4026,77 +4077,166 @@
   //        materiales: [...], createdAt }
   // ═══════════════════════════════════════════════════
 
-  // Render del panel cursos (lista de cards). Usa la misma cache que materiales.
+  // Estado del catálogo de la Videoteca (búsqueda, filtro, orden y vista)
+  const VT = { busca: '', estado: 'todos', orden: 'orden', vista: 'grid' };
+  const VT_DIAS_ENTRE_CURSOS = 6;   // igual que COURSE_UNLOCK_INTERVAL_DAYS del panel de miembros
+  try { const v = localStorage.getItem('vtVista'); if (v === 'grid' || v === 'list') VT.vista = v; } catch (e) {}
+
+  function vtCatalogo() {
+    return Array.isArray(window.SINERGIA_BUNNY_CATALOG) ? window.SINERGIA_BUNNY_CATALOG : [];
+  }
+
+  // Misma regla que usa el panel de miembros: el curso se muestra solo si su
+  // título coincide con EXACTAMENTE un curso del catálogo de Bunny.
+  function vtCoincidencias(titulo) {
+    const objetivo = normalizarTituloBunny(titulo);
+    return vtCatalogo().filter(item => {
+      const candidato = normalizarTituloBunny(item.titulo);
+      return candidato === objetivo || candidato.includes(objetivo) || objetivo.includes(candidato);
+    });
+  }
+
+  function vtHoras(n) {
+    const v = Number(n) || 0;
+    return (Math.round(v * 10) / 10).toString().replace(/\.0$/, '');
+  }
+
+  function vtIniciales(titulo) {
+    const p = String(titulo || '').replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 2);
+    return ((p[0] || '?')[0] + (p[1] ? p[1][0] : '')).toUpperCase();
+  }
+
+  function vtInfo(curso) {
+    const coinc = vtCoincidencias(curso.titulo);
+    const cat = coinc.length === 1 ? coinc[0] : null;
+    const sesiones = cat ? (cat.sesiones || []) : (Array.isArray(curso.sesiones) ? curso.sesiones : []);
+    return {
+      curso, cat, coinc: coinc.length,
+      publicado: !!cat,
+      portada: (cat && cat.portada) || curso.portada || '',
+      nivel: (cat && cat.nivel) || curso.nivel || 'Básico',
+      horas: cat ? Number(cat.duracion) || 0 : Number(curso.duracion) || 0,
+      descripcion: (cat && cat.descripcion) || curso.descripcion || '',
+      sesiones,
+      orden: Number(cat ? cat.orden : curso.orden)
+    };
+  }
+
+  window.vtSet = function(clave, valor) {
+    VT[clave] = valor;
+    if (clave === 'vista') { try { localStorage.setItem('vtVista', valor); } catch (e) {} }
+    renderCoursesPanel();
+  };
+
   function renderCoursesPanel() {
     const list = document.getElementById('coursesList');
     if (!list) return;
-    if (_adminCursosCache.length === 0) {
-      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--stone-400);font-size:13px;background:#fff;border-radius:14px;border:1px solid var(--border-subtle);">No hay cursos. Usa "Nuevo curso" arriba para crear el primero.</div>';
-      const navCount = document.getElementById('navCoursesCount');
-      if (navCount) navCount.textContent = '0';
-      return;
-    }
+
     const navCount = document.getElementById('navCoursesCount');
     if (navCount) navCount.textContent = String(_adminCursosCache.length);
 
-    list.innerHTML = _adminCursosCache.map((curso, idx) => {
-      const sesiones = Array.isArray(curso.sesiones) ? curso.sesiones : [];
-      const mats = Array.isArray(curso.materiales) ? curso.materiales : [];
-      const titulo = escapeHtmlSafe(curso.titulo || 'Sin título');
-      const desc = escapeHtmlSafe(curso.descripcion || '');
-      const emoji = curso.emoji || '📚';
-      const nivel = escapeHtmlSafe(curso.nivel || 'Básico');
-      const duracion = curso.duracion || 0;
-      const orden = curso.orden ?? (idx + 1);
-      const diaDesbloqueo = idx * 10;
+    const todos = _adminCursosCache.map(vtInfo);
+    const ordenFn = (a, b) => (isNaN(a.orden) ? 9999 : a.orden) - (isNaN(b.orden) ? 9999 : b.orden);
 
-      return `
-        <div style="background:#fff;border:1px solid var(--border-subtle);border-radius:14px;overflow:hidden;">
-          <div style="padding:16px 18px;display:flex;align-items:flex-start;gap:14px;background:linear-gradient(90deg,rgba(124,58,237,0.06),transparent);border-bottom:1px solid var(--border-subtle);flex-wrap:wrap;">
-            <span style="font-size:32px;flex-shrink:0;">${emoji}</span>
-            <div style="flex:1;min-width:240px;">
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-                <span style="font-size:11px;font-weight:700;color:#5B21B6;background:#EDE9FE;padding:2px 7px;border-radius:5px;">CURSO #${orden}</span>
-                <span style="font-size:11px;font-weight:700;color:#92400E;background:#FEF3C7;padding:2px 7px;border-radius:5px;">${nivel}</span>
-                ${curso.disponibleSiempre === true
-                  ? `<span style="font-size:11px;font-weight:700;color:#065F46;background:#D1FAE5;padding:2px 7px;border-radius:5px;">⚡ DISPONIBLE AHORA</span>`
-                  : (diaDesbloqueo === 0
-                    ? `<span style="font-size:11px;font-weight:700;color:#065F46;background:#D1FAE5;padding:2px 7px;border-radius:5px;">⚡ DISPONIBLE DÍA 1</span>`
-                    : `<span style="font-size:11px;font-weight:700;color:#3730A3;background:#E0E7FF;padding:2px 7px;border-radius:5px;">🔒 DESBLOQUEO DÍA ${diaDesbloqueo}</span>`)
-                }
-              </div>
-              <div style="font-size:15px;font-weight:700;color:var(--stone-800);">${titulo}</div>
-              ${desc ? `<div style="font-size:12.5px;color:var(--stone-500);margin-top:4px;line-height:1.45;">${desc}</div>` : ''}
-              <div style="display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;">
-                <span style="font-size:12px;color:var(--stone-500);">⏱ ${duracion}h</span>
-                <span style="font-size:12px;color:var(--stone-500);">▶ ${sesiones.length} ${sesiones.length === 1 ? 'clase' : 'clases'}</span>
-                <span style="font-size:12px;color:var(--stone-500);">📎 ${mats.length} ${mats.length === 1 ? 'material' : 'materiales'}</span>
-              </div>
-            </div>
-            <div style="display:flex;gap:6px;flex-shrink:0;">
-              <button class="m-act-btn cancelar" title="Editar curso" onclick="editarCurso('${curso.id}')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              </button>
-              <button class="m-act-btn danger" title="Eliminar curso" onclick="eliminarCurso('${curso.id}', '${titulo.replace(/'/g, '&apos;')}')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              </button>
-            </div>
-          </div>
-          ${sesiones.length === 0
-            ? `<div style="padding:14px 18px;color:var(--stone-400);font-size:13px;font-style:italic;">Este curso no tiene clases aún. Usa el botón Editar para agregarlas.</div>`
-            : `<div style="padding:8px 18px 14px 18px;">
-                ${sesiones.map((s, sIdx) => `
-                  <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:${sIdx === 0 ? '0' : '1px solid #F3F4F6'};">
-                    <span style="background:#EDE9FE;color:#6D28D9;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0;">CLASE ${s.numero || (sIdx + 1)}</span>
-                    <span style="flex:1;font-size:13px;color:var(--stone-700);">${escapeHtmlSafe(s.titulo || 'Sin título')}</span>
-                    ${s.videoId ? `<span style="font-size:11px;font-weight:700;color:#065F46;background:#D1FAE5;padding:3px 8px;border-radius:6px;">▶ BUNNY</span>` : (s.url ? `<a href="${escapeHtmlSafe(s.url)}" target="_blank" rel="noopener" style="font-size:11px;color:#7C3AED;text-decoration:none;flex-shrink:0;">🔗 Abrir</a>` : `<span style="font-size:11px;color:var(--stone-400);">Sin video</span>`)}
-                  </div>
-                `).join('')}
-              </div>`
-          }
-        </div>
-      `;
+    // Día de desbloqueo: posición entre los cursos publicados × 6 días (como el panel de miembros)
+    const diaDe = new Map();
+    todos.filter(i => i.publicado).sort(ordenFn).forEach((i, pos) => diaDe.set(i.curso.id, pos * VT_DIAS_ENTRE_CURSOS));
+
+    const pub = todos.filter(i => i.publicado).length;
+    const clasesPub = todos.filter(i => i.publicado).reduce((s, i) => s + i.sesiones.length, 0);
+    const horasPub = todos.filter(i => i.publicado).reduce((s, i) => s + i.horas, 0);
+
+    const kpi = (clase, valor, etiqueta) => '<div class="stat-card ' + clase + '"><div class="stat-value">' + valor + '</div><div class="stat-label">' + etiqueta + '</div></div>';
+    const k = document.getElementById('vtKpis');
+    if (k) k.innerHTML =
+      kpi('teal', todos.length, 'CURSOS') +
+      kpi('green', pub, 'PUBLICADOS') +
+      kpi(todos.length - pub > 0 ? 'amber' : 'sky', todos.length - pub, 'OCULTOS') +
+      kpi('violet', clasesPub, 'CLASES PUBLICADAS') +
+      kpi('sky', vtHoras(horasPub) + ' h', 'HORAS PUBLICADAS');
+
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setTxt('vtCntTodos', todos.length); setTxt('vtCntPub', pub); setTxt('vtCntOcu', todos.length - pub);
+    document.querySelectorAll('#vtEstadoChips .chip').forEach(c => c.classList.toggle('active', c.dataset.vt === VT.estado));
+    document.querySelectorAll('#vtVista button').forEach(b => b.classList.toggle('active', b.dataset.vista === VT.vista));
+    const sel = document.getElementById('vtOrden'); if (sel && sel.value !== VT.orden) sel.value = VT.orden;
+
+    let vistos = todos.slice();
+    if (VT.estado === 'publicados') vistos = vistos.filter(i => i.publicado);
+    if (VT.estado === 'ocultos') vistos = vistos.filter(i => !i.publicado);
+    const q = VT.busca.trim().toLowerCase();
+    if (q) vistos = vistos.filter(i => ((i.curso.titulo || '') + ' ' + i.descripcion).toLowerCase().includes(q));
+    if (VT.orden === 'titulo') vistos.sort((a, b) => String(a.curso.titulo || '').localeCompare(String(b.curso.titulo || ''), 'es'));
+    else if (VT.orden === 'horas') vistos.sort((a, b) => b.horas - a.horas);
+    else if (VT.orden === 'clases') vistos.sort((a, b) => b.sesiones.length - a.sesiones.length);
+    else vistos.sort(ordenFn);
+
+    list.className = 'vt-grid' + (VT.vista === 'list' ? ' vt-lista' : '');
+
+    if (!_adminCursosCache.length) {
+      list.innerHTML = '<div class="vt-vacio">Aún no hay cursos. Usa <b>Nuevo curso</b> para crear el primero.</div>';
+      return;
+    }
+    if (!vistos.length) {
+      list.innerHTML = '<div class="vt-vacio">Ningún curso coincide con tu búsqueda o filtro.</div>';
+      return;
+    }
+
+    list.innerHTML = vistos.map(i => {
+      const c = i.curso;
+      const mats = Array.isArray(c.materiales) ? c.materiales.length : 0;
+      const titulo = esc(c.titulo || 'Sin título');
+      const dia = diaDe.get(c.id);
+      const aviso = i.publicado ? '' :
+        '<div class="vt-aviso">' + (i.coinc > 1
+          ? 'Este título coincide con <b>' + i.coinc + ' cursos</b> del catálogo de Bunny, así que no se muestra a los miembros. Usa un título más específico.'
+          : 'Los miembros <b>no ven</b> este curso porque su título no coincide con ningún curso del catálogo de Bunny. Para publicarlo hay que agregar sus videos al catálogo.') + '</div>';
+      const clases = i.sesiones.length
+        ? '<details class="vt-ses"><summary>Ver clases (' + i.sesiones.length + ')</summary><ol>' +
+            i.sesiones.map(s => '<li>' + esc(s.titulo || 'Sin título') + '</li>').join('') + '</ol></details>'
+        : '<div class="vt-stats" style="font-weight:500;color:var(--stone-400);">Sin clases todavía</div>';
+      return '<article class="vt-card">' +
+        '<div class="vt-cover' + (i.publicado ? '' : ' oculto') + '">' +
+          '<span class="vt-ini">' + esc(vtIniciales(c.titulo)) + '</span>' +
+          (i.portada ? '<img src="' + esc(i.portada) + '" alt="" loading="lazy" onerror="this.remove()">' : '') +
+          '<span class="vt-chip ' + (i.publicado ? 'ok' : 'warn') + '">' + (i.publicado ? 'PUBLICADO' : 'OCULTO') + '</span>' +
+        '</div>' +
+        '<div class="vt-body">' +
+          '<div class="vt-tags"><span class="vt-tag nivel">' + esc(String(i.nivel).toUpperCase()) + '</span>' +
+            (dia !== undefined ? '<span class="vt-tag dia">' + (dia === 0 ? 'DISPONIBLE DÍA 1' : 'SE DESBLOQUEA AL DÍA ' + dia) + '</span>' : '') + '</div>' +
+          '<h3 class="vt-title">' + titulo + '</h3>' +
+          (i.descripcion ? '<p class="vt-desc">' + esc(i.descripcion) + '</p>' : '') +
+          '<div class="vt-stats">' + vtHoras(i.horas) + ' h · ' + i.sesiones.length + (i.sesiones.length === 1 ? ' clase' : ' clases') + ' · ' + mats + (mats === 1 ? ' material' : ' materiales') + '</div>' +
+          aviso + clases +
+          '<div class="vt-fila">' +
+            '<button type="button" class="btn-secondary" onclick="editarCurso(\'' + esc(c.id) + '\')">Editar</button>' +
+            '<button type="button" class="btn-secondary vt-borrar" data-titulo="' + esc(c.titulo || 'Sin título') + '" onclick="eliminarCurso(\'' + esc(c.id) + '\', this.dataset.titulo)">Eliminar</button>' +
+          '</div>' +
+        '</div>' +
+      '</article>';
     }).join('');
+  }
+
+  // Aviso en vivo del formulario: ¿este título se publicará a los miembros?
+  function vtActualizarCoincidencia() {
+    const box = document.getElementById('cursoCatalogoInfo');
+    const campo = document.getElementById('cursoTitle');
+    if (!box || !campo) return;
+    const titulo = campo.value.trim();
+    if (!titulo) { box.className = 'vt-match'; box.innerHTML = ''; return; }
+    const coinc = vtCoincidencias(titulo);
+    if (coinc.length === 1) {
+      const c = coinc[0];
+      box.className = 'vt-match ok';
+      box.innerHTML = (c.portada ? '<img src="' + esc(c.portada) + '" alt="" onerror="this.remove()">' : '') +
+        '<div><b>Se publicará a los miembros.</b> Coincide con «' + esc(c.titulo) + '» del catálogo de Bunny; su portada, nivel, duración y clases salen de ahí.</div>';
+    } else if (coinc.length === 0) {
+      box.className = 'vt-match warn';
+      box.innerHTML = '<div><b>No se mostrará a los miembros.</b> El título no coincide con ningún curso del catálogo de Bunny. Para publicarlo hay que agregar primero sus videos al catálogo.</div>';
+    } else {
+      box.className = 'vt-match warn';
+      box.innerHTML = '<div><b>Título ambiguo:</b> coincide con ' + coinc.length + ' cursos del catálogo, así que no se mostraría. Hazlo más específico.</div>';
+    }
   }
 
   // Estado del formulario de sesiones (mientras está abierto el modal)
@@ -4177,12 +4317,11 @@
     document.getElementById('cursoEditId').value = '';
     document.getElementById('cursoTitle').value = '';
     document.getElementById('cursoDesc').value = '';
-    document.getElementById('cursoEmoji').value = '🌾';
     document.getElementById('cursoNivel').value = 'Básico';
     document.getElementById('cursoDuracion').value = '10';
-    setCursoDisponibilidad(false);
     _cursoEditandoSesiones = [];
     renderSesionesEnModal();
+    vtActualizarCoincidencia();
     document.getElementById('cursoModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('cursoTitle').focus(), 50);
@@ -4196,13 +4335,12 @@
     document.getElementById('cursoEditId').value = cursoId;
     document.getElementById('cursoTitle').value = curso.titulo || '';
     document.getElementById('cursoDesc').value = curso.descripcion || '';
-    document.getElementById('cursoEmoji').value = curso.emoji || '🌾';
     document.getElementById('cursoNivel').value = curso.nivel || 'Básico';
     document.getElementById('cursoDuracion').value = curso.duracion || 10;
-    setCursoDisponibilidad(curso.disponibleSiempre === true);
     // Clonar sesiones para editar sin tocar la cache
     _cursoEditandoSesiones = (curso.sesiones || []).map(s => ({ ...s }));
     renderSesionesEnModal();
+    vtActualizarCoincidencia();
     document.getElementById('cursoModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('cursoTitle').focus(), 50);
@@ -4233,6 +4371,7 @@
   };
 
   // Submit del formulario (crea o edita curso)
+  document.getElementById('cursoTitle')?.addEventListener('input', vtActualizarCoincidencia);
   const cursoForm = document.getElementById('cursoModalForm');
   if (cursoForm) {
     cursoForm.addEventListener('submit', async e => {
@@ -4243,7 +4382,6 @@
         const cursoId = document.getElementById('cursoEditId').value.trim();
         const titulo = document.getElementById('cursoTitle').value.trim();
         const descripcion = document.getElementById('cursoDesc').value.trim();
-        const emoji = document.getElementById('cursoEmoji').value.trim() || '🌾';
         const nivel = document.getElementById('cursoNivel').value;
         const duracion = parseInt(document.getElementById('cursoDuracion').value, 10) || 10;
 
@@ -4293,11 +4431,9 @@
         const data = {
           titulo,
           descripcion,
-          emoji,
           nivel,
           duracion,
-          sesiones: sesionesLimpias,
-          disponibleSiempre: getCursoDisponibilidad()
+          sesiones: sesionesLimpias
         };
 
         if (cursoId) {
