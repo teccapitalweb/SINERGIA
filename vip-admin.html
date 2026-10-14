@@ -639,7 +639,7 @@
     background: white;
     border: 1px solid rgba(13, 148, 136, 0.1);
     border-radius: 18px;
-    overflow: hidden;
+    overflow-x: auto;
   }
   .members-table {
     width: 100%;
@@ -731,6 +731,15 @@
   .m-status.inactive { color: var(--stone-500); }
   .m-status.inactive .m-status-dot { background: var(--stone-400); }
 
+  .m-plan.regalo { background: rgba(139, 92, 246, 0.12); color: var(--violet-600); }
+  .m-status.warn { color: var(--amber-600); }
+  .m-status.warn .m-status-dot { background: var(--amber-500); box-shadow: 0 0 8px var(--amber-500); }
+  .m-sub {
+    font-size: 11px;
+    color: var(--stone-500);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
   .m-date {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -1785,6 +1794,8 @@
           <button class="chip" data-filter="inactive">Inactivos <span id="chipInactive" style="margin-left:4px;">0</span></button>
           <button class="chip" data-filter="mensual">Mensuales</button>
           <button class="chip" data-filter="anual">Anuales</button>
+          <button class="chip" data-filter="regalo">Regalo <span id="chipRegalo" style="margin-left:4px;">0</span></button>
+          <button class="chip" data-filter="porvencer">Por vencer <span id="chipPorVencer" style="margin-left:4px;">0</span></button>
         </div>
       </div>
 
@@ -1793,7 +1804,7 @@
           <thead>
             <tr>
               <th>Miembro</th>
-              <th>Plan</th>
+              <th>Membresía</th>
               <th>Estado</th>
               <th>Registro</th>
               <th style="text-align:right;">Acciones</th>
@@ -2519,6 +2530,59 @@
     return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
+  // El nombre y el correo los escribe el propio usuario al registrarse:
+  // nunca van crudos al HTML.
+  function esc(v) {
+    return String(v === null || v === undefined ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function toDate(ts) {
+    if (!ts) return null;
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  // Resume qué tipo de membresía es y en qué situación está (solo lectura).
+  function infoMembresia(m) {
+    const activa = m.activa === true;
+    const esRegalo = !!m.esRegalo || m.plan === 'regalo';
+    const origen = esRegalo ? 'regalo'
+      : m.stripeSubscriptionId ? 'stripe'
+      : m.shopifyOrderId ? 'shopify'
+      : m.activacionManual ? 'manual' : '';
+    const origenLabel = { regalo: 'Acceso de cortesía', stripe: 'Pago con Stripe', shopify: 'Shopify (anterior)', manual: 'Activación manual' }[origen] || '';
+
+    // Stripe renueva solo: su expiraEn puede estar viejo, así que solo cuenta el fin de acceso por cancelación.
+    const fin = toDate(m.fechaFinAcceso) || (origen === 'stripe' ? null : toDate(m.expiraEn));
+    const dias = fin ? Math.ceil((fin.getTime() - Date.now()) / 86400000) : null;
+
+    let estado, sub = '', tono, porVencer = false;
+    if (activa) {
+      if (m.canceladaEn && fin) {
+        estado = 'Cancelada'; sub = 'Acceso hasta ' + formatDate(fin); tono = 'warn'; porVencer = true;
+      } else if (dias !== null && dias < 0) {
+        estado = 'Vencida'; sub = 'Venció ' + formatDate(fin); tono = 'warn'; porVencer = true;
+      } else if (dias !== null) {
+        estado = 'Activa';
+        sub = dias === 0 ? 'Vence hoy' : dias === 1 ? 'Vence mañana' : 'Vence ' + formatDate(fin);
+        tono = dias <= 7 ? 'warn' : 'active';
+        porVencer = dias <= 7;
+      } else {
+        estado = 'Activa'; tono = 'active';
+      }
+    } else {
+      const fueMiembro = !!(m.canceladaEn || m.desactivadoEn || m.stripeSubscriptionId || m.shopifyOrderId || m.activadoEn);
+      if (!fueMiembro) { estado = 'Pendiente de pago'; sub = 'Aún no activa su membresía'; }
+      else if (m.canceladaEn) { estado = 'Cancelada'; sub = 'Ya no tiene acceso'; }
+      else if (m.desactivadoEn) { estado = 'Desactivada'; sub = 'Ya no tiene acceso'; }
+      else { estado = 'Inactiva'; sub = 'Ya no tiene acceso'; }
+      tono = 'inactive';
+    }
+    return { activa, esRegalo, origen, origenLabel, estado, sub, tono, porVencer };
+  }
+
   function formatTimeAgo(ts) {
     if (!ts) return '—';
     const d = ts.toDate ? ts.toDate() : new Date(ts);
@@ -2633,6 +2697,8 @@
     if (currentFilter === 'inactive') filteredMembers = filteredMembers.filter(m => m.activa !== true);
     if (currentFilter === 'mensual') filteredMembers = filteredMembers.filter(m => m.plan === 'mensual');
     if (currentFilter === 'anual') filteredMembers = filteredMembers.filter(m => m.plan === 'anual');
+    if (currentFilter === 'regalo') filteredMembers = filteredMembers.filter(m => infoMembresia(m).esRegalo);
+    if (currentFilter === 'porvencer') filteredMembers = filteredMembers.filter(m => infoMembresia(m).porVencer);
 
     // Search
     if (searchTerm.trim()) {
@@ -2661,7 +2727,9 @@
       const initials = getInitials(m.nombre, m.email);
       const [c1, c2] = colorFromString(m.email || m.uid);
       const active = m.activa === true;
-      const planLabel = m.plan === 'anual' ? 'ANUAL' : 'MENSUAL';
+      const info = infoMembresia(m);
+      const planKey = info.esRegalo ? 'regalo' : (m.plan === 'anual' ? 'anual' : 'mensual');
+      const planLabel = { regalo: 'REGALO', anual: 'ANUAL', mensual: 'MENSUAL' }[planKey];
 
       return `
         <tr>
@@ -2669,19 +2737,21 @@
             <div class="m-user">
               <div class="m-avatar" style="background:linear-gradient(135deg,${c1},${c2});">${initials}</div>
               <div class="m-info">
-                <div class="m-name">${m.nombre || '(sin nombre)'}</div>
-                <div class="m-email">${m.email || '—'}</div>
+                <div class="m-name">${esc(m.nombre || '(sin nombre)')}</div>
+                <div class="m-email">${esc(m.email || '—')}</div>
               </div>
             </div>
           </td>
           <td data-label="Plan">
-            <span class="m-plan ${m.plan || 'mensual'}">${planLabel}</span>
+            <span class="m-plan ${planKey}">${planLabel}</span>
+            ${info.origenLabel ? `<div class="m-sub">${info.origenLabel}</div>` : ''}
           </td>
           <td data-label="Estado">
-            <span class="m-status ${active ? 'active' : 'inactive'}">
+            <span class="m-status ${info.tono}">
               <span class="m-status-dot"></span>
-              ${active ? 'Activa' : 'Pendiente'}
+              ${info.estado}
             </span>
+            ${info.sub ? `<div class="m-sub">${info.sub}</div>` : ''}
           </td>
           <td data-label="Registro">
             <span class="m-date">${formatDate(m.createdAt)}</span>
@@ -2702,7 +2772,7 @@
               <button class="m-act-btn deactivate" title="Desactivar inmediato" onclick="toggleActive('${m.uid}', false)" ${!active ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
               </button>
-              <button class="m-act-btn danger" title="Eliminar miembro" onclick="deleteMember('${m.uid}', '${(m.nombre||'(sin nombre)').replace(/'/g, '&apos;')}')">
+              <button class="m-act-btn danger" title="Eliminar miembro" data-nombre="${esc(m.nombre || '(sin nombre)')}" onclick="deleteMember('${m.uid}', this.dataset.nombre)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               </button>
             </div>
@@ -2721,7 +2791,7 @@
     showModal({
       type: newState ? 'info' : 'warn',
       title: newState ? '¿Activar membresía?' : '¿Desactivar membresía?',
-      body: `¿Seguro que deseas ${newState ? 'activar' : 'desactivar'} la membresía de <b>${m.nombre || m.email}</b>?${
+      body: `¿Seguro que deseas ${newState ? 'activar' : 'desactivar'} la membresía de <b>${esc(m.nombre || m.email)}</b>?${
         !newState ? '<br><br><span style="color:#B45309;font-weight:600;">El miembro perderá acceso al panel VIP inmediatamente.<br>⚠ Esta acción NO cancela Stripe — usa el botón Cancelar para eso.</span>' : ''
       }`,
       confirmText: newState ? 'Activar' : 'Desactivar',
@@ -2855,7 +2925,7 @@
     showModal({
       type: 'warn',
       title: '¿Cancelar suscripción?',
-      body: `Se cancelará la suscripción de <b>${nombre}</b> en Stripe.<br><br>Mantendrá su acceso hasta la fecha de fin del periodo pagado y NO se renovará automáticamente.<br><br><span style="color:#6B7280;font-size:0.85em;">Solo aplica a miembros con suscripción Stripe activa.</span>`,
+      body: `Se cancelará la suscripción de <b>${esc(nombre)}</b> en Stripe.<br><br>Mantendrá su acceso hasta la fecha de fin del periodo pagado y NO se renovará automáticamente.<br><br><span style="color:#6B7280;font-size:0.85em;">Solo aplica a miembros con suscripción Stripe activa.</span>`,
       confirmText: 'Sí, cancelar',
       onConfirm: async () => {
         try {
@@ -2888,7 +2958,7 @@
     showModal({
       type: 'danger',
       title: '¿Eliminar miembro?',
-      body: `Esta acción eliminará permanentemente a <b>${nombre}</b>:<br><br>• Cancelará suscripción en Stripe (si tiene)<br>• Borrará cuenta de Firebase Auth<br>• Borrará registro de Firestore<br><br><span style="color:#BE123C;font-weight:600;">⚠ Esta acción NO se puede deshacer.</span>`,
+      body: `Esta acción eliminará permanentemente a <b>${esc(nombre)}</b>:<br><br>• Cancelará suscripción en Stripe (si tiene)<br>• Borrará cuenta de Firebase Auth<br>• Borrará registro de Firestore<br><br><span style="color:#BE123C;font-weight:600;">⚠ Esta acción NO se puede deshacer.</span>`,
       confirmText: 'Eliminar',
       onConfirm: async () => {
         try {
@@ -2953,6 +3023,8 @@
     document.getElementById('chipAll').textContent = total;
     document.getElementById('chipActive').textContent = active;
     document.getElementById('chipInactive').textContent = inactive;
+    document.getElementById('chipRegalo').textContent = allMembers.filter(m => infoMembresia(m).esRegalo).length;
+    document.getElementById('chipPorVencer').textContent = allMembers.filter(m => infoMembresia(m).porVencer).length;
     document.getElementById('navMembersCount').textContent = total;
 
     // Audience reach (notificaciones)
@@ -3094,7 +3166,7 @@
             </svg>
           </div>
           <div class="activity-text">
-            <b>${m.nombre || m.email}</b> ${active ? 'pagó su membresía' : 'se registró'} <span style="color:var(--stone-500);">(plan ${m.plan || 'mensual'})</span>
+            <b>${esc(m.nombre || m.email)}</b> ${active ? 'pagó su membresía' : 'se registró'} <span style="color:var(--stone-500);">(plan ${esc(m.plan || 'mensual')})</span>
           </div>
           <span class="activity-time">${formatTimeAgo(m.createdAt)}</span>
         </div>
@@ -3110,7 +3182,7 @@
     sel.innerHTML = '<option value="">Selecciona un miembro...</option>' +
       allMembers
         .filter(m => m.activa === true)
-        .map(m => `<option value="${m.uid}">${m.nombre || '(sin nombre)'} · ${m.email}</option>`)
+        .map(m => `<option value="${esc(m.uid)}">${esc(m.nombre || '(sin nombre)')} · ${esc(m.email)}</option>`)
         .join('');
     if (current) sel.value = current;
   }
@@ -4318,7 +4390,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
           </div>
           <div class="activity-text">
-            <b>${c.folio}</b> · ${c.nombre} → <span style="color:var(--stone-500);">${c.curso}</span>
+            <b>${esc(c.folio)}</b> · ${esc(c.nombre)} → <span style="color:var(--stone-500);">${esc(c.curso)}</span>
           </div>
           <span class="activity-time">${formatTimeAgo(c.emitido)}</span>
         </div>
