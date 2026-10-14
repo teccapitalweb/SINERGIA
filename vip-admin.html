@@ -732,6 +732,7 @@
   .m-status.inactive .m-status-dot { background: var(--stone-400); }
 
   .m-plan.regalo { background: rgba(139, 92, 246, 0.12); color: var(--violet-600); }
+  .m-sub.warn { color: var(--amber-700); font-weight: 600; }
   .m-status.warn { color: var(--amber-600); }
   .m-status.warn .m-status-dot { background: var(--amber-500); box-shadow: 0 0 8px var(--amber-500); }
   .m-sub {
@@ -1796,6 +1797,7 @@
           <button class="chip" data-filter="anual">Anuales</button>
           <button class="chip" data-filter="regalo">Regalo <span id="chipRegalo" style="margin-left:4px;">0</span></button>
           <button class="chip" data-filter="porvencer">Por vencer <span id="chipPorVencer" style="margin-left:4px;">0</span></button>
+          <button class="chip" data-filter="sinorigen" title="Miembros activos que no tienen registrado cómo se activaron (Stripe, manual, regalo o Shopify)">Sin origen <span id="chipSinOrigen" style="margin-left:4px;">0</span></button>
         </div>
       </div>
 
@@ -2548,7 +2550,7 @@
     const activa = m.activa === true;
     const esRegalo = !!m.esRegalo || m.plan === 'regalo';
     const origen = esRegalo ? 'regalo'
-      : m.stripeSubscriptionId ? 'stripe'
+      : (m.stripeSubscriptionId || m.origen === 'stripe') ? 'stripe'
       : m.shopifyOrderId ? 'shopify'
       : m.activacionManual ? 'manual' : '';
     const origenLabel = { regalo: 'Acceso de cortesía', stripe: 'Pago con Stripe', shopify: 'Shopify (anterior)', manual: 'Activación manual' }[origen] || '';
@@ -2579,7 +2581,7 @@
       else { estado = 'Inactiva'; sub = 'Ya no tiene acceso'; }
       tono = 'inactive';
     }
-    return { activa, esRegalo, origen, origenLabel, estado, sub, tono, porVencer };
+    return { activa, esRegalo, origen, origenLabel, estado, sub, tono, porVencer, sinOrigen: activa && origen === '' };
   }
 
   function formatTimeAgo(ts) {
@@ -2698,6 +2700,7 @@
     if (currentFilter === 'anual') filteredMembers = filteredMembers.filter(m => m.plan === 'anual');
     if (currentFilter === 'regalo') filteredMembers = filteredMembers.filter(m => infoMembresia(m).esRegalo);
     if (currentFilter === 'porvencer') filteredMembers = filteredMembers.filter(m => infoMembresia(m).porVencer);
+    if (currentFilter === 'sinorigen') filteredMembers = filteredMembers.filter(m => infoMembresia(m).sinOrigen);
 
     // Search
     if (searchTerm.trim()) {
@@ -2743,7 +2746,7 @@
           </td>
           <td data-label="Plan">
             <span class="m-plan ${planKey}">${planLabel}</span>
-            ${info.origenLabel ? `<div class="m-sub">${info.origenLabel}</div>` : ''}
+            ${info.origenLabel ? `<div class="m-sub">${info.origenLabel}</div>` : (info.sinOrigen ? `<div class="m-sub warn">Origen no registrado</div>` : '')}
           </td>
           <td data-label="Estado">
             <span class="m-status ${info.tono}">
@@ -2753,7 +2756,7 @@
             ${info.sub ? `<div class="m-sub">${info.sub}</div>` : ''}
           </td>
           <td data-label="Registro">
-            <span class="m-date">${formatDate(m.createdAt)}</span>
+            <span class="m-date">${formatDate(m.createdAt || m.creadoEn || m.activadoEn)}</span>
           </td>
           <td data-label="Acciones">
             <div class="m-actions">
@@ -3024,6 +3027,7 @@
     document.getElementById('chipInactive').textContent = inactive;
     document.getElementById('chipRegalo').textContent = allMembers.filter(m => infoMembresia(m).esRegalo).length;
     document.getElementById('chipPorVencer').textContent = allMembers.filter(m => infoMembresia(m).porVencer).length;
+    document.getElementById('chipSinOrigen').textContent = allMembers.filter(m => infoMembresia(m).sinOrigen).length;
     document.getElementById('navMembersCount').textContent = total;
 
     // Audience reach (notificaciones)
