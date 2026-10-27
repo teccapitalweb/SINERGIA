@@ -18048,7 +18048,9 @@
 
       notifUnsubscribe = onSnapshot(q, (snap) => {
         const previo = notifCacheArr.length;
-        notifCacheArr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        // Anuncios con fecha de evento: se ocultan solos a partir del día siguiente (AAAA-MM-DD, hora local)
+        const hoyTxt = (() => { const h = new Date(); return h.getFullYear() + '-' + String(h.getMonth() + 1).padStart(2, '0') + '-' + String(h.getDate()).padStart(2, '0'); })();
+        notifCacheArr = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(n => !(n.fechaEvento && n.fechaEvento < hoyTxt));
 
         // Auto-borrar TODAS las notificaciones con más de 7 días
         // (leídas o no — si el usuario no entró en una semana, la info
@@ -18058,7 +18060,8 @@
         snap.docs.forEach(async (d) => {
           const data = d.data();
           const ts = data.createdAt?.toDate ? data.createdAt.toDate().getTime() : 0;
-          if (ts && (ahora - ts) > SIETE_DIAS) {
+          // Con fecha de evento se queda hasta que pase el día del evento; sin fecha, 7 días como siempre
+          if (data.fechaEvento ? data.fechaEvento < hoyTxt : (ts && (ahora - ts) > SIETE_DIAS)) {
             try { await deleteDoc(doc(db, 'notificaciones', uid, 'items', d.id)); } catch(e){}
           }
         });
