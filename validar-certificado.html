@@ -201,6 +201,9 @@
       <script>
         const BACKEND_URL = 'https://sinergia-webhook-production.up.railway.app';
 
+    // Todo lo que viene de la URL o del servidor se escapa antes de ponerlo en la página
+    const esc = (v) => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
     async function validarCertificado() {
       const params = new URLSearchParams(window.location.search);
       const folio = params.get('folio');
@@ -238,38 +241,38 @@
                 <span>✓</span>
                 <span>Certificado Válido</span>
               </div>
-              <h1 class="cert-title">${cert.courseName || 'Curso'}</h1>
+              <h1 class="cert-title">${esc(cert.courseName || 'Curso')}</h1>
               <p class="cert-subtitle">Emitido por Sinergia-Agrícola · Instituto Profesional de Capacitación</p>
             </div>
 
             <div class="info-grid">
               <div class="info-item full">
                 <div class="info-label">Participante</div>
-                <div class="info-value" style="font-size:1.25rem">${cert.userName || ''}</div>
+                <div class="info-value" style="font-size:1.25rem">${esc(cert.userName || '')}</div>
               </div>
               <div class="info-item full">
                 <div class="info-label">Programa académico</div>
-                <div class="info-value">${cert.courseName || ''}</div>
+                <div class="info-value">${esc(cert.courseName || '')}</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Institución</div>
-                <div class="info-value">${cert.institution || 'Sinergia-Agrícola'}</div>
+                <div class="info-value">${esc(cert.institution || 'Sinergia-Agrícola')}</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Responsable</div>
-                <div class="info-value">${cert.directorName || ''}</div>
+                <div class="info-value">${esc(cert.directorName || '')}</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Duración</div>
-                <div class="info-value">${cert.hours || 5} horas</div>
+                <div class="info-value">${esc(cert.hours || 5)} horas</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Fecha de emisión</div>
-                <div class="info-value">${cert.issueDate || ''}</div>
+                <div class="info-value">${esc(cert.issueDate || '')}</div>
               </div>
               <div class="info-item full">
                 <div class="info-label">Folio de verificación</div>
-                <div class="folio-value">${cert.folio || folio}</div>
+                <div class="folio-value">${esc(cert.folio || folio)}</div>
               </div>
             </div>
 
@@ -279,6 +282,18 @@
               Certificado con valor curricular — IPCI Latinoamericano
             </p>
           `;
+} else if (data && data.revoked) {
+          invalidEl.style.display = 'block';
+          invalidEl.innerHTML = `
+            <div style="text-align:center">
+              <div class="error-icon">🚫</div>
+              <div class="error-title">Certificado revocado</div>
+              <p class="error-text">El certificado con el folio:</p>
+              <div class="folio-value" style="display:inline-block; margin: 0.75rem auto">${esc(folio)}</div>
+              <p class="error-text" style="margin-top: 0.5rem">fue revocado por Sinergia-Agrícola y ya no es válido. Si tienes dudas, contáctanos.</p>
+              <a href="/" class="btn-back">Ir al inicio</a>
+            </div>
+          `;
 } else {
           invalidEl.style.display = 'block';
           invalidEl.innerHTML = `
@@ -286,7 +301,7 @@
               <div class="error-icon">❌</div>
               <div class="error-title">Certificado no válido</div>
               <p class="error-text">No se encontró ningún certificado con el folio:</p>
-              <div class="folio-value" style="display:inline-block; margin: 0.75rem auto">${folio}</div>
+              <div class="folio-value" style="display:inline-block; margin: 0.75rem auto">${esc(folio)}</div>
               <p class="error-text" style="margin-top: 0.5rem">Verifica que el folio esté escrito correctamente o que el certificado no haya sido revocado.</p>
               <a href="/" class="btn-back">Ir al inicio</a>
             </div>
