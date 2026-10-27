@@ -117,7 +117,7 @@ window.SINERGIA_BUNNY_CATALOG = [
     collectionId: '772222f4-e61e-4b8c-932e-baa5d95fa448',
     categoria: 'Cultivos', nivel: 'Intermedio', duracion: 5,
     descripcion: 'Aprende el proceso para transformar el cacao en chocolate, paso a paso.',
-    orden: 9,
+    orden: 9, portada: 'assets/course-covers/del-cacao-al-chocolate.webp',
     sesiones: [
       { numero: 1, titulo: 'Introducción al cacao y su contexto productivo', provider: 'bunny', videoId: 'dad030af-899c-4f5e-8a60-eabb484428ac' },
       { numero: 2, titulo: 'Selección y cosecha del cacao', provider: 'bunny', videoId: 'f826b010-d60f-49bb-ac5e-a2ac3396d4cc' },
@@ -131,7 +131,7 @@ window.SINERGIA_BUNNY_CATALOG = [
     collectionId: 'e98ee362-7b17-4492-b695-f34d65a0ca23',
     categoria: 'Suelos y Riego', nivel: 'Intermedio', duracion: 4.1,
     descripcion: 'Aprende a fertilizar árboles frutales para mejorar su desarrollo y su producción.',
-    orden: 10,
+    orden: 10, portada: 'assets/course-covers/fertilizacion-de-arboles-frutales.webp',
     sesiones: [
       { numero: 1, titulo: 'Clase 1', provider: 'bunny', videoId: '6b64c221-e3dd-4f1a-82e4-586e77ecffc5' },
       { numero: 2, titulo: 'Clase 2', provider: 'bunny', videoId: '4c1c09f6-d15a-4828-98bf-a1e4b22b09d8' },
