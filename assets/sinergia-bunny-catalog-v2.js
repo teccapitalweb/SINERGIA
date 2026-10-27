@@ -121,7 +121,7 @@ window.SINERGIA_BUNNY_CATALOG = [
     sesiones: [
       { numero: 1, titulo: 'Introducción al cacao y su contexto productivo', provider: 'bunny', videoId: 'dad030af-899c-4f5e-8a60-eabb484428ac' },
       { numero: 2, titulo: 'Selección y cosecha del cacao', provider: 'bunny', videoId: 'f826b010-d60f-49bb-ac5e-a2ac3396d4cc' },
-      { numero: 3, titulo: 'Clase 3', provider: 'bunny', videoId: '7bef3a8c-bcab-414f-bdb4-d6c0045ba83d' },
+      { numero: 3, titulo: 'Fermentación del cacao', provider: 'bunny', videoId: '7bef3a8c-bcab-414f-bdb4-d6c0045ba83d' },
       { numero: 4, titulo: 'Secado y almacenamiento del grano', provider: 'bunny', videoId: '596a594b-6a0d-4ff4-919b-ac4767c5c53c' },
       { numero: 5, titulo: 'Transformación artesanal del cacao', provider: 'bunny', videoId: 'ad080fac-5d93-44ea-b4f5-0250d5fa1089' }
     ]
