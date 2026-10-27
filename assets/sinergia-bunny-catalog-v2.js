@@ -111,6 +111,32 @@ window.SINERGIA_BUNNY_CATALOG = [
       { numero: 4, titulo: 'Abonos orgánicos y aprovechamiento del humus', provider: 'bunny', videoId: '1c1315b0-b971-4185-8a8e-4aeccb306b72' },
       { numero: 5, titulo: 'Aplicación, dudas y cierre del curso', provider: 'bunny', videoId: '0895c27d-a6d5-42bb-a088-b8cd715461c9' }
     ]
+  },
+  {
+    titulo: 'Del Cacao al Chocolate',
+    collectionId: '772222f4-e61e-4b8c-932e-baa5d95fa448',
+    categoria: 'Cultivos', nivel: 'Intermedio', duracion: 5,
+    descripcion: 'Aprende el proceso para transformar el cacao en chocolate, paso a paso.',
+    orden: 9,
+    sesiones: [
+      { numero: 1, titulo: 'Introducción al cacao y su contexto productivo', provider: 'bunny', videoId: 'dad030af-899c-4f5e-8a60-eabb484428ac' },
+      { numero: 2, titulo: 'Selección y cosecha del cacao', provider: 'bunny', videoId: 'f826b010-d60f-49bb-ac5e-a2ac3396d4cc' },
+      { numero: 3, titulo: 'Clase 3', provider: 'bunny', videoId: '7bef3a8c-bcab-414f-bdb4-d6c0045ba83d' },
+      { numero: 4, titulo: 'Secado y almacenamiento del grano', provider: 'bunny', videoId: '596a594b-6a0d-4ff4-919b-ac4767c5c53c' },
+      { numero: 5, titulo: 'Transformación artesanal del cacao', provider: 'bunny', videoId: 'ad080fac-5d93-44ea-b4f5-0250d5fa1089' }
+    ]
+  },
+  {
+    titulo: 'Fertilización de Árboles Frutales',
+    collectionId: 'e98ee362-7b17-4492-b695-f34d65a0ca23',
+    categoria: 'Suelos y Riego', nivel: 'Intermedio', duracion: 4.1,
+    descripcion: 'Aprende a fertilizar árboles frutales para mejorar su desarrollo y su producción.',
+    orden: 10,
+    sesiones: [
+      { numero: 1, titulo: 'Clase 1', provider: 'bunny', videoId: '6b64c221-e3dd-4f1a-82e4-586e77ecffc5' },
+      { numero: 2, titulo: 'Clase 2', provider: 'bunny', videoId: '4c1c09f6-d15a-4828-98bf-a1e4b22b09d8' },
+      { numero: 3, titulo: 'Clase 3', provider: 'bunny', videoId: 'bfa13e55-8360-40e9-a958-85ecd0549c6f' }
+    ]
   }
 ];
 
