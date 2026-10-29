@@ -14002,7 +14002,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   var RT_CAMPO = [
     { id: 'observa', nombre: 'Observa', tiempo: '2–4 min', sub: 'Encuentra señales y reúne evidencia.', items: [
       { id: 'detective-01', tipo: 'caso', num: 'Caso 01', nivel: 'Básico', titulo: 'El rastro que no cuadra', desc: 'Encuentra tres pistas visibles en una escena de riego.', xp: 15, img: 'assets/detective/caso-01-el-rastro-que-no-cuadra.webp', url: 'detective-caso-01.html' },
-      { id: 'detective-02', tipo: 'caso', num: 'Caso 02', nivel: 'Intermedio', titulo: 'La planta fuera de contexto', desc: 'Compara plantas y zonas antes de sacar conclusiones.', xp: 15, img: 'assets/historia/nivel-04-zona-b.webp', pronto: true },
+      { id: 'detective-02', tipo: 'caso', num: 'Caso 02', nivel: 'Intermedio', titulo: 'La planta fuera de contexto', desc: 'Compara plantas y zonas antes de sacar conclusiones.', xp: 15, img: 'assets/detective/caso-02-zona-b.webp', url: 'detective-caso-02.html', min: '3–4 min' },
       { id: 'detective-03', tipo: 'caso', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La libreta incompleta', desc: 'Detecta qué información falta para que una observación sea útil.', xp: 15, img: 'assets/historia/nivel-05-la-libreta-de-campo.webp', pronto: true }] },
     { id: 'decide', nombre: 'Decide', tiempo: '3–5 min', sub: 'Elige con criterio ante una situación de campo.', items: [
       { id: 'rescate', tipo: 'liga', num: 'Misión', nivel: 'Intermedio', pronto: false }] },
@@ -14099,7 +14099,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var h = '<section class="rt-bloque rtc-seccion" aria-labelledby="rtcTit"><div><span class="cred-eyebrow">Retos de campo</span><h3 id="rtcTit">Elige cómo quieres entrenar</h3>' +
       '<p>Todos los retos están abiertos: escoge el que quieras, en el orden que quieras.</p></div>';
     RT_CAMPO.forEach(function (b) {
-      var tarjetas = b.items.map(function (it) { it.bloque = b.id; it.tiempo = b.tiempo; return rtCampoCard(it); }).join('');
+      var tarjetas = b.items.map(function (it) { it.bloque = b.id; it.tiempo = it.min || b.tiempo; return rtCampoCard(it); }).join('');
       if (!tarjetas) return;
       h += '<div class="rtc-bloque"><div class="rtc-cab"><span class="rtc-ico">' + RT_ICO[b.id] + '</span><div><h4>' + escapeHtml(b.nombre) + ' <small>· ' + escapeHtml(b.tiempo) + '</small></h4><p>' + escapeHtml(b.sub) + '</p></div></div>' +
         '<div class="rtc-grid">' + tarjetas + '</div></div>';
