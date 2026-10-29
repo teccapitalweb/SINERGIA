@@ -15627,11 +15627,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   function cpAccionesHtml(cid, terminado) {
     var c = window.__calificaciones[cid];
     if (c && c.estrellas) {
-      return '<div class="cp-acciones" role="group" aria-label="Acciones del curso"><button type="button" class="cp-ac es-hecha" data-cp-calificar="' + actEsc(cid) + '" aria-label="Tu calificación: ' + c.estrellas + ' de 5 estrellas. Cambiar">' +
+      return '<div class="cp-acciones cp-acciones--esq" role="group" aria-label="Acciones del curso"><button type="button" class="cp-ac es-hecha" data-cp-calificar="' + actEsc(cid) + '" data-terminado="1" aria-label="Tu calificación: ' + c.estrellas + ' de 5 estrellas. Cambiar">' +
         '<span class="cp-ac-ico">' + CAL_ICO_ESTRELLA + '</span><span class="cp-ac-txt">Tu calificación</span><small class="cp-ac-est" aria-hidden="true">' + '★'.repeat(c.estrellas) + '☆'.repeat(5 - c.estrellas) + '</small></button></div>';
     }
-    return '<div class="cp-acciones" role="group" aria-label="Acciones del curso"><button type="button" class="cp-ac" data-cp-calificar="' + actEsc(cid) + '"' + (terminado ? '' : ' disabled aria-disabled="true"') + '>' +
-      '<span class="cp-ac-ico">' + CAL_ICO_ESTRELLA + '</span><span class="cp-ac-txt">Calificar</span>' + (terminado ? '' : '<small class="cp-ac-est">Al terminar el curso</small>') + '</button></div>';
+    return '<div class="cp-acciones cp-acciones--esq" role="group" aria-label="Acciones del curso"><button type="button" class="cp-ac' + (terminado ? '' : ' es-pendiente') + '" data-cp-calificar="' + actEsc(cid) + '" data-terminado="' + (terminado ? '1' : '0') + '"' + (terminado ? '' : ' aria-disabled="true" title="Podrás calificar el curso cuando lo termines"') + '>' +
+      '<span class="cp-ac-ico">' + CAL_ICO_ESTRELLA + '</span><span class="cp-ac-txt">Calificar</span></button></div>';
   }
   var calYaCargadas = false;
   function cpActualizarAcciones(cid, terminado) {
@@ -15646,6 +15646,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var b = document.querySelector('.cp-wrap [data-cp-calificar]');
     if (!b) return;
     b.onclick = function () {
+      if (b.getAttribute('data-terminado') !== '1') { showToast('Podrás calificar este curso cuando lo termines', 'info'); return; }
       var curso = cvCursoDe(cid);
       calAbrir(cid, curso ? (curso.titulo || '') : '');
     };
@@ -16127,9 +16128,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<div class="cp-chips">' + chips.map(function (c) { return '<span class="cp-chip">' + actEsc(c) + '</span>'; }).join('') + '</div>' +
       '<h1>' + actEsc(curso.titulo || 'Curso') + '</h1>' +
       '<p class="cp-sub"><b>Equipo SINERGIA</b>' + (curso.nivel ? ' · ' + actEsc(curso.nivel) : '') + (Number(curso.duracion) > 0 ? ' · ' + actEsc(curso.duracion) + ' h' : '') + '</p></div>' +
-      '<button type="button" class="cp-empezar" data-cp-empezar' + (esVip && bloqCurso ? ' disabled' : '') + '>' + (esVip && bloqCurso ? 'Se desbloquea en ' + dias + ' días' : rutaTxt + ' ' + CP_IC.play) + '</button></section>' +
+      '<button type="button" class="cp-empezar" data-cp-empezar' + (esVip && bloqCurso ? ' disabled' : '') + '>' + (esVip && bloqCurso ? 'Se desbloquea en ' + dias + ' días' : rutaTxt + ' ' + CP_IC.play) + '</button>' + cpAccionesHtml(cid, pct === 100 && esVip) + '</section>' +
       (curso.descripcion ? '<p class="cp-desc">' + actEsc(curso.descripcion) + '</p>' : '') +
-      cpAccionesHtml(cid, pct === 100 && esVip) +
       '<div class="cp-cols"><section class="cp-ruta" aria-labelledby="cpTemTit"><span class="cred-eyebrow">Ruta de aprendizaje</span><h2 id="cpTemTit">Temario <span class="cp-cnt">' + vistas.length + '/' + total + '</span></h2><div class="cp-lista">' + (filas || '<div class="rt-vacio">Este curso todavía no tiene clases.</div>') + '</div></section>' +
       '<aside class="cp-avance"><span class="cred-eyebrow">Tu avance</span><div class="cp-av-fila"><strong>' + vistas.length + ' de ' + total + ' clases</strong>' + anillo + '</div>' +
       '<ul class="cp-puntos"><li>' + CP_IC.shield + 'Certificado verificable al concluir</li>' + (mats.length ? '<li>' + CP_IC.book + mats.length + (mats.length === 1 ? ' material' : ' materiales') + ' dentro del curso</li>' : '') + '<li>' + CP_IC.clock + 'Avanza a tu propio ritmo</li></ul>' + cert + '</aside></div>' +
@@ -26736,6 +26736,16 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .cp-ac-ico { display: grid; place-items: center; width: 28px; height: 28px; }
   .cp-ac-ico svg { width: 26px; height: 26px; }
   .cp-ac-est { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+  /* Calificar compacto en la esquina de la portada */
+  .cp-hero > .cp-acciones--esq { position: absolute; top: 14px; right: 14px; z-index: 2; margin: 0; }
+  .cp-acciones--esq .cp-ac { flex-direction: row; min-width: 0; min-height: 42px; padding: 6px 15px 6px 11px; gap: 8px; border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 100px; background: rgba(255, 255, 255, 0.94); color: #113D35; font-size: 13px; box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.5); }
+  .cp-acciones--esq .cp-ac:hover { background: #fff; border-color: #fff; transform: translateY(-1px); }
+  .cp-acciones--esq .cp-ac-ico, .cp-acciones--esq .cp-ac-ico svg { width: 20px; height: 20px; }
+  .cp-acciones--esq .cp-ac.es-pendiente { cursor: help; }
+  .cp-acciones--esq .cp-ac.es-hecha { gap: 6px; }
+  .cp-acciones--esq .cp-ac.es-hecha .cp-ac-est { color: #B58A1B; font-size: 12px; letter-spacing: 0.04em; }
+  .cp-acciones--esq .cp-ac.es-hecha .cp-ac-ico { color: #B58A1B; }
+  @media (max-width: 600px) { .cp-hero > .cp-acciones--esq { top: 10px; right: 10px; } .cp-acciones--esq .cp-ac { min-height: 40px; padding: 5px 12px 5px 9px; } .cp-acciones--esq .cp-ac.es-hecha .cp-ac-txt { display: none; } }
   .cp-ac.es-hecha .cp-ac-ico { color: #B58A1B; }
   .cp-ac.es-hecha .cp-ac-ico svg { fill: #E7C873; }
   .cp-ac.es-hecha .cp-ac-est { color: #B58A1B; letter-spacing: 0.08em; font-size: 12px; }
