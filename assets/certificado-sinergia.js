@@ -26,6 +26,9 @@
   var URL_VALIDAR = SITIO + '/validar-certificado.html';
   var URL_VER = SITIO + '/ver-certificado.html';
   var ESPERA_MS = 9000;
+  // La verificación no muestra nombres de personas: el responsable es el equipo. Los certificados emitidos antes guardan otro
+  // nombre en «directorName» (un valor fijo del servidor); aquí se ignora para que todos digan lo mismo.
+  var RESPONSABLE = 'Equipo Sinergia-Agrícola';
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
   // Folio que emite el servidor: SINERGIA-2026-9F3A71C2 (8 caracteres al azar). Los certificados anteriores llevan IPCI-SIN-2026-000123.
@@ -92,7 +95,7 @@
       curso: texto(d.courseName, 200),
       area: texto(d.courseArea, 80),
       institucion: texto(d.institution, 80) || 'Sinergia-Agrícola',
-      responsable: texto(d.directorName, 120),
+      responsable: RESPONSABLE,
       horas: horasRedondeadas,
       horasTexto: horasTexto,
       sesiones: nSesiones,

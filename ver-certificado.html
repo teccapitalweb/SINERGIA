@@ -335,7 +335,7 @@
           var hoy = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
           r = { ok: true, certificado: SIN_CERT.vistaCertificado({
             folio: 'SA-MUESTRA-000000', userName: params.get('nombre') || 'Tu nombre aquí', courseName: params.get('curso') || 'Nombre de tu curso',
-            institution: 'Sinergia-Agrícola', directorName: 'Andrea Hernández Machado', hours: 5, sessions: 5, courseArea: 'Producción Agrícola', issueDate: hoy
+            institution: 'Sinergia-Agrícola', hours: 5, sessions: 5, courseArea: 'Producción Agrícola', issueDate: hoy
           }) };
         } else {
           r = await SIN_CERT.consultar(params.get('folio'));
