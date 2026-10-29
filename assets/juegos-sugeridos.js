@@ -1,5 +1,6 @@
 // Mini juegos sugeridos para cada clase de los 10 cursos (borradores para revisar en el admin: Videoteca → Editar curso → «Sugerir juegos»).
-// Se escribieron a partir del título de cada clase y del tema del curso, no del contenido exacto del video: conviene revisarlos y ajustar lo que haga falta.
+// Fertilización de Árboles Frutales se escribió con el material del curso (PLATICA-ARBOLES-FRUTALES.pdf); los demás, a partir del título de cada clase y del tema del curso,
+// no del contenido exacto del video: conviene revisarlos y ajustar lo que haga falta.
 // Un juego sugerido no se guarda solo: se carga en el formulario y se publica al pulsar «Guardar cambios».
 window.SINERGIA_JUEGOS_SUGERIDOS = [
   {
@@ -202,17 +203,17 @@ window.SINERGIA_JUEGOS_SUGERIDOS = [
   {
     titulo: 'Fertilización de Árboles Frutales',
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa de nutrientes', palabras: ['NITROGENO', 'FOSFORO', 'POTASIO', 'CALCIO', 'ARBOL'] },
+      { tipo: 'sopa', titulo: 'Sopa del diagnóstico del huerto', palabras: ['POMOLOGIA', 'FOLIAR', 'DRENAJE', 'SALINIDAD', 'TEXTURA'] },
       { tipo: 'memoria', titulo: 'Memoria de los nutrientes', parejas: [
-        { a: 'Nitrógeno', b: 'Impulsa hojas y brotes' },
-        { a: 'Fósforo', b: 'Favorece raíces y floración' },
-        { a: 'Potasio', b: 'Mejora tamaño y calidad del fruto' },
-        { a: 'Calcio', b: 'Da firmeza al fruto' } ] },
-      { tipo: 'conecta', titulo: 'Conecta la fertilización', pares: [
-        { izq: 'Análisis de suelo', der: 'Dice qué nutrientes faltan' },
-        { izq: 'Riego por goteo', der: 'Aplica el fertilizante cerca de la raíz' },
-        { izq: 'Época de aplicación', der: 'Brotación, floración y llenado del fruto' },
-        { izq: 'Materia orgánica', der: 'Mejora el suelo y retiene agua' } ] }
+        { a: 'Nitrógeno', b: 'Crecimiento vegetativo; forma proteínas y clorofila' },
+        { a: 'Fósforo', b: 'Fotosíntesis, raíces y formación de frutos' },
+        { a: 'Potasio', b: 'Calidad del fruto y resistencia al estrés' },
+        { a: 'Calcio', b: 'Paredes celulares: frutos más firmes y de mayor vida útil' } ] },
+      { tipo: 'conecta', titulo: 'Conecta la deficiencia con su síntoma', pares: [
+        { izq: 'Nitrógeno', der: 'Hojas pálidas o amarillentas (clorosis)' },
+        { izq: 'Fósforo', der: 'Hojas violáceas o rojizas' },
+        { izq: 'Potasio', der: 'Quemaduras en los bordes de las hojas' },
+        { izq: 'Hierro', der: 'Hojas amarillas con las venas verdes' } ] }
     ]
   }
 ];
