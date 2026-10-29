@@ -14014,7 +14014,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       { id: 'rescate-03', tipo: 'caso', almacen: 'sinergia_rescate_v1', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La decisión que espera', desc: 'Organiza qué registrar, qué preguntar y qué conclusión debe esperar.', xp: 25, img: 'retos-rescate-del-cultivo/caso-03-la-decision-que-espera.png', respaldo: true, url: 'rescate-caso-03.html', min: '4–5 min', cta: 'Organizar prioridades', recompensa: '+25 XP semanal' }] },
     { id: 'integra', nombre: 'Integra', tiempo: '5–8 min', sub: 'Combina lo aprendido en una misión completa.', items: [
       { id: 'desafio-01', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 01', nivel: 'Experto', titulo: 'La ruta de las tres pistas', desc: 'Une observación, comparación y registro para entender una parcela con criterio.', xp: 30, img: 'retos-desafio-sinergia/caso-01-la-ruta-de-las-tres-pistas.png', respaldo: true, url: 'desafio-caso-01.html', min: '5–7 min', cta: 'Iniciar misión', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
-      { id: 'desafio-02', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 02', nivel: 'Experto', titulo: 'El dato que cambia la lectura', desc: 'Compara dos recorridos y descubre qué contexto cambia una observación.', xp: 30, img: 'retos-desafio-sinergia/caso-02-el-dato-que-cambia-la-lectura.png', respaldo: true, url: 'desafio-caso-02.html', min: '5–7 min', cta: 'Comparar recorridos', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' }] }
+      { id: 'desafio-02', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 02', nivel: 'Experto', titulo: 'El dato que cambia la lectura', desc: 'Compara dos recorridos y descubre qué contexto cambia una observación.', xp: 30, img: 'retos-desafio-sinergia/caso-02-el-dato-que-cambia-la-lectura.png', respaldo: true, url: 'desafio-caso-02.html', min: '5–7 min', cta: 'Comparar recorridos', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
+      { id: 'desafio-03', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 03', nivel: 'Experto', titulo: 'El expediente de la parcela', desc: 'Selecciona evidencia útil y construye un registro de campo completo.', xp: 40, img: 'retos-desafio-sinergia/caso-03-el-expediente-de-la-parcela.png', respaldo: true, url: 'desafio-caso-03.html', min: '6–8 min', cta: 'Abrir expediente', hechoTxt: 'Misión completada', recompensa: '+40 XP semanal' }] }
   ];
   var RT_INSIGNIAS = [
     { id: 'ojo', nombre: 'Ojo de campo', regla: 'Resuelve los 3 casos de Detective Agrícola' },
@@ -14022,7 +14023,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     { id: 'mirada', nombre: 'Mirada de parcela', regla: 'Completa el Mundo 01 del Modo Historia' },
     { id: 'calma', nombre: 'Decidir con calma', regla: 'Completa los 3 casos de Rescate del Cultivo' },
     { id: 'ruta', nombre: 'Primera ruta SINERGIA', regla: 'Completa la misión La ruta de las tres pistas' },
-    { id: 'contexto', nombre: 'Mirada en contexto', regla: 'Completa la misión El dato que cambia la lectura' }
+    { id: 'contexto', nombre: 'Mirada en contexto', regla: 'Completa la misión El dato que cambia la lectura' },
+    { id: 'expediente', nombre: 'Expediente claro', regla: 'Completa la misión El expediente de la parcela' },
+    { id: 'campo', nombre: 'Criterio de campo', regla: 'Completa las 3 misiones de Desafío SINERGIA' }
   ];
   function rtCasosGuardados(clave) {
     try { var o = JSON.parse(localStorage.getItem(clave || 'sinergia_detective_v1') || 'null'); if (o && o.v === 1 && o.casos && typeof o.casos === 'object') return o.casos; } catch (e) { /* sin avance guardado */ }
@@ -14053,6 +14056,12 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (s) { try { var o = JSON.parse(localStorage.getItem('sinergia_desafio_v1') || 'null'); if (o && o.v === 1) { o.logros = o.logros || {}; if (!o.logros.miradaEnContexto) { o.logros.miradaEnContexto = { en: String(s) }; localStorage.setItem('sinergia_desafio_v1', JSON.stringify(o)); } } } catch (e) { /* sin almacenamiento */ } return true; }
     try { var l = JSON.parse(localStorage.getItem('sinergia_desafio_v1') || 'null'); return !!(l && l.logros && l.logros.miradaEnContexto); } catch (e) { return false; }
   }
+  // Insignias del Desafío SINERGIA ("Expediente claro", "Criterio de campo"): las guarda la misión 03 en este dispositivo y el servidor las confirma en /api/retos/casos
+  function rtLogroDesafio(nombre) {
+    var s = RT.casos && RT.casos.logros && RT.casos.logros[nombre];
+    if (s) { try { var o = JSON.parse(localStorage.getItem('sinergia_desafio_v1') || 'null'); if (o && o.v === 1) { o.logros = o.logros || {}; if (!o.logros[nombre]) { o.logros[nombre] = { en: String(s) }; localStorage.setItem('sinergia_desafio_v1', JSON.stringify(o)); } } } catch (e) { /* sin almacenamiento */ } return true; }
+    try { var l = JSON.parse(localStorage.getItem('sinergia_desafio_v1') || 'null'); return !!(l && l.logros && l.logros[nombre]); } catch (e) { return false; }
+  }
   function rtCasosDisponibles() { return RT_CAMPO[0].items.filter(function (i) { return !i.pronto; }); }
 
   // Insignias de práctica: reconocen lo hecho, no son requisito para jugar nada
@@ -14074,19 +14083,19 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var integraHechos = integra.filter(function (i) { return rtCasoLocal(i.id, i.almacen).resuelto; });
     return {
       resueltos: resueltos.length, totalCasos: casos.length, nDistintos: nDistintos, xpSemana: xpSemana,
-      ins: { ojo: resueltos.length >= casos.length, criterio: nDistintos >= 5, mirada: nivelesHistoria >= 6, calma: rescatesHechos.length >= rescates.length || rtLogroCalma(), ruta: rtCasoLocal('desafio-01', 'sinergia_desafio_v1').resuelto || rtLogroRuta(), contexto: rtCasoLocal('desafio-02', 'sinergia_desafio_v1').resuelto || rtLogroContexto() },
-      prog: { ojo: resueltos.length + ' de ' + casos.length + ' casos', criterio: Math.min(nDistintos, 5) + ' de 5 retos', mirada: nivelesHistoria + ' de 6 niveles', calma: rescatesHechos.length + ' de ' + rescates.length + ' casos', ruta: (rtCasoLocal('desafio-01', 'sinergia_desafio_v1').resuelto ? 1 : 0) + ' de 1 misión', contexto: (rtCasoLocal('desafio-02', 'sinergia_desafio_v1').resuelto ? 1 : 0) + ' de 1 misión' }
+      ins: { ojo: resueltos.length >= casos.length, criterio: nDistintos >= 5, mirada: nivelesHistoria >= 6, calma: rescatesHechos.length >= rescates.length || rtLogroCalma(), ruta: rtCasoLocal('desafio-01', 'sinergia_desafio_v1').resuelto || rtLogroRuta(), contexto: rtCasoLocal('desafio-02', 'sinergia_desafio_v1').resuelto || rtLogroContexto(), expediente: rtCasoLocal('desafio-03', 'sinergia_desafio_v1').resuelto || rtLogroDesafio('expedienteClaro'), campo: ['desafio-01', 'desafio-02', 'desafio-03'].every(function (id) { return rtCasoLocal(id, 'sinergia_desafio_v1').resuelto; }) || rtLogroDesafio('criterioDeCampo') },
+      prog: { ojo: resueltos.length + ' de ' + casos.length + ' casos', criterio: Math.min(nDistintos, 5) + ' de 5 retos', mirada: nivelesHistoria + ' de 6 niveles', calma: rescatesHechos.length + ' de ' + rescates.length + ' casos', ruta: (rtCasoLocal('desafio-01', 'sinergia_desafio_v1').resuelto ? 1 : 0) + ' de 1 misión', contexto: (rtCasoLocal('desafio-02', 'sinergia_desafio_v1').resuelto ? 1 : 0) + ' de 1 misión', expediente: (rtCasoLocal('desafio-03', 'sinergia_desafio_v1').resuelto ? 1 : 0) + ' de 1 misión', campo: ['desafio-01', 'desafio-02', 'desafio-03'].filter(function (id) { return rtCasoLocal(id, 'sinergia_desafio_v1').resuelto; }).length + ' de 3 misiones' }
     };
   }
   function rtPracticaHtml(d, racha) {
-    var p = rtPracticaDatos(d), miembro = !!(d && d.miembro), nIns = (p.ins.ojo ? 1 : 0) + (p.ins.criterio ? 1 : 0) + (p.ins.mirada ? 1 : 0) + (p.ins.calma ? 1 : 0) + (p.ins.ruta ? 1 : 0) + (p.ins.contexto ? 1 : 0);
+    var p = rtPracticaDatos(d), miembro = !!(d && d.miembro), nIns = (p.ins.ojo ? 1 : 0) + (p.ins.criterio ? 1 : 0) + (p.ins.mirada ? 1 : 0) + (p.ins.calma ? 1 : 0) + (p.ins.ruta ? 1 : 0) + (p.ins.contexto ? 1 : 0) + (p.ins.expediente ? 1 : 0) + (p.ins.campo ? 1 : 0);
     var xpTxt = !miembro ? '—' : (p.xpSemana === null ? '—' : '+' + credNum(p.xpSemana));
     var chk = rtIcono('<path d="m5 12 5 5 9-10"/>'), vacio = rtIcono('<circle cx="12" cy="12" r="7"/>');
     return '<aside class="rt-bloque rtc-practica rtc-practica--lado" aria-labelledby="rtcPracTit"><h3 id="rtcPracTit">Tu práctica de campo</h3>' +
       '<dl class="rtc-stats">' +
       '<div><dt>Casos resueltos</dt><dd>' + p.resueltos + ' / ' + p.totalCasos + '</dd></div>' +
       '<div><dt>XP esta semana</dt><dd' + (!miembro ? ' title="Los XP de los casos se suman con membresía"' : '') + '>' + xpTxt + '</dd></div>' +
-      '<div><dt>Insignias</dt><dd>' + nIns + ' / 6</dd></div></dl>' +
+      '<div><dt>Insignias</dt><dd>' + nIns + ' / 8</dd></div></dl>' +
       '<ul class="rtc-logros" aria-label="Insignias de práctica">' + RT_INSIGNIAS.map(function (i) {
         var ok = p.ins[i.id];
         return '<li class="' + (ok ? 'es-lista' : '') + '" title="' + escapeHtml(i.regla + ' · ' + p.prog[i.id]) + '"><span aria-hidden="true">' + (ok ? chk : vacio) + '</span><b>' + escapeHtml(i.nombre) + '</b><small>' + (ok ? 'Lista' : escapeHtml(p.prog[i.id])) + '</small></li>';
