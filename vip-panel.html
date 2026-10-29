@@ -14130,37 +14130,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   function retosPintar() {
     var d = RT.datos, cuerpo = document.getElementById('retosCuerpo');
     if (!d || !cuerpo) return;
-    var r = d.reglas || {};
-    var porId = {}; (d.juegos || []).forEach(function (j) { porId[j.id] = j; });
-    var delDia = d.retoDelDia && porId[d.retoDelDia];
     var lg = ligaEstado(), rachaVista = Math.max(Number(d.racha) || 0, lg ? lg.racha : 0);
     // Orden: Modo Historia arriba; luego tu práctica y los Retos de campo; después lo demás
     var html = '<div class="rtc-top"><div class="rtc-top-main">' + rtHistoriaHtml() + '</div>' + rtPracticaHtml(d, rachaVista) + '</div>' + rtCamposHtml(d);
-
-    // Resumen
-    html += '<div class="rt-fila rtx-fila">' +
-      '<div class="rt-stat"><small>Racha</small><b>' + credNum(rachaVista) + '</b><span>' + (rachaVista === 1 ? 'día seguido jugando' : 'días seguidos jugando') + '</span></div>' +
-      (d.miembro
-        ? '<div class="rt-stat"><small>Tus puntos de la semana</small><b>' + credNum(d.yo ? d.yo.puntos : 0) + '</b><span>' + (d.yo && d.yo.puesto ? 'Vas en el lugar ' + d.yo.puesto + ' de ' + d.participantes : 'Aún sin puesto: suma tus primeros puntos') + '</span></div>' +
-          '<div class="rt-stat"><small>Juegos con puntos hoy</small><b>' + credNum(d.hoyJugados) + ' / ' + credNum(r.topeJuegosPorDia) + '</b><span>Cada juego suma ' + credNum(r.puntosPorJuego) + ' puntos una vez por semana</span></div>'
-        : '<div class="rt-stat"><small>Tu cuenta</small><b>Gratis</b><span>Juegas el Reto del día. Con membresía juegas todos y compites en el podio.</span></div>' +
-          '<div class="rt-stat"><small>Créditos por retos esta semana</small><b>' + credNum(d.creditosSemana) + ' / ' + credNum(r.topeCreditosSemana) + '</b><span>Reto del día: +' + credNum(r.creditosRetoDelDia) + ' créditos</span></div>') +
-      '</div>';
-
-    // Reto del día
-    if (delDia) {
-      var puede = delDia.jugable;
-      html += '<section class="rt-dia" aria-labelledby="rtDiaTit"><div><span class="cred-eyebrow">Reto del día</span>' +
-        '<h3 id="rtDiaTit">' + escapeHtml(delDia.titulo || retosNombreJuego(delDia.tipo)) + '</h3>' +
-        '<p>Repasa conceptos vistos en clase y suma puntos para tu racha.</p><p class="rtx-dia-meta">' + escapeHtml(retosNombreJuego(delDia.tipo)) + ' · ' + escapeHtml(delDia.cursoTitulo) + ' · Clase ' + delDia.numeroClase + '. ' +
-        (d.miembro ? 'Juega todos los días para mantener tu racha.' : (r.creditosRetoDelDia > 0 ? 'Es el juego gratis de hoy: gana ' + credNum(r.creditosRetoDelDia) + ' créditos.' : 'Es el juego gratis de hoy.')) + '</p></div>' +
-        (puede ? '<button type="button" class="cred-btn" onclick="retosJugar(\'' + escapeHtml(delDia.id) + '\')">Jugar ahora</button>'
-               : '<button type="button" class="cred-btn" onclick="__irASuscripcion()">Ver membresía</button>') +
-        '</section>';
-    } else {
-      html += rtDiarioLocalHtml();
-    }
-
 
     // Juegos por curso
     var grupos = {}, ordenCursos = [];
