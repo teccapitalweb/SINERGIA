@@ -1627,6 +1627,7 @@ html[data-theme="dark"] .hs-proximo .hs-eyebrow { color: var(--h-gold); }
 .hs-logro-dl dt { font: 800 11px var(--font-display, 'Plus Jakarta Sans', sans-serif); letter-spacing: .08em; text-transform: uppercase; color: var(--h-subtle); }
 .hs-logro-dl dd { margin: 0; font-weight: 700; color: var(--h-text); }
 .hs-logro-nota { margin: 0; font-size: 13px; color: var(--h-muted); }
+.hs-logro-nota:empty { display: none; }
 .hs-proximo .hs-btn[disabled] { opacity: .65; cursor: default; justify-self: start; }
 .hs-proximo .hs-btn { justify-self: start; }
 #historia .hs-btn-discreto { min-height: 44px; padding: 0 14px; border: 0; background: none; color: rgba(255, 255, 255, .78); font: 700 14px var(--font-display, 'Plus Jakarta Sans', sans-serif); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
@@ -2770,7 +2771,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
   var MUNDO2 = { id: 'mundo-02', titulo: 'Decisiones con evidencia', texto: 'Usa lo que observas y registras para comparar situaciones y tomar decisiones con más criterio.', url: null };   // url: se llena cuando el Mundo 02 exista
   function logroDeMundo() { return estado.logros['mundo-01'] || null; }
   function fechaLarga(iso) { try { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } }
-  function textoGuardado() { return cuenta.estado === 'conectada' ? 'Guardado en este dispositivo y en tu cuenta.' : 'Guardado en este dispositivo.'; }
+  function textoGuardado() { return cuenta.estado === 'conectada' ? 'Guardado en tu cuenta.' : ''; }
   // Crea el logro la primera vez; en repeticiones solo mejora el dominio (y el mapa si el dominio no baja). Nunca repite XP ni insignia.
   function registrarLogroLocal(pct, mapa) {
     var prev = logroDeMundo();
@@ -3569,9 +3570,9 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     } catch (e) { return { estado: 'error' }; }
   }
   var TEXTO_CUENTA = {
-    'sin-sesion': 'Inicia sesión en el panel para que tu avance cuente en tu cuenta. Por ahora se guarda solo en este dispositivo.',
-    'sin-membresia': 'Con una membresía activa, tus niveles suman XP real y el logro «Mirada de parcela». Por ahora tu avance se guarda solo en este dispositivo.',
-    'error': 'No pudimos conectar con tu cuenta. Tu avance quedó en este dispositivo y se enviará la próxima vez que entres.'
+    'sin-sesion': 'Inicia sesión en el panel para que tu avance cuente en tu cuenta.',
+    'sin-membresia': 'Con una membresía activa, tus niveles suman XP real y el logro «Mirada de parcela».',
+    'error': 'No pudimos conectar con tu cuenta. Tu avance se enviará la próxima vez que entres.'
   };
   function pintarCuenta() {
     var el = $('hsCuenta');

@@ -2370,13 +2370,13 @@ html[data-theme="dark"] .dm-item-l { background: var(--d-accent); color: #06241D
     var base = jugadoAhora && estado.veces > 1 ? 'Misión completada de nuevo' : 'Misión completada';
     if (!res) return { chip: '', pie: 'Consultando tu recompensa…' };
     switch (res.tipo) {
-      case 'xp': return { chip: '+' + res.xp + ' XP semanal', pie: 'Los XP de la misión cuentan una vez por semana. Tu avance se guarda en este dispositivo y los XP en tu cuenta.' };
+      case 'xp': return { chip: '+' + res.xp + ' XP semanal', pie: 'Los XP de la misión cuentan una vez por semana.' };
       case 'ya-esta-semana': return { chip: base + ' · Ya recibiste los XP de esta semana', quieto: true, pie: 'Los XP de la misión cuentan una vez por semana: vuelven el ' + fechaLunes(res.proxima) + '.' };
-      case 'sin-membresia': return { chip: '', pie: 'Los XP de las misiones se suman con una membresía activa. Tu avance se guarda en este dispositivo.' };
-      case 'admin': return { chip: '', pie: 'Las cuentas de administración no suman XP. Tu avance se guarda en este dispositivo.' };
-      case 'sin-sesion': return { chip: '', pie: 'Inicia sesión en el panel para sumar los XP de la misión (+' + XP + ' XP semanal). Por ahora tu avance se guarda solo en este dispositivo.' };
-      case 'listo': return { chip: 'Esta semana: +' + XP + ' XP disponibles', quieto: true, pie: 'Repite la misión para sumarlos. Tu avance se guarda en este dispositivo.' };
-      default: return { chip: '', pie: 'No pudimos confirmar tus XP ahora. Tu avance quedó en este dispositivo y se intentará de nuevo la próxima vez que entres.' };
+      case 'sin-membresia': return { chip: '', pie: 'Los XP de las misiones se suman con una membresía activa.' };
+      case 'admin': return { chip: '', pie: 'Las cuentas de administración no suman XP.' };
+      case 'sin-sesion': return { chip: '', pie: 'Inicia sesión en el panel para sumar los XP de la misión (+' + XP + ' XP semanal).' };
+      case 'listo': return { chip: 'Esta semana: +' + XP + ' XP disponibles', quieto: true, pie: 'Repite la misión para sumarlos.' };
+      default: return { chip: '', pie: 'No pudimos confirmar tus XP ahora. Se intentará de nuevo la próxima vez que entres.' };
     }
   }
 
