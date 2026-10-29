@@ -13990,6 +13990,24 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<span class="rtx-historia-pie"><b>' + (n >= 6 ? 'Mundo completado' : n + ' de 6 niveles') + '</b>' +
       '<span class="rtx-historia-go">' + (n === 0 ? 'Comenzar recorrido' : (n >= 6 ? 'Ver mi bitácora' : 'Continuar recorrido')) + ' →</span></span></div></a>';
   }
+  // Detective Agrícola · Caso 01: página propia (el avance del caso vive en localStorage 'sinergia_detective_v1')
+  function rtDetectiveEstado() {
+    try {
+      var o = JSON.parse(localStorage.getItem('sinergia_detective_v1') || 'null');
+      var c = o && o.v === 1 && o.casos && o.casos['detective-01'];
+      if (c) return { resuelto: c.resuelto === true, pistas: Array.isArray(c.pistas) ? Math.min(3, c.pistas.length) : 0 };
+    } catch (e) { /* sin avance guardado */ }
+    return { resuelto: false, pistas: 0 };
+  }
+  function rtDetectiveHtml() {
+    var e = rtDetectiveEstado();
+    return '<a class="rtx-historia rtx-historia--detective" href="detective-caso-01.html" aria-label="Detective Agrícola, caso 01: El rastro que no cuadra">' +
+      '<div class="rtx-historia-in"><span class="rtx-pill">Detective Agrícola · Caso 01</span>' +
+      '<h3>El rastro que no cuadra</h3>' +
+      '<p>Recorre la escena y encuentra tres pistas visibles antes de sacar conclusiones. De 2 a 4 minutos; 15 XP una vez por semana.</p>' +
+      '<span class="rtx-historia-pie"><b>' + (e.resuelto ? 'Caso resuelto' : (e.pistas ? e.pistas + ' de 3 pistas' : 'Caso nuevo')) + '</b>' +
+      '<span class="rtx-historia-go">' + (e.resuelto ? 'Revisar el caso' : (e.pistas ? 'Continuar el caso' : 'Resolver el caso')) + ' →</span></span></div></a>';
+  }
   // Anclas del panel: vip-panel.html#<pestaña> abre esa pestaña (lo usa el Modo Historia, que vive en otra página),
   // #buscar=texto llena el buscador y #cerrar-sesion cierra la sesión.
   window.addEventListener('sinergiaUserReady', function () {
@@ -14066,6 +14084,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
 
     // Modo Historia: acceso a su página propia
     html += rtHistoriaHtml();
+
+    // Detective Agrícola: caso independiente
+    html += rtDetectiveHtml();
 
     // Centro de retos: los tres juegos principales
     html += rtCentroHtml();
@@ -26681,6 +26702,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     .rtx-historia { align-items: flex-start; padding-bottom: 150px; background-size: auto 170px; background-position: 80% bottom; }
     .rtx-historia::before { background: linear-gradient(180deg, rgba(8, 32, 27, 0.96) 0%, rgba(8, 32, 27, 0.9) 62%, rgba(8, 32, 27, 0.1) 100%); }
   }
+  .rtx-historia--detective { background-image: url(assets/detective/caso-01-el-rastro-que-no-cuadra.webp); }
   @media (prefers-reduced-motion: reduce) { .rtx-historia { transition: none; } }
 
   /* ═══════════ Logros: encabezado verde con ilustración, nivel, racha y semana ═══════════ */
