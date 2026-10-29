@@ -13965,6 +13965,14 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         }).join('') + '</ol>';
       }
     }
+    var otros = d.companeros || [];
+    if (otros.length) {
+      h += '<h4 class="rtp-otros-t">También participan</h4><ul class="rtp-lista rtp-lista--otros">' + otros.map(function (f) {
+        return '<li class="rtp-fila' + (f.esYo ? ' rtp-fila--yo' : '') + '"><span class="rtp-n" aria-hidden="true">·</span><span class="rtp-av rtp-av--s">' + rtpAvatar(f) + '</span>' +
+          '<span class="rtp-txt"><b>' + escapeHtml(f.nombre) + (f.esYo ? ' <em class="rtp-tu">Tú</em>' : '') + '</b><small>Aún sin puntos esta semana</small></span>' +
+          '<span class="rtp-px">0 pts</span></li>';
+      }).join('') + '</ul>';
+    }
     if (d.miembro && d.yo && d.yo.puesto && d.yo.puesto > pod.length) h += '<p class="rt-yo">Tu lugar: <b>' + d.yo.puesto + '</b> con <b>' + credNum(d.yo.puntos) + '</b> puntos.</p>';
     if (!d.miembro) h += '<p class="rt-yo">Solo los miembros compiten en el podio. <a onclick="__irASuscripcion()" style="cursor:pointer;text-decoration:underline;">Hazte miembro</a></p>';
     return h + '</section>';
@@ -26693,6 +26701,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   html[data-theme="dark"] .rtp-col--3 .rtp-base { background: rgba(231, 200, 115, 0.22); border-color: rgba(231, 200, 115, 0.3); color: #E7C873; }
   .rtp-col--vacia { opacity: 0.6; }
   .rtp-lista { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .rtp-otros-t { margin: 18px 0 8px; font-family: var(--font-display); font-weight: 800; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); }
+  .rtp-lista--otros .rtp-fila { grid-template-columns: 28px 44px minmax(0, 1fr) auto; }
+  .rtp-lista--otros .rtp-px { color: var(--text-tertiary); }
   .rtp-fila { display: grid; grid-template-columns: 28px 44px minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 10px 16px; border: 1px solid var(--border-card); border-radius: 16px; background: var(--bg-subtle); }
   .rtp-fila--yo { border-color: #1AA888; box-shadow: inset 0 0 0 1px #1AA888; }
   .rtp-n { font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--text-tertiary); text-align: center; }
