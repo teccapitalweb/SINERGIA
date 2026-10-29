@@ -13840,6 +13840,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (!RT.datos) cuerpo.innerHTML = '<div class="rt-vacio">Cargando los retos…</div>';
     try {
       RT.datos = await pedirAlServidor('/api/retos/estado', undefined, 'GET');
+      try { RT.casos = await pedirAlServidor('/api/retos/casos', undefined, 'GET'); } catch (e) { RT.casos = null; }   // si falla, las tarjetas usan solo lo guardado en este dispositivo
       retosPintar();
     } catch (err) {
       cuerpo.innerHTML = '<div class="rt-vacio">No pudimos cargar los retos. ' + escapeHtml(err.message || '') + ' <a onclick="retosCargar()" style="cursor:pointer;text-decoration:underline;">Reintentar</a></div>';
@@ -13990,23 +13991,121 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<span class="rtx-historia-pie"><b>' + (n >= 6 ? 'Mundo completado' : n + ' de 6 niveles') + '</b>' +
       '<span class="rtx-historia-go">' + (n === 0 ? 'Comenzar recorrido' : (n >= 6 ? 'Ver mi bitácora' : 'Continuar recorrido')) + ' →</span></span></div></a>';
   }
-  // Detective Agrícola · Caso 01: página propia (el avance del caso vive en localStorage 'sinergia_detective_v1')
-  function rtDetectiveEstado() {
-    try {
-      var o = JSON.parse(localStorage.getItem('sinergia_detective_v1') || 'null');
-      var c = o && o.v === 1 && o.casos && o.casos['detective-01'];
-      if (c) return { resuelto: c.resuelto === true, pistas: Array.isArray(c.pistas) ? Math.min(3, c.pistas.length) : 0 };
-    } catch (e) { /* sin avance guardado */ }
-    return { resuelto: false, pistas: 0 };
+  // ─── Retos de campo: catálogo, progreso por caso ('sinergia_detective_v1' en este dispositivo + /api/retos/casos del servidor) ───
+  // Ningún reto se bloquea por no haber hecho otro: todos están disponibles desde el inicio (salvo los que aún no existen: "Próximamente").
+  var RT_ICO = {
+    observa: rtIcono('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>'),
+    decide: rtIcono('<path d="M12 3v7m0 0-6 5m6-5 6 5M6 15v3m12-3v3"/><circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/>'),
+    integra: rtIcono('<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5M3 17.5l9 5 9-5"/>'),
+    reloj: rtIcono('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>')
+  };
+  var RT_CAMPO = [
+    { id: 'observa', nombre: 'Observa', tiempo: '2–4 min', sub: 'Encuentra señales y reúne evidencia.', items: [
+      { id: 'detective-01', tipo: 'caso', num: 'Caso 01', nivel: 'Básico', titulo: 'El rastro que no cuadra', desc: 'Encuentra tres pistas visibles en una escena de riego.', xp: 15, img: 'assets/detective/caso-01-el-rastro-que-no-cuadra.webp', url: 'detective-caso-01.html' },
+      { id: 'detective-02', tipo: 'caso', num: 'Caso 02', nivel: 'Intermedio', titulo: 'La planta fuera de contexto', desc: 'Compara plantas y zonas antes de sacar conclusiones.', xp: 15, img: 'assets/historia/nivel-04-zona-b.webp', pronto: true },
+      { id: 'detective-03', tipo: 'caso', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La libreta incompleta', desc: 'Detecta qué información falta para que una observación sea útil.', xp: 15, img: 'assets/historia/nivel-05-la-libreta-de-campo.webp', pronto: true }] },
+    { id: 'decide', nombre: 'Decide', tiempo: '3–5 min', sub: 'Elige con criterio ante una situación de campo.', items: [
+      { id: 'rescate', tipo: 'liga', num: 'Misión', nivel: 'Intermedio', pronto: false }] },
+    { id: 'integra', nombre: 'Integra', tiempo: '5–8 min', sub: 'Combina lo aprendido en una misión completa.', items: [
+      { id: 'desafio', tipo: 'liga', num: 'Misión', nivel: 'Avanzado', pronto: false }] }
+  ];
+  var RT_INSIGNIAS = [
+    { id: 'ojo', nombre: 'Ojo de campo', regla: 'Resuelve los 3 casos de Detective Agrícola' },
+    { id: 'criterio', nombre: 'Criterio en acción', regla: 'Completa 5 retos distintos' },
+    { id: 'mirada', nombre: 'Mirada de parcela', regla: 'Completa el Mundo 01 del Modo Historia' }
+  ];
+  function rtCasosGuardados() {
+    try { var o = JSON.parse(localStorage.getItem('sinergia_detective_v1') || 'null'); if (o && o.v === 1 && o.casos && typeof o.casos === 'object') return o.casos; } catch (e) { /* sin avance guardado */ }
+    return {};
   }
-  function rtDetectiveHtml() {
-    var e = rtDetectiveEstado();
-    return '<a class="rtx-historia rtx-historia--detective" href="detective-caso-01.html" aria-label="Detective Agrícola, caso 01: El rastro que no cuadra">' +
-      '<div class="rtx-historia-in"><span class="rtx-pill">Detective Agrícola · Caso 01</span>' +
-      '<h3>El rastro que no cuadra</h3>' +
-      '<p>Recorre la escena y encuentra tres pistas visibles antes de sacar conclusiones. De 2 a 4 minutos; 15 XP una vez por semana.</p>' +
-      '<span class="rtx-historia-pie"><b>' + (e.resuelto ? 'Caso resuelto' : (e.pistas ? e.pistas + ' de 3 pistas' : 'Caso nuevo')) + '</b>' +
-      '<span class="rtx-historia-go">' + (e.resuelto ? 'Revisar el caso' : (e.pistas ? 'Continuar el caso' : 'Resolver el caso')) + ' →</span></span></div></a>';
+  function rtCasoLocal(id) {
+    var c = rtCasosGuardados()[id];
+    if (!c || typeof c !== 'object') return { resuelto: false, pistas: 0, mejorErrores: null, ultima: null };
+    return { resuelto: c.resuelto === true, pistas: Array.isArray(c.pistas) ? Math.min(3, c.pistas.length) : 0, mejorErrores: Number.isInteger(c.mejorErrores) ? c.mejorErrores : null, ultima: c.ultimaEn || c.resueltoEn || null };
+  }
+  function rtCasoServidor(id) { return RT.casos && RT.casos.casos && RT.casos.casos[id] ? RT.casos.casos[id] : null; }
+  function rtFechaCorta(iso) { try { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) { return ''; } }
+  function rtCasosDisponibles() { return RT_CAMPO[0].items.filter(function (i) { return !i.pronto; }); }
+
+  // Insignias de práctica: reconocen lo hecho, no son requisito para jugar nada
+  function rtPracticaDatos(d) {
+    var casos = RT_CAMPO[0].items, resueltos = casos.filter(function (i) { return rtCasoLocal(i.id).resuelto; });
+    var distintos = {};
+    resueltos.forEach(function (i) { distintos[i.id] = 1; });
+    var lg = ligaEstado();
+    if (lg && lg.recibido) Object.keys(lg.recibido).forEach(function (k) { if (lg.recibido[k]) distintos['liga:' + k] = 1; });
+    ((d && d.juegos) || []).forEach(function (j) { if (j.completado) distintos['clase:' + j.id] = 1; });
+    var nDistintos = Object.keys(distintos).length;
+    var xpSemana = null;
+    if (RT.casos && RT.casos.casos) { xpSemana = 0; casos.forEach(function (i) { var s = rtCasoServidor(i.id); if (s && s.cobradoEstaSemana) xpSemana += s.xp || i.xp; }); }
+    var nivelesHistoria = rtHistoriaNiveles();
+    return {
+      resueltos: resueltos.length, totalCasos: casos.length, nDistintos: nDistintos, xpSemana: xpSemana,
+      ins: { ojo: resueltos.length >= casos.length, criterio: nDistintos >= 5, mirada: nivelesHistoria >= 6 },
+      prog: { ojo: resueltos.length + ' de ' + casos.length + ' casos', criterio: Math.min(nDistintos, 5) + ' de 5 retos', mirada: nivelesHistoria + ' de 6 niveles' }
+    };
+  }
+  function rtPracticaHtml(d, racha) {
+    var p = rtPracticaDatos(d), miembro = !!(d && d.miembro), nIns = (p.ins.ojo ? 1 : 0) + (p.ins.criterio ? 1 : 0) + (p.ins.mirada ? 1 : 0);
+    var xpTxt = !miembro ? '—' : (p.xpSemana === null ? '—' : '+' + credNum(p.xpSemana));
+    var xpSub = !miembro ? 'Los XP de los casos se suman con membresía.' : (p.xpSemana === null ? 'No pudimos leer tus XP de la semana.' : 'De los casos resueltos esta semana.');
+    var h = '<section class="rt-bloque rtc-practica" aria-labelledby="rtcPracTit"><div><span class="cred-eyebrow">Resumen</span><h3 id="rtcPracTit">Tu práctica de campo</h3></div>' +
+      '<div class="rt-fila rtx-fila">' +
+      '<div class="rt-stat"><small>Casos resueltos</small><b>' + p.resueltos + ' / ' + p.totalCasos + '</b><span>Detective Agrícola</span></div>' +
+      '<div class="rt-stat"><small>XP obtenidos esta semana</small><b>' + xpTxt + '</b><span>' + escapeHtml(xpSub) + '</span></div>' +
+      '<div class="rt-stat"><small>Insignias desbloqueadas</small><b>' + nIns + ' / 3</b><span>' + (nIns ? RT_INSIGNIAS.filter(function (i) { return p.ins[i.id]; }).map(function (i) { return escapeHtml(i.nombre); }).join(' · ') : 'Aún ninguna: se ganan practicando.') + '</span></div>' +
+      (racha > 0 ? '<div class="rt-stat"><small>Racha semanal</small><b>' + credNum(racha) + '</b><span>' + (racha === 1 ? 'día seguido practicando' : 'días seguidos practicando') + '</span></div>' : '') +
+      '</div>' +
+      '<ul class="rtc-insignias" aria-label="Insignias de práctica">' + RT_INSIGNIAS.map(function (i) {
+        var ok = p.ins[i.id];
+        return '<li class="rtc-ins' + (ok ? ' es-lista' : '') + '"><span class="rtc-ins-ico" aria-hidden="true">' + (ok ? rtIcono('<path d="m5 12 5 5 9-10"/>') : rtIcono('<circle cx="12" cy="12" r="8"/>')) + '</span>' +
+          '<span><b>' + escapeHtml(i.nombre) + '</b><small>' + (ok ? 'Desbloqueada' : escapeHtml(i.regla) + ' · ' + p.prog[i.id]) + '</small></span></li>';
+      }).join('') + '</ul>' +
+      '<p class="rtc-nota">Los logros reconocen la práctica; no son requisito para jugar ningún caso.</p></section>';
+    return h;
+  }
+
+  function rtCampoCard(it) {
+    var miembro = window.isVIP === true, L = window.SinergiaLiga, caso = it.tipo === 'caso';
+    var lg = ligaEstado(), j = !caso && L && L.JUEGOS ? L.JUEGOS[it.id] : null;
+    if (!caso && !j) return '';
+    var titulo = caso ? it.titulo : j.titulo, desc = caso ? it.desc : j.desc, xp = caso ? it.xp : j.xp, img = caso ? it.img : j.img;
+    var loc = caso ? rtCasoLocal(it.id) : null, srv = caso ? rtCasoServidor(it.id) : null;
+    var hecho = caso ? loc.resuelto : !!(lg && lg.recibido && lg.recibido[it.id]);
+    var estado = it.pronto ? '<span class="rtx-est rtx-est--bloq">Próximamente</span>'
+      : (hecho ? '<span class="rtx-est rtx-est--completada">' + (caso ? 'Caso resuelto' : 'Completado') + '</span>' : (!caso && !miembro ? '<span class="rtx-est rtx-est--bloq">Con membresía</span>' : ''));
+    var xpTxt = caso ? '+' + xp + ' XP semanal' : '+' + xp + ' XP';
+    var det = '';
+    if (hecho && caso) {
+      var mejor = loc.mejorErrores === null ? '' : (loc.mejorErrores === 0 ? 'Conclusión a la primera' : 'Conclusión en ' + (loc.mejorErrores + 1) + ' intentos');
+      var xpEst = !miembro ? 'Con membresía' : (srv ? (srv.cobradoEstaSemana ? 'Sumados' : 'Disponibles (+' + xp + ')') : '');
+      det = '<dl class="rtc-det">' + (mejor ? '<div><dt>Mejor resultado</dt><dd>' + escapeHtml(mejor) + '</dd></div>' : '') +
+        (loc.ultima ? '<div><dt>Última partida</dt><dd>' + escapeHtml(rtFechaCorta(loc.ultima)) + '</dd></div>' : '') +
+        (xpEst ? '<div><dt>XP de esta semana</dt><dd>' + escapeHtml(xpEst) + '</dd></div>' : '') + '</dl>';
+    } else if (hecho) {
+      det = '<p class="rtc-det">Recompensa de esta semana recibida. Puedes practicar de nuevo.</p>';
+    }
+    var boton = it.pronto ? '<button type="button" class="rtx-btn rtx-btn--sec" disabled aria-disabled="true">Próximamente</button>'
+      : (caso ? '<a class="rtx-btn' + (hecho ? ' rtx-btn--sec' : '') + '" href="' + it.url + '">' + (hecho ? 'Repetir caso' : (loc.pistas ? 'Continuar caso' : 'Investigar')) + '</a>'
+        : '<button type="button" class="rtx-btn' + (hecho ? ' rtx-btn--sec' : '') + '" data-rt-jugar="' + it.id + '">' + (hecho ? 'Practicar de nuevo' : 'Jugar') + '</button>');
+    return '<article class="rtc-card' + (hecho ? ' es-resuelto' : '') + (it.pronto ? ' es-pronto' : '') + '">' +
+      '<div class="rtc-img' + (caso ? '' : ' rtc-img--arte') + '"><img src="' + escapeHtml(img) + '" alt="" loading="lazy" decoding="async"><span class="rtc-nivel">' + escapeHtml(it.nivel) + '</span>' + (estado ? '<span class="rtc-estado">' + estado + '</span>' : '') + '</div>' +
+      '<div class="rtc-cu"><div class="rtc-meta"><span class="rtc-tipo" aria-hidden="true">' + RT_ICO[it.bloque] + '</span><span>' + escapeHtml(it.num) + ' · ' + escapeHtml(it.tiempo) + '</span></div>' +
+      '<h5>' + escapeHtml(titulo) + '</h5><p>' + escapeHtml(desc) + '</p>' + det +
+      '<div class="rtc-pie"><span class="rtx-xp">' + xpTxt + '</span>' + boton + '</div>' +
+      (caso && !miembro && !it.pronto ? '<p class="rtc-aviso">Juegas gratis; los XP son para miembros.</p>' : '') + '</div></article>';
+  }
+  function rtCamposHtml(d) {
+    var h = '<section class="rt-bloque rtc-seccion" aria-labelledby="rtcTit"><div><span class="cred-eyebrow">Retos de campo</span><h3 id="rtcTit">Elige cómo quieres entrenar</h3>' +
+      '<p>Todos los retos están abiertos: escoge el que quieras, en el orden que quieras.</p></div>';
+    RT_CAMPO.forEach(function (b) {
+      var tarjetas = b.items.map(function (it) { it.bloque = b.id; it.tiempo = b.tiempo; return rtCampoCard(it); }).join('');
+      if (!tarjetas) return;
+      h += '<div class="rtc-bloque"><div class="rtc-cab"><span class="rtc-ico">' + RT_ICO[b.id] + '</span><div><h4>' + escapeHtml(b.nombre) + ' <small>· ' + escapeHtml(b.tiempo) + '</small></h4><p>' + escapeHtml(b.sub) + '</p></div></div>' +
+        '<div class="rtc-grid">' + tarjetas + '</div></div>';
+    });
+    if (window.isVIP !== true) h += '<p class="rt-yo">Puedes probar un ejemplo de cada reto. Con membresía los terminas, sumas XP y desbloqueas insignias.</p>';
+    return h + '</section>';
   }
   // Anclas del panel: vip-panel.html#<pestaña> abre esa pestaña (lo usa el Modo Historia, que vive en otra página),
   // #buscar=texto llena el buscador y #cerrar-sesion cierra la sesión.
@@ -14054,7 +14153,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var porId = {}; (d.juegos || []).forEach(function (j) { porId[j.id] = j; });
     var delDia = d.retoDelDia && porId[d.retoDelDia];
     var lg = ligaEstado(), rachaVista = Math.max(Number(d.racha) || 0, lg ? lg.racha : 0);
-    var html = '';
+    // Orden: Modo Historia arriba; luego tu práctica y los Retos de campo; después lo demás
+    var html = rtHistoriaHtml() + rtPracticaHtml(d, rachaVista) + rtCamposHtml(d);
 
     // Resumen
     html += '<div class="rt-fila rtx-fila">' +
@@ -14064,7 +14164,6 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           '<div class="rt-stat"><small>Juegos con puntos hoy</small><b>' + credNum(d.hoyJugados) + ' / ' + credNum(r.topeJuegosPorDia) + '</b><span>Cada juego suma ' + credNum(r.puntosPorJuego) + ' puntos una vez por semana</span></div>'
         : '<div class="rt-stat"><small>Tu cuenta</small><b>Gratis</b><span>Juegas el Reto del día. Con membresía juegas todos y compites en el podio.</span></div>' +
           '<div class="rt-stat"><small>Créditos por retos esta semana</small><b>' + credNum(d.creditosSemana) + ' / ' + credNum(r.topeCreditosSemana) + '</b><span>Reto del día: +' + credNum(r.creditosRetoDelDia) + ' créditos</span></div>') +
-      rtMisionSemanaHtml() +
       '</div>';
 
     // Reto del día
@@ -14081,15 +14180,6 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       html += rtDiarioLocalHtml();
     }
 
-
-    // Modo Historia: acceso a su página propia
-    html += rtHistoriaHtml();
-
-    // Detective Agrícola: caso independiente
-    html += rtDetectiveHtml();
-
-    // Centro de retos: los tres juegos principales
-    html += rtCentroHtml();
 
     // Juegos por curso
     var grupos = {}, ordenCursos = [];
@@ -26608,6 +26698,56 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .rtx-juego-cu .rtx-btn { margin-top: auto; }
   .rtx-insig { margin: 14px 0 0; font-size: 13.5px; color: var(--text-secondary); }
   .rtx-insig b { color: var(--text-primary); }
+  /* Retos de campo y Tu práctica de campo */
+  .rtc-practica { display: grid; gap: 14px; }
+  .rtc-insignias { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .rtc-ins { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px 8px 8px; border: 1.5px dashed var(--border-card); border-radius: 100px; color: var(--text-secondary); }
+  .rtc-ins b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 13.5px; color: var(--text-primary); }
+  .rtc-ins small { display: block; font-size: 12px; }
+  .rtc-ins-ico { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--bg-subtle); }
+  .rtc-ins-ico svg { width: 16px; height: 16px; }
+  .rtc-ins.es-lista { border: 1.5px solid #E7C873; background: rgba(231, 200, 115, 0.18); }
+  .rtc-ins.es-lista .rtc-ins-ico { background: #E7C873; color: #3B2D07; }
+  .rtc-nota { margin: 0; font-size: 12.5px; color: var(--text-secondary); }
+  .rtc-seccion { display: grid; gap: 22px; }
+  .rtc-seccion h3 { margin: 4px 0 4px; }
+  .rtc-seccion p { margin: 0; }
+  .rtc-bloque { display: grid; gap: 12px; }
+  .rtc-cab { display: flex; align-items: center; gap: 12px; }
+  .rtc-cab h4 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-primary); }
+  .rtc-cab h4 small { margin-left: 4px; font-size: 13px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--text-secondary); }
+  .rtc-cab p { margin: 2px 0 0; font-size: 13.5px; color: var(--text-secondary); }
+  .rtc-ico { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 13px; background: #113D35; color: #fff; }
+  .rtc-ico svg { width: 22px; height: 22px; }
+  html[data-theme="dark"] .rtc-ico { background: #1AA888; color: #06241D; }
+  .rtc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }   /* auto-fill: una tarjeta sola no se estira a todo el ancho */
+  .rtc-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-card); border-radius: 20px; background: var(--bg-card); transition: transform .2s, box-shadow .2s; }
+  .rtc-card:hover { transform: translateY(-2px); box-shadow: 0 16px 32px -20px rgba(17, 61, 53, 0.45); }
+  .rtc-card.es-resuelto { border-color: #1AA888; }
+  .rtc-img { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #0F3B33; }
+  .rtc-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .rtc-img--arte { background: #F7F3E8; }
+  html[data-theme="dark"] .rtc-img--arte { background: #123A33; }
+  .rtc-img--arte img { object-fit: contain; padding: 10px; }
+  .rtc-card.es-pronto .rtc-img img { filter: saturate(0.5) brightness(0.9); }
+  .rtc-nivel { position: absolute; top: 10px; left: 10px; padding: 4px 11px; border-radius: 100px; background: rgba(8, 32, 27, 0.88); color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.04em; }
+  .rtc-estado { position: absolute; top: 10px; right: 10px; }
+  .rtc-cu { display: flex; flex: 1; flex-direction: column; gap: 6px; padding: 14px 16px 16px; }
+  .rtc-meta { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--text-secondary); }
+  .rtc-tipo { display: inline-grid; place-items: center; width: 22px; height: 22px; color: #0B5A41; }
+  html[data-theme="dark"] .rtc-tipo { color: #92C7A1; }
+  .rtc-tipo svg { width: 18px; height: 18px; }
+  .rtc-cu h5 { margin: 2px 0 0; font-family: var(--font-display); font-weight: 800; font-size: 17px; line-height: 1.2; color: var(--text-primary); }
+  .rtc-cu p { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--text-secondary); }
+  .rtc-det { display: grid; gap: 3px; margin: 4px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--bg-subtle); font-size: 12.5px; color: var(--text-secondary); }
+  .rtc-det div { display: flex; justify-content: space-between; gap: 10px; }
+  .rtc-det dt { color: var(--text-secondary); }
+  .rtc-det dd { margin: 0; font-weight: 700; text-align: right; color: var(--text-primary); }
+  .rtc-pie { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 10px; }
+  .rtc-cu p.rtc-aviso { margin-top: 2px; font-size: 12px; }
+  .rtc-pie .rtx-btn { text-decoration: none; }
+  .rtx-btn[disabled] { opacity: 0.6; cursor: default; transform: none; }
+  @media (max-width: 720px) { .rtc-grid { grid-template-columns: 1fr; } }
   @media (max-width: 720px) {
     .rtx-hero { min-height: 0; align-items: flex-start; padding: 26px 18px 200px; background-size: auto 190px; background-position: right bottom; }
     .rtx-hero::before { background: linear-gradient(180deg, rgba(15, 59, 51, 0.97) 0%, rgba(15, 59, 51, 0.92) 64%, rgba(15, 59, 51, 0.1) 100%); }

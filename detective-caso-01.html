@@ -1819,7 +1819,7 @@ html[data-theme="dark"] .dt-libreta h2 { color: var(--d-gold); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   /* ───────── Progreso (localStorage). Se guarda lo del caso en este dispositivo; los XP los confirma el servidor ───────── */
-  function vacio() { return { v: 1, pistas: [], resuelto: false, mejorErrores: null, veces: 0, resueltoEn: null, recompensa: null, pendienteXp: false }; }
+  function vacio() { return { v: 1, pistas: [], resuelto: false, mejorErrores: null, veces: 0, resueltoEn: null, ultimaEn: null, recompensa: null, pendienteXp: false }; }
   function leer() {
     try {
       var o = JSON.parse(localStorage.getItem(CLAVE) || 'null');
@@ -1831,6 +1831,7 @@ html[data-theme="dark"] .dt-libreta h2 { color: var(--d-gold); }
         r.mejorErrores = Number.isInteger(c.mejorErrores) ? c.mejorErrores : null;
         r.veces = Number(c.veces) > 0 ? Math.floor(Number(c.veces)) : 0;
         r.resueltoEn = typeof c.resueltoEn === 'string' ? c.resueltoEn : null;
+        r.ultimaEn = typeof c.ultimaEn === 'string' ? c.ultimaEn : r.resueltoEn;   // fecha de la última partida (la muestra la tarjeta de Retos)
         r.recompensa = c.recompensa && typeof c.recompensa === 'object' ? { semana: String(c.recompensa.semana || ''), en: String(c.recompensa.en || ''), xp: Number(c.recompensa.xp) || 0 } : null;
         r.pendienteXp = c.pendienteXp === true;
         return r;
@@ -2018,7 +2019,7 @@ html[data-theme="dark"] .dt-libreta h2 { color: var(--d-gold); }
   }
   async function cerrarCaso() {
     var primera = !estado.resuelto;
-    estado.resuelto = true; estado.veces++; estado.resueltoEn = estado.resueltoEn || new Date().toISOString();
+    estado.resuelto = true; estado.veces++; estado.resueltoEn = estado.resueltoEn || new Date().toISOString(); estado.ultimaEn = new Date().toISOString();
     estado.mejorErrores = estado.mejorErrores === null ? errores : Math.min(estado.mejorErrores, errores);
     guardar();
     mostrarCierre(null);
