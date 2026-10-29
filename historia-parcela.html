@@ -2801,11 +2801,18 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     $('cierreLogro').hidden = !l;
   }
   function pintarBitacora() {
-    var cont = $('bitacoraCont'), l = logroDeMundo();
-    if (!l) { cont.innerHTML = '<p class="hs-bit-vacia">' + (estado.insignia ? 'Ya tienes la insignia. Repite el nivel 0.6 para guardar tu mapa en la bitácora.' : 'Aquí aparecerán tus logros y el mapa que construyas al completar el Mundo 01.') + '</p>'; return; }
+    var cont = $('bitacoraCont'), l = logroDeMundo(), calma = logroCalma();
+    var tarjetaCalma = calma ? '<article class="hs-bit-card"><h3>Decidir con calma</h3><dl class="hs-logro-dl"><div><dt>Retos de campo</dt><dd>Rescate del Cultivo</dd></div><div><dt>Logro</dt><dd>Completaste los 3 casos de Rescate del Cultivo.</dd></div>' +
+      (calma.en ? '<div><dt>Conseguido</dt><dd>' + esc(fechaLarga(calma.en)) + '</dd></div>' : '') + '</dl></article>' : '';
+    if (!l) { cont.innerHTML = tarjetaCalma + (calma ? '' : '<p class="hs-bit-vacia">' + (estado.insignia ? 'Ya tienes la insignia. Repite el nivel 0.6 para guardar tu mapa en la bitácora.' : 'Aquí aparecerán tus logros y el mapa que construyas al completar el Mundo 01.') + '</p>'); return; }
     cont.innerHTML = '<article class="hs-bit-card"><h3>' + esc(l.nombre) + '</h3>' + logroHtml(l) +
       '<div class="hs-acciones"><button type="button" class="hs-btn" data-act="mapa">Ver mi mapa</button></div><p class="hs-logro-nota">' + esc(textoGuardado()) + '</p></article>' +
+      tarjetaCalma +
       '<article class="hs-bit-card hs-proximo">' + proximoHtml() + '</article>';
+  }
+  // Logro de Retos de campo "Decidir con calma" (lo guarda el caso 03 de Rescate del Cultivo en sinergia_rescate_v1)
+  function logroCalma() {
+    try { var o = JSON.parse(localStorage.getItem('sinergia_rescate_v1') || 'null'); var g = o && o.v === 1 && o.logros && o.logros.decidirConCalma; return g ? { en: typeof g.en === 'string' ? g.en : '' } : null; } catch (e) { return null; }
   }
   // Revisar el mapa terminado (modo lectura). desde: 'cierre' | 'inicio'
   function verMapa(desde) {
