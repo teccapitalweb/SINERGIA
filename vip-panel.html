@@ -7477,6 +7477,7 @@
     transform: translateY(-1px);
   }
   .visor-btn-action svg { width: 14px; height: 14px; }
+  a.visor-btn-action { text-decoration: none; }
   .visor-close {
     width: 36px; height: 36px;
     border-radius: 50%;
@@ -19578,7 +19579,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     frame.src = previewUrl;
     titleEl.textContent = titulo || 'Visor';
     if (dlEl) {
-      dlEl.style.display = videoId ? 'none' : '';
+      dlEl.style.display = (videoId || tipo === 'video') ? 'none' : '';
       if (!videoId) dlEl.href = url;
     }
     // Botón pantalla completa: solo en clases (videos), oculto en material
@@ -25676,6 +25677,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <span>Marcar como visto</span>
         </button>
+        <a id="visorDownload" class="visor-btn-action" href="#" target="_blank" rel="noopener" title="Abrir en Drive para descargar" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="m7 11 5 5 5-5"/><path d="M12 4v12"/></svg>
+          <span>Descargar</span>
+        </a>
         <button id="visorFullscreen" class="visor-btn-action" onclick="toggleVisorFullscreen()" title="Pantalla completa" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
           <span>Pantalla completa</span>
