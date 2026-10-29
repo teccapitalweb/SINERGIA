@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sinergia-Agrícola · Cultivamos conocimiento, cosechas resultados</title>
-<meta name="description" content="Cursos online y asesoría agrícola especializada con certificación verificable. Clases en vivo, webinars y dinámicas cada día en nuestro canal de WhatsApp.">
+<meta name="description" content="Cursos online y asesoría agrícola especializada con certificación verificable. Clases en vivo, noticias, flyers y webinars cada semana en nuestro canal de WhatsApp.">
 <meta name="theme-color" content="#113D35">
 
 <!-- Open Graph -->
 <meta property="og:title" content="Sinergia-Agrícola · Cultivamos conocimiento">
-<meta property="og:description" content="Cursos agrícolas online en vivo con certificación. Webinars y dinámicas cada día en nuestro canal de WhatsApp.">
+<meta property="og:description" content="Cursos agrícolas online en vivo con certificación. Noticias, flyers y webinars cada semana en nuestro canal de WhatsApp.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sinergiamexico.it.com/">
 
@@ -270,14 +270,21 @@
   .pw-link { color: var(--accent-text); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
   /* ───────── Chat con Savia ───────── */
-  .sv-launch { position: fixed; right: 20px; bottom: 20px; z-index: 125; display: inline-flex; align-items: center; gap: 12px; padding: 7px 20px 7px 7px; border: 0; border-radius: 100px; background: var(--forest); color: var(--on-forest); box-shadow: 0 22px 40px -18px rgba(11, 32, 20, .6); transition: transform .25s var(--ease), opacity .2s, box-shadow .2s; }
-  .sv-launch:hover { transform: translateY(-3px); box-shadow: 0 28px 46px -18px rgba(11, 32, 20, .65); }
+  .sv-launch { position: fixed; right: 24px; bottom: 30px; z-index: 125; display: inline-flex; align-items: center; gap: 12px; padding: 6px 22px 6px 6px; border: 2px solid var(--forest); border-radius: 100px; background: var(--ivory); color: var(--forest); box-shadow: 0 20px 38px -14px rgba(11, 32, 20, .6); animation: svRing 3.6s ease-out infinite; transition: transform .25s var(--ease), opacity .2s, box-shadow .2s; }
+  @keyframes svRing { 0% { box-shadow: 0 20px 38px -14px rgba(11, 32, 20, .6), 0 0 0 0 rgba(26, 168, 136, .45); } 65%, 100% { box-shadow: 0 20px 38px -14px rgba(11, 32, 20, .6), 0 0 0 16px rgba(26, 168, 136, 0); } }
+  .sv-launch:hover { transform: translateY(-3px); }
   .sv-launch.oculto { opacity: 0; pointer-events: none; transform: translateY(12px); }
-  .sv-launch-av { width: 50px; height: 50px; border-radius: 50%; background: var(--mint-soft); overflow: hidden; flex-shrink: 0; display: grid; place-items: center; }
+  .sv-launch-av { width: 56px; height: 56px; border-radius: 50%; background: var(--mint-soft); overflow: hidden; flex-shrink: 0; display: grid; place-items: center; }
   .sv-launch-av img { width: 128%; height: 128%; max-width: none; object-fit: contain; margin-top: 12%; }
   .sv-launch-t { text-align: left; line-height: 1.15; }
-  .sv-launch-t b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 15.5px; }
-  .sv-launch-t small { display: block; margin-top: 2px; font-size: 12px; color: var(--mint); }
+  .sv-launch-t b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 16.5px; color: var(--forest); }
+  .sv-launch-t small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--text-2); }
+  .sv-hola { position: fixed; right: 24px; bottom: 112px; z-index: 125; width: min(264px, calc(100vw - 48px)); padding: 13px 40px 13px 15px; background: #fff; border: 1px solid var(--border); border-radius: 16px 16px 4px 16px; box-shadow: 0 22px 40px -22px rgba(11, 32, 20, .55); font-size: 14px; line-height: 1.45; color: var(--text); cursor: pointer; opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .3s ease, transform .35s var(--ease); }
+  .sv-hola.on { opacity: 1; transform: none; pointer-events: auto; }
+  .sv-hola b { color: var(--forest); font-weight: 800; }
+  .sv-hola button { position: absolute; top: 6px; right: 6px; width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: var(--text-2); display: grid; place-items: center; }
+  .sv-hola button:hover { background: var(--subtle); }
+  .sv-hola .ico { width: 16px; height: 16px; }
 
   .sv-panel { position: fixed; right: 20px; bottom: 20px; z-index: 130; width: 392px; max-width: calc(100vw - 24px); height: min(620px, calc(100svh - 40px)); display: flex; flex-direction: column; background: var(--ivory); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; box-shadow: 0 44px 90px -34px rgba(11, 32, 20, .6); opacity: 0; pointer-events: none; transform: translateY(18px) scale(.98); transform-origin: 100% 100%; transition: opacity .22s ease, transform .28s var(--ease); }
   .sv-panel.abierto { opacity: 1; pointer-events: auto; transform: none; }
@@ -381,22 +388,33 @@
 
   /* Canal / semana */
   .canal { background: var(--forest); color: var(--on-forest); overflow: hidden; isolation: isolate; }
-  .canal-bg { position: absolute; inset: 0; z-index: -1; background: url(img/auth-campo.webp) 108% 100% / auto 130% no-repeat; opacity: .5; mix-blend-mode: lighten; }
+
   .canal .eyebrow { color: var(--mint); }
   .canal .eyebrow i { background: rgba(250, 249, 245, .12); }
   .canal .sec-title { color: var(--on-forest); }
   .canal .sec-title .serif { color: var(--mint-soft); }
   .canal .sec-lead { color: var(--on-forest-2); }
   .canal-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px; margin-bottom: 48px; }
-  .canal-cta { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .canal-cta { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .canal-btn { display: inline-flex; align-items: center; gap: 14px; padding: 9px 22px 9px 9px; border-radius: 100px; background: var(--ivory); color: var(--forest); box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .55); transition: transform .25s var(--ease), box-shadow .25s, background-color .2s; }
+  .canal-btn:hover { transform: translateY(-3px); background: #fff; box-shadow: 0 28px 46px -18px rgba(0, 0, 0, .6); }
+  .canal-btn-ic { width: 52px; height: 52px; border-radius: 50%; background: var(--forest); color: var(--mint); display: grid; place-items: center; flex-shrink: 0; }
+  .canal-btn-ic svg { width: 27px; height: 27px; fill: currentColor; }
+  .canal-btn-t b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 17px; line-height: 1.15; }
+  .canal-btn .canal-btn-t small { display: block; margin-top: 3px; font-size: 12.5px; color: var(--text-2); }
+  .canal-btn-go { width: 20px; height: 20px; color: var(--accent-text); transition: transform .2s var(--ease); }
+  .canal-btn:hover .canal-btn-go { transform: translateX(4px); }
   .canal-cta small { font-size: 13.5px; color: var(--on-forest-2); }
-  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; perspective: 1400px; }
-  .day { position: relative; min-height: 210px; padding: 20px 16px 18px; border-radius: 20px; background: rgba(250, 249, 245, .06); border: 1px solid rgba(250, 249, 245, .16); display: flex; flex-direction: column; transition: transform .25s var(--ease), background-color .25s, border-color .25s; will-change: transform; }
+  .week { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; perspective: 1400px; }
+  .day { position: relative; min-height: 216px; padding: 22px 20px 20px; border-radius: 20px; background: rgba(250, 249, 245, .06); border: 1px solid rgba(250, 249, 245, .16); display: flex; flex-direction: column; transition: transform .25s var(--ease), background-color .25s, border-color .25s; will-change: transform; }
   .day:hover { background: rgba(250, 249, 245, .11); border-color: rgba(169, 221, 185, .5); }
   .day .abbr { font-family: var(--font-display); font-weight: 800; font-size: 34px; letter-spacing: -.03em; line-height: 1; color: var(--mint-soft); }
   .day .name { font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; margin-top: 8px; color: var(--on-forest-2); }
   .day .what { margin-top: auto; font-size: 14px; line-height: 1.4; color: var(--on-forest); }
-  .day .what.soon { color: var(--on-forest-2); }
+  .day .what strong { display: block; font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -.01em; line-height: 1.2; margin-bottom: 6px; color: var(--on-forest); }
+  .day .what span { display: block; font-size: 14px; line-height: 1.45; color: var(--on-forest-2); }
+  .day.today .what strong { color: var(--forest); }
+  .day.today .what span { color: var(--text-2); }
   .day .badge { position: absolute; top: 14px; right: 12px; display: none; font-family: var(--font-display); font-weight: 800; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 4px 8px; border-radius: 100px; background: var(--mint); color: var(--forest); }
   .day.today { background: var(--ivory); border-color: var(--ivory); color: var(--text); }
   .day.today .abbr { color: var(--forest); }
@@ -555,7 +573,6 @@
     .about, .faq-wrap { grid-template-columns: 1fr; gap: 40px; }
     .about-badge { left: 14px; bottom: 50px; }
     .section { padding: 80px 0; }
-    .canal-bg { opacity: .22; }
     .ruta { padding: 72px 0 80px; }
     .panel { padding: 72px 0; }
     .panel-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -584,8 +601,9 @@
     .plan .price b { font-size: 48px; }
     .cta-box { padding: 56px 24px; border-radius: 26px; }
     .footer-bottom { padding-right: 0; padding-bottom: 64px; }
-    .sv-launch { right: 14px; bottom: 14px; padding: 6px 16px 6px 6px; }
-    .sv-launch-av { width: 44px; height: 44px; }
+    .sv-launch { right: 14px; bottom: calc(26px + env(safe-area-inset-bottom)); padding: 5px 18px 5px 5px; }
+    .sv-launch-av { width: 50px; height: 50px; }
+    .sv-hola { right: 14px; bottom: calc(100px + env(safe-area-inset-bottom)); }
     .sv-launch-t small { display: none; }
     .sv-panel { right: 0; left: 0; bottom: 0; width: auto; max-width: none; height: min(86svh, 680px); border-radius: 22px 22px 0 0; }
     .sv-m { max-width: 92%; }
@@ -616,12 +634,10 @@
         <div class="nav-logo-text"><b>Sinergia</b><span>Agrícola</span></div>
       </a>
       <div class="nav-links">
-        <a href="#ruta">Tu ruta</a>
-        <a href="#incluye">Qué incluye</a>
-        <a href="#canal">Canal</a>
+        <a href="#nosotros">Quiénes somos</a>
         <a href="#cursos">Cursos</a>
         <a href="#planes">Planes</a>
-        <a href="#nosotros">Nosotros</a>
+        <a href="#canal">Canal</a>
         <a href="#faq">Preguntas</a>
       </div>
       <div class="nav-right">
@@ -637,12 +653,10 @@
     </nav>
   </div>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#ruta">Tu ruta</a>
-    <a href="#incluye">Qué incluye</a>
-    <a href="#canal">Canal de WhatsApp</a>
+    <a href="#nosotros">Quiénes somos</a>
     <a href="#cursos">Cursos</a>
     <a href="#planes">Planes</a>
-    <a href="#nosotros">Nosotros</a>
+    <a href="#canal">Canal de WhatsApp</a>
     <a href="#faq">Preguntas frecuentes</a>
   </div>
 </header>
@@ -900,20 +914,20 @@
 
 <!-- ═════════ CANAL / SEMANA ═════════ -->
 <section class="section canal" id="canal">
-  <div class="canal-bg" aria-hidden="true"></div>
   <div class="wrap">
     <div class="canal-top">
       <div>
         <span class="eyebrow" data-reveal><i>05</i> Canal oficial</span>
-        <h2 class="sec-title" data-reveal style="--d:.08s">Cada día de la semana pasa <span class="serif">algo nuevo.</span></h2>
-        <p class="sec-lead" data-reveal style="--d:.16s">Webinars, dinámicas y avisos de clases en vivo. Todo se publica primero en nuestro canal de WhatsApp.</p>
+        <h2 class="sec-title" data-reveal style="--d:.08s">Noticias, flyers y webinars, <span class="serif">cada semana.</span></h2>
+        <p class="sec-lead" data-reveal style="--d:.16s">Todo se publica primero en nuestro canal oficial de WhatsApp. Síguelo para enterarte de las noticias y de los webinars que habrá.</p>
       </div>
       <div class="canal-cta" data-reveal style="--d:.24s">
-        <a class="btn btn-ivory" href="https://whatsapp.com/channel/0029VbCVhib7dmeTR6jgNk3L" target="_blank" rel="noopener">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-          Seguir el canal
+        <a class="canal-btn" href="https://whatsapp.com/channel/0029VbCVhib7dmeTR6jgNk3L" target="_blank" rel="noopener">
+          <span class="canal-btn-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span>
+          <span class="canal-btn-t"><b>Seguir el canal</b><small>Canal oficial de WhatsApp · gratis</small></span>
+          <svg class="ico canal-btn-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
-        <small>Es gratuito y se abre directo en WhatsApp.</small>
+        <small>Se abre directo en WhatsApp.</small>
       </div>
     </div>
 
@@ -1044,7 +1058,7 @@
         </details>
         <details>
           <summary>¿Qué es el canal de WhatsApp? <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
-          <div class="ans">Es el lugar donde anunciamos los webinars y las dinámicas de cada día de la semana, además de los avisos de las clases en vivo. Es gratuito: <a href="https://whatsapp.com/channel/0029VbCVhib7dmeTR6jgNk3L" target="_blank" rel="noopener">sigue el canal aquí</a>.</div>
+          <div class="ans">Es el lugar donde publicamos las noticias, los flyers que dan a conocer los webinars y los webinars mismos, además de los avisos de las clases en vivo. Es gratuito: <a href="https://whatsapp.com/channel/0029VbCVhib7dmeTR6jgNk3L" target="_blank" rel="noopener">sigue el canal aquí</a>.</div>
         </details>
         <details>
           <summary>¿Recibo algún reconocimiento? <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
@@ -1084,7 +1098,7 @@
           +52 1 236 107 4058
         </a>
       </div>
-      <p class="cta-chan">Y no te pierdas lo del día: <a href="https://whatsapp.com/channel/0029VbCVhib7dmeTR6jgNk3L" target="_blank" rel="noopener">sigue nuestro canal de WhatsApp</a>.</p>
+      <p class="cta-chan">Y entérate primero de todo: <a href="https://whatsapp.com/channel/0029VbCVhib7dmeTR6jgNk3L" target="_blank" rel="noopener">sigue nuestro canal de WhatsApp</a>.</p>
     </div>
   </div>
 </section>
@@ -1147,6 +1161,11 @@
   <span class="sv-launch-t"><b>Savia</b><small>Tu guía virtual</small></span>
 </button>
 
+<div class="sv-hola" id="svHola" role="status">
+  <p><b>¡Hola! Soy Savia.</b> ¿Quieres que te ayude a encontrar tu curso?</p>
+  <button type="button" id="svHolaX" aria-label="Cerrar el mensaje"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+</div>
+
 <section class="sv-panel" id="svPanel" role="dialog" aria-label="Chat con Savia, guía virtual" aria-modal="false">
   <header class="sv-head">
     <div class="sv-av" aria-hidden="true"><img class="on" id="svA" src="img/guia/guia-01-bienvenida.webp" alt="" width="560" height="560"><img id="svB" alt="" width="560" height="560"></div>
@@ -1174,16 +1193,15 @@
   var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   var CANAL = 'https://whatsapp.com/channel/0029VbCVhib7dmeTR6jgNk3L';
 
-  /* Programación semanal del canal. Para anunciar algo, escribe el texto en 't'
-     (por ejemplo 'Webinar de bioinsumos, 7 pm'). Si queda vacío dice "Se anuncia en el canal". */
+  /* Programación semanal del canal. Un día sin texto ('t') no se muestra. */
   var SEMANA = [
-    { d: 'Lunes', a: 'Lun', t: '' },
-    { d: 'Martes', a: 'Mar', t: '' },
-    { d: 'Miércoles', a: 'Mié', t: '' },
-    { d: 'Jueves', a: 'Jue', t: '' },
-    { d: 'Viernes', a: 'Vie', t: '' },
-    { d: 'Sábado', a: 'Sáb', t: '' },
-    { d: 'Domingo', a: 'Dom', t: '' }
+    { d: 'Lunes', a: 'Lun' },
+    { d: 'Martes', a: 'Mar', n: 'Noticias', t: 'Es el día de las noticias en el canal.' },
+    { d: 'Miércoles', a: 'Mié', n: 'Flyers', t: 'Publicamos los flyers que dan a conocer los webinars de la semana.' },
+    { d: 'Jueves', a: 'Jue', n: 'Webinars', t: 'Se lanzan los webinars, en formato de promoción.' },
+    { d: 'Viernes', a: 'Vie', n: 'Webinars', t: 'Si un webinar no se hizo el jueves, se da este día.' },
+    { d: 'Sábado', a: 'Sáb' },
+    { d: 'Domingo', a: 'Dom' }
   ];
   var hoy = (new Date().getDay() + 6) % 7; // 0 = lunes
 
@@ -1221,13 +1239,15 @@
 
   /* Semana del canal */
   var week = document.getElementById('week');
+  var delay = 0;
   week.innerHTML = SEMANA.map(function (s, i) {
-    var algo = s.t && s.t.trim();
-    return '<div class="day' + (i === hoy ? ' today' : '') + '" role="listitem" data-tilt data-reveal style="--d:' + (i * .06).toFixed(2) + 's">' +
+    if (!(s.t && s.t.trim())) return '';
+    var d = (delay++ * .08).toFixed(2);
+    return '<div class="day' + (i === hoy ? ' today' : '') + '" role="listitem" data-tilt data-reveal style="--d:' + d + 's">' +
       '<span class="badge">Hoy</span>' +
       '<div class="abbr">' + esc(s.a) + '</div>' +
       '<div class="name">' + esc(s.d) + '</div>' +
-      '<div class="what' + (algo ? '' : ' soon') + '">' + (algo ? esc(s.t) : 'Se anuncia en el canal') + '</div>' +
+      '<div class="what"><strong>' + esc(s.n || '') + '</strong><span>' + esc(s.t) + '</span></div>' +
       '</div>';
   }).join('');
 
@@ -1286,7 +1306,8 @@
   var COVERS = [
     ['bioinsum', 'bioinsumos'], ['org', 'certificacion-organica'], ['fertirr', 'fertirriego'],
     ['fitohorm', 'fitohormonas'], ['inocuidad', 'inocuidad'], ['lombri', 'lombricomposta'],
-    ['ventas', 'ventas-agro'], ['vivero', 'viveros']
+    ['ventas', 'ventas-agro'], ['vivero', 'viveros'],
+    ['cacao', 'del-cacao-al-chocolate'], ['frutal', 'fertilizacion-de-arboles-frutales']
   ];
   function coverFor(titulo) {
     var t = String(titulo || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -1740,7 +1761,7 @@
     { id: 'cancelar', k: ['cancelar', 'cancelacion', 'renovacion', 'renueva', 'se renueva', 'dar de baja', 'darme de baja', 'puedo cancelar'], p: ['Puedes cancelar cuando quieras. Los planes se renuevan automáticamente, cada mes o cada año según el que elijas.'], a: ['planes'], c: SEGUIR },
     { id: 'certificado', k: ['certificado', 'certificados', 'constancia', 'diploma', 'reconocimiento', 'folio', 'qr', 'curriculum', 'validar', 'valor curricular', 'titulo'], p: ['Al terminar cada curso recibes un certificado con valor curricular, folio único y código QR. Cualquier persona puede validarlo en línea.'], a: ['validar'], c: ['¿Cómo son las clases?', '¿Cuánto cuesta?'], im: 'animo' },
     { id: 'clases', k: ['clases', 'clase', 'en vivo', 'sesiones', 'horario', 'horarios', 'como son', 'modalidad', 'online', 'en linea', 'presencial', 'zoom', 'instructor'], p: ['Las clases son online y en vivo: te conectas desde el celular, la tablet o la computadora y hablas con el instructor para resolver tus dudas en tiempo real. Los avisos de las sesiones se publican en nuestro canal de WhatsApp.'], a: ['canal'], c: ['¿Cuánto cuesta?', '¿Qué cursos hay?', '¿Cómo me inscribo?'] },
-    { id: 'canal', k: ['canal', 'webinar', 'webinars', 'dinamica', 'dinamicas', 'novedades', 'seguir el canal', 'que es el canal'], p: ['Nuestro canal oficial de WhatsApp es donde publicamos un webinar o una dinámica distinta cada día de la semana. Es gratuito y se abre directo en WhatsApp.'], a: ['canal'], c: SEGUIR },
+    { id: 'canal', k: ['canal', 'webinar', 'webinars', 'flyer', 'flyers', 'noticias', 'novedades', 'seguir el canal', 'que es el canal'], p: ['En nuestro canal oficial de WhatsApp publicamos las noticias (martes), los flyers que dan a conocer los webinars (miércoles) y los webinars (jueves; si no se hacen ese día, el viernes). Es gratuito y se abre directo en WhatsApp.'], a: ['canal'], c: SEGUIR },
     { id: 'inscribir', k: ['inscribir', 'inscribirme', 'inscripcion', 'registrar', 'registro', 'empezar', 'comenzar', 'crear cuenta', 'como entro', 'unirme', 'como me uno', 'quiero entrar'], p: ['Elige tu plan en la página de planes y crea tu cuenta. Si prefieres que te guiemos, escríbenos por WhatsApp.'], a: ['planesPag', 'wa'], c: ['¿Cuánto cuesta?', '¿Puedo cancelar?'] },
     { id: 'acceso', k: ['iniciar sesion', 'login', 'ya soy miembro', 'ya tengo cuenta', 'mi cuenta', 'contrasena', 'olvide mi', 'acceso vip', 'entrar a mi cuenta'], p: ['Si ya tienes cuenta, entra con el botón "Acceso VIP", arriba a la derecha, o desde aquí.'], a: ['auth'], c: SEGUIR },
     { id: 'nivel', k: ['experiencia', 'principiante', 'basico', 'nivel', 'niveles', 'desde cero', 'avanzado', 'sin conocimientos', 'no se nada'], p: ['No necesitas experiencia previa: hay cursos de nivel básico, intermedio y avanzado. Si no sabes por dónde empezar, haz la ruta de aprendizaje y te recomiendo tres cursos.'], a: ['ruta'], c: SEGUIR },
@@ -1959,7 +1980,16 @@
     panel.classList.remove('abierto'); launch.classList.remove('oculto'); launch.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = ''; launch.focus({ preventScroll: true });
   }
-  launch.addEventListener('click', abrir);
+  /* Saludo discreto: sale una vez por visita, se puede cerrar y se quita solo */
+  var hola = document.getElementById('svHola'), holaT = 0;
+  function quitarHola(recordar) { if (!hola) return; clearTimeout(holaT); hola.classList.remove('on'); if (recordar) { try { sessionStorage.setItem('sinergia_savia_hola', '1'); } catch (e) { /* sin almacenamiento */ } } }
+  (function () {
+    var visto = false; try { visto = sessionStorage.getItem('sinergia_savia_hola') === '1'; } catch (e) { visto = false; }
+    if (visto || !hola) return;
+    setTimeout(function () { if (abierto) return; hola.classList.add('on'); holaT = setTimeout(function () { quitarHola(true); }, 14000); }, 4500);
+    hola.addEventListener('click', function (e) { quitarHola(true); if (!e.target.closest('#svHolaX')) abrir(); });
+  })();
+  launch.addEventListener('click', function () { quitarHola(true); abrir(); });
   document.getElementById('svClose').addEventListener('click', cerrar);
   document.getElementById('svReset').addEventListener('click', function () { if (!ocupado) inicio(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && abierto) cerrar(); });
