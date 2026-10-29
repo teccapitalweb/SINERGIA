@@ -10666,6 +10666,11 @@ html[data-theme="dark"] .act-chip--pra b { color: #92C7A1; }
 .cal-estrella:focus-visible { outline: 2px solid #1AA888; outline-offset: 2px; }
 .cal-texto { width: 100%; min-height: 84px; margin-top: 12px; padding: 10px 12px; border: 1px solid var(--border-card); border-radius: 12px; background: var(--bg-card); color: var(--text-primary); font: 400 14px 'Inter', sans-serif; resize: vertical; }
 .cal-texto:focus-visible { outline: 2px solid #1AA888; outline-offset: 1px; }
+.cal-emojis { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.cal-emoji { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--border-card); border-radius: 10px; background: var(--bg-card); font-size: 19px; line-height: 1; cursor: pointer; transition: background .15s, border-color .15s, transform .1s; }
+.cal-emoji:hover { background: var(--bg-subtle); border-color: #1AA888; }
+.cal-emoji:active { transform: scale(.92); }
+.cal-emoji:focus-visible { outline: 2px solid #1AA888; outline-offset: 1px; }
 .cal-cuenta { margin: 4px 0 0; font-size: 11.5px !important; text-align: right; max-width: none !important; }
 .cal-nombre { margin: 6px auto 0; font-size: 13px; color: var(--text-secondary); }
 .cert-cal { margin-top: 8px; }
@@ -15640,6 +15645,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return '<div class="cert-cal"><button type="button" data-calificar="' + id + '">Calificar este curso</button></div>';
   }
   const CAL_ESTRELLA = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5L2.6 9.3l6.5-.9z"/></svg>';
+  var CAL_EMOJIS = [['😀', 'Sonrisa'], ['😍', 'Me encantó'], ['👍', 'Me gusta'], ['👏', 'Aplausos'], ['🙌', 'Celebrar'], ['🌱', 'Brote'], ['🌾', 'Cultivo'], ['🚜', 'Tractor'], ['💡', 'Idea'], ['❤️', 'Corazón'], ['🔥', 'Excelente'], ['🤔', 'Duda']];
   function calAbrir(cursoId, titulo, auto) {
     const previo = document.getElementById('bvCalificar');
     if (previo) previo.remove();
@@ -15654,6 +15660,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<div class="cal-estrellas" role="radiogroup" aria-label="Calificación de 1 a 5 estrellas">' +
       [1, 2, 3, 4, 5].map(n => '<button type="button" class="cal-estrella" role="radio" aria-checked="false" aria-label="' + n + (n === 1 ? ' estrella' : ' estrellas') + '" data-n="' + n + '">' + CAL_ESTRELLA + '</button>').join('') + '</div>' +
       '<textarea class="cal-texto" maxlength="500" placeholder="Cuéntanos qué te gustó o qué mejorarías (opcional)" aria-label="Comentario opcional"></textarea>' +
+      '<div class="cal-emojis" role="group" aria-label="Agregar un emoji a tu opinión">' + CAL_EMOJIS.map(e => '<button type="button" class="cal-emoji" data-emoji="' + e[0] + '" aria-label="' + e[1] + '" title="' + e[1] + '">' + e[0] + '</button>').join('') + '</div>' +
       '<p class="cal-cuenta"><span class="cal-n">0</span>/500</p><p class="bv-error" role="alert"></p>' +
       '<div class="bv-acciones"><button type="button" class="cred-btn" data-enviar disabled>Enviar calificación</button>' +
       '<button type="button" class="cred-btn cred-btn--sec" data-despues>Después</button></div></div>';
@@ -15670,6 +15677,14 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     pintar();
     ov.querySelectorAll('.cal-estrella').forEach(b => b.addEventListener('click', () => { valor = Number(b.getAttribute('data-n')); err.textContent = ''; pintar(); }));
     texto.addEventListener('input', () => { ov.querySelector('.cal-n').textContent = texto.value.length; });
+    ov.querySelectorAll('[data-emoji]').forEach(b => b.addEventListener('click', () => {
+      const e = b.getAttribute('data-emoji'), max = Number(texto.getAttribute('maxlength')) || 500;
+      if (texto.value.length + e.length > max) return;
+      const a = texto.selectionStart == null ? texto.value.length : texto.selectionStart, z = texto.selectionEnd == null ? a : texto.selectionEnd;
+      texto.value = texto.value.slice(0, a) + e + texto.value.slice(z);
+      texto.focus(); texto.setSelectionRange(a + e.length, a + e.length);
+      ov.querySelector('.cal-n').textContent = texto.value.length;
+    }));
     const cerrar = () => { ov.remove(); document.body.style.overflow = ''; };
     ov.querySelector('[data-despues]').addEventListener('click', cerrar);
     ov.addEventListener('click', e => { if (e.target === ov) cerrar(); });
