@@ -320,7 +320,7 @@
   .sv-chip { min-height: 38px; padding: 0 14px; border-radius: 100px; border: 1.5px solid var(--accent); background: transparent; font-weight: 600; font-size: 13px; color: var(--accent-text); transition: background-color .2s, color .2s; }
   .sv-chip:hover { background: var(--accent); color: #fff; }
 
-  a.sv-card { display: block; color: inherit; text-decoration: none; transition: border-color .2s, background-color .2s; }
+  a.sv-card { display: grid; grid-template-columns: 68px 1fr; gap: 12px; align-items: start; color: inherit; text-decoration: none; transition: border-color .2s, background-color .2s; }
   a.sv-card:hover { border-color: var(--accent); background: #fff; }
   .sv-card em { display: block; margin-top: 6px; font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--accent-text); }
   .sv-curso { color: var(--forest); font-weight: 600; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
@@ -328,7 +328,13 @@
   .sv-card { margin-top: 8px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--ivory); }
   .sv-card b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--forest); line-height: 1.25; }
   .sv-card small { display: block; margin-top: 2px; font-size: 12px; color: var(--text-2); }
-  .sv-card span { display: block; margin-top: 5px; font-size: 13px; color: var(--text-2); line-height: 1.4; }
+  .sv-card .sv-d { display: block; margin-top: 5px; font-size: 13px; color: var(--text-2); line-height: 1.4; }
+  .sv-th { display: block; flex-shrink: 0; width: 68px; height: 68px; border-radius: 10px; background: var(--forest) url(img/campo-linea-hero.webp) center / cover no-repeat; }
+  .sv-b ul.sv-cursos { list-style: none; padding: 0; margin-top: 8px; display: grid; gap: 8px; }
+  .sv-b ul.sv-cursos li { margin: 0; }
+  a.sv-fila { display: flex; align-items: center; gap: 11px; padding: 5px 10px 5px 5px; border: 1px solid var(--border); border-radius: 12px; background: var(--ivory); color: var(--forest); font-weight: 600; font-size: 14px; line-height: 1.3; text-decoration: none; transition: border-color .2s, background-color .2s; }
+  a.sv-fila:hover { border-color: var(--accent); background: #fff; }
+  a.sv-fila .sv-th { width: 52px; height: 42px; border-radius: 8px; }
   .sv-form { display: flex; gap: 8px; padding: 10px 12px 8px; border-top: 1px solid var(--border); background: #fff; }
   .sv-form input { flex: 1; min-width: 0; height: 46px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--ivory); font: 500 15px var(--font-body); color: var(--text); }
   .sv-form input:focus { outline: none; border-color: var(--accent); background: #fff; }
@@ -1811,10 +1817,13 @@
   }
   function cursoHref(t) { return 'vip-panel.html#buscar=' + encodeURIComponent(t); }
   var NOTA_CURSO = 'Toca un curso para ir a él. Si aún no entras a tu cuenta, ahí te pedimos iniciar sesión o crear una.';
+  function portada(t) { return (window.__sinergiaCoverFor && window.__sinergiaCoverFor(t)) || ''; }
+  function miniatura(t) { var s = portada(t); return '<i class="sv-th"' + (s ? ' style="background-image:url(' + esc(s) + ')"' : '') + '></i>'; }
+  function fila(t, prefijo) { return '<a class="sv-fila" href="' + esc(cursoHref(t)) + '">' + miniatura(t) + '<span>' + (prefijo || '') + esc(t) + '</span></a>'; }
   function tarjeta(c) {
     var meta = [c.nivel, c.n ? c.n + (c.n === 1 ? ' sesión' : ' sesiones') : ''].filter(Boolean).join(' · ');
     var d = c.desc ? (c.desc.length > 125 ? c.desc.slice(0, 122).trim() + '…' : c.desc) : '';
-    return '<a class="sv-card" href="' + esc(cursoHref(c.titulo)) + '"><b>' + esc(c.titulo) + '</b>' + (meta ? '<small>' + esc(meta) + '</small>' : '') + (d ? '<span>' + esc(d) + '</span>' : '') + '<em>Ir al curso →</em></a>';
+    return '<a class="sv-card" href="' + esc(cursoHref(c.titulo)) + '">' + miniatura(c.titulo) + '<span><b>' + esc(c.titulo) + '</b>' + (meta ? '<small>' + esc(meta) + '</small>' : '') + (d ? '<span class="sv-d">' + esc(d) + '</span>' : '') + '<em>Ir al curso →</em></span></a>';
   }
   function respuestaGlosario(e) {
     var p = ['<b>' + esc(e.t) + ':</b> ' + esc(e.d)], cs = cursosPor(e.c);
@@ -1850,7 +1859,7 @@
     var primero = muestra[0] ? muestra[0].titulo : '';
     return {
       p: [cat.length > 10 ? 'Tenemos ' + cat.length + ' cursos en el catálogo. Estos son algunos, y todos están incluidos en la membresía:' : 'Estos son los ' + cat.length + ' cursos del catálogo. Todos están incluidos en la membresía. Toca el que te interese para ir a él:'],
-      l: muestra.map(function (c) { return '<a class="sv-curso" href="' + esc(cursoHref(c.titulo)) + '">' + esc(c.titulo) + '</a>'; }).concat(mas > 0 ? ['…y ' + mas + ' más en el catálogo'] : []),
+      ul: 'cursos', l: muestra.map(function (c) { return fila(c.titulo); }).concat(mas > 0 ? ['…y ' + mas + ' más en el catálogo'] : []),
       a: ['cursos', 'ruta'], c: ['¿Cuánto cuesta?', primero ? 'Cuéntame de ' + primero : '¿Cómo son las clases?']
     };
   }
@@ -1882,7 +1891,7 @@
   }
   function respuestaRuta() {
     var d = rutaGuardada();
-    if (d) return { p: ['Según tu ruta de aprendizaje, te recomiendo empezar por:'], l: d.cursos.slice(0, 3).map(function (t, i) { return (i + 1) + '. <a class="sv-curso" href="' + esc(cursoHref(t)) + '">' + esc(t) + '</a>'; }), a: ['verRuta', 'planes'], c: SEGUIR, im: 'ruta' };
+    if (d) return { p: ['Según tu ruta de aprendizaje, te recomiendo empezar por:'], ul: 'cursos', l: d.cursos.slice(0, 3).map(function (t, i) { return fila(t, (i + 1) + '. '); }), a: ['verRuta', 'planes'], c: SEGUIR, im: 'ruta' };
     return { p: ['Aún no has hecho tu ruta. Son 8 preguntas rápidas y te recomiendo tres cursos según tu perfil y tu meta.'], a: ['ruta'], c: ['¿Qué cursos hay?', '¿Cuánto cuesta?'] };
   }
   function respuestaCurso(c) {
@@ -1930,7 +1939,7 @@
   function burbujaBot(r) {
     var d = document.createElement('div'); d.className = 'sv-m sv-b';
     var h = (r.p || []).map(function (x) { return (x.indexOf('<div') === 0 || x.indexOf('<a class="sv-card"') === 0) ? x : '<p>' + x + '</p>'; }).join('');
-    if (r.l) h += '<ul>' + r.l.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>';
+    if (r.l) h += '<ul' + (r.ul === 'cursos' ? ' class="sv-cursos"' : '') + '>' + r.l.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>';
     if (r.a && r.a.length) h += '<div class="sv-acts">' + r.a.map(function (k) {
       var a = typeof k === 'string' ? A[k] : k; if (!a) return '';
       return '<a class="sv-act' + (a.pri ? ' pri' : '') + '" href="' + esc(a.href) + '"' + (a.ext ? ' target="_blank" rel="noopener"' : '') + '>' + esc(a.t) + '</a>';
