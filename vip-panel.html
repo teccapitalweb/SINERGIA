@@ -5781,6 +5781,15 @@
     box-shadow: 0 10px 24px rgba(20, 184, 166, 0.4);
   }
   .calc-btn:active { transform: translateY(0); }
+  .calc-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; width: 100%; }
+  .calc-actions .calc-btn { flex: 1; width: auto; min-width: 150px; }
+  .calc-btn.calc-btn-limpiar, .calc-actions .calc-btn.calc-btn-limpiar { min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+  .ubic-link { margin-top: 8px; padding: 0; background: none; border: none; color: var(--teal-600); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .ubic-link:hover { text-decoration: underline; }
+  .calc-btn.calc-btn-limpiar { flex: 0 0 auto; background: transparent !important; color: var(--teal-600) !important; border: 1.5px solid rgba(20, 184, 166, 0.45); box-shadow: none !important; padding: 12px 20px; }
+  .calc-btn.calc-btn-limpiar:hover { background: rgba(20, 184, 166, 0.08) !important; box-shadow: none !important; }
+  .clima-alt { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; font-size: 12px; color: var(--stone-500); }
+  .clima-alt .clima-chip.activo { background: #0284C7; color: #fff; border-color: #0284C7; }
 
   .calc-result {
     margin-top: 20px;
@@ -11877,7 +11886,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           <h3 id="canalContactoTitulo">WhatsApp de atención</h3>
           <p>Resolvemos dudas sobre cursos, membresía y pagos.</p>
           <a class="canal-num" href="https://wa.me/5212361074058" target="_blank" rel="noopener"><span><small>Principal</small>236 107 4058</span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg></a>
-          <a class="canal-num" href="https://wa.me/5212361107870" target="_blank" rel="noopener"><span><small>Alterno</small>52 1 236 110 7870</span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg></a>
+          <a class="canal-num" href="https://wa.me/5212361107870" target="_blank" rel="noopener"><span><small>Alterno</small>236 110 7870</span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg></a>
         </section>
       </div>
 
@@ -12036,7 +12045,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
             <input type="number" id="fertPctK" step="0.1" placeholder="60" min="0" max="100">
           </div>
         </div>
-        <button class="calc-btn" onclick="calcFertilizacion()">Calcular dosis total</button>
+        <div class="calc-actions"><button class="calc-btn" onclick="calcFertilizacion()">Calcular dosis total</button><button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this)">Limpiar</button></div>
         <div class="calc-result" id="fertResult"></div>
       </div>
 
@@ -12067,7 +12076,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
             </select>
           </div>
         </div>
-        <button class="calc-btn" onclick="calcRiego()">Calcular volumen y tiempo</button>
+        <div class="calc-actions"><button class="calc-btn" onclick="calcRiego()">Calcular volumen y tiempo</button><button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this)">Limpiar</button></div>
         <div class="calc-result" id="riegoResult"></div>
       </div>
 
@@ -12097,7 +12106,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
             <input type="number" id="densGerm" step="1" placeholder="Ej: 90" min="0" max="100" value="90">
           </div>
         </div>
-        <button class="calc-btn" onclick="calcDensidad()">Calcular densidad</button>
+        <div class="calc-actions"><button class="calc-btn" onclick="calcDensidad()">Calcular densidad</button><button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this)">Limpiar</button></div>
         <div class="calc-result" id="densResult"></div>
       </div>
 
@@ -12128,7 +12137,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
             <input type="number" id="mezclaGasto" step="10" placeholder="Ej: 200" min="0">
           </div>
         </div>
-        <button class="calc-btn" onclick="calcMezcla()">Calcular dosis por tanque</button>
+        <div class="calc-actions"><button class="calc-btn" onclick="calcMezcla()">Calcular dosis por tanque</button><button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this)">Limpiar</button></div>
         <div class="calc-result" id="mezclaResult"></div>
       </div>
 
@@ -12164,7 +12173,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
             <input type="number" id="rendPrecio" step="0.5" placeholder="Ej: 25" min="0">
           </div>
         </div>
-        <button class="calc-btn" onclick="calcRendimiento()">Calcular producción</button>
+        <div class="calc-actions"><button class="calc-btn" onclick="calcRendimiento()">Calcular producción</button><button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this)">Limpiar</button></div>
         <div class="calc-result" id="rendResult"></div>
       </div>
 
@@ -12275,7 +12284,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
             <input type="date" id="calFecha">
           </div>
         </div>
-        <button class="calc-btn" onclick="generarCalendario()">Generar calendario</button>
+        <div class="calc-actions"><button class="calc-btn" onclick="generarCalendario()">Generar calendario</button><button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this, {vaciar:['calResult']})">Limpiar</button></div>
       </div>
 
       <div id="calResult" style="margin-top: 24px;"></div>
@@ -12315,17 +12324,21 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         <p class="panel-subtitle">Consulta el pronóstico real de 7 días para tu localidad y toma mejores decisiones de riego, aplicación o cosecha.</p>
       </div>
 
-      <div class="tool-start"><span class="tool-start-icon">🌦️</span><span><strong>Cómo usarlo:</strong> escribe tu municipio o ciudad, selecciona la coincidencia y revisa lluvia, viento y temperatura antes de programar labores sensibles.</span></div>
+      <div class="tool-start"><span class="tool-start-icon">🌦️</span><span><strong>Cómo usarlo:</strong> escribe tu municipio o ciudad (mejor con el estado, por ejemplo "Puebla, México") o toca "Mi ubicación"; si aparecen varias coincidencias elige la correcta, y revisa lluvia, viento y temperatura antes de programar labores sensibles.</span></div>
 
       <div class="clima-search-box">
         <div class="clima-search-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
-        <input type="text" id="climaCiudad" placeholder="Escribe tu ciudad (ej: Tehuacán, Puebla)" />
-        <button class="calc-btn clima-btn" onclick="consultarClima()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Consultar clima
-        </button>
+        <input type="text" id="climaCiudad" placeholder="Escribe tu municipio o ciudad (ej: Puebla, México)" onkeydown="if(event.key==='Enter'){consultarClima();}" />
+        <div class="calc-actions">
+          <button class="calc-btn clima-btn" onclick="consultarClima()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Consultar clima
+          </button>
+          <button type="button" class="calc-btn calc-btn-limpiar" onclick="usarUbicacionClima()" title="Detecta dónde estás para consultar el clima sin escribir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg>Mi ubicación</button>
+          <button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this, {ocultar:['climaResultado'], mostrar:['climaEmpty']})">Limpiar</button>
+        </div>
       </div>
 
       <div class="clima-quick-chips">
@@ -12436,13 +12449,17 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           </div>
           <div class="calc-field">
             <label>Municipio / Ciudad</label>
-            <input type="text" id="mercMunicipio" placeholder="Ej: Tehuacán" value="Tehuacán">
+            <input type="text" id="mercMunicipio" placeholder="Ej: Tehuacán" value="Tehuacán" oninput="window.__mercUbicacion=null">
+            <button type="button" class="ubic-link" onclick="usarUbicacionMercados()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg>Usar mi ubicación</button>
           </div>
         </div>
+        <div class="calc-actions">
         <button class="calc-btn" onclick="buscarMercados()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:6px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           Comparar referencias
         </button>
+        <button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this, {ocultar:['mercResultados'], mostrar:['mercEmpty']})">Limpiar</button>
+        </div>
 
         <div class="merc-quick-chips">
           <span class="merc-quick-chips-label">Búsquedas rápidas:</span>
@@ -12484,7 +12501,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           <div class="calc-field"><label>Costos variables totales (MXN)</label><input id="rentVariables" type="number" min="0" step="1" placeholder="Insumos, mano de obra, agua"></div>
           <div class="calc-field"><label>Costos fijos y postcosecha (MXN)</label><input id="rentFijos" type="number" min="0" step="1" placeholder="Renta, empaque, flete"></div>
         </div>
-        <button class="calc-btn" type="button" onclick="calcularRentabilidad()">Calcular mi rentabilidad</button>
+        <div class="calc-actions"><button class="calc-btn" type="button" onclick="calcularRentabilidad()">Calcular mi rentabilidad</button><button type="button" class="calc-btn calc-btn-limpiar" onclick="limpiarHerramienta(this)">Limpiar</button></div>
         <div id="rentResultados" class="calc-result" style="margin-top:18px;"></div>
       </div>
 
@@ -19733,6 +19750,122 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return CLIMA_CODES[code] || { emoji: '🌤️', desc: 'Cambiante' };
   }
 
+  // Deja la herramienta como nueva: vacía campos, regresa listas a su primera opción y esconde resultados.
+  window.limpiarHerramienta = function(btn, op) {
+    op = op || {};
+    window.__mercUbicacion = null;
+    const caja = btn.closest('.calc-card, .cal-card, .merc-search-card, .clima-search-box') || btn.parentElement;
+    if (caja) {
+      caja.querySelectorAll('input, select, textarea').forEach(function (el) {
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+        else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+      });
+      caja.querySelectorAll('.calc-result').forEach(function (r) { r.classList.remove('show'); r.innerHTML = ''; });
+    }
+    (op.vaciar || []).forEach(function (id) { const e = document.getElementById(id); if (e) e.innerHTML = ''; });
+    (op.ocultar || []).forEach(function (id) { const e = document.getElementById(id); if (e) { e.style.display = 'none'; e.innerHTML = ''; } });
+    (op.mostrar || []).forEach(function (id) { const e = document.getElementById(id); if (e) e.style.display = ''; });
+    const primero = caja && caja.querySelector('input, select');
+    if (primero) primero.focus();
+  };
+
+  // Pide la ubicación al dispositivo (el navegador pregunta al usuario) y devuelve lat/lon.
+  // Solo sirve para encontrar el lugar y consultar clima/mercados: no se guarda ni se envía a SINERGIA.
+  function ubicacionDelDispositivo() {
+    return new Promise(function (ok, fallo) {
+      if (!navigator.geolocation) return fallo(new Error('Este navegador no permite detectar la ubicación. Escribe tu municipio.'));
+      navigator.geolocation.getCurrentPosition(function (p) { ok(p.coords); }, function (e) {
+        fallo(new Error(e && e.code === 1 ? 'No diste permiso de ubicación. Puedes escribir tu municipio.' : 'No pudimos detectar tu ubicación. Escribe tu municipio.'));
+      }, { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 });
+    });
+  }
+
+  // Convierte coordenadas en municipio y estado (OpenStreetMap).
+  async function lugarDeCoordenadas(lat, lon) {
+    try {
+      const r = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&addressdetails=1&accept-language=es&lat=' + lat + '&lon=' + lon);
+      const j = await r.json();
+      const a = j.address || {};
+      const municipio = a.municipality || a.city || a.town || a.village || a.county || a.suburb || '';
+      return { municipio: municipio, estado: a.state || '' };
+    } catch (e) { return { municipio: '', estado: '' }; }
+  }
+
+  window.usarUbicacionClima = async function() {
+    if (!tieneHerramienta('calculadora')) { showVipUpsell('calculadora'); return; }
+    const inputEl = document.getElementById('climaCiudad');
+    const resultEl = document.getElementById('climaResultado');
+    document.getElementById('climaEmpty').style.display = 'none';
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="display:inline-block;width:40px;height:40px;border:3px solid rgba(56,189,248,0.2);border-top-color:#0284C7;border-radius:50%;animation:spin 0.8s linear infinite;"></div><div style="margin-top:14px;color:var(--stone-600);font-size:13px;">Detectando tu ubicación...</div></div>';
+    try {
+      const c = await ubicacionDelDispositivo();
+      const l = await lugarDeCoordenadas(c.latitude, c.longitude);
+      const nombre = [l.municipio, l.estado].filter(Boolean).join(', ') || 'Tu ubicación';
+      inputEl.value = nombre;
+      await climaDeLugar([{ nombre: nombre, lat: c.latitude, lon: c.longitude }], 0);
+    } catch (err) {
+      resultEl.innerHTML = '<div style="text-align:center;padding:40px 20px;background:rgba(244,63,94,0.05);border:1px solid rgba(244,63,94,0.2);border-radius:18px;"><div style="font-weight:700;color:var(--rose-600);margin-bottom:6px;">No se pudo usar tu ubicación</div><div style="font-size:13px;color:var(--stone-600);">' + escapeHtml(err.message) + '</div></div>';
+    }
+  };
+
+  window.usarUbicacionMercados = async function() {
+    try {
+      const c = await ubicacionDelDispositivo();
+      const l = await lugarDeCoordenadas(c.latitude, c.longitude);
+      const norm = function (t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/^estado de /, '').trim(); };
+      const sel = document.getElementById('mercEstado');
+      const op = Array.from(sel.options).find(function (o) { return o.value && norm(o.text) === norm(l.estado); });
+      if (op) sel.value = op.value;
+      const nombre = l.municipio || 'Mi ubicación';
+      document.getElementById('mercMunicipio').value = nombre;
+      window.__mercUbicacion = { nombre: nombre, lat: c.latitude, lng: c.longitude };
+      if (!op) showToast('Detectamos tu municipio; elige tu estado en la lista.', 'info');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  };
+
+  // Busca un lugar por frases libres ("San José Miahuatlán, Puebla"): primero OpenStreetMap (entiende
+  // municipio + estado) y, si no responde, Open-Meteo con el nombre solo. México primero, luego el mundo.
+  window.buscarLugares = async function(texto, pista) {
+    const q = [texto, pista].filter(Boolean).join(', ');
+    const lugares = [];
+    function agrega(nombre, lat, lon) {
+      lat = Number(lat); lon = Number(lon);
+      if (!isFinite(lat) || !isFinite(lon)) return;
+      if (lugares.some(function (l) { return Math.abs(l.lat - lat) < 0.02 && Math.abs(l.lon - lon) < 0.02; })) return;
+      lugares.push({ nombre: nombre, lat: lat, lon: lon });
+    }
+    async function osm(pais) {
+      try {
+        const r = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&accept-language=es' + (pais ? '&countrycodes=' + pais : '') + '&q=' + encodeURIComponent(q));
+        const j = await r.json();
+        j.forEach(function (x) {
+          const a = x.address || {};
+          const corto = (x.name || x.display_name.split(',')[0]).trim();
+          const partes = [corto, a.municipality && a.municipality !== corto ? a.municipality : '', a.state, a.country_code && a.country_code !== 'mx' ? a.country : ''].filter(Boolean);
+          agrega(partes.join(', '), x.lat, x.lon);
+        });
+      } catch (e) { /* sin red o límite: se prueba el otro servicio */ }
+    }
+    async function meteo(nombre, pais) {
+      try {
+        const r = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(nombre) + '&count=5&language=es&format=json' + (pais ? '&countryCode=' + pais : ''));
+        const j = await r.json();
+        (j.results || []).forEach(function (x) {
+          agrega([x.name, x.admin2 && x.admin2 !== x.name ? x.admin2 : '', x.admin1, pais ? '' : x.country].filter(Boolean).join(', '), x.latitude, x.longitude);
+        });
+      } catch (e) { /* ignorar */ }
+    }
+    await osm('mx');
+    if (!lugares.length) await meteo(texto.split(',')[0].trim(), 'MX');
+    if (!lugares.length) await osm('');
+    if (!lugares.length) await meteo(texto.split(',')[0].trim(), '');
+    return lugares;
+  };
+
   window.consultarClimaPreset = function(ciudad) {
     document.getElementById('climaCiudad').value = ciudad;
     consultarClima();
@@ -19763,22 +19896,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     `;
 
     try {
-      // 1. Geocoding: obtener lat/lon de la ciudad
-      const geoResp = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(ciudad)}&count=1&language=es&format=json`);
-      const geoData = await geoResp.json();
-      if (!geoData.results?.length) throw new Error(`No encontramos "${ciudad}". Intenta con una ciudad más grande o cercana.`);
-      const loc = geoData.results[0];
-      const lat = loc.latitude;
-      const lon = loc.longitude;
-      const nombreFinal = `${loc.name}${loc.admin1 ? ', ' + loc.admin1 : ''}${loc.country ? ', ' + loc.country : ''}`;
-
-      // 2. Clima actual + pronóstico 7 días
-      const climaResp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=auto&forecast_days=7`);
-      const clima = await climaResp.json();
-
-      if (!clima.current) throw new Error('No se pudo obtener el clima');
-
-      renderClima(clima, nombreFinal);
+      // 1. Buscar el lugar (municipio, localidad o ciudad; se puede escribir con el estado)
+      const lugares = await buscarLugares(ciudad);
+      if (!lugares.length) throw new Error(`No encontramos "${ciudad}". Prueba escribiendo el municipio y el estado, por ejemplo "Puebla, México", o toca "Mi ubicación".`);
+      await climaDeLugar(lugares, 0);
     } catch (err) {
       console.error(err);
       resultEl.innerHTML = `
@@ -19788,6 +19909,32 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           <div style="font-size:13px;color:var(--stone-600);">${escapeHtml(err.message)}</div>
         </div>
       `;
+    }
+  };
+
+  // 2. Clima actual + pronóstico de 7 días del lugar elegido; si hubo varias coincidencias las deja para cambiar
+  async function climaDeLugar(lugares, i) {
+    window.__climaLugares = lugares;
+    const loc = lugares[i];
+    const climaResp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=auto&forecast_days=7`);
+    const clima = await climaResp.json();
+    if (!clima.current) throw new Error('No se pudo obtener el clima');
+    renderClima(clima, loc.nombre);
+    if (lugares.length > 1) {
+      const resultEl = document.getElementById('climaResultado');
+      resultEl.insertAdjacentHTML('afterbegin', '<div class="clima-alt"><span>¿Es otro lugar?</span>' + lugares.map(function (l, n) {
+        return '<button type="button" class="clima-chip' + (n === i ? ' activo' : '') + '" onclick="consultarClimaLugar(' + n + ')">' + escapeHtml(l.nombre) + '</button>';
+      }).join('') + '</div>');
+    }
+  }
+
+  window.consultarClimaLugar = async function(i) {
+    const resultEl = document.getElementById('climaResultado');
+    try {
+      await climaDeLugar(window.__climaLugares || [], i);
+    } catch (err) {
+      console.error(err);
+      resultEl.innerHTML = '<div style="text-align:center;padding:40px 20px;"><div style="font-weight:700;color:var(--rose-600);">No se pudo consultar el clima</div><div style="font-size:13px;color:var(--stone-600);">' + escapeHtml(err.message) + '</div></div>';
     }
   };
 
@@ -23287,7 +23434,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return hoy.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  window.buscarMercados = function() {
+  window.buscarMercados = async function() {
     if (!tieneHerramienta('mercados')) { showVipUpsell('mercados'); return; }
     const productoId = document.getElementById('mercProducto').value;
     const estadoId = document.getElementById('mercEstado').value;
@@ -23303,7 +23450,18 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
 
     // Si el municipio está en la tabla → usa coords precisas del municipio.
     // Si no → fallback a la capital del estado y avisa al usuario.
-    const municipioCoords = getCoordsMunicipio(municipio, estadoId);
+    let municipioCoords = getCoordsMunicipio(municipio, estadoId);
+    const ub = window.__mercUbicacion;
+    if (ub && ub.nombre === municipio) municipioCoords = { lat: ub.lat, lng: ub.lng };
+    if (!municipioCoords) {
+      // No está en la tabla interna: se busca el municipio escrito dentro de su estado
+      const sel = document.getElementById('mercEstado');
+      const estadoNombre = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '';
+      try {
+        const lugares = await buscarLugares(municipio, estadoNombre);
+        if (lugares.length) municipioCoords = { lat: lugares[0].lat, lng: lugares[0].lon };
+      } catch (e) { /* queda el aproximado por capital del estado */ }
+    }
     const origen = municipioCoords || estadoCoords;
     const origenEsAproximado = !municipioCoords;
 
