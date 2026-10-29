@@ -16426,6 +16426,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   function renderHeroContinua() {
     var raiz = document.getElementById('heroContinua');
     if (!raiz) return;
+    var ICO_CANDADO = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="width:20px;height:20px"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z"/></svg>';
+    var ICO_CERT = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="9" r="5"/><path d="M9 13.5 7.5 21 12 18.5 16.5 21 15 13.5"/></g></svg>';
     var ICO_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>';
     var hora = new Date().getHours();
     var saludoEl = document.getElementById('heroSaludo');
@@ -16472,10 +16474,34 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (!elegido) {
       var terminados = candidatos.length > 0;
       var porElegir = typeof bvPendienteCurso === 'function' && bvPendienteCurso();
-      titulo.innerHTML = terminados ? '¡Terminaste tus <em class="headline-accent">cursos!</em>' : (porElegir ? 'Elige tu <em class="headline-accent">curso gratis.</em>' : 'Explora tus <em class="headline-accent">cursos.</em>');
+      // Último curso terminado (el de mayor orden) y el siguiente que todavía no se abre
+      var ultimoTerminado = terminados ? candidatos[candidatos.length - 1].c : null;
+      var siguienteCurso = null, diasSiguiente = null;
+      if (terminados) {
+        ordenarCursosCatalogo().forEach(function (cc, ix) {
+          if (siguienteCurso || cc.activo === false || cc.publicado === false || cc.marcarProximamente === true) return;
+          if (!Array.isArray(cc.sesiones) || !cc.sesiones.length) return;
+          if (cursoDesbloqueado(ix, cc)) return;
+          siguienteCurso = cc; diasSiguiente = diasParaDesbloquear(ix, cc);
+        });
+      }
+      if (terminados && ultimoTerminado) {
+        var tieneCert = !!(window._certIds && window._certIds.has && window._certIds.has(String(ultimoTerminado.id)));
+        var textoDias = diasSiguiente == null ? '' : (diasSiguiente <= 0 ? 'Se abre hoy' : 'Se abre en ' + diasSiguiente + (diasSiguiente === 1 ? ' día' : ' días'));
+        titulo.innerHTML = siguienteCurso ? '¡Curso <em class="headline-accent">completado!</em>' : '¡Terminaste tus <em class="headline-accent">cursos!</em>';
+        cuerpo.innerHTML =
+          '<div class="hero-eyebrow">CURSO COMPLETADO</div><div class="hero-curso">' + heroEsc(ultimoTerminado.titulo || 'Curso') + '</div>' +
+          (siguienteCurso
+            ? '<div class="hero-next"><span class="hero-next-num">' + ICO_CANDADO + '</span><div class="hero-next-info"><div class="hero-eyebrow">PRÓXIMO CURSO' + (textoDias ? ' · ' + heroEsc(textoDias.toUpperCase()) : '') + '</div>' +
+              '<div class="hero-next-title">' + heroEsc(siguienteCurso.titulo || 'Curso') + '</div></div></div>'
+            : '') +
+          '<div class="hero-actions"><button type="button" class="hero-btn" data-hero-certificados>' + (tieneCert ? 'Ver mi certificado' : 'Mis certificados') + '<span class="hero-btn-ico">' + ICO_CERT + '</span></button>' +
+          '<a class="hero-link" href="#" data-hero-cursos>Ver todos los cursos →</a></div>';
+      } else
       cuerpo.innerHTML = '<div class="hero-actions">' + (porElegir
         ? '<button type="button" class="hero-btn" data-hero-elegir>Elegir mi curso gratis<span class="hero-btn-ico">' + ICO_PLAY + '</span></button><a class="hero-link" href="#" data-hero-cursos>Ver todos los cursos →</a>'
         : '<button type="button" class="hero-btn" data-hero-cursos>Ver cursos<span class="hero-btn-ico">' + ICO_PLAY + '</span></button>') + '</div>';
+      if (!(terminados && ultimoTerminado)) titulo.innerHTML = porElegir ? 'Elige tu <em class="headline-accent">curso gratis.</em>' : 'Explora tus <em class="headline-accent">cursos.</em>';
       // Sin un curso en marcha se muestra el avance general de la cuenta, no rayas
       var mHero = window.currentMember || {}, progHero = window.__progresoServidor || {}, totalVistas = 0;
       Object.keys(progHero).forEach(function (k) { totalVistas += Array.isArray(progHero[k]) ? progHero[k].length : 0; });
@@ -16528,6 +16554,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var irCursos = raiz.querySelectorAll('[data-hero-cursos]');
     for (i = 0; i < irCursos.length; i++) {
       irCursos[i].addEventListener('click', function (ev) { ev.preventDefault(); window.switchTab('courses'); });
+    }
+    var certBtns = raiz.querySelectorAll('[data-hero-certificados]');
+    for (i = 0; i < certBtns.length; i++) {
+      certBtns[i].addEventListener('click', function () { window.switchTab('certificates'); });
     }
     var elegirBtns = raiz.querySelectorAll('[data-hero-elegir]');
     for (i = 0; i < elegirBtns.length; i++) {
@@ -17039,6 +17069,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       const data = await response.json();
       if (data.certificates && Array.isArray(data.certificates)) {
         window._certIds = new Set(data.certificates.map(c => c.courseId).filter(Boolean));
+        try { if (typeof window.renderHeroContinua === 'function') window.renderHeroContinua(); } catch (eHero) { /* solo presentación */ }
       }
     } catch (err) {
       console.warn('[precargarCertificadosEmitidos] No se pudo precargar:', err.message);
