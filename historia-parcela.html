@@ -1282,6 +1282,15 @@ body[data-estado="invitado"] .mobile-drawer-logout-btn { display: none !importan
 body[data-estado="miembro"] .mobile-drawer-login-btn { display: none !important; }
 .sidebar-logo img, .mobile-drawer-logo img { background: #fff; }
 .sidebar-logo-text span:first-child, .mobile-drawer-logo-text span:first-child { letter-spacing: 0.08em; }
+.mobile-nav { gap: 0; min-height: 0; padding: 6px 4px max(6px, env(safe-area-inset-bottom, 6px)); justify-content: space-between; align-items: center; background: var(--bg-card); backdrop-filter: none; -webkit-backdrop-filter: none; border-top: 1px solid var(--border-card); box-shadow: 0 -8px 20px -14px rgba(17, 61, 53, 0.4); }
+.mobile-nav-item { flex: 1 1 0; gap: 3px; min-height: 54px; padding: 6px 2px; border-radius: 14px; color: var(--text-tertiary); background: transparent; }
+.mobile-nav-item svg { width: 22px; height: 22px; }
+.mobile-nav-item span { font-size: 10px; font-weight: 700; letter-spacing: 0; }
+.mobile-nav-item:hover { background: var(--bg-subtle); color: #0B5A41; }
+.mobile-nav-item.active { color: #0B5A41; background: rgba(26, 168, 136, 0.15); }
+.mobile-nav-item.active::before { display: none; }
+.mobile-nav-item.active svg { stroke-width: 2.3; }
+.mobile-nav-menu-btn, .mobile-nav-menu-btn:hover { background: transparent; color: var(--text-tertiary); }
 .main h1, .main h2, .main h3, .main h4 { word-spacing: 0.06em; }
 html .main .headline-accent, html .main .welcome-title em, html .main .panel-title em, html .main .section-title em { word-spacing: -0.06em; }
 html[data-theme="dark"] { color-scheme: dark; }
@@ -2126,27 +2135,13 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
   </div>
 </main>
 
-<nav class="mobile-nav">
-  <button class="mobile-nav-item active" data-tab="dashboard">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-    <span>Inicio</span>
-  </button>
-  <button class="mobile-nav-item" data-tab="courses">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-    <span>Cursos</span>
-  </button>
-  <button class="mobile-nav-item" data-tab="foro">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span>Foro</span>
-  </button>
-  <button class="mobile-nav-item" data-tab="subscription">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/></svg>
-    <span>Cuenta</span>
-  </button>
-  <button class="mobile-nav-item mobile-nav-menu-btn" id="mobileMenuBtn" onclick="abrirMobileDrawer()" aria-label="Abrir menú">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    <span>Menú</span>
-  </button>
+<nav class="mobile-nav" aria-label="Navegación principal">
+  <button class="mobile-nav-item active" data-tab="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span>Inicio</span></button>
+  <button class="mobile-nav-item" data-tab="courses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg><span>Cursos</span></button>
+  <button class="mobile-nav-item" data-tab="material"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>Materiales</span></button>
+  <button class="mobile-nav-item" data-tab="retos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg><span>Retos</span></button>
+  <button class="mobile-nav-item" id="mobileToolsBtn" onclick="abrirMobileDrawer('herramientas')" aria-label="Herramientas de campo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg><span>Campo</span></button>
+  <button class="mobile-nav-item mobile-nav-menu-btn" id="mobileMenuBtn" onclick="abrirMobileDrawer()" aria-label="Abrir menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg><span>Más</span></button>
 </nav>
 <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="cerrarMobileDrawer()"></div>
 <aside class="mobile-drawer" id="mobileDrawer" aria-label="Menú principal">
