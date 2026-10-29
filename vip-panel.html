@@ -13983,12 +13983,12 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   }
   function rtHistoriaHtml() {
     var n = rtHistoriaNiveles();
-    return '<a class="rtx-historia" href="historia-parcela.html" aria-label="Modo Historia: La parcela despierta">' +
+    return '<a class="rtx-historia" href="historia-parcela.html' + (n >= 6 ? '#bitacora' : '') + '" aria-label="Modo Historia: La parcela despierta">' +
       '<div class="rtx-historia-in"><span class="rtx-pill">Modo Historia</span>' +
       '<h3>La parcela despierta</h3>' +
       '<p>Antes de decidir, aprende a observar el suelo, el agua, las plantas y el recorrido de una parcela.</p>' +
       '<span class="rtx-historia-pie"><b>' + (n >= 6 ? 'Mundo completado' : n + ' de 6 niveles') + '</b>' +
-      '<span class="rtx-historia-go">' + (n === 0 ? 'Comenzar recorrido' : (n >= 6 ? 'Volver a recorrer' : 'Continuar recorrido')) + ' →</span></span></div></a>';
+      '<span class="rtx-historia-go">' + (n === 0 ? 'Comenzar recorrido' : (n >= 6 ? 'Ver mi bitácora' : 'Continuar recorrido')) + ' →</span></span></div></a>';
   }
   // Anclas del panel: vip-panel.html#<pestaña> abre esa pestaña (lo usa el Modo Historia, que vive en otra página),
   // #buscar=texto llena el buscador y #cerrar-sesion cierra la sesión.
