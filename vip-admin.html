@@ -3162,9 +3162,14 @@ body::before { display: none; }
                 <div style="font-size:13.5px;font-weight:700;color:var(--stone-800);">Clases / sesiones del curso</div>
                 <div style="font-size:11.5px;color:var(--stone-500);margin-top:2px;">Las clases se desbloquean en orden: el alumno tiene que ver una para acceder a la siguiente.</div>
               </div>
-              <button type="button" onclick="agregarSesionCurso()" class="btn-secondary" style="font-size:12px;padding:7px 12px;">
-                + Agregar clase
-              </button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button type="button" onclick="jgSugerirTodos()" class="btn-secondary" style="font-size:12px;padding:7px 12px;" title="Carga un mini juego de ejemplo en cada clase que todavía no tenga uno. No se guarda hasta que pulses Guardar cambios.">
+                  Sugerir juegos
+                </button>
+                <button type="button" onclick="agregarSesionCurso()" class="btn-secondary" style="font-size:12px;padding:7px 12px;">
+                  + Agregar clase
+                </button>
+              </div>
             </div>
             <div id="cursoSesionesList" style="display:flex;flex-direction:column;gap:8px;"></div>
           </div>
@@ -3454,6 +3459,7 @@ body::before { display: none; }
      SCRIPT: Firebase + lógica admin completa
      ═══════════════════════════════════════════════════════════ -->
 <script src="assets/sinergia-bunny-catalog-v2.js"></script>
+<script src="assets/juegos-sugeridos.js?v=1"></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -7594,7 +7600,7 @@ let _bibLibrosCargados = false;
           <option value="">Ninguno</option>
           ${Object.keys(JG_PRACTICA).map(k => `<option value="${k}" ${j && j.tipo === k ? 'selected' : ''}>${JG_PRACTICA[k]}</option>`).join('')}
         </select></label>`;
-    if (!j) return `<div style="margin-top:2px;">${sel}</div>`;
+    if (!j) return `<div style="margin-top:2px;">${sel}${jgSugerencia(idx) ? ` <button type="button" onclick="jgSugerir(${idx})" class="btn-secondary" style="font-size:11.5px;padding:4px 9px;margin-left:6px;">Usar el juego sugerido</button>` : ''}</div>`;
     const campo = (c, ph, v, extra) => `<input type="text" class="form-input" style="${jgIn}${extra || 'flex:1;min-width:120px;'}" placeholder="${ph}" value="${escapeHtmlSafe(v || '')}" oninput="jgCampo(${idx}, '${c}', this.value)">`;
     const fila = (lista, i, c1, c2, ph1, ph2, min) => `<div style="display:flex;gap:6px;align-items:center;">
         <input type="text" class="form-input" style="${jgIn}flex:1;min-width:100px;" placeholder="${ph1}" value="${escapeHtmlSafe(lista[i][c1] || '')}" oninput="jgLista(${idx}, '${j.tipo === 'memoria' ? 'parejas' : j.tipo === 'conecta' ? 'pares' : 'palabras'}', ${i}, '${c1}', this.value)">
@@ -7632,6 +7638,35 @@ let _bibLibrosCargados = false;
         ${cuerpo}
       </div>`;
   }
+  // Juegos sugeridos (assets/juegos-sugeridos.js): uno por clase, solo para los cursos del catálogo. Son borradores para revisar.
+  function jgSugerencias() {
+    const lista = Array.isArray(window.SINERGIA_JUEGOS_SUGERIDOS) ? window.SINERGIA_JUEGOS_SUGERIDOS : [];
+    const campo = document.getElementById('cursoTitle');
+    const titulo = campo ? campo.value.trim() : '';
+    if (!titulo) return null;
+    const coinc = vtCoincidencias(titulo);
+    if (coinc.length !== 1) return null;
+    const objetivo = normalizarTituloBunny(coinc[0].titulo);
+    const hallado = lista.find(c => normalizarTituloBunny(c.titulo) === objetivo);
+    return hallado ? hallado.juegos : null;
+  }
+  function jgSugerencia(idx) { const l = jgSugerencias(); return l && l[idx] ? l[idx] : null; }
+  window.jgSugerir = function (idx) {
+    const s = _cursoEditandoSesiones[idx], sug = jgSugerencia(idx);
+    if (!s || !sug) return;
+    s.juego = JSON.parse(JSON.stringify(sug));
+    renderSesionesEnModal();
+    showToast('Juego sugerido cargado. Revísalo y pulsa «Guardar cambios» para publicarlo.');
+  };
+  window.jgSugerirTodos = function () {
+    const lista = jgSugerencias();
+    if (!lista) { showToast('Este curso no tiene juegos sugeridos (solo los cursos del catálogo).', 'error'); return; }
+    if (!_cursoEditandoSesiones.length) { showToast('Primero agrega las clases del curso.', 'error'); return; }
+    let n = 0;
+    _cursoEditandoSesiones.forEach((s, i) => { if (!s.juego && lista[i]) { s.juego = JSON.parse(JSON.stringify(lista[i])); n++; } });
+    renderSesionesEnModal();
+    showToast(n ? n + (n === 1 ? ' juego sugerido cargado' : ' juegos sugeridos cargados') + '. Revísalos y pulsa «Guardar cambios» para publicarlos.' : 'Todas las clases ya tienen su juego.');
+  };
   window.jgElegir = function (idx, tipo) {
     const s = _cursoEditandoSesiones[idx]; if (!s) return;
     if (!tipo) { if (s.juego && !confirm('¿Quitar el mini juego de esta clase?')) { renderSesionesEnModal(); return; } delete s.juego; }
