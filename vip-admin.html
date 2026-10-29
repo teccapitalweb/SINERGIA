@@ -8023,8 +8023,8 @@ let _bibLibrosCargados = false;
   window.eliminarMaterial = function(cursoId, idx) { cmAbrirEnFormulario(cursoId, idx, 'Para quitar un material, usa «Quitar» (solo el último) y guarda el curso.'); };
 
   // Aviso cuando todavía hay enlaces a la vista de los miembros (de antes de este cambio)
-  // Se muestra cuando el panel de miembros nuevo ya abre el material por el servidor (Parte 3). Mientras el panel publicado use el enlace a la vista, el servidor lo niega.
-  const PROTEGER_ENLACES_ACTIVO = false;
+  // Se muestra cuando el panel de miembros nuevo ya abre el material por el servidor (Parte 3). Con el panel nuevo publicado, el servidor ya lo permite.
+  const PROTEGER_ENLACES_ACTIVO = true;
   function matBannerProteger(cursos) {
     if (!PROTEGER_ENLACES_ACTIVO) return '';
     const n = cursos.reduce((t, c) => t + matMats(c).filter((m) => m && typeof m.url === 'string' && m.url).length, 0);
