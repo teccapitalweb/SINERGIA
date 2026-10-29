@@ -15567,7 +15567,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return '<div class="cert-cal"><button type="button" data-calificar="' + id + '">Calificar este curso</button></div>';
   }
   const CAL_ESTRELLA = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5L2.6 9.3l6.5-.9z"/></svg>';
-  function calAbrir(cursoId, titulo) {
+  function calAbrir(cursoId, titulo, auto) {
     const previo = document.getElementById('bvCalificar');
     if (previo) previo.remove();
     const mia = window.__calificaciones[cursoId] || {};
@@ -15577,12 +15577,13 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     ov.innerHTML = '<div class="bv-card" role="dialog" aria-modal="true" aria-labelledby="calTit">' +
       '<span class="cred-eyebrow">Tu opinión</span><h3 id="calTit">¿Cómo calificas este curso?</h3>' +
       '<p class="cal-nombre"></p>' +
+      '<p class="cal-aviso">' + (auto ? 'Terminaste este curso: cuéntanos qué te pareció. ' : '') + 'Si prefieres, puedes calificarlo después desde la página del curso.</p>' +
       '<div class="cal-estrellas" role="radiogroup" aria-label="Calificación de 1 a 5 estrellas">' +
       [1, 2, 3, 4, 5].map(n => '<button type="button" class="cal-estrella" role="radio" aria-checked="false" aria-label="' + n + (n === 1 ? ' estrella' : ' estrellas') + '" data-n="' + n + '">' + CAL_ESTRELLA + '</button>').join('') + '</div>' +
       '<textarea class="cal-texto" maxlength="500" placeholder="Cuéntanos qué te gustó o qué mejorarías (opcional)" aria-label="Comentario opcional"></textarea>' +
       '<p class="cal-cuenta"><span class="cal-n">0</span>/500</p><p class="bv-error" role="alert"></p>' +
       '<div class="bv-acciones"><button type="button" class="cred-btn" data-enviar disabled>Enviar calificación</button>' +
-      '<button type="button" class="cred-btn cred-btn--sec" data-despues>Ahora no</button></div></div>';
+      '<button type="button" class="cred-btn cred-btn--sec" data-despues>Después</button></div></div>';
     document.body.appendChild(ov);
     document.body.style.overflow = 'hidden';
     ov.querySelector('.cal-nombre').textContent = titulo || '';
@@ -15651,17 +15652,32 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       calAbrir(cid, curso ? (curso.titulo || '') : '');
     };
   }
-  // Tras emitir el certificado, cuando el alumno cierra el certificado se le pide la calificación (una vez por curso)
-  function calPreguntarAlCerrarCertificado(cursoId, titulo) {
-    if (window.__calificaciones[cursoId]) return;
-    const obs = new MutationObserver(function () {
-      if (document.getElementById('certificadoVisorModal')) return;
-      obs.disconnect();
-      setTimeout(function () { if (!window.__calificaciones[cursoId] && !document.getElementById('bvCalificar')) calAbrir(cursoId, titulo); }, 450);
+  // Al terminar un curso se invita a calificarlo, una sola vez por curso y dispositivo. Si dice "Después" no se vuelve a abrir sola:
+  // el botón "Calificar" de la portada del curso sigue ahí. Espera a que se cierren la felicitación, el cofre y el certificado.
+  var CAL_CLAVE = 'sinergia_cal_preguntada_v1';
+  function calYaPreguntada(cid) { try { return !!(JSON.parse(localStorage.getItem(CAL_CLAVE) || '{}'))[cid]; } catch (e) { return false; } }
+  function calMarcarPreguntada(cid) { try { var o = JSON.parse(localStorage.getItem(CAL_CLAVE) || '{}'); o[cid] = new Date().toISOString(); localStorage.setItem(CAL_CLAVE, JSON.stringify(o)); } catch (e) { /* sin almacenamiento */ } }
+  var calPendientes = {};
+  function calHayVentanaAbierta() { return !!document.querySelector('#congratsOverlay.visible, #certificadoCtaOverlay.visible, #certificadoVisorModal, .bv-overlay.active, .cofre-overlay'); }
+  function calPedirDespues(cursoId, titulo) {
+    if (calPendientes[cursoId] || calYaPreguntada(cursoId)) return;
+    calPendientes[cursoId] = true;
+    var listo = window.__calCargadas ? Promise.resolve() : calCargarMias().then(function () { window.__calCargadas = true; });
+    listo.then(function () {
+      if (window.__calificaciones[cursoId]) { delete calPendientes[cursoId]; return; }
+      var n = 0, iv = setInterval(function () {
+        if (++n > 3000) { clearInterval(iv); delete calPendientes[cursoId]; return; }   // unos 30 minutos
+        if (calHayVentanaAbierta()) return;
+        clearInterval(iv); delete calPendientes[cursoId];
+        if (window.__calificaciones[cursoId] || calYaPreguntada(cursoId)) return;
+        calMarcarPreguntada(cursoId);
+        calAbrir(cursoId, titulo, true);
+      }, 600);
     });
-    obs.observe(document.body, { childList: true });
-    setTimeout(function () { obs.disconnect(); }, 30 * 60 * 1000);
   }
+  window.calPedirDespues = calPedirDespues;
+  // Compatibilidad: al cerrar el certificado recién emitido se usa la misma invitación (sin repetirla)
+  function calPreguntarAlCerrarCertificado(cursoId, titulo) { calPedirDespues(cursoId, titulo); }
 
   window.abrirSesionCurso = function(cursoId, sesionIndex) {
     const curso = cursosFromFirestore.find(c => c.id === cursoId);
@@ -16010,6 +16026,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         var ahora = window.__creditos ? window.__creditos.saldo : null;
         if (antes !== null && ahora !== null && ahora > antes) await window.cofreCursoTerminado({ tipo: 'curso', cursoId: cursoId, creditos: ahora - antes }, curso.titulo);
         setTimeout(function () { mostrarFelicitacion(cursoId); }, 400);
+        try { calPedirDespues(cursoId, curso.titulo || ''); } catch (e) { /* sin invitación */ }
       })();
       return;
     }
@@ -26736,6 +26753,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .cp-ac-ico { display: grid; place-items: center; width: 28px; height: 28px; }
   .cp-ac-ico svg { width: 26px; height: 26px; }
   .cp-ac-est { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+  .cal-aviso { margin: 0 0 10px; font-size: 13.5px; line-height: 1.45; color: var(--text-secondary); }
   /* Calificar compacto en la esquina de la portada */
   .cp-hero > .cp-acciones--esq { position: absolute; top: 14px; right: 14px; z-index: 2; margin: 0; }
   .cp-acciones--esq .cp-ac { flex-direction: row; min-width: 0; min-height: 42px; padding: 6px 15px 6px 11px; gap: 8px; border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 100px; background: rgba(255, 255, 255, 0.94); color: #113D35; font-size: 13px; box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.5); }
