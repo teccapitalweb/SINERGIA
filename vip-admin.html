@@ -2197,7 +2197,7 @@ body::before { display: none; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
       <span class="nav-item-text">Retos y créditos</span>
     </button>
-    <button class="nav-item" data-tab="materials">
+    <button class="nav-item" data-tab="library">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       <span class="nav-item-text">Material</span>
     </button>
@@ -2810,23 +2810,6 @@ body::before { display: none; }
     <!-- ═══════════════════════════════════════════════════════════
          3.6) MATERIALES (gestión por curso)
          ═══════════════════════════════════════════════════════════ -->
-    <div class="tab-panel" data-panel="materials">
-      <div class="panel-head">
-        <div class="panel-head-info">
-          <h2 class="panel-title">Material y <em>biblioteca</em></h2>
-          <p class="panel-sub">Los PDFs y enlaces de cada curso (pestaña <b>Material</b> del panel de miembros) y la biblioteca de libros y guías.</p>
-        </div>
-        <div class="panel-head-accion"><button type="button" class="btn-primary" onclick="abrirMaterialModalGlobal()">Nuevo material</button></div>
-      </div>
-      <div class="stats-grid mat-kpis"></div>
-      <div class="toolbar"><div class="chip-filter mat-tabs"></div></div>
-
-      <div id="materialsCursosList" style="display:flex;flex-direction:column;gap:14px;">
-        <div style="padding:24px;text-align:center;color:var(--stone-400);font-size:13px;background:#fff;border-radius:14px;border:1px solid var(--border-subtle);">Cargando cursos...</div>
-      </div>
-
-    </div>
-
     <!-- ═══════════════════════════════════════════════════════════
          BIBLIOTECA (colecciones y libros externos)
          ═══════════════════════════════════════════════════════════ -->
@@ -2835,7 +2818,7 @@ body::before { display: none; }
       <div class="panel-head">
         <div class="panel-head-info">
           <h2 class="panel-title">Material y <em>biblioteca</em></h2>
-          <p class="panel-sub">Libros abiertos, manuales y guías que no son de un curso. Se agrupan en colecciones. Todos ven la portada, pero el enlace solo se entrega a miembros con membresía activa (salvo los marcados como gratis).</p>
+          <p class="panel-sub">Material de apoyo que no es de un curso: libros, manuales, guías, plantillas y hojas de cálculo (Excel). El material de cada curso se agrega en Videoteca → Editar curso. Se agrupan en colecciones. Todos ven la portada, pero el enlace solo se entrega a miembros con membresía activa (salvo los marcados como gratis).</p>
         </div>
       </div>
       <div class="stats-grid mat-kpis"></div>
@@ -2898,6 +2881,8 @@ body::before { display: none; }
                 <option value="manual">Manual</option>
                 <option value="norma">Norma</option>
                 <option value="articulo">Artículo</option>
+                <option value="plantilla">Plantilla o formato</option>
+                <option value="hoja">Hoja de cálculo (Excel)</option>
               </select>
             </div>
             <div class="form-group">
@@ -6092,7 +6077,7 @@ body::before { display: none; }
     ['Cultivos', 'Guías y manuales por cultivo'],
     ['Mercados', 'Comercialización, costos y gestión']
   ];
-  const BIB_TIPOS = { libro: 'Libro', guia: 'Guía', manual: 'Manual', norma: 'Norma', articulo: 'Artículo' };
+  const BIB_TIPOS = { libro: 'Libro', guia: 'Guía', manual: 'Manual', norma: 'Norma', articulo: 'Artículo', plantilla: 'Plantilla o formato', hoja: 'Hoja de cálculo' };
 
   async function cargarBibliotecaAdmin() {
     const cl = document.getElementById('bibColList');
@@ -6479,15 +6464,12 @@ let _bibLibrosCargados = false;
     const vacias = cols.filter(c => !libros.some(l => l.coleccionId === c.id)).length;
     const tarjeta = (clase, v, et, sub, ayuda) => '<div class="stat-card ' + clase + '"><div class="stat-value">' + v + '</div><div class="stat-label" title="' + esc(ayuda || '') + '">' + et + '</div><div class="sb-sub">' + sub + '</div></div>';
     const html =
-      tarjeta('teal', total, 'MATERIALES DE CURSOS', 'En ' + conMat + ' de ' + cursos.length + ' cursos') +
-      tarjeta(sinMat.length ? 'amber' : 'green', sinMat.length, 'CURSOS SIN MATERIAL', sinMat.length ? esc(sinMat.slice(0, 2).map(c => c.titulo || c.id).join(', ')) + (sinMat.length > 2 ? '…' : '') : 'Todos tienen material', 'Cursos que todavía no tienen ningún PDF o enlace') +
-      tarjeta(sinEnlace ? 'rose' : 'sky', sinEnlace, 'MATERIALES SIN ENLACE VÁLIDO', sinEnlace ? 'Revisa que empiecen con https://' : 'Todos tienen enlace', '') +
       tarjeta('violet', bibCargada ? libros.length : '—', 'LIBROS EN LA BIBLIOTECA', bibCargada ? 'En ' + cols.length + (cols.length === 1 ? ' colección' : ' colecciones') : 'Abre «Biblioteca» para contarlos', '') +
       tarjeta('sky', bibCargada ? libros.filter(l => l.gratis === true).length : '—', 'LIBROS GRATIS', 'Cualquier cuenta puede abrirlos', '') +
       tarjeta(sinLicencia ? 'amber' : 'green', bibCargada ? sinLicencia : '—', 'SIN LICENCIA ANOTADA', bibCargada ? (sinLicencia ? 'Conviene anotar licencia o permiso' : 'Todos la tienen') : '', 'Derechos de autor: solo libros de dominio público, con licencia abierta o con permiso por escrito');
     document.querySelectorAll('.mat-kpis').forEach(el => { el.innerHTML = html; });
     const vista = document.querySelector('[data-panel="library"].active') ? 'biblioteca' : 'cursos';
-    const tabs = [['cursos', 'Materiales por curso', total], ['biblioteca', 'Biblioteca', bibCargada ? libros.length : '—']];
+    const tabs = [];   // una sola vista: el material de cada curso se edita en Videoteca
     document.querySelectorAll('.mat-tabs').forEach(el => {
       el.innerHTML = tabs.map(t => '<button type="button" class="chip' + (vista === t[0] ? ' active' : '') + '" onclick="matVista(\'' + t[0] + '\')">' + t[1] + ' <span style="margin-left:4px;">' + t[2] + '</span></button>').join('');
     });
@@ -7071,7 +7053,9 @@ let _bibLibrosCargados = false;
       kpi('green', pub, 'PUBLICADOS') +
       kpi(todos.length - pub > 0 ? 'amber' : 'sky', todos.length - pub, 'OCULTOS') +
       kpi('violet', clasesPub, 'CLASES PUBLICADAS') +
-      kpi('sky', vtHoras(horasPub) + ' h', 'HORAS PUBLICADAS');
+      kpi('sky', vtHoras(horasPub) + ' h', 'HORAS PUBLICADAS') +
+      kpi('teal', todos.reduce((n, i) => n + matMats(i.curso).length, 0), 'MATERIALES DE CURSOS') +
+      kpi(todos.filter(i => i.publicado && !matMats(i.curso).length).length ? 'amber' : 'green', todos.filter(i => i.publicado && !matMats(i.curso).length).length, 'PUBLICADOS SIN MATERIAL');
 
     const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
     setTxt('vtCntTodos', todos.length); setTxt('vtCntPub', pub); setTxt('vtCntOcu', todos.length - pub);
