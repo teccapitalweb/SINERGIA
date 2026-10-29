@@ -1,6 +1,6 @@
 :root {
-  --tour-accent: var(--teal-600, #0d9488);
-  --tour-accent-strong: var(--green-600, #16a34a);
+  --tour-accent: #1AA888;
+  --tour-forest: #113D35;
   --tour-panel: var(--bg-card, #fff);
   --tour-panel-soft: var(--bg-subtle, #f5f5f4);
   --tour-text: var(--text-primary, #1c1917);
@@ -20,7 +20,7 @@
   position: fixed;
   border: 2px solid var(--tour-accent);
   border-radius: 14px;
-  box-shadow: 0 0 0 9999px rgba(4, 20, 16, .7), 0 0 0 5px rgba(20, 184, 166, .18), 0 14px 42px rgba(0, 0, 0, .28);
+  box-shadow: 0 0 0 9999px rgba(8, 24, 20, .66);
   pointer-events: none;
   transition: top .22s ease, left .22s ease, width .22s ease, height .22s ease;
 }
@@ -31,20 +31,20 @@
   border-radius: 19px;
   background: var(--tour-panel);
   color: var(--tour-text);
-  box-shadow: 0 26px 80px rgba(15, 118, 110, .22), 0 24px 60px rgba(0, 0, 0, .25);
+  box-shadow: 0 24px 60px rgba(8, 24, 20, .3);
   overflow: hidden;
   outline: none;
 }
 .onboarding-tour-dialog::before {
   content: '';
   display: block;
-  height: 5px;
-  background: linear-gradient(90deg, var(--tour-accent), var(--tour-accent-strong));
+  height: 4px;
+  background: var(--tour-forest);
 }
 .onboarding-tour-inner { padding: 20px 21px 19px; }
 .onboarding-tour-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .onboarding-tour-eyebrow {
-  color: var(--tour-accent);
+  color: #087F70;
   font: 700 10px/1 var(--font-mono, monospace);
   letter-spacing: 1.3px;
   text-transform: uppercase;
@@ -75,7 +75,7 @@
 .onboarding-tour-progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--tour-accent), var(--tour-accent-strong));
+  background: var(--tour-accent);
   transition: width .2s ease;
 }
 .onboarding-tour-count { color: var(--tour-muted); font: 600 10.5px/1 var(--font-mono, monospace); white-space: nowrap; }
@@ -94,13 +94,15 @@
 .onboarding-tour-btn--next {
   color: #fff;
   border-color: transparent;
-  background: linear-gradient(135deg, var(--tour-accent), var(--tour-accent-strong));
-  box-shadow: 0 8px 22px rgba(13, 148, 136, .24);
+  background: var(--tour-forest);
 }
+.onboarding-tour-btn--next:hover { background: #1F5B4D; }
+html[data-theme="dark"] .onboarding-tour-btn--next { background: #1F5B4D; }
+html[data-theme="dark"] .onboarding-tour-eyebrow { color: #92C7A1; }
 .onboarding-tour-btn:focus-visible,
 .onboarding-tour-skip:focus-visible,
 .onboarding-tour-launcher:focus-visible,
-.onboarding-tour-profile-btn:focus-visible { outline: 3px solid rgba(20, 184, 166, .32); outline-offset: 2px; }
+.onboarding-tour-profile-btn:focus-visible { outline: 3px solid rgba(26, 168, 136, .4); outline-offset: 2px; }
 .onboarding-tour-btn[disabled] { visibility: hidden; }
 .onboarding-tour-launcher svg { width: 18px; height: 18px; }
 .onboarding-tour-profile-btn { white-space: nowrap; }
@@ -136,3 +138,7 @@
 @media (max-width: 420px) {
   .topbar .onboarding-tour-launcher { display: none; }
 }
+
+/* El botón de ayuda que se señala en el último paso se ve claro (fondo blanco, ícono verde) */
+#sinergia-tour-help[data-tour-anchor], .onboarding-tour-launcher[data-tour-anchor] { background: #fff; color: #113D35; box-shadow: 0 0 0 2px rgba(26, 168, 136, .0); }
+html[data-theme="dark"] #sinergia-tour-help[data-tour-anchor], html[data-theme="dark"] .onboarding-tour-launcher[data-tour-anchor] { background: #142923; color: #92C7A1; }

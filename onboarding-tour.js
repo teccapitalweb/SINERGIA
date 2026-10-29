@@ -5,43 +5,43 @@
   const STORAGE_PREFIX = `sinergia:onboarding:panel:${VERSION}`;
   const steps = [
     {
-      title: 'Bienvenido a Sinergia-Agrícola',
-      copy: 'Este panel reúne tu formación, herramientas de campo y comunidad agrícola. Te mostramos dónde está cada recurso para que empieces con confianza.',
-      selectors: ['.sidebar-logo', '.topbar-greeting', '.topbar']
+      title: 'Bienvenido a SINERGIA',
+      copy: 'Este panel reúne tus cursos, herramientas de campo y comunidad. Te mostramos dónde está cada cosa para que empieces con confianza.',
+      selectors: ['.topbar-greeting', '.sidebar-logo', '.topbar']
     },
     {
-      title: 'Tu videoteca agrícola',
-      copy: 'En Videoteca encuentras cursos prácticos sobre nutrición, riego, bioinsumos, inocuidad y manejo de cultivos. Desde aquí continúas cada clase y revisas tu avance.',
+      title: 'Cursos',
+      copy: 'Aquí están todos los cursos y sus clases. Marca cada clase como vista para seguir tu avance y obtener tu certificado al terminar.',
       selectors: ['.sidebar .nav-item[data-tab="courses"]', '.mobile-nav-item[data-tab="courses"]', '[data-tab="courses"]']
     },
     {
-      title: 'Webinars con especialistas',
-      copy: 'Consulta las próximas sesiones en vivo, participa con tus preguntas y revisa los contenidos publicados por especialistas del sector.',
-      selectors: ['.sidebar .nav-item[data-tab="live"]', '.mobile-nav-item[data-tab="live"]', '[data-tab="live"]']
-    },
-    {
-      title: 'Material para llevar al campo',
-      copy: 'En Material están las guías, calendarios, formatos y recursos descargables que acompañan tus cursos y facilitan la aplicación en parcela.',
+      title: 'Tu biblioteca de materiales',
+      copy: 'Guías, formatos y libros de la biblioteca. Abre lo que te sirva y canjea con tus créditos lo que quieras conservar.',
       selectors: ['.sidebar .nav-item[data-tab="material"]', '.mobile-drawer .nav-item[data-tab="material"]', '#mobileMenuBtn', '.main']
     },
     {
-      title: 'Herramientas para decidir mejor',
-      copy: 'Calcula insumos, organiza labores con el calendario, consulta clima y mercados, realiza diagnósticos y encuentra apoyos para tu producción.',
-      selectors: ['.sidebar .nav-item[data-tab="calculadora"]', '.mobile-drawer .nav-item[data-tab="calculadora"]', '#mobileMenuBtn', '.main']
+      title: 'Herramientas',
+      copy: 'Clima, precios de mercado, apoyos, rentabilidad, calculadora y planificador de cultivo. Se desbloquean con tu membresía o canjeándolas con créditos.',
+      selectors: ['#navToolsGroupToggle', '.sidebar .nav-item[data-tab="calculadora"]', '.mobile-drawer .nav-item[data-tab="calculadora"]', '#mobileMenuBtn', '.main']
     },
     {
-      title: 'Tu comunidad agrícola',
-      copy: 'En Comunidad y Foro puedes compartir experiencias, resolver dudas técnicas y conectar con productores y profesionales del campo.',
-      selectors: ['.sidebar .nav-item[data-tab="community"]', '.mobile-drawer .nav-item[data-tab="community"]', '#mobileMenuBtn', '[data-panel="dashboard"]']
+      title: 'Comunidad',
+      copy: 'En el Foro compartes dudas y experiencias, en el Directorio encuentras productores y empresas, y en el Canal sigues las novedades de SINERGIA.',
+      selectors: ['.sidebar .nav-item[data-tab="foro"]', '.mobile-drawer .nav-item[data-tab="foro"]', '.mobile-nav-item[data-tab="foro"]', '#mobileMenuBtn', '[data-panel="dashboard"]']
     },
     {
-      title: 'Perfil y membresía',
-      copy: 'En Mi perfil actualizas tus datos y ubicación; en Mi suscripción revisas tu plan. Puedes repetir esta guía cuando quieras con “Ver recorrido guiado”.',
-      selectors: ['.sidebar .nav-item[data-tab="profile"]', '.mobile-drawer .nav-item[data-tab="profile"]', '#mobileMenuBtn', '.sidebar-user']
+      title: 'Perfil',
+      copy: 'Desde tu perfil ves tus créditos, tus logros y tu tarjeta del Directorio, y editas tus datos.',
+      selectors: ['.sidebar .nav-account[data-tab="profile"]', '.sidebar [data-tab="profile"]', '#topbarAvatar', '.sidebar-user', '#mobileMenuBtn']
+    },
+    {
+      title: '¿Necesitas verlo de nuevo?',
+      copy: 'Si en algún momento quieres repasar este recorrido, solo pulsa este botón del mapa y lo vuelves a ver desde el inicio, cuando quieras.',
+      selectors: ['#sinergia-tour-help', '.onboarding-tour-launcher', '#topbarAvatar']
     }
   ];
 
-  const state = { active: false, index: 0, anchor: null, accountId: null, previousFocus: null, previousOverflow: '' };
+  const state = { active: false, index: 0, anchor: null, accountId: null, previousFocus: null, previousOverflow: '', onClose: null, waiters: [] };
   let layer;
   let dialog;
   let spotlight;
@@ -111,7 +111,7 @@
       <section class="onboarding-tour-dialog" role="dialog" aria-modal="true" aria-labelledby="onboarding-tour-title" aria-describedby="onboarding-tour-copy" tabindex="-1">
         <div class="onboarding-tour-inner">
           <div class="onboarding-tour-top">
-            <span class="onboarding-tour-eyebrow">Primer recorrido</span>
+            <span class="onboarding-tour-eyebrow">Guía SINERGIA</span>
             <button class="onboarding-tour-skip" type="button">Omitir</button>
           </div>
           <h2 class="onboarding-tour-title" id="onboarding-tour-title"></h2>
@@ -176,11 +176,13 @@
     const actual = availableIndex(index, direction || 1);
     if (actual < 0) { finish('completed'); return; }
     state.index = actual;
+    if (state.anchor) state.anchor.removeAttribute('data-tour-anchor');
     state.anchor = resolveAnchor(steps[actual]);
+    state.anchor.setAttribute('data-tour-anchor', '1');
     const step = steps[actual];
     titleEl.textContent = step.title;
     copyEl.textContent = step.copy;
-    countEl.textContent = `${actual + 1} de ${steps.length}`;
+    countEl.textContent = `Paso ${actual + 1} de ${steps.length}`;
     fillEl.style.width = `${((actual + 1) / steps.length) * 100}%`;
     backBtn.disabled = availableIndex(actual - 1, -1) < 0;
     nextBtn.textContent = availableIndex(actual + 1, 1) < 0 ? 'Finalizar' : 'Siguiente';
@@ -205,6 +207,7 @@
     if (!state.active) return;
     markSeen(reason);
     state.active = false;
+    if (state.anchor) state.anchor.removeAttribute('data-tour-anchor');
     layer.hidden = true;
     document.body.classList.remove('onboarding-tour-open');
     document.body.style.overflow = state.previousOverflow;
@@ -212,6 +215,10 @@
     window.removeEventListener('resize', positionUi);
     window.removeEventListener('scroll', positionUi, true);
     if (state.previousFocus && state.previousFocus.isConnected) state.previousFocus.focus({ preventScroll: true });
+    const alCerrar = state.onClose;
+    state.onClose = null;
+    if (typeof alCerrar === 'function') { try { alCerrar(reason); } catch (error) { /* el aviso de cierre no debe romper nada */ } }
+    state.waiters.splice(0).forEach((fn) => { try { fn(reason); } catch (error) { /* idem */ } });
   }
 
   function onKeydown(event) {
@@ -231,12 +238,18 @@
   function start(options) {
     const opts = options || {};
     if (state.active) return;
+    // Nunca sobre otra ventana abierta (el recorrido iría encima y se vería oscuro)
+    if (blockingDialogVisible()) {
+      if (!opts.automatic && !opts.onClose && typeof window.showToast === 'function') window.showToast('Cierra la ventana que tienes abierta para ver el recorrido.', 'info');
+      return;
+    }
     const id = accountId();
     if (opts.automatic && (!id || wasSeen(id))) return;
     ensureUi();
     const first = availableIndex(0, 1);
     if (first < 0) return;
     state.accountId = id;
+    state.onClose = typeof opts.onClose === 'function' ? opts.onClose : null;
     state.previousFocus = document.activeElement;
     state.previousOverflow = document.body.style.overflow;
     state.active = true;
@@ -335,12 +348,20 @@
   }
 
   window.startSinergiaOnboarding = () => start({ automatic: false });
+  // La fila de bienvenida del panel lo lanza en su turno; la promesa se resuelve al terminar u omitir.
+  // Si no hay nada visible que mostrar, se resuelve de inmediato.
+  window.SinergiaTour = {
+    run: () => new Promise((resolve) => {
+      if (state.active) { state.waiters.push(resolve); return; }
+      start({ automatic: false, onClose: resolve });
+      if (!state.active) resolve('sin-anclas');
+    })
+  };
   window.__SINERGIA_ONBOARDING_VERSION = VERSION;
 
   function init() {
     addLaunchers();
-    window.addEventListener('sinergiaUserReady', () => scheduleAutomatic(0));
-    scheduleAutomatic(0);
+    // Sin arranque automático: el estado de "ya lo vio" vive en el servidor y la fila de bienvenida decide cuándo mostrarlo.
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
