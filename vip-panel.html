@@ -13999,7 +13999,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     { id: 'observa', nombre: 'Observa', tiempo: '2–4 min', sub: 'Encuentra señales y reúne evidencia.', items: [
       { id: 'detective-01', tipo: 'caso', num: 'Caso 01', nivel: 'Básico', titulo: 'El rastro que no cuadra', desc: 'Encuentra tres pistas visibles en una escena de riego.', xp: 15, img: 'assets/detective/caso-01-el-rastro-que-no-cuadra.webp', url: 'detective-caso-01.html' },
       { id: 'detective-02', tipo: 'caso', num: 'Caso 02', nivel: 'Intermedio', titulo: 'La planta fuera de contexto', desc: 'Compara plantas y zonas antes de sacar conclusiones.', xp: 15, img: 'assets/detective/caso-02-zona-b.webp', url: 'detective-caso-02.html', min: '3–4 min' },
-      { id: 'detective-03', tipo: 'caso', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La libreta incompleta', desc: 'Detecta qué información falta para que una observación sea útil.', xp: 15, img: 'assets/historia/nivel-05-la-libreta-de-campo.webp', pronto: true }] },
+      { id: 'detective-03', tipo: 'caso', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La libreta incompleta', desc: 'Detecta qué información falta para que una observación de campo sea útil.', xp: 15, img: 'retos-detective-agricola/caso-03-la-libreta-incompleta.png', respaldo: true, url: 'detective-caso-03.html', min: '3–4 min', cta: 'Abrir libreta', recompensa: '+15 XP semanal' }] },
     { id: 'decide', nombre: 'Decide', tiempo: '3–5 min', sub: 'Elige con criterio ante una situación de campo.', items: [
       { id: 'rescate', tipo: 'liga', num: 'Misión', nivel: 'Intermedio', pronto: false }] },
     { id: 'integra', nombre: 'Integra', tiempo: '5–8 min', sub: 'Combina lo aprendido en una misión completa.', items: [
@@ -14015,9 +14015,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return {};
   }
   function rtCasoLocal(id) {
-    var c = rtCasosGuardados()[id];
-    if (!c || typeof c !== 'object') return { resuelto: false, pistas: 0, mejorErrores: null, ultima: null };
-    return { resuelto: c.resuelto === true, pistas: Array.isArray(c.pistas) ? Math.min(3, c.pistas.length) : 0, mejorErrores: Number.isInteger(c.mejorErrores) ? c.mejorErrores : null, ultima: c.ultimaEn || c.resueltoEn || null };
+    var c = rtCasosGuardados()[id], s = rtCasoServidor(id);
+    if (!c || typeof c !== 'object') return { resuelto: !!(s && s.resueltoEn), pistas: 0, mejorErrores: null, ultima: null };
+    return { resuelto: c.resuelto === true || !!(s && s.resueltoEn), pistas: Array.isArray(c.pistas) ? Math.min(3, c.pistas.length) : 0, mejorErrores: Number.isInteger(c.mejorErrores) ? c.mejorErrores : null, ultima: c.ultimaEn || c.resueltoEn || null };
   }
   function rtCasoServidor(id) { return RT.casos && RT.casos.casos && RT.casos.casos[id] ? RT.casos.casos[id] : null; }
   function rtFechaCorta(iso) { try { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) { return ''; } }
@@ -14067,11 +14067,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var estado = it.pronto ? '<span class="rtx-est rtx-est--bloq">Próximamente</span>'
       : (hecho ? '<span class="rtx-est rtx-est--completada">Caso resuelto</span>' : (!caso && !miembro ? '<span class="rtx-est rtx-est--bloq">Con membresía</span>' : ''));
     var boton = it.pronto ? '<button type="button" class="rtx-btn rtx-btn--sec" disabled aria-disabled="true">Próximamente</button>'
-      : (caso ? '<a class="rtx-btn" href="' + it.url + '">Investigar</a>' : '<button type="button" class="rtx-btn" data-rt-jugar="' + it.id + '">Jugar</button>');
+      : (caso ? '<a class="rtx-btn" href="' + it.url + '">' + escapeHtml(it.cta || 'Investigar') + '</a>' : '<button type="button" class="rtx-btn" data-rt-jugar="' + it.id + '">Jugar</button>');
     return '<article class="rtc-card' + (hecho ? ' es-resuelto' : '') + (it.pronto ? ' es-pronto' : '') + '">' +
-      '<div class="rtc-img' + (caso ? '' : ' rtc-img--arte') + '"><img src="' + escapeHtml(img) + '" alt="" loading="lazy" decoding="async"><span class="rtc-nivel">' + escapeHtml(it.nivel) + '</span>' + (estado ? '<span class="rtc-estado">' + estado + '</span>' : '') + '</div>' +
+      '<div class="rtc-img' + (caso ? '' : ' rtc-img--arte') + '"><img src="' + escapeHtml(img) + '" alt="" loading="lazy" decoding="async"' + (it.respaldo ? ' onerror="this.parentNode.classList.add(\'rtc-img--respaldo\');this.remove()"' : '') + '><span class="rtc-nivel">' + escapeHtml(it.nivel) + '</span>' + (estado ? '<span class="rtc-estado">' + estado + '</span>' : '') + '</div>' +
       '<div class="rtc-cu"><div class="rtc-meta"><span class="rtc-tipo" aria-hidden="true">' + RT_ICO[it.bloque] + '</span><span>' + escapeHtml(it.num) + ' · ' + escapeHtml(it.tiempo) + '</span></div>' +
-      '<h5>' + escapeHtml(titulo) + '</h5><p class="rtc-desc">' + escapeHtml(desc) + '</p>' +
+      '<h5>' + escapeHtml(titulo) + '</h5><p class="rtc-desc">' + escapeHtml(desc) + '</p>' + (it.recompensa ? '<p class="rtc-xp">' + escapeHtml(it.recompensa) + '</p>' : '') +
       '<div class="rtc-pie">' + boton + '</div></div></article>';
   }
   function rtCamposHtml(d) {
@@ -26814,6 +26814,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   html[data-theme="dark"] .rtc-img--arte { background: #123A33; }
   .rtc-img--arte img { object-fit: contain; padding: 10px; }
   .rtc-card.es-pronto .rtc-img img { filter: saturate(0.5) brightness(0.9); }
+  /* Portada de respaldo (si falta la imagen del caso): verde claro con renglones de libreta de campo */
+  .rtc-img--respaldo { background-color: #DCEBDD; background-image: linear-gradient(90deg, transparent 34px, rgba(231, 200, 115, 0.85) 34px, rgba(231, 200, 115, 0.85) 36px, transparent 36px), repeating-linear-gradient(transparent 0, transparent 23px, rgba(17, 61, 53, 0.16) 23px, rgba(17, 61, 53, 0.16) 24px); }
+  html[data-theme="dark"] .rtc-img--respaldo { background-color: #17302A; background-image: linear-gradient(90deg, transparent 34px, rgba(231, 200, 115, 0.6) 34px, rgba(231, 200, 115, 0.6) 36px, transparent 36px), repeating-linear-gradient(transparent 0, transparent 23px, rgba(126, 211, 195, 0.16) 23px, rgba(126, 211, 195, 0.16) 24px); }
+  .rtc-xp { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 12.5px; color: var(--accent-ink, #087F70); }
   .rtc-nivel { position: absolute; top: 10px; left: 10px; padding: 4px 11px; border-radius: 100px; background: rgba(8, 32, 27, 0.88); color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.04em; }
   .rtc-estado { position: absolute; top: 10px; right: 10px; }
   .rtc-cu { display: flex; flex: 1; flex-direction: column; gap: 6px; padding: 14px 16px 16px; }
