@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificado · Sinergia-Agrícola</title>
+  <meta name="description" content="Certificado de Sinergia-Agrícola con folio verificable.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="img/logo.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde-900: #0b3d36;
+      --verde-800: #0a4d43;
+      --verde-700: #0f6b5c;
+      --verde-500: #1aa888;
+      --verde-100: #e3f4ef;
+      --marfil: #f6f8f5;
+      --tinta: #16302b;
+      --suave: #5b6f6a;
+      --linea: #dbe5e1;
+      --rojo: #b3261e;
+      --rojo-fondo: #fbeceb;
+      --ambar: #8a5a00;
+      --ambar-fondo: #fdf3dc;
+      --cert-k: .6;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--marfil); color: var(--tinta); min-height: 100vh; padding: 20px 14px 36px; }
+
+    .pagina { width: 100%; max-width: 1040px; margin: 0 auto; }
+    .barra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin-bottom: 18px; }
+    .boton { font: inherit; font-weight: 700; font-size: .9rem; cursor: pointer; padding: 11px 18px; border: 0; border-radius: 11px; background: var(--verde-900); color: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background .15s; }
+    .boton:hover { background: var(--verde-700); }
+    .boton:focus-visible { outline: 3px solid var(--verde-500); outline-offset: 2px; }
+    .boton svg { width: 18px; height: 18px; flex: none; }
+    .boton--claro { background: var(--verde-100); color: var(--verde-900); }
+    .boton--claro:hover { background: #d1ece5; }
+
+    .estado { max-width: 620px; margin: 40px auto; background: #fff; border: 1px solid var(--linea); border-radius: 18px; padding: 28px; text-align: center; box-shadow: 0 10px 40px rgba(11, 61, 54, .08); }
+    .estado h2 { font-size: 1.3rem; font-weight: 800; color: var(--verde-900); margin-bottom: 8px; }
+    .estado p { color: var(--suave); line-height: 1.6; margin-bottom: 18px; }
+    .estado--revocado h2 { color: var(--ambar); }
+    .estado--error h2 { color: var(--rojo); }
+    .estado .barra { margin: 0; }
+    .rueda { width: 38px; height: 38px; margin: 0 auto 12px; border: 3px solid var(--verde-100); border-top-color: var(--verde-500); border-radius: 50%; animation: gira .8s linear infinite; }
+    @keyframes gira { to { transform: rotate(360deg); } }
+
+    /* ───── El certificado: plantilla original de Sinergia (lienzo fijo de 1130 x 800 que se escala al ancho disponible) ───── */
+    .escala { width: calc(1130px * var(--cert-k)); height: calc(800px * var(--cert-k)); position: relative; margin: 0 auto; }
+    .cv3-cert { position: absolute; top: 0; left: 0; width: 1130px; height: 800px; transform: scale(var(--cert-k)); transform-origin: top left; padding: 14px; background: linear-gradient(135deg, #043F38 0%, #07594F 100%); box-shadow: 0 18px 36px -18px rgba(7, 89, 79, .35); font-family: 'Manrope', system-ui, sans-serif; color: #1a3633; }
+    .cv3-inner { width: 100%; height: 100%; background: #FAFEFE; position: relative; outline: 2px solid #0DB7A0; outline-offset: -8px; overflow: hidden; }
+    .cv3-inner::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(ellipse at center, rgba(13, 183, 160, .05) 0%, transparent 60%), radial-gradient(ellipse at top, rgba(121, 231, 207, .04) 0%, transparent 50%); pointer-events: none; }
+    .cv3-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -45%); width: 38%; opacity: .05; pointer-events: none; z-index: 0; }
+    .cv3-corner { position: absolute; width: 5.3%; aspect-ratio: 1; z-index: 1; pointer-events: none; }
+    .cv3-corner.tl { top: 18.5%; left: 1.3%; }
+    .cv3-corner.tr { top: 18.5%; right: 1.3%; transform: scaleX(-1); }
+    .cv3-corner.bl { bottom: 7.6%; left: 1.3%; transform: scaleY(-1); }
+    .cv3-corner.br { bottom: 7.6%; right: 1.3%; transform: scale(-1, -1); }
+    .cv3-header { height: 18.2%; margin: 1.75% 1.3% 0 1.3%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(180deg, #FAFEFE 0%, #F0FBFA 100%); border-bottom: 3px solid #0DB7A0; }
+    .cv3-header::after { content: ""; position: absolute; bottom: -3px; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #0DB7A0 0%, #79E7CF 50%, #0DB7A0 100%); }
+    .cv3-header-content { display: flex; align-items: center; gap: 2.5%; }
+    .cv3-logo { height: 95px; width: auto; filter: drop-shadow(0 2px 4px rgba(13, 183, 160, .15)); }
+    .cv3-h-title { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 28px; color: #07594F; letter-spacing: .02em; line-height: 1; }
+    .cv3-h-tagline { font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 500; color: #0DB7A0; letter-spacing: .28em; text-transform: uppercase; margin-top: 6px; }
+    .cv3-body { padding: 5.5% 8% 2% 8%; position: relative; z-index: 1; text-align: center; }
+    .cv3-title { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 46px; color: #07594F; letter-spacing: .08em; line-height: 1; }
+    .cv3-title-deco { width: 70%; height: 3px; background: linear-gradient(90deg, transparent 0%, #0DB7A0 16%, #79E7CF 50%, #0DB7A0 84%, transparent 100%); margin: 1.5% auto 0; border-radius: 2px; }
+    .cv3-preamble { font-size: 14px; color: #4a6661; margin-top: 3%; letter-spacing: .06em; }
+    .cv3-recipient { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 50px; color: #07594F; letter-spacing: .06em; margin-top: 1%; text-transform: uppercase; line-height: 1.1; display: inline-block; white-space: nowrap; max-width: 86%; padding: 0 2.1% .7%; border-bottom: 2px solid #0DB7A0; }
+    .cv3-award { font-size: 13px; color: #4a6661; margin-top: 2.4%; letter-spacing: .04em; }
+    .cv3-course { font-family: 'Cormorant Garamond', serif; font-weight: 700; font-style: italic; font-size: 27px; color: #0DB7A0; margin-top: .9%; line-height: 1.25; padding: 0 4%; }
+    .cv3-meta { font-size: 12px; color: #7a9290; margin-top: 1.5%; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
+    .cv3-meta-sep { margin: 0 1.1%; color: #0DB7A0; font-weight: 700; }
+    .cv3-date { margin-top: 3.5%; text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #4a6661; }
+    .cv3-foot-row { position: absolute; bottom: 10%; left: 8%; right: 8%; display: grid; grid-template-columns: 9.7% 1fr 1fr; align-items: end; gap: 3.5%; }
+    .cv3-qr-block { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+    .cv3-qr-link { display: block; color: inherit; text-decoration: none; cursor: pointer; }
+    .cv3-qr-link:focus-visible { outline: 3px solid #0DB7A0; outline-offset: 4px; border-radius: 6px; }
+    .cv3-qr-frame { width: 96px; aspect-ratio: 1; padding: 6px; background: #FAFEFE; border: 1.5px solid #07594F; border-radius: 4px; }
+    .cv3-qr-frame svg { width: 100%; height: 100%; display: block; }
+    .cv3-qr-label { font-size: 9px; color: #4a6661; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; text-align: center; line-height: 1.4; }
+    .cv3-coordination, .cv3-ipcil { display: flex; flex-direction: column; align-items: center; text-align: center; color: #07594F; }
+    .cv3-coordination-spacer { height: 48px; }
+    .cv3-ipcil-logo { height: 48px; max-width: 72px; object-fit: contain; margin-bottom: 3px; mix-blend-mode: multiply; }
+    .cv3-validation-line { width: 100%; height: 1px; background: #07594F; margin-bottom: 7px; }
+    .cv3-validation-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: #07594F; line-height: 1.1; }
+    .cv3-validation-title { font-size: 9px; font-weight: 700; color: #718681; letter-spacing: .12em; text-transform: uppercase; margin-top: 5px; }
+    .cv3-grupo { display: contents; }
+    body.muestra .cv3-grupo-oficial, body:not(.muestra) .cv3-grupo-muestra { display: none; }
+    .cv3-sig { display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+    .cv3-sig-mark { height: 56px; margin-bottom: -9px; display: flex; align-items: flex-end; justify-content: center; }
+    .cv3-sig-mark img { max-height: 100%; max-width: 90%; object-fit: contain; }
+    .cv3-sig.right .cv3-sig-mark { height: 76px; margin-bottom: -16px; }
+    .cv3-sig-line { width: 100%; height: 1px; background: #07594F; margin-bottom: 7px; }
+    .cv3-sig-name { font-weight: 700; font-size: 13px; color: #07594F; letter-spacing: .04em; }
+    .cv3-sig-title { font-weight: 400; font-size: 11px; color: #4a6661; margin-top: 2px; letter-spacing: .06em; }
+    .cv3-footband { position: absolute; bottom: 1.75%; left: 1.3%; right: 1.3%; height: 5.5%; background: linear-gradient(135deg, #043F38 0%, #07594F 100%); display: flex; align-items: center; justify-content: center; gap: 1.6%; color: #D8FDFC; font-size: 11px; letter-spacing: .06em; border-top: 2px solid #0DB7A0; }
+    .cv3-folio { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; font-weight: 500; color: #FAFEFE; letter-spacing: .08em; }
+    .cv3-dot { color: #79E7CF; opacity: .6; }
+
+    .aviso { max-width: 1000px; margin: 14px auto 0; text-align: center; font-size: .85rem; color: var(--suave); }
+    .aviso a { color: var(--verde-700); font-weight: 700; }
+
+    /* Teléfono: primero el certificado, luego los botones, y un aviso para girar la pantalla */
+    #vista[hidden] { display: none !important; }
+    .girar { display: none; text-align: center; font-size: .85rem; color: var(--suave); margin-top: 10px; }
+    @media (max-width: 640px) {
+      #vista { display: flex; flex-direction: column; }
+      #vista > .escala { order: 1; }
+      #vista > .girar { order: 2; display: block; }
+      #vista > .barra { order: 3; margin-top: 16px; gap: 8px; }
+      #vista > .barra .boton { padding: 10px 14px; font-size: .85rem; }
+      #vista > .aviso { order: 4; }
+      #vista > .nota-muestra { order: 0; }
+    }
+    @media (max-width: 640px) and (orientation: landscape) { .girar { display: none !important; } }
+
+    /* Dentro del visor del panel (?embed=1): sin márgenes de más */
+    body.embed { padding: 44px 10px 14px; background: transparent; }
+    body.embed .estado { margin: 20px auto; }
+    /* Certificado de muestra (?muestra=1): marca de agua, sin compartir ni verificar */
+    body.muestra .barra, body.muestra .aviso { display: none; }
+    body.muestra .cv3-cert::after { content: 'MUESTRA'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 190px; font-weight: 800; letter-spacing: .08em; color: rgba(11, 61, 54, .09); transform: rotate(-18deg); pointer-events: none; }
+    .nota-muestra { display: none; max-width: 1000px; margin: 0 auto 14px; text-align: center; font-size: .9rem; color: var(--suave); }
+    body.muestra .nota-muestra { display: block; }
+    .nota-muestra b { color: var(--verde-900); }
+
+    @media print {
+      @page { size: A4 landscape; margin: 0; }
+      html, body { background: #fff; padding: 0; margin: 0; }
+      .barra, .aviso, .estado { display: none !important; }
+      .pagina { max-width: none; }
+      .escala { width: 297mm; height: 210mm; --cert-k: .993; overflow: hidden; }
+      .cv3-cert { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <div class="pagina">
+
+    <div class="estado" id="cargando" role="status" aria-live="polite">
+      <div class="rueda"></div>
+      <p style="margin:0">Cargando certificado...</p>
+    </div>
+
+    <div class="estado" id="estadoError" role="alert" style="display:none">
+      <h2 id="errTitulo">Certificado no encontrado</h2>
+      <p id="errDetalle"></p>
+      <div class="barra">
+        <button type="button" class="boton" id="botonReintentar" style="display:none">Reintentar</button>
+        <a class="boton boton--claro" href="validar-certificado.html">Verificar otro folio</a>
+        <a class="boton boton--claro" href="vip-panel.html">Ir a mi panel</a>
+      </div>
+    </div>
+
+    <div id="vista" hidden>
+      <p class="nota-muestra"><b>Certificado de muestra.</b> Datos de ejemplo: no corresponde a un registro real.</p>
+      <div class="barra">
+        <button type="button" class="boton" id="botonImprimir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg> Imprimir o guardar PDF</button>
+        <button type="button" class="boton boton--claro" id="botonWhatsapp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg> Compartir en WhatsApp</button>
+        <button type="button" class="boton boton--claro" id="botonLinkedin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.1M12 17v-4a2.5 2.5 0 0 1 5 0v4M12 10v7"/></svg> Compartir en LinkedIn</button>
+        <button type="button" class="boton boton--claro" id="botonCopiar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg> <span id="textoCopiar">Copiar enlace</span></button>
+      </div>
+
+      <div class="escala" id="escala">
+        <div id="certificado" class="cv3-cert">
+          <div class="cv3-inner">
+            <!-- Watermark trigo -->
+            <svg class="cv3-watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <g fill="#0DB7A0">
+                <path d="M50 10 L50 90" stroke="#0DB7A0" stroke-width="1.2" fill="none"/>
+                <ellipse cx="50" cy="22" rx="3" ry="6" transform="rotate(-15 50 22)"/>
+                <ellipse cx="50" cy="22" rx="3" ry="6" transform="rotate(15 50 22)"/>
+                <ellipse cx="50" cy="32" rx="3.5" ry="7" transform="rotate(-18 50 32)"/>
+                <ellipse cx="50" cy="32" rx="3.5" ry="7" transform="rotate(18 50 32)"/>
+                <ellipse cx="50" cy="44" rx="4" ry="8" transform="rotate(-20 50 44)"/>
+                <ellipse cx="50" cy="44" rx="4" ry="8" transform="rotate(20 50 44)"/>
+                <ellipse cx="50" cy="56" rx="4" ry="8" transform="rotate(-22 50 56)"/>
+                <ellipse cx="50" cy="56" rx="4" ry="8" transform="rotate(22 50 56)"/>
+                <ellipse cx="50" cy="68" rx="3.5" ry="7" transform="rotate(-20 50 68)"/>
+                <ellipse cx="50" cy="68" rx="3.5" ry="7" transform="rotate(20 50 68)"/>
+              </g>
+            </svg>
+
+            <!-- Corner ornaments -->
+            <div class="cv3-corner tl"><svg viewBox="0 0 60 60"><path d="M5 30 Q5 5 30 5" stroke="#0DB7A0" stroke-width="1.5" fill="none" opacity="0.8"/><path d="M10 30 Q10 10 30 10" stroke="#79E7CF" stroke-width="1" fill="none" opacity="0.7"/><circle cx="8" cy="8" r="2.5" fill="#0DB7A0" opacity="0.85"/></svg></div>
+            <div class="cv3-corner tr"><svg viewBox="0 0 60 60"><path d="M5 30 Q5 5 30 5" stroke="#0DB7A0" stroke-width="1.5" fill="none" opacity="0.8"/><path d="M10 30 Q10 10 30 10" stroke="#79E7CF" stroke-width="1" fill="none" opacity="0.7"/><circle cx="8" cy="8" r="2.5" fill="#0DB7A0" opacity="0.85"/></svg></div>
+            <div class="cv3-corner bl"><svg viewBox="0 0 60 60"><path d="M5 30 Q5 5 30 5" stroke="#0DB7A0" stroke-width="1.5" fill="none" opacity="0.8"/><path d="M10 30 Q10 10 30 10" stroke="#79E7CF" stroke-width="1" fill="none" opacity="0.7"/><circle cx="8" cy="8" r="2.5" fill="#0DB7A0" opacity="0.85"/></svg></div>
+            <div class="cv3-corner br"><svg viewBox="0 0 60 60"><path d="M5 30 Q5 5 30 5" stroke="#0DB7A0" stroke-width="1.5" fill="none" opacity="0.8"/><path d="M10 30 Q10 10 30 10" stroke="#79E7CF" stroke-width="1" fill="none" opacity="0.7"/><circle cx="8" cy="8" r="2.5" fill="#0DB7A0" opacity="0.85"/></svg></div>
+
+            <!-- HEADER -->
+            <div class="cv3-header">
+              <div class="cv3-header-content">
+                <img class="cv3-logo" src="img/logo-oficial-256.png" alt="Sinergia Agrícola" onerror="this.style.display='none'"/>
+                <div>
+                  <div class="cv3-h-title">Sinergia Agrícola</div>
+                  <div class="cv3-h-tagline">Plataforma de Formación Agrícola Profesional</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BODY -->
+            <div class="cv3-body">
+              <h1 class="cv3-title">CERTIFICADO DE ACREDITACIÓN</h1>
+              <div class="cv3-title-deco"></div>
+              <p class="cv3-preamble">Se otorga la presente constancia a</p>
+              <div class="cv3-recipient" id="cNombre">—</div>
+              <p class="cv3-award">Por haber acreditado satisfactoriamente el programa académico denominado:</p>
+              <div class="cv3-course" id="cCurso">—</div>
+              <div class="cv3-meta">
+                <span id="cCarga">—</span>
+                <span class="cv3-meta-sep">|</span>
+                <span id="cArea">—</span>
+              </div>
+              <div class="cv3-date">Emitido el <span id="cFecha">—</span></div>
+            </div>
+
+            <!-- FOOTER ROW: QR + coordinación institucional, sin firmas manuscritas -->
+            <div class="cv3-foot-row">
+              <div class="cv3-qr-block">
+                <a class="cv3-qr-link" id="cQrEnlace" href="validar-certificado.html" target="_blank" rel="noopener" title="Abrir la verificación de este certificado"><div class="cv3-qr-frame" id="cQr"></div></a>
+                <div class="cv3-qr-label">Escanea o toca<br>para validar</div>
+              </div>
+
+              <!-- Plantilla OFICIAL: firmas -->
+              <div class="cv3-grupo cv3-grupo-oficial">
+                <div class="cv3-sig left">
+                  <div class="cv3-sig-mark"><img src="img/firma-coordinacion-general.png" alt="Firma de la coordinación general"/></div>
+                  <div class="cv3-sig-line"></div>
+                  <div class="cv3-sig-name">María Fernanda Altamirano</div>
+                  <div class="cv3-sig-title">Coordinación General · Sinergia-Agrícola</div>
+                </div>
+                <div class="cv3-sig right">
+                  <div class="cv3-sig-mark"><img src="img/firma-certificacion.png" alt="Firma de la coordinación de certificación"/></div>
+                  <div class="cv3-sig-line"></div>
+                  <div class="cv3-sig-name">Coordinación de Certificación</div>
+                  <div class="cv3-sig-title">IPCIL Latinoamericano</div>
+                </div>
+              </div>
+
+              <!-- Plantilla de MUESTRA: sin firmas reales -->
+              <div class="cv3-grupo cv3-grupo-muestra">
+                <div class="cv3-coordination">
+                  <div class="cv3-coordination-spacer" aria-hidden="true"></div>
+                  <div class="cv3-validation-line"></div>
+                  <div class="cv3-validation-name">Coordinación VIP</div>
+                  <div class="cv3-validation-title">Coordinación</div>
+                </div>
+                <div class="cv3-ipcil" aria-label="Validación institucional IPCIL">
+                  <img class="cv3-ipcil-logo" src="img/ipcil-sello.png" alt="Sello IPCIL"/>
+                  <div class="cv3-validation-line"></div>
+                  <div class="cv3-validation-name">Coordinación de Certificación</div>
+                  <div class="cv3-validation-title">IPCIL Latinoamericano</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FOOTER BAND -->
+            <div class="cv3-footband">
+              <span>Folio: <span class="cv3-folio" id="cFolio">—</span></span>
+              <span class="cv3-dot">●</span>
+              <span>sinergiamexico.it.com</span>
+              <span class="cv3-dot">●</span>
+              <span id="cBandaTexto">Certificado emitido digitalmente por Sinergia-Agrícola / IPCIL Latinoamericano</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="girar">Gira el teléfono para ver el certificado más grande.</p>
+
+      <p class="aviso">¿Quieres comprobar que es auténtico? Escanea el código QR o <a id="enlaceVerificar" href="validar-certificado.html">verifica el folio aquí</a>.</p>
+    </div>
+
+  </div>
+
+  <script src="assets/vendor/qrcode-generator.js?v=1"></script>
+  <script src="assets/certificado-sinergia.js?v=1"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var actual = null;
+
+      // El certificado es un lienzo fijo de 1000 px que se escala al ancho de la pantalla.
+      function ajustarEscala() {
+        var caja = $('escala');
+        var ancho = caja.parentNode.clientWidth;
+        if (ancho > 0) {
+          var k = Math.min(ancho, 1130) / 1130;
+          // Dentro del visor del panel el certificado completo tiene que caber también a lo alto
+          if (document.body.classList.contains('embed')) {
+            var barra = document.querySelector('#vista > .barra');
+            var libre = window.innerHeight - (barra ? barra.offsetHeight : 0) - 110;
+            k = Math.min(k, Math.max(libre, 220) / 800);
+          }
+          caja.style.setProperty('--cert-k', k.toFixed(5));
+        }
+      }
+      window.addEventListener('resize', ajustarEscala);
+      window.addEventListener('orientationchange', ajustarEscala);
+
+      // El nombre se queda en una sola línea y solo se achica cuando no cabe (como en la plantilla de siempre)
+      function ajustarNombre() {
+        var nombre = $('cNombre');
+        nombre.style.fontSize = '';
+        var cuerpo = nombre.parentNode;
+        var disponible = cuerpo.clientWidth * 0.86;
+        var tam = parseFloat(getComputedStyle(nombre).fontSize);
+        while (nombre.scrollWidth > disponible && tam > 18) { tam -= 1; nombre.style.fontSize = tam + "px"; }
+      }
+
+      function mostrarError(r) {
+        $('cargando').style.display = 'none';
+        $('vista').hidden = true;
+        var caja = $('estadoError');
+        caja.className = 'estado ' + (r.estado === 'revocado' ? 'estado--revocado' : 'estado--error');
+        $('errTitulo').textContent = r.titulo;
+        $('errDetalle').textContent = r.detalle;
+        $('botonReintentar').style.display = (r.estado === 'red' || r.estado === 'limite' || r.estado === 'error') ? '' : 'none';
+        caja.style.display = 'block';
+      }
+
+      async function cargar() {
+        $('estadoError').style.display = 'none';
+        $('cargando').style.display = '';
+        var params = new URLSearchParams(window.location.search);
+        document.body.classList.toggle('embed', params.get('embed') === '1');
+        var esMuestra = params.get('muestra') === '1';
+        var r;
+        if (esMuestra) {
+          // Certificado de muestra para quien aún no termina un curso: datos de ejemplo, sin consultar al servidor
+          var hoy = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+          r = { ok: true, certificado: SIN_CERT.vistaCertificado({
+            folio: 'SA-MUESTRA-000000', userName: params.get('nombre') || 'Tu nombre aquí', courseName: params.get('curso') || 'Nombre de tu curso',
+            institution: 'Sinergia-Agrícola', directorName: 'Andrea Hernández Machado', hours: 5, sessions: 5, courseArea: 'Producción Agrícola', issueDate: hoy
+          }) };
+        } else {
+          r = await SIN_CERT.consultar(params.get('folio'));
+        }
+        if (!r.ok) { mostrarError(r); return; }
+        document.body.classList.toggle('muestra', esMuestra);
+        $('cBandaTexto').textContent = 'Certificado emitido digitalmente por Sinergia-Agrícola / IPCIL Latinoamericano';
+
+        var c = r.certificado;
+        actual = esMuestra ? null : c;
+        $('cFolio').textContent = c.folio;
+        $('cNombre').textContent = c.nombre || 'Miembro Sinergia';
+        $('cCurso').textContent = c.curso || '—';
+        $('cFecha').textContent = c.fechaTexto || '—';
+        // «Carga académica» como la plantilla de siempre, pero con las horas REALES del curso
+        var carga = [];
+        if (c.sesiones) carga.push(c.sesiones + (c.sesiones === 1 ? ' sesión' : ' sesiones'));
+        if (c.horasTexto) carga.push(c.horasTexto);
+        $('cCarga').textContent = 'Carga académica: ' + (carga.join(' · ') || '—');
+        $('cArea').textContent = 'Área: ' + (c.area || 'Producción Agrícola');
+        ajustarNombre();
+
+        // El QR se dibuja aquí mismo (sin servicios externos) y lleva el enlace de verificación del folio
+        var destino = esMuestra ? 'https://sinergiamexico.it.com/' : SIN_CERT.urlVerificacion(c.folio);
+        $('cQr').innerHTML = SIN_CERT.qrComoSvg(destino, window.qrcode, { color: '#07594F', fondo: '#FAFEFE', margen: 1 });
+        $('cQrEnlace').href = destino;
+        $('enlaceVerificar').href = 'validar-certificado.html?folio=' + encodeURIComponent(c.folio);
+        document.title = 'Certificado ' + c.folio + ' · Sinergia-Agrícola';
+
+        $('cargando').style.display = 'none';
+        $('vista').hidden = false;
+        ajustarEscala();
+      }
+
+      $('botonReintentar').addEventListener('click', cargar);
+      $('botonImprimir').addEventListener('click', function () { window.print(); });
+      $('botonWhatsapp').addEventListener('click', function () {
+        if (actual) window.open('https://wa.me/?text=' + encodeURIComponent(SIN_CERT.textoCompartir(actual)), '_blank', 'noopener');
+      });
+      $('botonLinkedin').addEventListener('click', function () {
+        if (actual) window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(SIN_CERT.urlCertificado(actual.folio)), '_blank', 'noopener');
+      });
+      $('botonCopiar').addEventListener('click', function () {
+        if (!actual) return;
+        var enlace = SIN_CERT.urlCertificado(actual.folio);
+        var listo = function () { $('textoCopiar').textContent = 'Enlace copiado'; setTimeout(function () { $('textoCopiar').textContent = 'Copiar enlace'; }, 2000); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(enlace).then(listo, function () { window.prompt('Copia este enlace:', enlace); });
+        else window.prompt('Copia este enlace:', enlace);
+      });
+
+      cargar();
+    })();
+  </script>
+</body>
+</html>

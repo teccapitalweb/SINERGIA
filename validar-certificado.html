@@ -1,327 +1,269 @@
 <!DOCTYPE html>
-  <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validar Certificado · Sinergia-Agrícola</title>
-    <meta name="description" content="Verifica la autenticidad de un certificado IPCI de Sinergia-Agrícola">
-    <meta name="robots" content="noindex">
-    <link rel="icon" href="img/logo.jpg" type="image/jpeg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        --teal-500: #14B8A6;
-      --teal-600: #0D9488;
-      --green-600: #059669;
-      --green-800: #065F46;
-      --gray-50: #F9FAFB;
-              --gray-100: #F3F4F6;
-              --gray-200: #E5E7EB;
-              --gray-600: #4B5563;
-      --gray-800: #1F2937;
-      --white: #FFFFFF;
-        }
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificar certificado · Sinergia-Agrícola</title>
+  <meta name="description" content="Comprueba que un certificado de Sinergia-Agrícola es auténtico con su folio.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="img/logo.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde-900: #0b3d36;
+      --verde-700: #0f6b5c;
+      --verde-500: #1aa888;
+      --verde-100: #e3f4ef;
+      --marfil: #f6f8f5;
+      --tinta: #16302b;
+      --suave: #5b6f6a;
+      --linea: #dbe5e1;
+      --rojo: #b3261e;
+      --rojo-fondo: #fbeceb;
+      --ambar: #8a5a00;
+      --ambar-fondo: #fdf3dc;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-        background: var(--gray-50);
+      font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--marfil);
+      color: var(--tinta);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-}
-    .logo-bar {
-            display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 2rem;
-}
-    .logo-bar img {
-            width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      object-fit: cover;
-}
-    .logo-bar span {
-            font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--green-800);
-}
-    .card {
-            background: var(--white);
-      border-radius: 1.5rem;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      padding: 2.5rem;
-      max-width: 600px;
-      width: 100%;
-}
-    .loading-state { text-align: center; }
-    .spinner {
-      width: 48px; height: 48px;
-      border: 4px solid var(--gray-200);
-      border-top-color: var(--teal-500);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 1rem;
+      padding: 40px 16px 32px;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .valid-badge {
-            display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: #DCFCE7;
-            color: #15803D;
-      font-weight: 700;
-      font-size: 0.875rem;
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      margin-bottom: 1.5rem;
-}
-    .invalid-badge {
-            display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: #FEE2E2;
-            color: #DC2626;
-                  font-weight: 700;
-      font-size: 0.875rem;
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      margin-bottom: 1.5rem;
-}
-    .cert-title {
-            font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--gray-800);
-      margin-bottom: 0.25rem;
-}
-    .cert-subtitle {
-            color: var(--gray-600);
-      margin-bottom: 2rem;
-        }
-          .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 2rem;
-}
-    .info-item {
-      background: var(--gray-50);
-      border-radius: 0.75rem;
-      padding: 1rem;
-}
-    .info-item.full { grid-column: 1 / -1; }
-            .info-label {
-                    font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--gray-600);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.25rem;
-      }
-    .info-value {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--gray-800);
-}
-    .folio-value {
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--teal-600);
-      background: #F0FDFA;
-            padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      }
-          .divider {
-      height: 1px;
-      background: var(--gray-200);
-      margin: 1.5rem 0;
-        }
-    .error-icon {
-            font-size: 4rem;
-      margin-bottom: 1rem;
-}
-    .error-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-              color: var(--gray-800);
-      margin-bottom: 0.5rem;
-}
-    .error-text {
-            color: var(--gray-600);
-}
-    .btn-back {
-            display: inline-block;
-      margin-top: 1.5rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--green-800);
-      color: white;
-      border-radius: 0.75rem;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.875rem;
-}
-    .footer {
-            margin-top: 2rem;
-      text-align: center;
-      color: var(--gray-600);
-      font-size: 0.875rem;
-}
-    @media (max-width: 480px) {
-      .info-grid { grid-template-columns: 1fr; }
-      .info-item.full { grid-column: 1; }
-      .card { padding: 1.5rem; }
-}
+    .marca { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; text-decoration: none; color: var(--verde-900); }
+    .marca img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+    .marca strong { display: block; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; }
+    .marca span { display: block; font-size: .78rem; color: var(--suave); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+
+    .tarjeta {
+      background: #fff;
+      border: 1px solid var(--linea);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(11, 61, 54, .08);
+      padding: 32px;
+      width: 100%;
+      max-width: 620px;
+    }
+    h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; color: var(--verde-900); margin-bottom: 6px; }
+    .pista { color: var(--suave); font-size: .95rem; line-height: 1.5; margin-bottom: 20px; }
+    .pista b { color: var(--verde-700); font-weight: 700; letter-spacing: .02em; }
+
+    .buscar { display: flex; gap: 10px; }
+    .buscar input {
+      flex: 1; min-width: 0;
+      font: inherit; font-size: 1rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+      padding: 14px 16px; border: 1.5px solid var(--linea); border-radius: 12px; background: #fff; color: var(--tinta);
+    }
+    .buscar input::placeholder { color: #9bb0aa; font-weight: 500; letter-spacing: .02em; }
+    .buscar input:focus { outline: none; border-color: var(--verde-500); box-shadow: 0 0 0 4px rgba(26, 168, 136, .18); }
+    .boton {
+      font: inherit; font-weight: 700; font-size: .95rem; cursor: pointer;
+      padding: 14px 22px; border: 0; border-radius: 12px;
+      background: var(--verde-900); color: #fff; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background .15s;
+    }
+    .boton:hover { background: var(--verde-700); }
+    .boton:disabled { opacity: .6; cursor: wait; }
+    .boton:focus-visible { outline: 3px solid var(--verde-500); outline-offset: 2px; }
+    .boton--claro { background: var(--verde-100); color: var(--verde-900); }
+    .boton--claro:hover { background: #d1ece5; }
+
+    .cargando { display: none; text-align: center; padding: 34px 0 10px; color: var(--suave); font-weight: 600; }
+    .cargando.visible { display: block; }
+    .rueda { width: 38px; height: 38px; margin: 0 auto 12px; border: 3px solid var(--verde-100); border-top-color: var(--verde-500); border-radius: 50%; animation: gira .8s linear infinite; }
+    @keyframes gira { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .rueda { animation-duration: 2.4s; } }
+
+    .resultado { display: none; margin-top: 26px; }
+    .resultado.visible { display: block; }
+    .sello { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 14px; margin-bottom: 20px; }
+    .sello svg { width: 40px; height: 40px; flex: none; }
+    .sello h2 { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.01em; }
+    .sello p { font-size: .9rem; margin-top: 2px; }
+    .sello--ok { background: var(--verde-100); color: var(--verde-900); }
+    .sello--ok svg { color: var(--verde-500); }
+    .sello--revocado { background: var(--ambar-fondo); color: var(--ambar); }
+    .sello--revocado svg { color: #c98a00; }
+    .sello--error { background: var(--rojo-fondo); color: var(--rojo); }
+    .sello--error svg { color: var(--rojo); }
+
+    .datos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; }
+    .dato { min-width: 0; }
+    .dato--ancho { grid-column: 1 / -1; }
+    .dato dt { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); margin-bottom: 3px; }
+    .dato dd { font-size: 1.02rem; font-weight: 600; overflow-wrap: anywhere; }
+    .dato dd.folio { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; font-size: .98rem; letter-spacing: .03em; color: var(--verde-700); }
+    .dato dd.nombre { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.01em; }
+
+    .acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--linea); }
+    .nota { margin-top: 16px; font-size: .84rem; color: var(--suave); line-height: 1.5; }
+
+    .pie { margin-top: 26px; text-align: center; color: var(--suave); font-size: .85rem; line-height: 1.7; }
+    .pie a { color: var(--verde-700); font-weight: 700; text-decoration: none; }
+    .pie a:hover { text-decoration: underline; }
+
+    @media (max-width: 560px) {
+      .tarjeta { padding: 24px 18px; }
+      .buscar { flex-direction: column; }
+      .datos { grid-template-columns: 1fr; }
+    }
   </style>
-    </head>
-    <body>
+</head>
+<body>
 
-      <div class="logo-bar">
-        <img src="img/logo.jpg" alt="Sinergia-Agrícola Logo" onerror="this.style.display='none'">
-        <span>Sinergia-Agrícola</span>
-      </div>
+  <a class="marca" href="index.html">
+    <img src="img/logo-sinergia-256.png" alt="" onerror="this.src='img/logo.jpg'">
+    <div>
+      <strong>Sinergia-Agrícola</strong>
+      <span>Verificación de certificados</span>
+    </div>
+  </a>
 
-      <div class="card" id="mainCard">
-        <div class="loading-state" id="loadingState">
-          <div class="spinner"></div>
-          <p style="color: var(--gray-600)">Verificando certificado...</p>
+  <main class="tarjeta">
+    <h1>Verifica un certificado</h1>
+    <p class="pista">Escribe el folio que aparece en el certificado, o escanea su código QR. Se ve así: <b>SINERGIA-2026-9F3A71C2</b></p>
+
+    <form class="buscar" id="formulario" autocomplete="off">
+      <input type="text" id="folioEntrada" placeholder="SINERGIA-AAAA-XXXXXXXX" maxlength="80" aria-label="Folio del certificado" spellcheck="false">
+      <button type="submit" class="boton" id="botonVerificar">Verificar</button>
+    </form>
+
+    <div class="cargando" id="cargando" role="status" aria-live="polite">
+      <div class="rueda"></div>
+      <p>Verificando folio...</p>
+    </div>
+
+    <section class="resultado" id="resultadoValido" aria-live="polite">
+      <div class="sello sello--ok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg>
+        <div>
+          <h2>Certificado auténtico</h2>
+          <p>Emitido y vigente en Sinergia-Agrícola</p>
         </div>
-        <div id="validState" style="display:none"></div>
-        <div id="invalidState" style="display:none"></div>
       </div>
-
-      <div class="footer">
-        Sistema de certificación IPCI · Sinergia-Agrícola &copy; 2026
+      <dl class="datos">
+        <div class="dato dato--ancho"><dt>Otorgado a</dt><dd class="nombre" id="rNombre">—</dd></div>
+        <div class="dato dato--ancho"><dt>Curso completado</dt><dd id="rCurso">—</dd></div>
+        <div class="dato"><dt>Área de estudio</dt><dd id="rArea">—</dd></div>
+        <div class="dato"><dt>Duración</dt><dd id="rDuracion">—</dd></div>
+        <div class="dato"><dt>Folio oficial</dt><dd class="folio" id="rFolio">—</dd></div>
+        <div class="dato"><dt>Fecha de emisión</dt><dd id="rFecha">—</dd></div>
+        <div class="dato" id="rResponsableCaja"><dt>Responsable</dt><dd id="rResponsable">—</dd></div>
+        <div class="dato"><dt>Emitido por</dt><dd id="rInstitucion">—</dd></div>
+      </dl>
+      <div class="acciones">
+        <a class="boton" id="enlaceCertificado" href="ver-certificado.html">Ver el certificado</a>
+        <button type="button" class="boton boton--claro" id="botonOtro">Verificar otro folio</button>
       </div>
+      <p class="nota">La consulta se hace en tiempo real contra los registros oficiales de Sinergia-Agrícola. Por privacidad no se muestra el correo de la persona.</p>
+    </section>
 
-      <script>
-        const BACKEND_URL = 'https://sinergia-webhook-production.up.railway.app';
+    <section class="resultado" id="resultadoError" role="alert">
+      <div class="sello sello--error" id="selloError">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7.5v5.5M12 16.4v.1"/></svg>
+        <div>
+          <h2 id="errTitulo">Folio no encontrado</h2>
+          <p id="errDetalle"></p>
+        </div>
+      </div>
+      <div class="acciones" style="margin-top:0;padding-top:0;border-top:0">
+        <button type="button" class="boton" id="botonReintentar" style="display:none">Intentar de nuevo</button>
+        <button type="button" class="boton boton--claro" id="botonOtro2">Probar con otro folio</button>
+      </div>
+    </section>
+  </main>
 
-    // Todo lo que viene de la URL o del servidor se escapa antes de ponerlo en la página
-    const esc = (v) => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  <p class="pie">
+    ¿Eres miembro de Sinergia-Agrícola? <a href="vip-panel.html">Entrar a mi cuenta</a><br>
+    &copy; 2026 Sinergia-Agrícola
+  </p>
 
-    async function validarCertificado() {
-      const params = new URLSearchParams(window.location.search);
-      const folio = params.get('folio');
+  <script src="assets/certificado-sinergia.js?v=1"></script>
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var verificando = false;
+      var ultimoFolio = '';
 
-      const loadingEl = document.getElementById('loadingState');
-      const validEl = document.getElementById('validState');
-      const invalidEl = document.getElementById('invalidState');
-
-      if (!folio) {
-        loadingEl.style.display = 'none';
-        invalidEl.style.display = 'block';
-        invalidEl.innerHTML = `
-                    <div style="text-align:center">
-                      <div class="error-icon">❓</div>
-                      <div class="error-title">Folio no especificado</div>
-            <p class="error-text">Esta URL no contiene un folio de certificado válido.</p>
-            <a href="/" class="btn-back">Ir al inicio</a>
-                    </div>
-                  `;
-                  return;
+      function ocultarResultados() {
+        $('resultadoValido').classList.remove('visible');
+        $('resultadoError').classList.remove('visible');
       }
 
-      try {
-        const res = await fetch(`${BACKEND_URL}/certificados/validar?folio=${encodeURIComponent(folio)}`);
-        const data = await res.json();
+      function mostrarError(r) {
+        var revocado = r.estado === 'revocado';
+        $('selloError').className = 'sello ' + (revocado ? 'sello--revocado' : 'sello--error');
+        $('errTitulo').textContent = r.titulo;
+        $('errDetalle').textContent = r.detalle;
+        $('botonReintentar').style.display = (r.estado === 'red' || r.estado === 'limite' || r.estado === 'error') ? '' : 'none';
+        $('resultadoError').classList.add('visible');
+      }
 
-        loadingEl.style.display = 'none';
+      function mostrarValido(c) {
+        $('rNombre').textContent = c.nombre || '—';
+        $('rCurso').textContent = c.curso || '—';
+        $('rArea').textContent = c.area || '—';
+        $('rDuracion').textContent = c.duracionTexto || '—';
+        $('rFolio').textContent = c.folio;
+        $('rFecha').textContent = c.fechaTexto || '—';
+        $('rResponsable').textContent = c.responsable || '—';
+        $('rResponsableCaja').style.display = c.responsable ? '' : 'none';
+        $('rInstitucion').textContent = c.institucion;
+        $('enlaceCertificado').href = 'ver-certificado.html?folio=' + encodeURIComponent(c.folio);
+        $('resultadoValido').classList.add('visible');
+      }
 
-        if (res.ok && data.valid && data.certificate) {
-          const cert = data.certificate;
-          validEl.style.display = 'block';
-          validEl.innerHTML = `
-            <div style="text-align:center; margin-bottom: 1.5rem">
-              <div class="valid-badge">
-                <span>✓</span>
-                <span>Certificado Válido</span>
-              </div>
-              <h1 class="cert-title">${esc(cert.courseName || 'Curso')}</h1>
-              <p class="cert-subtitle">Emitido por Sinergia-Agrícola · Instituto Profesional de Capacitación</p>
-            </div>
+      async function verificar() {
+        if (verificando) return;
+        var entrada = $('folioEntrada');
+        var folio = SIN_CERT.normalizarFolio(entrada.value);
+        if (!folio) { entrada.focus(); return; }
+        entrada.value = folio;
+        ultimoFolio = folio;
 
-            <div class="info-grid">
-              <div class="info-item full">
-                <div class="info-label">Participante</div>
-                <div class="info-value" style="font-size:1.25rem">${esc(cert.userName || '')}</div>
-              </div>
-              <div class="info-item full">
-                <div class="info-label">Programa académico</div>
-                <div class="info-value">${esc(cert.courseName || '')}</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Institución</div>
-                <div class="info-value">${esc(cert.institution || 'Sinergia-Agrícola')}</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Responsable</div>
-                <div class="info-value">${esc(cert.directorName || '')}</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Duración</div>
-                <div class="info-value">${esc(cert.hours || 5)} horas</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Fecha de emisión</div>
-                <div class="info-value">${esc(cert.issueDate || '')}</div>
-              </div>
-              <div class="info-item full">
-                <div class="info-label">Folio de verificación</div>
-                <div class="folio-value">${esc(cert.folio || folio)}</div>
-              </div>
-            </div>
+        verificando = true;
+        $('botonVerificar').disabled = true;
+        ocultarResultados();
+        $('cargando').classList.add('visible');
+        try { history.replaceState(null, '', '?folio=' + encodeURIComponent(folio)); } catch (e) { /* sin historial */ }
 
-            <div class="divider"></div>
-            <p style="text-align:center; color: var(--gray-600); font-size: 0.875rem">
-              🔒 Este certificado fue verificado automáticamente contra la base de datos oficial de Sinergia-Agrícola.<br>
-              Certificado con valor curricular — IPCI Latinoamericano
-            </p>
-          `;
-} else if (data && data.revoked) {
-          invalidEl.style.display = 'block';
-          invalidEl.innerHTML = `
-            <div style="text-align:center">
-              <div class="error-icon">🚫</div>
-              <div class="error-title">Certificado revocado</div>
-              <p class="error-text">El certificado con el folio:</p>
-              <div class="folio-value" style="display:inline-block; margin: 0.75rem auto">${esc(folio)}</div>
-              <p class="error-text" style="margin-top: 0.5rem">fue revocado por Sinergia-Agrícola y ya no es válido. Si tienes dudas, contáctanos.</p>
-              <a href="/" class="btn-back">Ir al inicio</a>
-            </div>
-          `;
-} else {
-          invalidEl.style.display = 'block';
-          invalidEl.innerHTML = `
-            <div style="text-align:center">
-              <div class="error-icon">❌</div>
-              <div class="error-title">Certificado no válido</div>
-              <p class="error-text">No se encontró ningún certificado con el folio:</p>
-              <div class="folio-value" style="display:inline-block; margin: 0.75rem auto">${esc(folio)}</div>
-              <p class="error-text" style="margin-top: 0.5rem">Verifica que el folio esté escrito correctamente o que el certificado no haya sido revocado.</p>
-              <a href="/" class="btn-back">Ir al inicio</a>
-            </div>
-          `;
-}
-} catch (err) {
-        loadingEl.style.display = 'none';
-        invalidEl.style.display = 'block';
-        invalidEl.innerHTML = `
-          <div style="text-align:center">
-            <div class="error-icon">⚠️</div>
-            <div class="error-title">Error de conexión</div>
-            <p class="error-text">No se pudo verificar el certificado en este momento. Intenta de nuevo más tarde.</p>
-            <a href="/" class="btn-back">Ir al inicio</a>
-          </div>
-        `;
-}
-}
+        var r = await SIN_CERT.consultar(folio);
+        $('cargando').classList.remove('visible');
+        verificando = false;
+        $('botonVerificar').disabled = false;
 
-    validarCertificado();
+        if (!r.ok) { mostrarError(r); return; }
+        mostrarValido(r.certificado);
+      }
+
+      function otroFolio() {
+        ocultarResultados();
+        var entrada = $('folioEntrada');
+        entrada.value = '';
+        entrada.focus();
+        try { history.replaceState(null, '', location.pathname); } catch (e) { /* sin historial */ }
+      }
+
+      $('formulario').addEventListener('submit', function (e) { e.preventDefault(); verificar(); });
+      $('botonOtro').addEventListener('click', otroFolio);
+      $('botonOtro2').addEventListener('click', otroFolio);
+      $('botonReintentar').addEventListener('click', verificar);
+
+      // Se abre desde el código QR o desde un enlace compartido: ?folio=SINERGIA-2026-9F3A71C2
+      var enUrl = new URLSearchParams(window.location.search).get('folio');
+      if (enUrl) {
+        $('folioEntrada').value = enUrl;
+        verificar();
+      } else {
+        $('folioEntrada').focus();
+      }
+    })();
   </script>
 </body>
 </html>
