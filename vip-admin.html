@@ -1720,6 +1720,15 @@
   .cm-quitar:hover { background: #FDF1EE; }
   .cm-vacio { padding: 16px; text-align: center; color: var(--stone-400); font-size: 12.5px; font-style: italic; }
   .cm-nota { font-size: 11.5px; color: var(--stone-500); margin-top: 4px; }
+  .cf-ayuda { font-size: 11.5px; color: var(--stone-500); margin-top: 5px; line-height: 1.45; }
+  .cf-ayuda b { color: var(--stone-700); }
+  .cf-ayuda-in { font-weight: 400; color: var(--stone-400); font-size: 11px; }
+  .cf-portada { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .cf-portada-prev { width: 200px; height: 80px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--border-subtle); background: #F3F4F6 center / cover no-repeat; display: flex; align-items: center; justify-content: center; font-size: 11.5px; color: var(--stone-400); text-align: center; }
+  .cf-portada-campos { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 8px; }
+  .cf-portada-acc { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cf-gratis { background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; font-size: 12px; line-height: 1.5; color: #166534; }
+  .cf-gratis b { color: #14532D; }
   .cm-aviso { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; margin-bottom: 12px; border-radius: 12px; background: #FFF4DB; color: #8A5A14; font-size: 13px; line-height: 1.45; }
   .cm-aviso .btn-secondary { padding: 7px 14px; font-size: 12.5px; }
   @media (max-width: 640px) { .cm-fila { grid-template-columns: 26px 1fr; } .cm-fila .cm-url, .cm-fila .cm-quitar { grid-column: 2; } }
@@ -3102,8 +3111,25 @@ body::before { display: none; }
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label" for="cursoDuracion">Duración (horas)</label>
-              <input type="number" id="cursoDuracion" class="form-input" placeholder="10" min="1" max="200">
+              <label class="form-label" for="cursoDuracion">Horas totales <span class="cf-ayuda-in">(vacío = automático)</span></label>
+              <input type="number" id="cursoDuracion" class="form-input" placeholder="Automático" min="1" max="200" oninput="cursoHorasPintar()">
+              <div class="cf-ayuda" id="cursoDuracionAyuda"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cursoPortadaUrl">Portada del curso <span class="cf-ayuda-in">(opcional)</span></label>
+            <div class="cf-portada">
+              <div class="cf-portada-prev" id="cursoPortadaPrev"><span>Sin portada</span></div>
+              <div class="cf-portada-campos">
+                <input type="url" id="cursoPortadaUrl" class="form-input" placeholder="Pega el enlace de una imagen (https://…)" oninput="cursoPortadaEnlace(this.value)">
+                <div class="cf-portada-acc">
+                  <button type="button" class="btn-secondary" onclick="document.getElementById('cursoPortadaArchivo').click()">Subir imagen</button>
+                  <button type="button" class="btn-secondary" onclick="cursoPortadaQuitar()">Quitar portada</button>
+                </div>
+                <input type="file" id="cursoPortadaArchivo" accept="image/*" style="display:none" onchange="cursoPortadaArchivo(this)">
+                <div class="cf-ayuda" id="cursoPortadaAyuda" style="margin-top:0;"></div>
+              </div>
             </div>
           </div>
 
@@ -3126,6 +3152,8 @@ body::before { display: none; }
               </label>
             </div>
           </div>
+
+          <div class="cf-gratis" id="cursoGratisInfo"></div>
 
           <!-- Sección de sesiones (clases) -->
           <div style="background:#F9FAFB;border:1px solid var(--border-subtle);border-radius:12px;padding:14px;margin-top:8px;margin-bottom:16px;">
@@ -7132,7 +7160,7 @@ let _bibLibrosCargados = false;
       const c = coinc[0];
       box.className = 'vt-match ok';
       box.innerHTML = (c.portada ? '<img src="' + esc(c.portada) + '" alt="" onerror="this.remove()">' : '') +
-        '<div><b>Se publicará a los miembros.</b> Coincide con «' + esc(c.titulo) + '» del catálogo de Bunny; su portada, nivel, duración y clases salen de ahí.</div>';
+        '<div><b>Se publicará a los miembros.</b> Coincide con «' + esc(c.titulo) + '» del catálogo de Bunny; sus clases, nivel y descripción salen de ahí. La portada y las horas que pongas aquí sí reemplazan las del catálogo.</div>';
     } else if (coinc.length === 0) {
       box.className = 'vt-match warn';
       box.innerHTML = '<div><b>No se mostrará a los miembros.</b> El título no coincide con ningún curso del catálogo de Bunny. Para publicarlo hay que agregar primero sus videos al catálogo.</div>';
@@ -7158,6 +7186,12 @@ let _bibLibrosCargados = false;
   }
 
   function renderSesionesEnModal() {
+    renderSesionesLista();
+    cursoHorasPintar();
+    cursoGratisPintar();
+  }
+
+  function renderSesionesLista() {
     const cont = document.getElementById('cursoSesionesList');
     if (!cont) return;
     if (_cursoEditandoSesiones.length === 0) {
@@ -7195,8 +7229,9 @@ let _bibLibrosCargados = false;
   //   Tipos: preguntas clásicas, Detecta el error, Toma la decisión, Ordena el procedimiento,
   //   Diagnóstico agrícola y Calcula y produce. Las respuestas correctas y las explicaciones NO se guardan en
   //   el curso: van al servidor (clave privada). Lo que ve el alumno queda en la clase, sin respuestas.
-  // · Juego de práctica (uno por clase, opcional): sin calificación, no cuenta para el certificado. Se resuelve
-  //   en el navegador, así que su contenido sí es público.
+  // · Mini juego (uno por clase, opcional): sin calificación y sin nota mínima, pero OBLIGATORIO: el alumno debe completarlo para
+  //   marcar la clase como vista y abrir la siguiente (el servidor lo comprueba). No cuenta como actividad del certificado.
+  //   Se resuelve en el navegador, así que su contenido sí es público.
   // ═══════════════════════════════════════════════════════════════
   const JG_CALIFICABLES = {
     quiz: 'Preguntas (opción múltiple y verdadero/falso)',
@@ -7554,7 +7589,7 @@ let _bibLibrosCargados = false;
   }
   function jgHtml(s, idx) {
     const j = s.juego;
-    const sel = `<label style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--stone-700);margin-top:2px;">Juego de práctica (opcional, sin calificación)
+    const sel = `<label style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--stone-700);margin-top:2px;">Mini juego de la clase (sin calificación)
         <select class="form-input" style="font-size:12.5px;padding:5px 8px;width:auto;" onchange="jgElegir(${idx}, this.value)">
           <option value="">Ninguno</option>
           ${Object.keys(JG_PRACTICA).map(k => `<option value="${k}" ${j && j.tipo === k ? 'selected' : ''}>${JG_PRACTICA[k]}</option>`).join('')}
@@ -7592,13 +7627,14 @@ let _bibLibrosCargados = false;
     }
     return `<div style="margin-top:2px;">${sel}</div>
       <div style="border:1px dashed #86EFAC;border-radius:10px;padding:10px;background:#F0FDF4;display:flex;flex-direction:column;gap:7px;">
+        <div style="font-size:11.5px;color:#166534;line-height:1.45;"><b>Obligatorio, sin calificación:</b> el alumno debe completarlo para marcar la clase como vista y abrir la siguiente. No lleva nota ni cuenta como actividad del certificado.</div>
         ${campo('titulo', 'Título del juego (opcional)', j.titulo, 'width:100%;')}
         ${cuerpo}
       </div>`;
   }
   window.jgElegir = function (idx, tipo) {
     const s = _cursoEditandoSesiones[idx]; if (!s) return;
-    if (!tipo) { if (s.juego && !confirm('¿Quitar el juego de práctica de esta clase?')) { renderSesionesEnModal(); return; } delete s.juego; }
+    if (!tipo) { if (s.juego && !confirm('¿Quitar el mini juego de esta clase?')) { renderSesionesEnModal(); return; } delete s.juego; }
     else if (!s.juego || s.juego.tipo !== tipo) {
       if (s.juego && !confirm('Cambiar de juego borra el contenido del anterior. ¿Continuar?')) { renderSesionesEnModal(); return; }
       s.juego = jgNuevo(tipo);
@@ -7931,6 +7967,188 @@ let _bibLibrosCargados = false;
     renderSesionesEnModal();
   };
 
+  // ═══════════════════════════════════════════════════
+  // PORTADA, HORAS AUTOMÁTICAS Y ACCESO GRATIS DEL CURSO (como en SENTIA)
+  //  · Portada: un enlace https o una imagen subida desde la computadora (se ajusta a 1600×640 y la guarda el servidor).
+  //  · Horas: vacías = suma de la duración de los videos de Bunny (el admin las lee con el reproductor); escritas = a mano.
+  // ═══════════════════════════════════════════════════
+  let _cursoPortada = { modo: 'conservar', url: '', imagen: '', actual: '' };
+  const _cursoMedicion = { token: 0, corriendo: false, texto: '' };
+
+  const cursoPortadaSrc = (u) => !u ? '' : (/^\//.test(u) ? BACKEND_URL + u : (/^https:\/\//i.test(u) ? u : ''));
+  function cursoPortadaPintar() {
+    const p = document.getElementById('cursoPortadaPrev');
+    if (!p) return;
+    const m = _cursoPortada;
+    const src = m.modo === 'imagen' ? m.imagen : (m.modo === 'enlace' ? m.url : (m.modo === 'quitar' ? '' : cursoPortadaSrc(m.actual)));
+    p.style.backgroundImage = src ? 'url("' + String(src).replace(/"/g, '%22') + '")' : 'none';
+    p.innerHTML = src ? '' : '<span>' + (m.modo === 'quitar' ? 'Se quitará al guardar' : 'Sin portada') + '</span>';
+    const a = document.getElementById('cursoPortadaAyuda');
+    if (a) a.textContent = m.modo === 'imagen' ? 'Imagen lista: se guarda al pulsar «Guardar cambios».'
+      : m.modo === 'enlace' ? 'Se usará este enlace. Si la imagen deja de existir en esa página, la portada se verá vacía.'
+      : (src ? 'Portada actual. Sube otra imagen o pega un enlace para cambiarla.' : 'Sin portada se usa la imagen estándar del catálogo. Tamaño ideal: 1600 × 640 px (la imagen que subas se ajusta sola).');
+  }
+  window.cursoPortadaIniciar = function (actual) {
+    _cursoMedicion.token++;
+    _cursoPortada = { modo: 'conservar', url: '', imagen: '', actual: String(actual || '') };
+    const u = document.getElementById('cursoPortadaUrl');
+    if (u) u.value = '';
+    cursoPortadaPintar();
+  };
+  window.cursoPortadaEnlace = function (v) {
+    const t = String(v || '').trim();
+    if (!t) { _cursoPortada.modo = 'conservar'; _cursoPortada.url = ''; cursoPortadaPintar(); return; }
+    if (/drive\.google\.com/i.test(t)) { showToast('Un enlace de Drive no sirve como portada: usa «Subir imagen».', 'error'); return; }
+    _cursoPortada.modo = 'enlace'; _cursoPortada.url = t; _cursoPortada.imagen = '';
+    cursoPortadaPintar();
+  };
+  window.cursoPortadaQuitar = function () {
+    _cursoPortada.modo = 'quitar'; _cursoPortada.url = ''; _cursoPortada.imagen = '';
+    const u = document.getElementById('cursoPortadaUrl');
+    if (u) u.value = '';
+    cursoPortadaPintar();
+  };
+  // Reduce la imagen en el navegador (cubre 1600×640) y la deja por debajo del tope del servidor
+  window.cursoPortadaArchivo = function (input) {
+    const f = input.files && input.files[0];
+    input.value = '';
+    if (!f) return;
+    if (!/^image\//.test(f.type)) { showToast('Sube una imagen JPG, PNG o WebP', 'error'); return; }
+    const lector = new FileReader();
+    lector.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const intentos = [[1600, 640, 0.86], [1600, 640, 0.7], [1200, 480, 0.7], [960, 384, 0.65]];
+        let url = '';
+        for (const [W, H, calidad] of intentos) {
+          const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+          const ctx = cv.getContext('2d');
+          const esc = Math.max(W / img.width, H / img.height);
+          ctx.fillStyle = '#0f2a1d'; ctx.fillRect(0, 0, W, H);
+          ctx.drawImage(img, (W - img.width * esc) / 2, (H - img.height * esc) / 2, img.width * esc, img.height * esc);
+          const webp = cv.toDataURL('image/webp', calidad);
+          url = webp.startsWith('data:image/webp') ? webp : cv.toDataURL('image/jpeg', calidad);
+          if (url.length * 0.75 <= 380 * 1024) break;
+        }
+        if (url.length * 0.75 > 390 * 1024) { showToast('La imagen es muy pesada; prueba con otra más sencilla.', 'error'); return; }
+        _cursoPortada.modo = 'imagen'; _cursoPortada.imagen = url; _cursoPortada.url = '';
+        const u = document.getElementById('cursoPortadaUrl');
+        if (u) u.value = '';
+        cursoPortadaPintar();
+      };
+      img.onerror = () => showToast('No se pudo leer esa imagen', 'error');
+      img.src = e.target.result;
+    };
+    lector.readAsDataURL(f);
+  };
+  function cursoPortadaPayload() {
+    const m = _cursoPortada;
+    if (m.modo === 'imagen') return { portadaImagen: m.imagen };
+    if (m.modo === 'enlace') return { portada: m.url };
+    if (m.modo === 'quitar') return { portada: '' };
+    return { portada: 'conservar' };
+  }
+
+  // Horas automáticas: la misma cuenta que hace el servidor al guardar
+  function cursoHorasAuto() {
+    const ses = _cursoEditandoSesiones;
+    const conVideo = ses.filter(s => s.videoId);
+    const medidas = conVideo.filter(s => Number(s.duracionSeg) > 0);
+    const segs = ses.reduce((t, s) => t + (s.videoId ? (Number(s.duracionSeg) || 0) : 0), 0);
+    const exacto = conVideo.length > 0 && medidas.length === conVideo.length && segs > 0;
+    const horas = Math.min(200, Math.max(1, exacto ? Math.round(segs / 3600) : ses.length));
+    return { horas, segs, exacto, conVideo: conVideo.length, medidas: medidas.length };
+  }
+  const cursoTiempo = (s) => { const h = Math.floor(s / 3600), m = Math.round((s % 3600) / 60); return (h ? h + ' h ' : '') + m + ' min'; };
+  window.cursoHorasPintar = function () {
+    const inp = document.getElementById('cursoDuracion'), ayuda = document.getElementById('cursoDuracionAyuda');
+    if (!inp || !ayuda) return;
+    const a = cursoHorasAuto();
+    inp.placeholder = 'Automático: ' + a.horas + ' h';
+    let t;
+    if (inp.value.trim() !== '') t = 'Escritas a mano. Borra el número para que sean automáticas.';
+    else if (_cursoMedicion.corriendo) t = _cursoMedicion.texto;
+    else if (a.exacto) t = '<b>Automático:</b> suma de los videos (' + cursoTiempo(a.segs) + ').';
+    else if (a.conVideo) t = '<b>Estimado:</b> 1 h por clase. No se pudo leer la duración de ' + (a.conVideo - a.medidas) + (a.conVideo - a.medidas === 1 ? ' video' : ' videos') + ' (<a href="#" onclick="cursoMedirDuraciones(true);return false;">intentar de nuevo</a>).';
+    else t = 'Sin videos de Bunny: se estima 1 h por clase. Escribe las horas si quieres otro número.';
+    ayuda.innerHTML = t;
+  };
+
+  // Lee la duración de un video de Bunny con el reproductor (protocolo Player.js), sin reproducirlo
+  async function medirVideoBunny(videoId) {
+    let embed = '';
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const r = await fetch(BACKEND_URL + '/api/bunny/embed-token', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify({ videoId }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.embedUrl) return 0;
+      embed = d.embedUrl + (d.embedUrl.includes('?') ? '&' : '?') + 'preload=true&autoplay=false';
+    } catch (e) { return 0; }
+    let origen = '';
+    try { origen = new URL(embed).origin; } catch (e) { return 0; }
+    return new Promise((resolve) => {
+      const f = document.createElement('iframe');
+      f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1;
+      f.style.cssText = 'position:fixed;left:-9999px;top:0;width:320px;height:180px;border:0;opacity:0;pointer-events:none;';
+      let fin = false, espera = null, pulso = null;
+      const enviar = (metodo) => { try { f.contentWindow.postMessage(JSON.stringify({ context: 'player.js', version: '0.0.11', method: metodo }), origen); } catch (e) { /* sin ventana */ } };
+      const alMensaje = (ev) => {
+        if (ev.source !== f.contentWindow || ev.origin !== origen) return;
+        let d = ev.data;
+        if (typeof d === 'string') { try { d = JSON.parse(d); } catch (e) { return; } }
+        if (!d || d.context !== 'player.js') return;
+        if (d.event === 'ready' && !pulso) { enviar('getDuration'); pulso = setInterval(() => enviar('getDuration'), 700); }
+        else if (d.method === 'getDuration' && Number(d.value) > 0) terminar(Number(d.value));
+      };
+      const terminar = (seg) => {
+        if (fin) return; fin = true;
+        clearInterval(pulso); clearTimeout(espera);
+        window.removeEventListener('message', alMensaje);
+        f.remove();
+        resolve(seg > 0 ? Math.round(seg) : 0);
+      };
+      window.addEventListener('message', alMensaje);
+      espera = setTimeout(() => terminar(0), 20000);
+      f.src = embed;
+      document.body.appendChild(f);
+    });
+  }
+
+  // Mide los videos de Bunny de las clases que todavía no tienen duración. Si el curso ya existe, deja guardado lo medido (solo la duración).
+  window.cursoMedirDuraciones = async function (forzar) {
+    if (_cursoMedicion.corriendo) return;
+    const pendientes = _cursoEditandoSesiones.filter(s => s.videoId && (forzar || !(Number(s.duracionSeg) > 0)));
+    if (!pendientes.length) { cursoHorasPintar(); return; }
+    const token = ++_cursoMedicion.token;
+    _cursoMedicion.corriendo = true;
+    let nuevas = 0;
+    for (let n = 0; n < pendientes.length; n++) {
+      _cursoMedicion.texto = 'Leyendo la duración de los videos… ' + (n + 1) + ' de ' + pendientes.length;
+      cursoHorasPintar();
+      const seg = await medirVideoBunny(pendientes[n].videoId);
+      if (token !== _cursoMedicion.token) { _cursoMedicion.corriendo = false; return; }   // se cerró el formulario
+      if (seg > 0) { pendientes[n].duracionSeg = seg; nuevas++; }
+    }
+    _cursoMedicion.corriendo = false;
+    cursoHorasPintar();
+    const cursoId = document.getElementById('cursoEditId').value.trim();
+    if (nuevas && cursoId) {
+      const duraciones = {};
+      _cursoEditandoSesiones.forEach((s, i) => { if (s.videoId && Number(s.duracionSeg) > 0) duraciones[i] = Math.round(Number(s.duracionSeg)); });
+      try { await callAdminEndpoint('/admin/cursos/' + encodeURIComponent(cursoId) + '/duraciones', { duraciones }); } catch (e) { /* se guarda de todos modos al pulsar Guardar */ }
+    }
+  };
+
+  // Qué ve alguien sin membresía de este curso (la regla del panel y del servidor)
+  function cursoGratisPintar() {
+    const el = document.getElementById('cursoGratisInfo');
+    if (!el) return;
+    const n = _cursoEditandoSesiones.length, m = _cursoEditandoMateriales.length;
+    el.innerHTML = '<b>Acceso sin membresía.</b> Cada cuenta puede elegir <b>un curso gratis</b>. Si elige este, ve ' +
+      (n > 1 ? '<b>' + (n - 1) + ' de ' + n + ' clases</b> (todas menos la última)' : 'ninguna clase todavía (necesita al menos 2)') +
+      ' y <b>el primer material</b>' + (m ? '' : ' (cuando lo agregues)') + '. Lo demás pide membresía o canjearlo con créditos.';
+  }
+
   /* FASE3P-CURSOS */
   // ═══════════════════════════════════════════════════
   // CURSOS: el material va en el MISMO formulario que los datos y las clases (como en SENTIA)
@@ -8030,9 +8248,10 @@ let _bibLibrosCargados = false;
     document.getElementById('cursoTitle').value = '';
     document.getElementById('cursoDesc').value = '';
     document.getElementById('cursoNivel').value = 'Básico';
-    document.getElementById('cursoDuracion').value = '10';
+    document.getElementById('cursoDuracion').value = '';
     setCursoDisponibilidad(false);
     _cursoEditandoSesiones = [];
+    cursoPortadaIniciar('');
     cursoPrepararMateriales(null);
     renderSesionesEnModal();
     vtActualizarCoincidencia();
@@ -8050,13 +8269,16 @@ let _bibLibrosCargados = false;
     document.getElementById('cursoTitle').value = curso.titulo || '';
     document.getElementById('cursoDesc').value = curso.descripcion || '';
     document.getElementById('cursoNivel').value = curso.nivel || 'Básico';
-    document.getElementById('cursoDuracion').value = curso.duracion || 10;
+    // Horas: un curso guardado como automático deja el campo vacío; uno anterior (o a mano) conserva su número
+    document.getElementById('cursoDuracion').value = curso.horasManual === false ? '' : (curso.duracion || '');
     setCursoDisponibilidad(curso.disponibleSiempre === true);
     // Clonar sesiones para editar sin tocar la cache
     _cursoEditandoSesiones = (curso.sesiones || []).map(s => ({ ...s, ...(s.actividad ? { actividad: JSON.parse(JSON.stringify(s.actividad)) } : {}), ...(s.juego ? { juego: JSON.parse(JSON.stringify(s.juego)) } : {}) }));
     actPrecargarClaves(cursoId);
+    cursoPortadaIniciar(curso.portada || '');
     cursoPrepararMateriales(curso);
     renderSesionesEnModal();
+    cursoMedirDuraciones();
     vtActualizarCoincidencia();
     document.getElementById('cursoModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -8064,6 +8286,7 @@ let _bibLibrosCargados = false;
   };
 
   window.cerrarCursoModal = function() {
+    _cursoMedicion.token++; _cursoMedicion.corriendo = false;
     document.getElementById('cursoModalOverlay').style.display = 'none';
     document.body.style.overflow = '';
     _cursoEditandoSesiones = [];
@@ -8101,7 +8324,19 @@ let _bibLibrosCargados = false;
         const titulo = document.getElementById('cursoTitle').value.trim();
         const descripcion = document.getElementById('cursoDesc').value.trim();
         const nivel = document.getElementById('cursoNivel').value;
-        const duracion = parseInt(document.getElementById('cursoDuracion').value, 10) || 10;
+        const horasTxt = document.getElementById('cursoDuracion').value.trim();
+        const horasManual = horasTxt !== '';
+        const duracion = horasManual ? parseInt(horasTxt, 10) : 0;
+        if (horasManual && !(duracion >= 1 && duracion <= 200)) {
+          showToast('Las horas deben ser un número de 1 a 200 (o déjalas vacías para que sean automáticas)', 'error');
+          btn.disabled = false;
+          return;
+        }
+        if (_cursoPortada.modo === 'enlace' && !/^https:\/\/\S+$/i.test(_cursoPortada.url)) {
+          showToast('El enlace de la portada debe empezar con https://', 'error');
+          btn.disabled = false;
+          return;
+        }
 
         if (!titulo) {
           showToast('El título es obligatorio', 'error');
@@ -8140,6 +8375,7 @@ let _bibLibrosCargados = false;
           if (videoId) {
             sesionLimpia.provider = 'bunny';
             sesionLimpia.videoId = videoId;
+            if (Number(s.duracionSeg) > 0) sesionLimpia.duracionSeg = Math.round(Number(s.duracionSeg));
             if (s.driveUrlAnterior) sesionLimpia.driveUrlAnterior = s.driveUrlAnterior;
           } else {
             sesionLimpia.url = url;
@@ -8183,7 +8419,7 @@ let _bibLibrosCargados = false;
         }
         // Todo lo escribe el servidor: valida, guarda el curso con sus clases, pone los enlaces en privado y lo anota
         const anteriores = cursoId ? (((_adminCursosCache.find(c => c.id === cursoId) || {}).sesiones) || []) : [];
-        const guardado = await callAdminEndpoint('/admin/cursos/guardar', { cursoId, titulo, descripcion, nivel, duracion, disponibleSiempre: getCursoDisponibilidad(), sesiones: sesionesLimpias, materiales });
+        const guardado = await callAdminEndpoint('/admin/cursos/guardar', { cursoId, titulo, descripcion, nivel, duracion: horasManual ? duracion : undefined, horasManual, ...cursoPortadaPayload(), disponibleSiempre: getCursoDisponibilidad(), sesiones: sesionesLimpias, materiales });
         try {
           await actSincronizarClaves(guardado.id, clavesActividad, anteriores);
           showToast(guardado.creado ? 'Curso creado ✓' : 'Curso actualizado ✓');

@@ -13574,10 +13574,17 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var v = window.__progresoServidor && window.__progresoServidor[cursoId];
     return Array.isArray(v) ? v : [];
   }
+  // Mini juegos completados, guardados en el SERVIDOR: cursoId → [índices de clase]
+  window.__juegosServidor = {};
+  function juegosDe(cursoId) {
+    var v = window.__juegosServidor && window.__juegosServidor[cursoId];
+    return Array.isArray(v) ? v : [];
+  }
   // Aplica lo que responde el servidor (avance, logros, XP y racha) y avisa de los logros nuevos
   function logAplicarRespuesta(d) {
     if (!d || d.ok !== true) return;
     if (d.cursos) window.__progresoServidor = d.cursos;
+    if (d.juegos) window.__juegosServidor = d.juegos;
     var m = window.currentMember || (window.currentMember = {});
     if (d.logros) m.logros = d.logros;
     if (typeof d.xpTotal === 'number') m.xpTotal = d.xpTotal;
@@ -13624,6 +13631,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       if (!r.ok) return;
       var e = await r.json();
       window.__progresoServidor = e.cursos || {};
+      window.__juegosServidor = e.juegos || {};
       var m = window.currentMember || (window.currentMember = {});
       if (e.logros) m.logros = e.logros;
       if (typeof e.xpTotal === 'number') m.xpTotal = e.xpTotal;
@@ -15547,12 +15555,27 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
 
   // ─── Juego de práctica de la clase (opcional, sin calificación, no cuenta para el certificado) ───
   function juegoTiene(s) { return !!(s && s.juego && s.juego.tipo); }
+  // El mini juego es obligatorio: mientras la clase no esté vista y el juego no esté completo, no se puede marcar vista ni abrir la siguiente
+  function juegoPendiente(cursoId, sIdx) {
+    var curso = cvCursoDe(cursoId), s = curso && (curso.sesiones || [])[sIdx];
+    return juegoTiene(s) && vistasDe(cursoId).indexOf(sIdx) < 0 && juegosDe(cursoId).indexOf(sIdx) < 0;
+  }
+  function juegoHecho(cursoId, sIdx) { return vistasDe(cursoId).indexOf(sIdx) >= 0 || juegosDe(cursoId).indexOf(sIdx) >= 0; }
+  async function juegoRegistrar(cursoId, sIdx) {
+    if (juegosDe(cursoId).indexOf(sIdx) >= 0) return true;
+    try {
+      var d = await pedirAlServidor('/api/cursos/juego', { cursoId: String(cursoId), indice: sIdx });
+      if (d && d.juegos) window.__juegosServidor = d.juegos;
+      return true;
+    } catch (err) { return false; }
+  }
   function juegoChipHtml(cursoId, s, sIdx) {
     if (!juegoTiene(s)) return '';
     if (window.isVIP !== true && !esClaseGratis(cursoId, sIdx)) return '';
-    const nombre = (window.SinergiaJuegos && window.SinergiaJuegos.TIPOS_PRACTICA[s.juego.tipo]) || 'Juego de práctica';
+    const nombre = (window.SinergiaJuegos && window.SinergiaJuegos.TIPOS_PRACTICA[s.juego.tipo]) || 'Mini juego';
+    const hecho = juegoHecho(cursoId, sIdx);
     return '<div class="act-chip act-chip--pra" onclick="event.stopPropagation();abrirJuegoPractica(\'' + String(cursoId).replace(/'/g, '') + '\', ' + sIdx + ')">' +
-      actEsc(s.juego.titulo || nombre) + ' · práctica, sin calificación <b>Jugar →</b></div>';
+      actEsc(s.juego.titulo || nombre) + (hecho ? ' · completado, sin calificación <b>Jugar de nuevo →</b>' : ' · obligatorio, sin calificación <b>Jugar →</b>') + '</div>';
   }
   window.abrirJuegoPractica = function (cursoId, sIdx, desdeRetos) {
     const curso = actCursoPorId(cursoId);
@@ -15584,7 +15607,16 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     ov.addEventListener('click', e => { if (e.target === ov) cerrar(); });
     const btnSig = ov.querySelector('.jv-sig');
     if (btnSig) btnSig.addEventListener('click', () => { cerrar(); window.claseSeguir(cursoId, sIdx); });
-    juego = J.practica(s.juego.tipo, s.juego, ov.querySelector('.act-juego'), { onFin: function () { if (btnSig) btnSig.disabled = false; retosAlTerminar(cursoId, sIdx + 1); } });
+    juego = J.practica(s.juego.tipo, s.juego, ov.querySelector('.act-juego'), { onFin: async function () {
+      const ok = await juegoRegistrar(cursoId, sIdx);
+      if (btnSig) {
+        if (ok) btnSig.disabled = false;
+        else showToast('No se pudo guardar tu avance del juego. Ciérralo e inténtalo de nuevo.', 'error');
+      }
+      // Si la clase está abierta detrás, su botón y su tarjeta se actualizan al instante
+      try { const ctx = window._sesionCtx; if (ok && window.__claseAbierta && ctx && String(ctx.cursoId) === String(cursoId)) cvPintar(curso, ctx.sIdx); } catch (e) { /* solo presentación */ }
+      retosAlTerminar(cursoId, sIdx + 1);
+    } });
   };
 
   // ─── Calificar el curso (1 a 5 estrellas + comentario opcional) ───
@@ -15809,7 +15841,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var flecha = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
     var sig = cvEl('cvSeguir');
     sig.disabled = false;
-    sig.innerHTML = (yaVista ? (sIdx + 1 < total ? 'Siguiente clase' : 'Terminar') : 'Marcar vista y seguir') + ' ' + flecha;
+    sig.innerHTML = (yaVista ? (sIdx + 1 < total ? 'Siguiente clase' : 'Terminar') : (juegoPendiente(cid, sIdx) ? 'Jugar el mini juego y seguir' : 'Marcar vista y seguir')) + ' ' + flecha;
     sig.onclick = function () { claseSeguir(cid, sIdx); };
 
     // Debajo del video: la clase que sigue, la actividad calificable y el mini juego
@@ -15817,7 +15849,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var fondoPortada = cpFondo(curso.portada || obtenerPortadaCurso(curso.titulo || ''));
     if (sIdx + 1 < total) {
       var sg = ses[sIdx + 1], puede = cvPuedeAbrir(cid, sIdx + 1);
-      var sigTxt = puede ? 'Lista para cuando termines esta.' : (gratis && !esClaseGratis(cid, sIdx + 1) ? 'Con membresía.' : (seqBloquea(cid, sIdx + 1) ? 'Se desbloquea al marcar esta clase como vista.' : 'Se desbloquea al aprobar la actividad anterior.'));
+      var sigTxt = puede ? 'Lista para cuando termines esta.' : (gratis && !esClaseGratis(cid, sIdx + 1) ? 'Con membresía.' : (seqBloquea(cid, sIdx + 1) ? (juegoPendiente(cid, sIdx) ? 'Se desbloquea al completar el mini juego de esta clase.' : 'Se desbloquea al marcar esta clase como vista.') : 'Se desbloquea al aprobar la actividad anterior.'));
       ex += '<button type="button" class="cv-sig' + (puede ? '' : ' is-bloq') + '" data-cv-sig' + (puede ? '' : ' aria-disabled="true"') + '>' +
         '<span class="cv-sig-img" style="' + fondoPortada + '"></span>' +
         '<span><span class="cred-eyebrow">A continuación · Clase ' + (sIdx + 2) + '</span><strong>' + actEsc(sg.titulo || ('Clase ' + (sIdx + 2))) + '</strong>' +
@@ -15831,7 +15863,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         '<p>' + (apr ? 'Aprobada. Cuenta para tu certificado.' : (yaVista ? 'Apruébala para abrir la siguiente clase. Cuenta para tu certificado.' : 'Se abre al marcar la clase como vista.')) + '</p></div>' +
         '<button type="button" class="cred-btn' + (apr ? ' cred-btn--sec' : '') + '" data-cv-act ' + (yaVista ? '' : 'disabled') + '>' + (apr ? 'Repetir' : 'Hacer la actividad') + '</button></div>';
     }
-    ex += cvJuegoTarjeta(s);
+    ex += cvJuegoTarjeta(s, cid, sIdx);
     ex += (window.SinergiaLiga ? window.SinergiaLiga.claseTarjetaHtml(curso.titulo, sIdx + 1) : '');
     cvEl('cvExtras').innerHTML = ex;
     var bl = cvEl('cvExtras').querySelector('[data-lg-clase]');
@@ -15844,7 +15876,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       window.abrirSesionCurso(cid, sIdx + 1);
     };
     // El mismo juego aparece debajo del video y en la pestaña "Juego" del lado
-    cvEl('cvPane-juego').innerHTML = juegoTiene(s) ? cvJuegoTarjeta(s) : '<p class="cv-vacio">Esta clase no tiene mini juego.</p>';
+    cvEl('cvPane-juego').innerHTML = juegoTiene(s) ? cvJuegoTarjeta(s, cid, sIdx) : '<p class="cv-vacio">Esta clase no tiene mini juego.</p>';
     cvPanelDe('clase').querySelectorAll('[data-cv-juego]').forEach(function (b) { b.onclick = function () { window.abrirJuegoPractica(cid, sIdx); }; });
     cvNotasCargar(cid, sIdx);
     cvPanelDe('clase').querySelectorAll('[data-seg]').forEach(function (b) { b.onclick = function () { cvIrAlMinuto(Number(b.getAttribute('data-seg'))); }; });
@@ -15991,13 +16023,15 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     rompecabezas: 'Arma el rompecabezas con lo que aprendiste en la clase.'
   };
   var JG_ICONO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"/></svg>';
-  function cvJuegoTarjeta(s) {
+  function cvJuegoTarjeta(s, cursoId, sIdx) {
     if (!juegoTiene(s)) return '';
     var J = window.SinergiaJuegos, tipo = s.juego.tipo;
     var nombre = s.juego.titulo || (J && J.TIPOS_PRACTICA[tipo]) || 'Juego de la clase';
     var texto = s.juego.descripcion || JG_DESC[tipo] || 'Juega para repasar lo que viste en la clase.';
-    return '<div class="cv-juego"><div class="cv-juego-fila"><span class="cv-juego-ico">' + JG_ICONO + '</span><div><span class="cred-eyebrow">Mini juego de la clase</span><h3>' + actEsc(nombre) + '</h3><p>' + actEsc(texto) + ' Al terminarlo, la clase queda como vista y se abre la siguiente.</p></div></div>' +
-      '<button type="button" class="cred-btn" data-cv-juego>Jugar y completar la clase</button></div>';
+    var hecho = juegoHecho(cursoId, sIdx);
+    return '<div class="cv-juego"><div class="cv-juego-fila"><span class="cv-juego-ico">' + JG_ICONO + '</span><div><span class="cred-eyebrow">' + (hecho ? 'Mini juego · completado' : 'Mini juego · obligatorio') + '</span><h3>' + actEsc(nombre) + '</h3>' +
+      '<p>' + actEsc(texto) + (hecho ? ' Ya lo completaste; puedes jugarlo de nuevo cuando quieras.' : ' Complétalo para marcar la clase como vista y abrir la siguiente. No lleva calificación.') + '</p></div></div>' +
+      '<button type="button" class="cred-btn' + (hecho ? ' cred-btn--sec' : '') + '" data-cv-juego>' + (hecho ? 'Jugar de nuevo' : 'Jugar y continuar') + '</button></div>';
   }
   window.claseSeguir = claseSeguir;
   function cvMarcarCursos() {
@@ -16035,6 +16069,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var curso = cvCursoDe(cursoId);
     if (!curso) return;
     var btn = cvEl('cvSeguir');
+    if (juegoPendiente(cursoId, sIdx)) {
+      showToast('Primero completa el mini juego de esta clase', 'info');
+      window.abrirJuegoPractica(cursoId, sIdx);
+      return;
+    }
     if (vistasDe(cursoId).indexOf(sIdx) < 0) {
       if (btn) btn.disabled = true;
       try {
@@ -16043,6 +16082,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       } catch (err) {
         if (btn) btn.disabled = false;
         showToast(err.message || 'No se pudo guardar tu avance', 'error');
+        if (err && err.datos && err.datos.juego) window.abrirJuegoPractica(cursoId, sIdx);
         return;
       }
       showToast('Clase marcada como vista', 'success');
@@ -19602,6 +19642,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       d = await pedirAlServidor('/api/cursos/progreso', { cursoId: ctx.cursoId, indice: ctx.sIdx });
     } catch (err) {
       showToast?.(err.message || 'No se pudo guardar tu avance', 'error');
+      if (err && err.datos && err.datos.juego) { cerrarVisor(); setTimeout(() => window.abrirJuegoPractica(ctx.cursoId, ctx.sIdx), 350); }
       return;
     } finally {
       window._marcandoVista = false;
@@ -20822,6 +20863,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         return {
           ...curso,
           ...bunny,
+          // Lo que el admin puso a propósito (portada propia, horas guardadas con el formulario nuevo) reemplaza a lo del catálogo
+          ...(curso.portadaPropia === true && curso.portada ? { portada: curso.portada } : {}),
+          ...(typeof curso.horasManual === 'boolean' && Number(curso.duracion) > 0 ? { duracion: curso.duracion } : {}),
           id: curso.id,
           bunnyCollectionId: bunny.collectionId,
           sesiones
@@ -20836,7 +20880,12 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     const cursosQuery = query(cursosRef, orderBy('createdAt', 'asc'));
     onSnapshot(cursosQuery, (snap) => {
       cursosFromFirestore = aplicarCatalogoBunny(
-        snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        snap.docs.map(d => {
+          const c = { id: d.id, ...d.data() };
+          // Una portada subida desde el admin se guarda como ruta del servidor (/api/cursos/{id}/portada)
+          if (typeof c.portada === 'string' && c.portada.charAt(0) === '/') c.portada = ACT_BACKEND + c.portada;
+          return c;
+        })
       );
       renderCourses(currentFilter);
       renderMaterial();
