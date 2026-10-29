@@ -12961,27 +12961,13 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
 </div>
 
 <!-- Mobile bottom nav -->
-<nav class="mobile-nav">
-  <button class="mobile-nav-item active" data-tab="dashboard">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-    <span>Inicio</span>
-  </button>
-  <button class="mobile-nav-item" data-tab="courses">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-    <span>Cursos</span>
-  </button>
-  <button class="mobile-nav-item" data-tab="foro">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span>Foro</span>
-  </button>
-  <button class="mobile-nav-item" data-tab="subscription">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/></svg>
-    <span>Cuenta</span>
-  </button>
-  <button class="mobile-nav-item mobile-nav-menu-btn" id="mobileMenuBtn" onclick="abrirMobileDrawer()" aria-label="Abrir menú">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    <span>Menú</span>
-  </button>
+<nav class="mobile-nav" aria-label="Navegación principal">
+  <button class="mobile-nav-item active" data-tab="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span>Inicio</span></button>
+  <button class="mobile-nav-item" data-tab="courses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg><span>Cursos</span></button>
+  <button class="mobile-nav-item" data-tab="material"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>Materiales</span></button>
+  <button class="mobile-nav-item" data-tab="retos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg><span>Retos</span></button>
+  <button class="mobile-nav-item" id="mobileToolsBtn" onclick="abrirMobileDrawer('herramientas')" aria-label="Herramientas de campo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg><span>Campo</span></button>
+  <button class="mobile-nav-item mobile-nav-menu-btn" id="mobileMenuBtn" onclick="abrirMobileDrawer()" aria-label="Abrir menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg><span>Más</span></button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -13253,7 +13239,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     } catch (e) { /* no crítico */ }
   }
 
-  window.abrirMobileDrawer = function() {
+  window.abrirMobileDrawer = function(destino) {
     poblarMobileDrawer();
     const overlay = document.getElementById('mobileDrawerOverlay');
     const drawer = document.getElementById('mobileDrawer');
@@ -13261,6 +13247,16 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (drawer) drawer.classList.add('active');
     document.body.classList.add('mobile-drawer-open');
     document.body.style.overflow = 'hidden';
+    // "Campo" abre el menú con las herramientas de campo ya desplegadas
+    if (destino === 'herramientas') {
+      const g = document.querySelector('#mobileDrawer .nav-group');
+      if (g) {
+        g.classList.add('open');
+        const tg = g.querySelector('.nav-group-toggle'); if (tg) tg.setAttribute('aria-expanded', 'true');
+        const it = g.querySelector('.nav-group-items'); if (it) it.classList.add('open');
+        try { g.scrollIntoView({ block: 'center' }); } catch (e) { /* sin scroll */ }
+      }
+    }
   };
 
   window.cerrarMobileDrawer = function() {
@@ -15620,11 +15616,40 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         cerrar();
         showToast('Gracias por tu calificación', 'success');
         try { cargarCertificadosUsuario(); } catch (e) {}
+        try { if (window.__paginaCursoId === cursoId) cpActualizarAcciones(cursoId, true); } catch (e) {}
       } catch (e) { err.textContent = e.message || 'No se pudo guardar tu calificación'; enviar.disabled = false; }
     });
     const primero = ov.querySelector('.cal-estrella'); if (primero) setTimeout(() => primero.focus(), 80);
   }
   window.calAbrir = calAbrir;
+  // Fila de acciones de la página del curso (estilo Netflix): Calificar. Solo se califica un curso terminado (lo comprueba el servidor).
+  var CAL_ICO_ESTRELLA = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3L12 17.1 6.4 20.1l1.1-6.3L2.9 9.4l6.3-.9z"/></svg>';
+  function cpAccionesHtml(cid, terminado) {
+    var c = window.__calificaciones[cid];
+    if (c && c.estrellas) {
+      return '<div class="cp-acciones" role="group" aria-label="Acciones del curso"><button type="button" class="cp-ac es-hecha" data-cp-calificar="' + actEsc(cid) + '" aria-label="Tu calificación: ' + c.estrellas + ' de 5 estrellas. Cambiar">' +
+        '<span class="cp-ac-ico">' + CAL_ICO_ESTRELLA + '</span><span class="cp-ac-txt">Tu calificación</span><small class="cp-ac-est" aria-hidden="true">' + '★'.repeat(c.estrellas) + '☆'.repeat(5 - c.estrellas) + '</small></button></div>';
+    }
+    return '<div class="cp-acciones" role="group" aria-label="Acciones del curso"><button type="button" class="cp-ac" data-cp-calificar="' + actEsc(cid) + '"' + (terminado ? '' : ' disabled aria-disabled="true"') + '>' +
+      '<span class="cp-ac-ico">' + CAL_ICO_ESTRELLA + '</span><span class="cp-ac-txt">Calificar</span>' + (terminado ? '' : '<small class="cp-ac-est">Al terminar el curso</small>') + '</button></div>';
+  }
+  var calYaCargadas = false;
+  function cpActualizarAcciones(cid, terminado) {
+    var p = document.getElementById('tab-curso') || document.querySelector('.cp-wrap');
+    var cont = document.querySelector('.cp-wrap .cp-acciones');
+    if (!cont || window.__paginaCursoId !== cid) return;
+    var nuevo = document.createElement('div'); nuevo.innerHTML = cpAccionesHtml(cid, terminado);
+    cont.replaceWith(nuevo.firstChild);
+    cpEnlazarAcciones(cid);
+  }
+  function cpEnlazarAcciones(cid) {
+    var b = document.querySelector('.cp-wrap [data-cp-calificar]');
+    if (!b) return;
+    b.onclick = function () {
+      var curso = cvCursoDe(cid);
+      calAbrir(cid, curso ? (curso.titulo || '') : '');
+    };
+  }
   // Tras emitir el certificado, cuando el alumno cierra el certificado se le pide la calificación (una vez por curso)
   function calPreguntarAlCerrarCertificado(cursoId, titulo) {
     if (window.__calificaciones[cursoId]) return;
@@ -16104,6 +16129,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<p class="cp-sub"><b>Equipo SINERGIA</b>' + (curso.nivel ? ' · ' + actEsc(curso.nivel) : '') + (Number(curso.duracion) > 0 ? ' · ' + actEsc(curso.duracion) + ' h' : '') + '</p></div>' +
       '<button type="button" class="cp-empezar" data-cp-empezar' + (esVip && bloqCurso ? ' disabled' : '') + '>' + (esVip && bloqCurso ? 'Se desbloquea en ' + dias + ' días' : rutaTxt + ' ' + CP_IC.play) + '</button></section>' +
       (curso.descripcion ? '<p class="cp-desc">' + actEsc(curso.descripcion) + '</p>' : '') +
+      cpAccionesHtml(cid, pct === 100 && esVip) +
       '<div class="cp-cols"><section class="cp-ruta" aria-labelledby="cpTemTit"><span class="cred-eyebrow">Ruta de aprendizaje</span><h2 id="cpTemTit">Temario <span class="cp-cnt">' + vistas.length + '/' + total + '</span></h2><div class="cp-lista">' + (filas || '<div class="rt-vacio">Este curso todavía no tiene clases.</div>') + '</div></section>' +
       '<aside class="cp-avance"><span class="cred-eyebrow">Tu avance</span><div class="cp-av-fila"><strong>' + vistas.length + ' de ' + total + ' clases</strong>' + anillo + '</div>' +
       '<ul class="cp-puntos"><li>' + CP_IC.shield + 'Certificado verificable al concluir</li>' + (mats.length ? '<li>' + CP_IC.book + mats.length + (mats.length === 1 ? ' material' : ' materiales') + ' dentro del curso</li>' : '') + '<li>' + CP_IC.clock + 'Avanza a tu propio ritmo</li></ul>' + cert + '</aside></div>' +
@@ -16125,6 +16151,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     });
     var bc = p.querySelector('[data-cp-cert]');
     if (bc) bc.onclick = function () { window.generarCertificadoCurso(cid, curso.titulo || 'Curso'); };
+    cpEnlazarAcciones(cid);
+    // Las calificaciones ya dadas se leen del servidor una vez; al llegar se actualiza la fila (si seguimos en este curso)
+    if (!calYaCargadas && esVip) { calYaCargadas = true; calCargarMias().then(function () { cpActualizarAcciones(cid, pct === 100 && esVip); }); }
   }
   // Id del curso gratis elegido (para saber si "Empezar" está disponible sin membresía)
   function cursoGratisElegidoId() { return String(window.__cursoGratisElegido || ''); }
@@ -17159,7 +17188,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         '<div class="cert-card-body"><span class="cert-eyebrow">Certificado de acreditación</span>' +
         '<h4 class="cert-card-titulo">' + certEsc(cert.courseName) + '</h4>' +
         '<div class="cert-card-meta">' + meta + '</div>' +
-        '<div class="cert-card-folio">' + certEsc(cert.folio) + '</div>' + calFilaCertificado(cert.courseId) + '</div>' +
+        '<div class="cert-card-folio">' + certEsc(cert.folio) + '</div></div>' +
         '<div class="cert-card-der"><span class="cert-ok">Verificable</span><span class="cert-ver">Ver certificado <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7l-7 7"/></svg></span></div>' +
         '</article>';
     }).join('');
@@ -26698,6 +26727,28 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .rtx-juego-cu .rtx-btn { margin-top: auto; }
   .rtx-insig { margin: 14px 0 0; font-size: 13.5px; color: var(--text-secondary); }
   .rtx-insig b { color: var(--text-primary); }
+  /* Calificar dentro del curso (estilo Netflix) */
+  .cp-acciones { display: flex; flex-wrap: wrap; gap: 10px; margin: 2px 0 6px; }
+  .cp-ac { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 96px; min-height: 76px; padding: 10px 16px; border: 1px solid var(--border-card); border-radius: 16px; background: var(--bg-card); color: var(--text-primary); font-family: var(--font-display); font-weight: 700; font-size: 12.5px; cursor: pointer; transition: border-color .2s, background-color .2s, transform .2s; }
+  .cp-ac:hover:not(:disabled) { border-color: #1AA888; background: var(--bg-subtle); transform: translateY(-1px); }
+  .cp-ac:focus-visible { outline: 2px solid #1AA888; outline-offset: 2px; }
+  .cp-ac:disabled { opacity: 0.6; cursor: default; }
+  .cp-ac-ico { display: grid; place-items: center; width: 28px; height: 28px; }
+  .cp-ac-ico svg { width: 26px; height: 26px; }
+  .cp-ac-est { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+  .cp-ac.es-hecha .cp-ac-ico { color: #B58A1B; }
+  .cp-ac.es-hecha .cp-ac-ico svg { fill: #E7C873; }
+  .cp-ac.es-hecha .cp-ac-est { color: #B58A1B; letter-spacing: 0.08em; font-size: 12px; }
+  /* Barra inferior del celular: igual que la de SENTIA (Inicio, Cursos, Materiales, Retos, Campo, Más) con los colores de SINERGIA */
+  .mobile-nav { gap: 0; min-height: 0; padding: 6px 4px max(6px, env(safe-area-inset-bottom, 6px)); justify-content: space-between; align-items: center; background: var(--bg-card); backdrop-filter: none; -webkit-backdrop-filter: none; border-top: 1px solid var(--border-card); box-shadow: 0 -8px 20px -14px rgba(17, 61, 53, 0.4); }
+  .mobile-nav-item { flex: 1 1 0; gap: 3px; min-height: 54px; padding: 6px 2px; border-radius: 14px; color: var(--text-tertiary); background: transparent; }
+  .mobile-nav-item svg { width: 22px; height: 22px; }
+  .mobile-nav-item span { font-size: 10px; font-weight: 700; letter-spacing: 0; }
+  .mobile-nav-item:hover { background: var(--bg-subtle); color: #0B5A41; }
+  .mobile-nav-item.active { color: #0B5A41; background: rgba(26, 168, 136, 0.15); }
+  .mobile-nav-item.active::before { display: none; }
+  .mobile-nav-item.active svg { stroke-width: 2.3; }
+  .mobile-nav-menu-btn, .mobile-nav-menu-btn:hover { background: transparent; color: var(--text-tertiary); }
   /* Retos de campo y Tu práctica de campo */
   .rtc-practica { display: grid; gap: 14px; }
   .rtc-insignias { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
