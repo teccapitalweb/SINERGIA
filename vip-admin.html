@@ -2731,7 +2731,7 @@ body::before { display: none; }
 
       <div class="widget-box cg-caja">
         <div class="widget-head"><span class="widget-name">Visitas a la portada</span></div>
-        <p class="cr-sub">Conteo agregado por día y página. No guarda IP, cookies ni identificadores.</p>
+        <p class="cr-sub">Conteo agregado por día y página. No guarda IP, cookies ni identificadores. Solo cuenta a quienes aceptaron «Estadísticas» en el aviso de cookies, así que son menos que las visitas reales.</p>
         <div id="mtVisitas"></div><p class="cr-ayuda" id="mtVisitasTxt"></p>
         <div id="mtPaginas"></div>
       </div>
@@ -4806,7 +4806,7 @@ body::before { display: none; }
       kpi('clock', 'Retención', mtPct(conAcceso.length, tuvieron.length) + ' %', conAcceso.length + ' de ' + tuvieron.length + ' que alguna vez tuvieron membresía', '') +
       kpi('award', 'Certificados emitidos', DB.certs === null ? '…' : mtNum(nCerts), 'Con folio verificable', mtTendencia(nCerts, nCertsAnt, per.sinAnterior) + spark('certs', '#B7791F')) +
       kpi('card', 'Últimos pagos registrados', mtNum(nPagos), ev.real ? 'Cobros pagados en el periodo' : 'Pagos estimados en el periodo', mtTendencia(nPagos, nPagosAnt, per.sinAnterior) + spark('pagos', '#C24D3C')) +
-      kpi('users', 'Visitas a la portada', MT.srv ? mtNum(nVisitas) : '…', 'Conteo anónimo, sin cookies', MT.srv ? mtTendencia(nVisitas, nVisitasAnt, per.sinAnterior) + spark('visitas', '#2E7D9A') : '');
+      kpi('users', 'Visitas a la portada', MT.srv ? mtNum(nVisitas) : '…', 'Anónimo; solo quienes aceptan estadísticas', MT.srv ? mtTendencia(nVisitas, nVisitasAnt, per.sinAnterior) + spark('visitas', '#2E7D9A') : '');
 
     // Actividad del Club
     const sA = mtSerie(lista('altas'), cub), sP = mtSerie(lista('pruebas'), cub), sC = mtSerie(lista('certs'), cub), sG = mtSerie(lista('pagos'), cub);
@@ -4843,7 +4843,7 @@ body::before { display: none; }
     const host = document.getElementById('mtVisitas');
     if (!MT.srv) { host.innerHTML = '<div class="sb-vacio">Leyendo datos…</div>'; document.getElementById('mtVisitasTxt').textContent = ''; document.getElementById('mtPaginas').innerHTML = ''; return; }
     const hay = Object.keys(MT.srv.visitas || {}).length > 0;
-    if (!hay) { host.innerHTML = '<div class="sb-vacio">Todavía no hay visitas contadas. El conteo empieza el día que se publica el contador de la portada.</div>'; document.getElementById('mtVisitasTxt').textContent = ''; document.getElementById('mtPaginas').innerHTML = ''; return; }
+    if (!hay) { host.innerHTML = '<div class="sb-vacio">Todavía no hay visitas contadas. El conteo empieza el día que se publica y solo suma a quienes aceptaron las estadísticas en el aviso de cookies.</div>'; document.getElementById('mtVisitasTxt').textContent = ''; document.getElementById('mtPaginas').innerHTML = ''; return; }
     const vals = mtSerie(mtEnRango(ev.visitas, per.desde, per.fin), cub);
     host.innerHTML = mtLineas([{ nombre: 'Visitas', color: '#2E7D9A', vals, area: true }], cub);
     document.getElementById('mtVisitasTxt').innerHTML = mtRango(vals, cub, 'visitas');
