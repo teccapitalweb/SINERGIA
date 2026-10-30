@@ -13765,7 +13765,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   var MOV_TEXTO = {
     'bienvenida': 'Regalo de bienvenida', 'referido-perfil': 'Tu invitado completó su perfil', 'referido-miembro': 'Tu invitado se hizo miembro',
     'invitado-perfil': 'Completaste tu perfil con invitación', 'invitado-miembro': 'Te hiciste miembro con invitación',
-    'canje': 'Canje', 'admin-regalo': 'Regalo del equipo',
+    'canje': 'Canje', 'admin-regalo': 'Regalo del equipo', 'cupon': 'Código canjeado',
     'tarjeta-directorio': 'Creaste tu tarjeta del Directorio', 'clase-gratis': 'Viste una clase gratis',
     'racha-7': '7 días seguidos en el panel', 'reto-diario': 'Reto del día', 'curso-completo': 'Terminaste un curso'
   };
@@ -13802,6 +13802,16 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           '</ul>' +
           (movs ? '<div class="cred-mov"><h4>Últimos movimientos</h4><ul class="cred-lista">' + movs + '</ul></div>' : '') +
         '</section>' +
+        '<section class="cred-card" aria-labelledby="credCodigoTitulo">' +
+          '<span class="cred-eyebrow">Códigos</span>' +
+          '<h3 id="credCodigoTitulo">¿Tienes un código?</h3>' +
+          '<p>Si te compartieron un código, por ejemplo en el canal de WhatsApp, escríbelo aquí y recibes tus créditos. Cada código se canjea una sola vez por persona.</p>' +
+          '<div class="cred-enlace">' +
+            '<input class="cred-input" id="credCodigo" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej.: CANAL100" aria-label="Tu código" onkeydown="if(event.key===\'Enter\')canjearCodigoCupon()">' +
+            '<button type="button" class="cred-btn" id="credCodigoBtn" onclick="canjearCodigoCupon()">Canjear</button>' +
+          '</div>' +
+          '<div class="cred-aviso" id="credCodigoMsg" role="status" aria-live="polite" hidden></div>' +
+        '</section>' +
         '<section class="cred-card" aria-labelledby="credInvitaTitulo">' +
           '<span class="cred-eyebrow">Invita y gana</span>' +
           '<h3 id="credInvitaTitulo">Comparte SINERGIA con colegas</h3>' +
@@ -13831,6 +13841,25 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         '</section>') +
       '</div>';
   }
+  // Canjear un código de cupón: el servidor decide si sirve (vigente, con lugar, para tu tipo de cuenta) y paga una sola vez
+  window.canjearCodigoCupon = async function () {
+    var campo = document.getElementById('credCodigo'), btn = document.getElementById('credCodigoBtn'), msg = document.getElementById('credCodigoMsg');
+    if (!campo || !btn || btn.disabled) return;
+    var clave = campo.value.trim();
+    var avisar = function (texto, bien) { var m = document.getElementById('credCodigoMsg'); if (!m) return; m.hidden = false; m.textContent = texto; m.style.borderStyle = bien ? 'solid' : 'dashed'; m.style.color = bien ? '#087F70' : ''; };
+    if (!clave) { avisar('Escribe tu código.', false); campo.focus(); return; }
+    btn.disabled = true;
+    try {
+      var d = await pedirAlServidor('/api/cupones/canjear', { clave: clave });
+            showToast('+' + credNum(d.creditos) + ' créditos', 'success');
+      var textoOk = 'Listo: recibiste ' + credNum(d.creditos) + ' créditos. Ahora tienes ' + credNum(d.saldo) + '.';
+      try { await cargarCreditos(); retosCelebrar(); } catch (e) { /* solo presentación */ }
+      avisar(textoOk, true);
+    } catch (err) {
+      avisar(err.message || 'No pudimos canjear el código.', false);
+    }
+    btn.disabled = false;
+  };
   window.copiarEnlaceInvitacion = async function () {
     var el = document.getElementById('credEnlace');
     if (!el) return;

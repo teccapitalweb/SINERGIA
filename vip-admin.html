@@ -1487,6 +1487,37 @@
   .rt-barra.con-cambios { border-color: #D9A441; background: #FFFBEF; color: #8A5A14; font-weight: 600; box-shadow: 0 8px 24px rgba(17, 61, 53, 0.1); }
   .rt-barra-acc { display: flex; gap: 8px; }
   .rt-barra-acc button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .cr-caja { margin-top: 14px; }
+  .cr-sub { margin: 2px 0 14px; font-size: 13px; color: var(--stone-500); line-height: 1.5; }
+  .cr-form { display: grid; grid-template-columns: 1.6fr 1fr 1.2fr; gap: 12px; }
+  .cr-pregunta { margin: 16px 0 8px; font-size: 13.5px; font-weight: 700; color: var(--stone-800); }
+  .cr-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cr-nota { margin-top: 10px; padding: 11px 14px; border: 1px solid var(--border-subtle); border-radius: 12px; font-size: 13px; color: var(--stone-600); background: var(--stone-50, #FAFAF7); }
+  .cr-otro { margin-top: 10px; max-width: 280px; }
+  .cr-acciones { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+  .cr-ayuda { margin-top: 8px; font-size: 12px; color: var(--stone-500); }
+  .cr-lista { margin-top: 18px; border-top: 1px solid var(--stone-100); }
+  .cr-fila { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 1.1fr) auto; gap: 14px; align-items: center; padding: 14px 4px; border-top: 1px solid var(--stone-100); font-size: 13px; }
+  .cr-fila:first-child { border-top: 0; }
+  .cr-fila b { font-size: 14px; color: var(--stone-800); }
+  .cr-fila small { display: block; color: var(--stone-500); font-size: 12px; margin-top: 2px; word-break: break-word; }
+  .cr-fila-acc { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .cr-fila-acc .btn-secondary, .cr-fila-acc .btn-primary { padding: 7px 12px; font-size: 12.5px; }
+  .cr-b { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 700; background: var(--stone-100); color: var(--stone-600); max-width: 100%; }
+  .cr-b.activo, .cr-b.canjeado, .cr-b.acceso { background: #E6F4EA; color: #17603A; }
+  .cr-b.pausado { background: var(--stone-100); color: var(--stone-600); }
+  .cr-b.vencido, .cr-b.pendiente, .cr-b.agotado { background: #FFF4DB; color: #8A5A14; }
+  .cr-cuenta { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .cr-chips-estado { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .cr-rapidos { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 10px; }
+  .cr-barra { height: 12px; border-radius: 100px; background: var(--stone-100); overflow: hidden; margin-top: 6px; }
+  .cr-barra i { display: block; height: 100%; background: var(--teal-500); border-radius: 100px; }
+  .cr-mat { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; }
+  .cr-mat > b { width: 28px; height: 28px; border-radius: 50%; background: var(--stone-100); color: var(--stone-600); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .cr-mat.top > b { background: var(--teal-50); color: var(--teal-700); }
+  .cr-mat em { font-style: normal; font-weight: 700; color: var(--stone-700); white-space: nowrap; }
+  .cr-busca { max-width: 360px; margin: 0 0 8px auto; }
+  @media (max-width: 760px) { .cr-form { grid-template-columns: 1fr; } .cr-fila, .cr-cuenta { grid-template-columns: minmax(0, 1fr) !important; } .cr-fila-acc, .cr-chips-estado { justify-content: flex-start; } .cr-busca { max-width: none; } }
   .rt-caja { margin-top: 14px; }
   .rt-nota { margin-top: 10px; font-size: 12px; color: var(--stone-500); }
   .rt-fila { display: flex; gap: 12px; align-items: center; padding: 9px 4px; border-top: 1px solid var(--stone-100); font-size: 13.5px; }
@@ -2209,7 +2240,11 @@ body::before { display: none; }
     </button>
     <button class="nav-item" data-tab="retos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-      <span class="nav-item-text">Retos y créditos</span>
+      <span class="nav-item-text">Retos</span>
+    </button>
+    <button class="nav-item" data-tab="creditos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+      <span class="nav-item-text">Créditos</span>
     </button>
     <button class="nav-item" data-tab="library">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -3208,8 +3243,8 @@ body::before { display: none; }
     <div class="tab-panel" data-panel="retos">
       <div class="panel-head">
         <div class="panel-head-info">
-          <h2 class="panel-title">Retos y <em>créditos</em></h2>
-          <p class="panel-sub">Los créditos son lo único que desbloquea cosas; los puntos solo arman el podio semanal. Aquí ajustas cuánto se gana y cuánto cuesta cada cosa, sin tocar código.</p>
+          <h2 class="panel-title"><em>Retos</em> y puntos</h2>
+          <p class="panel-sub">Los créditos son lo único que desbloquea cosas; los puntos solo arman el podio semanal. Aquí ajustas cuánto se gana y cuánto cuesta cada cosa, sin tocar código. Para regalar créditos o crear cupones ve a <a href="#" onclick="switchTab('creditos');return false;">Créditos</a>.</p>
         </div>
         <div class="panel-head-accion">
           <button type="button" class="btn-secondary" onclick="recomendadosRetosAdmin()" title="Rellena los campos con los valores recomendados; no se guardan hasta que pulses Guardar">Valores recomendados</button>
@@ -3231,10 +3266,68 @@ body::before { display: none; }
         <div class="rt-nota">La semana va de lunes a domingo (hora de México) y solo cuenta a miembros, no a administradores.</div>
       </div>
       <div class="widget-box rt-caja">
-        <div class="widget-head"><span class="widget-name">Regalar créditos a una cuenta</span></div>
-        <input type="text" class="form-input" placeholder="Escribe un nombre o correo (mínimo 2 letras)..." oninput="retosBuscarCuenta(this.value)">
-        <div id="retosCuentas"></div>
-        <div class="rt-nota">Se regalan créditos a una cuenta con login; ella recibe un aviso con el motivo que escribas.</div>
+        <div class="widget-head"><span class="widget-name">Actividad reciente de retos</span></div>
+        <div id="retosHistorial"></div>
+        <div class="rt-nota">Lo último que se jugó esta semana: quién, qué y cuántos puntos sumó. Solo lectura.</div>
+      </div>
+      <div class="widget-box rt-caja">
+        <div class="widget-head"><span class="widget-name">Créditos dados por el Reto del día</span></div>
+        <div id="retosCreditosRec"></div>
+        <div class="rt-nota">Los últimos créditos que dio el Reto del día a cuentas sin membresía. Los regalos y los cupones están en Créditos.</div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="creditos">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Regala <em>créditos</em></h2>
+          <p class="panel-sub">Regala créditos a quien quieras, o crea un cupón con una clave para compartir en el canal de WhatsApp. Con los créditos la persona canjea materiales, libros y herramientas.</p>
+        </div>
+        <div class="panel-head-accion">
+          <button type="button" class="btn-secondary" onclick="cargarCreditosAdmin(true)">Actualizar</button>
+        </div>
+      </div>
+      <div class="stats-grid" id="crKpis"></div>
+
+      <div class="widget-box cr-caja">
+        <div class="widget-head"><span class="widget-name">Cupones</span></div>
+        <p class="cr-sub">Crea una clave, compártela en el canal de WhatsApp y cada persona la canjea una sola vez en «¿Tienes un código?» (dentro de Mi suscripción).</p>
+        <div class="cr-form">
+          <div><label class="form-label" for="crClave">Clave (vacía = al azar)</label><input type="text" id="crClave" class="form-input" maxlength="24" autocomplete="off" placeholder="Ej.: CANAL100"></div>
+          <div><label class="form-label" for="crCreditos">Créditos</label><input type="number" id="crCreditos" class="form-input" min="1" max="1000" value="100"></div>
+          <div><label class="form-label" for="crMaximo">Máximo de personas (vacío = todos)</label><input type="number" id="crMaximo" class="form-input" min="1" placeholder="Todos"></div>
+        </div>
+        <div class="cr-pregunta">¿A quién le llega el cupón?</div>
+        <div class="cr-chips" id="crAudiencia"></div>
+        <div class="cr-nota" id="crAudienciaTxt"></div>
+        <div class="cr-pregunta">¿Cuándo deja de servir el cupón?</div>
+        <div class="cr-chips" id="crVence"></div>
+        <input type="datetime-local" id="crVenceOtro" class="form-input cr-otro" hidden oninput="crVenceTexto()">
+        <div class="cr-nota" id="crVenceTxt"></div>
+        <div class="cr-acciones"><button type="button" class="btn-primary" id="crCrearBtn" onclick="crCrearCupon()">+ Crear cupón</button></div>
+        <p class="cr-ayuda">La clave no distingue mayúsculas de minúsculas (de 4 a 24 letras o números). Cada persona puede canjearla una sola vez. De 1 a 1,000 créditos por canje.</p>
+        <div class="cr-lista" id="crCupones"></div>
+      </div>
+
+      <div class="widget-box cr-caja">
+        <div class="widget-head"><span class="widget-name">Cuentas</span></div>
+        <p class="cr-sub">De la cuenta más reciente a la más antigua. Eliges cuántos créditos regalar (de 1 a 1,000 por regalo, hasta 1,000 por cuenta al día) y la persona debe haber confirmado su correo.</p>
+        <input type="text" class="form-input cr-busca" id="crBuscaCuentas" placeholder="Buscar por nombre o correo" oninput="crBuscarCuentas(this.value)">
+        <div id="crCuentas"></div>
+      </div>
+
+      <div class="widget-box cr-caja">
+        <div class="widget-head"><span class="widget-name">Historial de regalos</span></div>
+        <p class="cr-sub">A quién se le regaló, cuánto, por qué vía (regalo tuyo o cupón) y si ya canjeó algo después.</p>
+        <div class="chip-filter" id="crFiltros"></div>
+        <input type="text" class="form-input cr-busca" id="crBuscaRegalos" placeholder="Buscar persona, clave o material" oninput="crBuscarRegalos(this.value)">
+        <div id="crRegalos"></div>
+      </div>
+
+      <div class="widget-box cr-caja">
+        <div class="widget-head"><span class="widget-name">Materiales más canjeados</span></div>
+        <p class="cr-sub">Cuántas veces se canjeó cada material, libro o herramienta.</p>
+        <div id="crMateriales"></div>
       </div>
     </div>
 
@@ -3732,7 +3825,8 @@ body::before { display: none; }
       'courses': 'Videoteca',
       'certificates': 'Certificados',
       'ratings': 'Calificaciones de los cursos',
-      'retos': 'Retos y créditos',
+      'retos': 'Retos',
+      'creditos': 'Créditos',
       'config': 'Configuración del sistema'
     };
     const titleEl = document.getElementById('topbarTitle');
@@ -4682,16 +4776,32 @@ body::before { display: none; }
   // ACTIONS: ACTIVATE, DEACTIVATE, DELETE
   // ═══════════════════════════════════════════════════
   // Regalar créditos a una cuenta (el servidor suma, registra el movimiento y avisa al miembro)
-  window.regalarCreditos = async function(uid, nombre) {
-    const texto = prompt('¿Cuántos créditos le regalas a ' + nombre + '? (entero de 1 a 100000)');
-    if (texto === null) return;
-    const monto = Number(String(texto).trim());
-    if (!Number.isInteger(monto) || monto < 1 || monto > 100000) { showToast('Escribe un número entero entre 1 y 100000', 'error'); return; }
-    const motivo = prompt('Motivo (opcional, lo verá la persona):') || '';
-    try {
-      const r = await callAdminEndpoint('/admin/creditos', { uid, monto, motivo });
-      showToast('Listo: ' + nombre + ' ahora tiene ' + Number(r.saldo).toLocaleString('es-MX') + ' créditos');
-    } catch (e) { showToast('Error: ' + (e.message || 'no se pudieron regalar'), 'error'); }
+  window.regalarCreditos = function(uid, nombre) {
+    const cuerpo = '<p class="ct-modal-sub">Le vas a regalar créditos a <b>' + esc(nombre) + '</b>. Recibe un aviso en su panel con el motivo que escribas.</p>' +
+      '<label class="form-label" for="crMonto">¿Cuántos créditos?</label>' +
+      '<div class="cr-rapidos">' + [100, 200, 300, 400, 500].map(n => '<button type="button" class="chip" onclick="document.getElementById(\'crMonto\').value=' + n + ';crRegaloCambio()">' + n + '</button>').join('') + '</div>' +
+      '<input type="number" id="crMonto" class="form-input" min="1" max="1000" step="1" placeholder="De 1 a 1,000" oninput="crRegaloCambio()">' +
+      '<label class="form-label" for="crMotivo" style="margin-top:12px;">Motivo (opcional, lo verá la persona)</label>' +
+      '<input type="text" id="crMotivo" class="form-input" maxlength="120" placeholder="Ej.: Por ayudar con tus comentarios del curso">' +
+      '<p class="cr-ayuda">De 1 a 1,000 por regalo y hasta 1,000 por cuenta al día. La persona debe haber confirmado su correo.</p><div id="crRegaloError"></div>';
+    miModal('Regalar créditos', cuerpo, [
+      { texto: 'Cancelar', alClic: miCerrar },
+      { texto: 'Regalar', clase: 'btn-primary', deshabilitado: true, alClic: async (btn) => {
+        const monto = Number(document.getElementById('crMonto').value), motivo = document.getElementById('crMotivo').value.trim();
+        btn.disabled = true;
+        try {
+          const r = await callAdminEndpoint('/admin/creditos', { uid, monto, motivo });
+          miCerrar();
+          showToast(nombre + ' ahora tiene ' + Number(r.saldo).toLocaleString('es-MX') + ' créditos');
+          if (document.querySelector('[data-panel="creditos"].active')) cargarCreditosAdmin(true);
+        } catch (e) { document.getElementById('crRegaloError').innerHTML = miError(e.message || 'No se pudieron regalar'); btn.disabled = false; }
+      } }
+    ]);
+    setTimeout(() => { const i = document.getElementById('crMonto'); if (i) i.focus(); }, 60);
+  };
+  window.crRegaloCambio = function() {
+    const n = Number(document.getElementById('crMonto').value);
+    const b = document.getElementById('miBtn1'); if (b) b.disabled = !(Number.isInteger(n) && n >= 1 && n <= 1000);
   };
 
   window.toggleActive = function(uid, newState) {
@@ -5313,6 +5423,9 @@ body::before { display: none; }
 
   // ── Ventana (ficha, activar, eliminar, eliminados) ──
   function miModal(titulo, cuerpo, botones, ancho) {
+    // La ventana vive dentro de un panel; si ese panel está oculto (por ejemplo desde Créditos) no se vería: va directo al body
+    const ov = document.getElementById('miOverlay');
+    if (ov.parentElement !== document.body) document.body.appendChild(ov);
     document.getElementById('miModalTit').textContent = titulo;
     document.getElementById('miModalCuerpo').innerHTML = cuerpo;
     MI.handlers = botones.map(b => b.alClic);
@@ -6562,6 +6675,7 @@ let _bibLibrosCargados = false;
       if (nav) nav.classList.add('active');
     }
     if (tabName === 'materials' || tabName === 'library') setTimeout(matActualizar, 0);
+    if (tabName === 'creditos') setTimeout(() => cargarCreditosAdmin(false), 0);
   };
   document.addEventListener('click', (e) => {
     if (e.target.closest && e.target.closest('[data-tab="materials"]')) setTimeout(() => { if (typeof cargarBibliotecaAdmin === 'function') cargarBibliotecaAdmin(); }, 150);
@@ -7954,6 +8068,12 @@ let _bibLibrosCargados = false;
       document.getElementById('retosKpis').innerHTML =
         kpi('teal', r.jugadoresConPuntos, 'MIEMBROS CON PUNTOS ESTA SEMANA', 'Semana ' + esc(r.semana || '')) + kpi('green', r.juegosDisponibles, 'JUEGOS PUBLICADOS', 'Los que el admin puso en las clases') +
         kpi('amber', r.creditosPorRetos, 'CRÉDITOS REGALADOS POR RETOS', 'Solo el Reto del día de quien no es miembro') + kpi('sky', c.retos.retosGratisPorDia, 'RETOS GRATIS POR DÍA', 'Para quien no es miembro');
+      document.getElementById('retosHistorial').innerHTML = (r.historial && r.historial.length)
+        ? r.historial.map(h => '<div class="rt-fila"><span><b style="display:inline-flex;width:auto;height:auto;background:none;color:inherit;font-size:13.5px;">' + esc(h.nombre) + '</b> · ' + esc(h.juego || 'juego') + (h.dia ? ' · ' + esc(h.dia) : '') + '</span><em>+' + esc(h.puntos) + ' pts</em></div>').join('')
+        : '<div class="sb-vacio">Todavía no hay actividad esta semana.</div>';
+      document.getElementById('retosCreditosRec').innerHTML = (r.creditosRecientes && r.creditosRecientes.length)
+        ? r.creditosRecientes.map(c => '<div class="rt-fila"><span>' + esc(c.nombre) + (c.juego ? ' · ' + esc(c.juego) : '') + (c.creadoEn ? ' · ' + esc(formatDate(new Date(c.creadoEn))) : '') + '</span><em>+' + esc(c.monto) + ' créditos</em></div>').join('')
+        : '<div class="sb-vacio">Todavía no se han dado créditos por retos.</div>';
       document.getElementById('retosTop').innerHTML = (r.top && r.top.length)
         ? r.top.map(f => '<div class="rt-fila' + (f.puesto <= 3 ? ' top' : '') + '"><b>' + f.puesto + '</b><span>' + esc(f.nombre) + '</span><em>' + f.puntos + ' pts</em></div>').join('')
         : '<div class="sb-vacio">Todavía nadie suma puntos esta semana.</div>';
@@ -7993,21 +8113,160 @@ let _bibLibrosCargados = false;
     showToast('Valores recomendados cargados: revisa y guarda si estás de acuerdo');
   };
 
-  // Regalar créditos a una cuenta (usa el mismo botón de Miembros)
-  window.retosBuscarCuenta = function(q) {
-    const host = document.getElementById('retosCuentas');
-    if (!host) return;
-    const t = String(q || '').trim().toLowerCase();
-    if (t.length < 2) { host.innerHTML = ''; return; }
-    const lista = allMembers.filter(conCuenta).filter(m => ((m.nombre || '') + ' ' + (m.email || '')).toLowerCase().includes(t)).slice(0, 6);
-    host.innerHTML = lista.length ? lista.map(m => '<div class="rt-cuenta"><div><b>' + esc(m.nombre || '(sin nombre)') + '</b><span>' + esc(m.email || '') + '</span></div>' +
-      '<button type="button" class="btn-secondary rt-reg" data-nombre="' + esc(m.nombre || m.email || 'esta cuenta') + '" onclick="regalarCreditos(\'' + esc(m.uid) + '\', this.dataset.nombre)">Regalar créditos</button></div>').join('')
-      : '<div class="sb-vacio" style="padding:12px;">Ninguna cuenta con login coincide.</div>';
-  };
-
   document.addEventListener('click', (e) => {
     if (e.target.closest && e.target.closest('[data-tab="retos"]')) setTimeout(cargarRetosAdmin, 150);
   });
+
+  // ═══════════════════════════════════════════════════
+  // CRÉDITOS: cupones, regalos, historial y materiales más canjeados (todo lo calcula y guarda el servidor)
+  // ═══════════════════════════════════════════════════
+  const CR = { cargado: false, cargando: false, panel: null, cupones: [], audiencia: 'ambos', vence: 'nunca', filtro: 'todos', busqRegalos: '', busqCuentas: '', verTodosMat: false, regalosVisibles: 20, cuentasVisibles: 20 };
+  const CR_AUDIENCIAS = [['ambos', 'Ambos', 'Lo pueden canjear los miembros no VIP y los miembros VIP (cualquier cuenta con el correo confirmado).'], ['novip', 'Miembros no VIP', 'Solo lo pueden canjear las cuentas sin membresía activa.'], ['vip', 'Miembros VIP', 'Solo lo pueden canjear los miembros con membresía activa.']];
+  const CR_VENCES = [['nunca', 'No vence'], ['1h', 'En 1 hora'], ['6h', 'En 6 horas'], ['24h', 'En 24 horas'], ['3d', 'En 3 días'], ['7d', 'En 7 días'], ['otro', 'Elegir día y hora']];
+  const CR_AUD_TXT = { ambos: 'Ambos', novip: 'Miembros no VIP', vip: 'Miembros VIP' };
+  const crNum = (n) => Number(n || 0).toLocaleString('es-MX');
+  const crFecha = (iso) => { const d = iso ? new Date(iso) : null; return d && !Number.isNaN(d.getTime()) ? d.toLocaleString('es-MX', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '—'; };
+  const crMiembro = (uid) => allMembers.find(m => m.uid === uid);
+  const crNombre = (uid) => { const m = crMiembro(uid); return m ? (m.nombre || m.email || '(sin nombre)') : '(persona eliminada)'; };
+  const crCorreo = (uid) => { const m = crMiembro(uid); return m ? (m.email || '') : ''; };
+  const crVenceISO = () => {
+    const v = CR.vence, ms = { '1h': 3600000, '6h': 6 * 3600000, '24h': 24 * 3600000, '3d': 3 * 86400000, '7d': 7 * 86400000 };
+    if (v === 'nunca') return null;
+    if (v === 'otro') { const x = document.getElementById('crVenceOtro').value; return x ? new Date(x).toISOString() : ''; }
+    return new Date(Date.now() + ms[v]).toISOString();
+  };
+
+  function crPintarOpciones() {
+    document.getElementById('crAudiencia').innerHTML = CR_AUDIENCIAS.map(a => '<button type="button" class="chip' + (CR.audiencia === a[0] ? ' active' : '') + '" onclick="crElegirAudiencia(\'' + a[0] + '\')">' + esc(a[1]) + '</button>').join('');
+    document.getElementById('crAudienciaTxt').textContent = (CR_AUDIENCIAS.find(a => a[0] === CR.audiencia) || CR_AUDIENCIAS[0])[2];
+    document.getElementById('crVence').innerHTML = CR_VENCES.map(v => '<button type="button" class="chip' + (CR.vence === v[0] ? ' active' : '') + '" onclick="crElegirVence(\'' + v[0] + '\')">' + esc(v[1]) + '</button>').join('');
+    document.getElementById('crVenceOtro').hidden = CR.vence !== 'otro';
+    crVenceTexto();
+  }
+  window.crElegirAudiencia = function(a) { CR.audiencia = a; crPintarOpciones(); };
+  window.crElegirVence = function(v) { CR.vence = v; crPintarOpciones(); };
+  window.crVenceTexto = function() {
+    const iso = crVenceISO();
+    document.getElementById('crVenceTxt').textContent = CR.vence === 'nunca' ? 'No tiene fecha límite: sirve hasta que lo pauses o llegue al máximo de personas.'
+      : (iso ? 'Deja de servir el ' + crFecha(iso).replace(/.$/, '') + '.' : 'Elige el día y la hora en que deja de servir.');
+  };
+
+  window.cargarCreditosAdmin = async function(forzar) {
+    if (CR.cargando || (CR.cargado && !forzar)) { if (CR.cargado) crRender(); return; }
+    CR.cargando = true;
+    crPintarOpciones();
+    try {
+      const [p, c] = await Promise.all([callAdminEndpoint('/admin/creditos/panel', {}), callAdminEndpoint('/admin/cupones/listar', {})]);
+      CR.panel = p; CR.cupones = c.cupones || []; CR.cargado = true;
+      crRender();
+    } catch (err) { showToast('No se pudo cargar Créditos: ' + (err.message || 'error'), 'error'); }
+    CR.cargando = false;
+  };
+
+  function crRender() { crKpis(); crCupones(); crCuentas(); crRegalos(); crMateriales(); }
+
+  function crKpis() {
+    const r = CR.panel.resumen;
+    const k = (clase, v, et, sub) => '<div class="stat-card ' + clase + '"><div class="stat-value">' + crNum(v) + '</div><div class="stat-label">' + et + '</div><div class="sb-sub">' + sub + '</div></div>';
+    document.getElementById('crKpis').innerHTML = k('amber', r.regalados, 'CRÉDITOS REGALADOS', 'Regalos tuyos y cupones canjeados') + k('green', r.canjeados, 'CRÉDITOS CANJEADOS', 'Gastados por todos en materiales, libros y herramientas') + k('teal', r.pendientes, 'PENDIENTES DE CANJEAR', 'Saldo que las personas todavía tienen');
+  }
+
+  function crCupones() {
+    const host = document.getElementById('crCupones');
+    if (!CR.cupones.length) { host.innerHTML = '<div class="sb-vacio">Todavía no hay cupones. Crea el primero arriba.</div>'; return; }
+    const ETQ = { activo: 'Activo', pausado: 'Pausado', vencido: 'Vencido', agotado: 'Agotado' };
+    host.innerHTML = CR.cupones.map(c => '<div class="cr-fila"><div><b>' + esc(c.clave) + '</b><small>' + crNum(c.creditos) + ' créditos · ' + esc(CR_AUD_TXT[c.audiencia] || 'Ambos') + '</small></div>' +
+      '<div><span class="cr-b ' + c.estado + '">' + ETQ[c.estado] + '</span><small>' + crNum(c.canjes) + (c.maximo ? ' de ' + crNum(c.maximo) : '') + ' canjes · ' + crNum(c.entregados) + ' créditos entregados</small></div>' +
+      '<div>' + (c.venceEn ? '<b style="font-size:13px;">' + (c.estado === 'vencido' ? 'Venció' : 'Vence') + '</b><small>' + esc(crFecha(c.venceEn)) + '</small>' : '<b style="font-size:13px;">No vence</b>') + '</div>' +
+      '<div class="cr-fila-acc"><button type="button" class="btn-secondary" onclick="crCopiarMensaje(\'' + esc(c.clave) + '\')">Copiar mensaje</button>' +
+      '<button type="button" class="btn-secondary" onclick="crVerQuien(\'' + esc(c.clave) + '\')">Ver quién</button>' +
+      '<button type="button" class="btn-secondary" onclick="crPausar(\'' + esc(c.clave) + '\',' + (c.pausado ? 'false' : 'true') + ')">' + (c.pausado ? 'Reactivar' : 'Pausar') + '</button></div></div>').join('');
+  }
+
+  window.crCrearCupon = async function() {
+    const btn = document.getElementById('crCrearBtn');
+    const venceEn = crVenceISO();
+    if (CR.vence === 'otro' && !venceEn) { showToast('Elige el día y la hora en que deja de servir', 'error'); return; }
+    btn.disabled = true;
+    try {
+      const r = await callAdminEndpoint('/admin/cupones/crear', { clave: document.getElementById('crClave').value, creditos: Number(document.getElementById('crCreditos').value), maximo: document.getElementById('crMaximo').value, audiencia: CR.audiencia, venceEn });
+      showToast('Cupón ' + r.cupon.clave + ' creado');
+      document.getElementById('crClave').value = ''; document.getElementById('crMaximo').value = '';
+      await cargarCreditosAdmin(true);
+    } catch (e) { showToast(e.message || 'No se pudo crear el cupón', 'error'); }
+    btn.disabled = false;
+  };
+
+  window.crCopiarMensaje = async function(clave) {
+    const c = CR.cupones.find(x => x.clave === clave); if (!c) return;
+    const texto = 'Tienes un código de SINERGIA Agrícola: ' + c.clave + '. Canjéalo por ' + crNum(c.creditos) + ' créditos: entra a https://sinergiamexico.it.com/vip-panel.html, abre «Mi suscripción» y escríbelo en «¿Tienes un código?». Sirve una sola vez por persona' +
+      (c.venceEn ? ' y vence el ' + crFecha(c.venceEn) : '') + (c.maximo ? ' (solo para las primeras ' + crNum(c.maximo) + ' personas)' : '') + '.';
+    try { await navigator.clipboard.writeText(texto); showToast('Mensaje copiado: pégalo en el canal de WhatsApp'); }
+    catch (e) { window.prompt('Copia este mensaje:', texto); }
+  };
+
+  window.crPausar = async function(clave, pausado) {
+    try { await callAdminEndpoint('/admin/cupones/' + encodeURIComponent(clave) + '/estado', { pausado }); showToast('Cupón ' + (pausado ? 'pausado' : 'reactivado')); await cargarCreditosAdmin(true); }
+    catch (e) { showToast(e.message || 'No se pudo cambiar el cupón', 'error'); }
+  };
+
+  window.crVerQuien = async function(clave) {
+    miModal('Quién canjeó ' + clave, '<div class="sb-vacio">Cargando…</div>', [{ texto: 'Cerrar', alClic: miCerrar }], true);
+    try {
+      const r = await callAdminEndpoint('/admin/cupones/' + encodeURIComponent(clave) + '/quien', {});
+      const cuerpo = r.canjes.length ? '<ul class="mi-prog mi-elim">' + r.canjes.map(c => '<li><span>' + esc(crNombre(c.uid)) + '<small>' + esc(crCorreo(c.uid)) + ' · ' + esc(crFecha(c.creadoEn)) + '</small></span><em>+' + crNum(c.creditos) + '</em></li>').join('') + '</ul>' : '<p class="mi-nada">Nadie ha canjeado este cupón todavía.</p>';
+      miModal('Quién canjeó ' + clave, cuerpo, [{ texto: 'Cerrar', alClic: miCerrar }], true);
+    } catch (e) { miModal('Quién canjeó ' + clave, miError(e.message || 'No se pudo leer'), [{ texto: 'Cerrar', alClic: miCerrar }], true); }
+  };
+
+  // Cuentas con login, de la más reciente a la más antigua
+  window.crBuscarCuentas = function(q) { CR.busqCuentas = String(q || '').trim().toLowerCase(); CR.cuentasVisibles = 20; crCuentas(); };
+  function crCuentas() {
+    const host = document.getElementById('crCuentas'), t = CR.busqCuentas;
+    const lista = allMembers.filter(conCuenta).filter(m => !t || (m.nombre || '').toLowerCase().includes(t) || (m.email || '').toLowerCase().includes(t))
+      .sort((a, b) => ((fechaAlta(b) || 0) - (fechaAlta(a) || 0)));
+    if (!lista.length) { host.innerHTML = '<div class="sb-vacio">' + (t ? 'Nadie coincide.' : 'Todavía no hay cuentas.') + '</div>'; return; }
+    const ver = lista.slice(0, CR.cuentasVisibles), saldos = (CR.panel && CR.panel.saldos) || {};
+    host.innerHTML = '<div class="cr-lista">' + ver.map(m => {
+      const reg = fechaAlta(m), conAcceso = claseAcceso(m).grupo === 'acceso';
+      return '<div class="cr-fila cr-cuenta"><div><b>' + esc(m.nombre || '(sin nombre)') + '</b><small>' + esc(m.email || 'Sin correo') + '</small><small>' + (reg ? 'Se registró ' + esc(formatDate(reg)) : '') + '</small></div>' +
+        '<div class="cr-chips-estado"><span class="cr-b ' + (conAcceso ? 'acceso' : '') + '">' + (conAcceso ? 'Con acceso' : 'Sin pagar') + '</span><span class="cr-b">' + crNum(saldos[m.uid] || 0) + ' créditos</span></div>' +
+        '<div class="cr-fila-acc"><button type="button" class="btn-primary" data-nombre="' + esc(m.nombre || m.email || 'esta cuenta') + '" onclick="regalarCreditos(\'' + esc(m.uid) + '\', this.dataset.nombre)">Regalar créditos</button></div></div>';
+    }).join('') + '</div>' +
+      (lista.length > ver.length ? '<div class="cr-acciones"><button type="button" class="btn-secondary" onclick="CR_masCuentas()">Mostrar ' + Math.min(20, lista.length - ver.length) + ' más</button><span class="cr-ayuda" style="margin:0;">Mostrando ' + ver.length + ' de ' + lista.length + '</span></div>' : '<p class="cr-ayuda">Mostrando ' + ver.length + ' de ' + lista.length + '</p>');
+  }
+  window.CR_masCuentas = function() { CR.cuentasVisibles += 20; crCuentas(); };
+
+  // Historial de regalos (regalos tuyos y cupones canjeados)
+  window.crFiltrarRegalos = function(f) { CR.filtro = f; CR.regalosVisibles = 20; crRegalos(); };
+  window.crBuscarRegalos = function(q) { CR.busqRegalos = String(q || '').trim().toLowerCase(); CR.regalosVisibles = 20; crRegalos(); };
+  window.CR_masRegalos = function() { CR.regalosVisibles += 20; crRegalos(); };
+  function crRegalos() {
+    const r = CR.panel.resumen, todos = CR.panel.regalos || [];
+    document.getElementById('crFiltros').innerHTML = [['todos', 'Todos', r.regalosTotal], ['pendientes', 'Pendientes', r.regalosPendientes], ['canjeados', 'Canjeados', r.regalosCanjeados]]
+      .map(f => '<button type="button" class="chip' + (CR.filtro === f[0] ? ' active' : '') + '" onclick="crFiltrarRegalos(\'' + f[0] + '\')">' + f[1] + ' <span style="margin-left:4px;">' + f[2] + '</span></button>').join('');
+    const t = CR.busqRegalos;
+    const lista = todos.filter(g => (CR.filtro === 'todos' || (CR.filtro === 'canjeados') === g.canjeado) && (!t || (crNombre(g.uid) + ' ' + crCorreo(g.uid) + ' ' + (g.clave || '') + ' ' + g.materiales.join(' ')).toLowerCase().includes(t)));
+    const host = document.getElementById('crRegalos');
+    if (!lista.length) { host.innerHTML = '<div class="sb-vacio">' + (todos.length ? 'Nada coincide con ese filtro.' : 'Todavía no has regalado créditos.') + '</div>'; return; }
+    const ver = lista.slice(0, CR.regalosVisibles);
+    host.innerHTML = '<div class="cr-lista">' + ver.map(g => '<div class="cr-fila" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1.2fr) minmax(0,1.2fr);"><div><b>' + esc(crNombre(g.uid)) + '</b><small>' + esc(crCorreo(g.uid)) + '</small></div>' +
+      '<div><b style="font-size:13.5px;">' + crNum(g.monto) + ' créditos</b><small>Regalado ' + esc(crFecha(g.creadoEn)) + '</small><small>' + (g.origen === 'cupon' ? 'Cupón ' + esc(g.clave || '') : 'Por ' + esc(g.por || 'el equipo') + (g.motivo ? ' · ' + esc(g.motivo) : '')) + '</small></div>' +
+      '<div><span class="cr-b ' + (g.canjeado ? 'canjeado' : 'pendiente') + '">' + (g.canjeado ? 'Canjeó' + (g.canjes > 1 ? ' ' + g.canjes + ' veces' : '') : 'Pendiente de canjear') + '</span><small>' + (g.canjeado ? esc(g.materiales.join(', ')) : 'Todavía no lo canjea') + '</small></div></div>').join('') + '</div>' +
+      (lista.length > ver.length ? '<div class="cr-acciones"><button type="button" class="btn-secondary" onclick="CR_masRegalos()">Mostrar ' + Math.min(20, lista.length - ver.length) + ' más</button><span class="cr-ayuda" style="margin:0;">Mostrando ' + ver.length + ' de ' + lista.length + '</span></div>' : '<p class="cr-ayuda">Mostrando ' + ver.length + ' de ' + lista.length + '</p>');
+  }
+
+  // Materiales más canjeados
+  window.crVerTodosMateriales = function() { CR.verTodosMat = !CR.verTodosMat; crMateriales(); };
+  function crMateriales() {
+    const host = document.getElementById('crMateriales'), todos = CR.panel.materiales || [], total = CR.panel.totalCanjes || 0;
+    if (!todos.length) { host.innerHTML = '<div class="sb-vacio">Todavía nadie ha canjeado nada.</div>'; return; }
+    const ver = CR.verTodosMat ? todos : todos.slice(0, 8), max = todos[0].canjes;
+    host.innerHTML = ver.map((m, i) => '<div class="cr-mat' + (i === 0 ? ' top' : '') + '"><b>' + (i + 1) + '</b><div><div style="font-size:14px;color:var(--stone-800);">' + esc(m.titulo) + '</div><div class="cr-barra"><i style="width:' + Math.max(3, Math.round(m.canjes / max * 100)) + '%"></i></div></div><em>' + crNum(m.canjes) + ' <span style="font-weight:400;color:var(--stone-500);">' + Math.round(m.canjes / total * 100) + ' %</span></em></div>').join('') +
+      (todos.length > 8 ? '<div class="cr-acciones"><button type="button" class="btn-secondary" onclick="crVerTodosMateriales()">' + (CR.verTodosMat ? 'Ver menos' : 'Ver todos (' + todos.length + ')') + '</button></div>' : '') +
+      '<p class="cr-ayuda">Cada barra se compara con el primer lugar; el porcentaje es la parte del total (' + crNum(total) + ' canjes).</p>' +
+      '<div class="cr-nota"><b>Cómo leerlo:</b> lo más canjeado es «' + esc(todos[0].titulo) + '»: ' + crNum(todos[0].canjes) + ' canjes de ' + crNum(total) + ' en total (' + Math.round(todos[0].canjes / total * 100) + ' %).</div>';
+  }
 
   window.agregarSesionCurso = function() {
     _cursoEditandoSesiones.push({
