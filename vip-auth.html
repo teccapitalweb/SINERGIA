@@ -181,6 +181,9 @@
   .mensaje.on { display: flex; gap: 8px; align-items: flex-start; }
   .mensaje svg { flex: none; width: 18px; height: 18px; margin-top: 1px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   .nota { margin: 14px 0 0; font-size: 12.5px; text-align: center; color: var(--subtle); }
+  .acceso > p.legal-nota { margin: 16px 0 0; font-size: 12.5px; line-height: 1.5; text-align: center; color: var(--subtle); }
+  .legal-nota a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+  .legal-nota a:hover { text-decoration-thickness: 2px; }
   .pie { margin: 26px 0 0; font-size: 12.5px; text-align: center; color: var(--subtle); }
 
   .toast { position: fixed; left: 50%; bottom: 24px; z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); padding: 12px 16px; border-radius: 14px; background: var(--primary); color: #fff; font: 600 14px var(--font-d); box-shadow: var(--shadow); transform: translate(-50%, 24px); opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
@@ -409,6 +412,8 @@
         </svg>
         Continuar con Google
       </button>
+
+      <p class="legal-nota">Al iniciar sesión o crear tu cuenta aceptas los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y el <a href="privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a>.</p>
 
       <p class="pie">Sinergia-Agrícola © 2026 · Todos los derechos reservados</p>
     </div>

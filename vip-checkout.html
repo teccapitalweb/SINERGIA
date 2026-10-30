@@ -543,6 +543,9 @@
   .btn-pay.loading .btn-text, .btn-pay.loading svg:not(.spinner) { display: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  .pay-legal { margin-top: 12px; text-align: center; font-size: 12px; line-height: 1.5; color: var(--stone-400); }
+  .pay-legal a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+  .pay-legal a:hover { color: #fff; }
   .pay-disclaimer {
     margin-top: 14px;
     text-align: center;
@@ -851,6 +854,8 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         <span class="spinner"></span>
       </button>
+
+      <p class="pay-legal">Al pagar aceptas los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>, incluida la renovación automática del plan, y el <a href="privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a>. Puedes cancelar cuando quieras.</p>
 
       <div class="pay-disclaimer">PAGO SEGURO EN ESTA MISMA PÁGINA CON STRIPE</div>
     </div>
