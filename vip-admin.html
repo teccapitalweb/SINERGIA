@@ -3225,6 +3225,11 @@ body::before { display: none; }
               <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--stone-700);cursor:pointer;"><input type="checkbox" id="bibLibGratis" style="width:16px;height:16px;"><b>Libro gratis</b> · se puede leer sin membresía</label>
             </div>
             <div class="form-group">
+              <label class="form-label" for="bibLibRetos">Retos para desbloquearlo (opcional)</label>
+              <input type="number" id="bibLibRetos" class="form-input" min="0" max="99" placeholder="0">
+              <div style="font-size:12px;color:var(--stone-500);margin-top:4px;">Cuántos retos de caso debe haber resuelto un miembro para abrirlo sin créditos. Con 0 solo se abre con créditos. Quien no es miembro siempre lo canjea con créditos.</div>
+            </div>
+            <div class="form-group">
               <label class="form-label" for="bibLibOrden">Orden (opcional)</label>
               <input type="number" id="bibLibOrden" class="form-input" min="0" max="9999" placeholder="0">
             </div>
@@ -7070,7 +7075,7 @@ body::before { display: none; }
         '<div style="flex:1;min-width:200px;">' +
           '<div style="font-size:14px;font-weight:600;color:var(--stone-800);">' + escapeHtmlSafe(l.titulo) + '</div>' +
           '<div style="font-size:12px;color:var(--stone-500);margin-top:2px;">' +
-            [BIB_TIPOS[l.tipo] || 'Libro', l.gratis === true ? 'Gratis' : '', l.autor, nombreCol[l.coleccionId] || 'Sin colección', l.licencia || 'Sin licencia anotada'].filter(Boolean).map(escapeHtmlSafe).join(' · ') + '</div>' +
+            [BIB_TIPOS[l.tipo] || 'Libro', l.gratis === true ? 'Gratis' : '', l.retosRequeridos > 0 ? l.retosRequeridos + (l.retosRequeridos === 1 ? ' reto' : ' retos') : '', l.autor, nombreCol[l.coleccionId] || 'Sin colección', l.licencia || 'Sin licencia anotada'].filter(Boolean).map(escapeHtmlSafe).join(' · ') + '</div>' +
           '<a href="' + escapeHtmlSafe(l.url) + '" target="_blank" rel="noopener" style="font-size:11px;color:var(--teal-600);text-decoration:none;">Abrir enlace</a>' +
         '</div>' +
         '<div style="display:flex;gap:6px;">' +
@@ -7124,6 +7129,7 @@ body::before { display: none; }
     document.getElementById('bibLibLicencia').value = l.licencia || '';
     document.getElementById('bibLibOrden').value = l.orden || '';
     document.getElementById('bibLibGratis').checked = l.gratis === true;
+    document.getElementById('bibLibRetos').value = l.retosRequeridos || '';
     document.getElementById('bibLibTitle').textContent = 'Editar libro';
     document.getElementById('bibLibCancel').style.display = '';
     document.getElementById('bibLibForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -7189,7 +7195,8 @@ body::before { display: none; }
           fuente: document.getElementById('bibLibFuente').value,
           licencia: document.getElementById('bibLibLicencia').value,
           orden: document.getElementById('bibLibOrden').value,
-          gratis: document.getElementById('bibLibGratis').checked
+          gratis: document.getElementById('bibLibGratis').checked,
+          retosRequeridos: document.getElementById('bibLibRetos').value
         });
         showToast('Libro guardado');
         bibCancelarLibro();

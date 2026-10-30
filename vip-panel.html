@@ -11780,6 +11780,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         <img class="panel-illustrated-image" src="assets/illustrations/materials-videoteca-agricola-pencil.png" alt="Ilustración de biblioteca agrícola digital">
       </div>
 
+      <div id="matRetosAviso" class="mat-retos-aviso" hidden></div>
+
       <div class="mat-toolbar">
         <div class="mat-filtros" id="matFiltros" role="group" aria-label="Filtrar la biblioteca">
           <button type="button" class="mat-chip active" data-filtro="todo" aria-pressed="true">Todo</button>
@@ -17760,7 +17762,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   // del servidor (GET /biblioteca) y su enlace solo se entrega a miembros con membresía activa.
   // ═══════════════════════════════════════════════════════════════════
   var matVista = null, matFiltro = "todo", matEnlazado = false, matUltimasCol = 0, matTimerAjuste = null, matDestacado = null, matDestActual = null;
-  var bib = { cargada: false, cargando: false, vip: null, colecciones: [], libros: [] };
+  var bib = { cargada: false, cargando: false, vip: null, colecciones: [], libros: [], retosHechos: 0, retosTotal: 0 };
   var MAT_ICONOS = { libro: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v16m8.001-2A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2a5 5 0 0 1 4-2z"/></svg>', guia: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10 9H8m8 4H8m8 4H8"/></g></svg>', manual: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 2v8l3-3l3 3V2"/><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></g></svg>', norma: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3v18m7-13l3 8a5 5 0 0 1-6 0zV7"/><path d="M3 7h1a17 17 0 0 0 8-2a17 17 0 0 0 8 2h1M5 8l3 8a5 5 0 0 1-6 0zV7m2 14h10"/></g></svg>', articulo: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M15 18h-5m8-4h-8m-6 8h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/></g></svg>', curso: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10 9H8m8 4H8m8 4H8"/></g></svg>' };
   var MAT_TIPOS = { libro: 'Libro', guia: 'Guía', manual: 'Manual', norma: 'Norma', articulo: 'Artículo', plantilla: 'Plantilla', hoja: 'Hoja de cálculo', curso: 'PDF' };
   var MAT_TONOS = [['#113D35', '#1F5B4D'], ['#2F4A2B', '#55703F'], ['#4D3626', '#80583A'], ['#22404C', '#3C6A7C'], ['#5A4C22', '#8C7539'], ['#2C3A38', '#4C5E5A']];
@@ -17815,9 +17817,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       var items = bib.libros.filter(function (l) { return l.coleccionId === c.id; }).map(function (l) {
         return {
           llave: 'b:' + l.id, titulo: l.titulo, autor: l.autor, tipo: l.tipo || 'libro', portada: l.portada, url: l.url,
-          locked: l.bloqueado === true, gratis: window.isVIP !== true && l.gratis === true, abrir: 'enlace', canjeable: l.bloqueado === true, tipoCanje: 'libro', recurso: l.id, licencia: l.licencia, fuente: l.fuente,
+          locked: l.bloqueado === true, gratis: l.gratis === true, abrir: 'enlace', canjeable: l.bloqueado === true, tipoCanje: 'libro', recurso: l.id, licencia: l.licencia, fuente: l.fuente,
           descripcion: l.descripcion, idioma: l.idioma, anio: l.anio, paginas: l.paginas, paginaFuente: l.paginaFuente, coleccion: c.nombre,
-          estado: l.bloqueado === true ? 'Con membresía' : (l.canjeado === true ? 'Canjeado' : (window.isVIP !== true && l.gratis === true ? 'Gratis' : 'Disponible'))
+          retosRequeridos: Number(l.retosRequeridos) || 0,
+          estado: l.bloqueado === true ? (window.isVIP === true ? 'Con créditos' : 'Con membresía') : (l.canjeado === true ? 'Canjeado' : (l.porRetos === true ? 'Desbloqueado con retos' : (l.gratis === true ? 'Gratis' : 'Disponible')))
         };
       });
       if (items.length) cols.push({ clave: 'b:' + c.id, origen: 'biblioteca', etiqueta: 'Colección', nombre: c.nombre, desc: c.descripcion || '', items: items });
@@ -17857,8 +17860,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       if (!resp.ok) throw new Error(data.error || ('Error ' + resp.status));
       bib.colecciones = data.colecciones || [];
       bib.libros = data.libros || [];
+      bib.retosHechos = Number(data.retosHechos) || 0;
+      bib.retosTotal = Number(data.retosTotal) || 0;
     } catch (e) {
-      bib.colecciones = []; bib.libros = [];
+      bib.colecciones = []; bib.libros = []; bib.retosHechos = 0; bib.retosTotal = 0;
     }
     bib.cargada = true; bib.vip = vip; bib.cargando = false;
     renderMaterial();
@@ -17970,7 +17975,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (esCurso && it.cursoId) acciones += '<button type="button" class="mat-btn" data-det="curso"><span>Ir al curso</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7l-7 7"/></svg></button>';
     if (!esCurso && (it.licencia || it.fuente)) acciones += '<button type="button" class="mat-btn" data-det="derechos" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3v18m7-13l3 8a5 5 0 0 1-6 0zV7"/><path d="M3 7h1a17 17 0 0 0 8-2a17 17 0 0 0 8 2h1M5 8l3 8a5 5 0 0 1-6 0zV7m2 14h10"/></g></svg><span>Derechos</span></button>';
     var aviso = it.locked
-      ? '<div class="mat-det-aviso"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg><div><b>' + matEsc(it.estado) + '</b><span>' + (it.estado === 'Con membresía'
+      ? '<div class="mat-det-aviso"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg><div><b>' + matEsc(it.estado) + '</b><span>' + (it.estado === 'Con créditos' ? (it.retosRequeridos > 0 ? 'Resuelve ' + it.retosRequeridos + (it.retosRequeridos === 1 ? ' reto' : ' retos') + ' en Retos (llevas ' + Math.min(bib.retosHechos, it.retosRequeridos) + ') o canjéalo con tus créditos para leerlo.' : 'Canjéalo con tus créditos para leerlo. Aquí puedes ver de qué trata antes de decidir.') : it.estado === 'Con membresía'
           ? (it.canjeable ? 'Hazte miembro o canjéalo con créditos para leerlo. Aquí puedes ver de qué trata antes de decidir.' : 'Hazte miembro para leer este material. Aquí puedes ver de qué trata antes de decidir.') : 'Este material se abrirá cuando llegue su fecha.') + '</span>' + (it.canjeable ? '<button type="button" class="cred-btn cred-btn--sm" data-det="canjear">' + matEsc(textoCanje(it)) + '</button>' : '') + '</div></div>' : '';
     var derechos = (!esCurso && (it.licencia || it.fuente))
       ? '<div class="mat-det-derechos" id="matDerechos" hidden><b>' + matEsc(it.licencia ? 'Licencia: ' + it.licencia : 'Derechos') + '</b>' +
@@ -18043,9 +18048,33 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '</button>';
   }
 
+  function matPintarAvisoRetos() {
+    var el = document.getElementById('matRetosAviso');
+    if (!el) return;
+    var proximo = null;
+    if (window.isVIP === true) {
+      bib.libros.forEach(function (l) {
+        var pide = Number(l.retosRequeridos) || 0;
+        if (l.bloqueado === true && pide > bib.retosHechos && (!proximo || pide < proximo.retosRequeridos)) proximo = { titulo: l.titulo, retosRequeridos: pide };
+      });
+    }
+    if (!proximo) { el.hidden = true; el.innerHTML = ''; return; }
+    var faltan = proximo.retosRequeridos - bib.retosHechos;
+    var pct = Math.max(4, Math.min(100, Math.round((bib.retosHechos / proximo.retosRequeridos) * 100)));
+    el.innerHTML = '<div class="mat-retos-txt"><h3>Supera retos y desbloquea tu próximo libro</h3>' +
+      '<p>Resuelve ' + faltan + (faltan === 1 ? ' reto más' : ' retos más') + ' para abrir «' + matEsc(proximo.titulo) + '».</p>' +
+      '<div class="mat-retos-barra" role="progressbar" aria-valuemin="0" aria-valuemax="' + proximo.retosRequeridos + '" aria-valuenow="' + bib.retosHechos + '"><span style="width:' + pct + '%"></span></div>' +
+      '<div class="mat-retos-meta">' + bib.retosHechos + ' de ' + proximo.retosRequeridos + ' retos resueltos</div></div>' +
+      '<button type="button" class="cred-btn" id="matIrRetos">Ir a Retos</button>';
+    el.hidden = false;
+    var b = document.getElementById('matIrRetos');
+    if (b) b.addEventListener('click', function () { try { switchTab('retos'); } catch (e) {} });
+  }
+
   function renderMaterial(reintento) {
     const grid = document.getElementById('materialGrid');
     if (!grid) return;
+    matPintarAvisoRetos();
     grid.className = 'material-grid mat-root';
     matCargarBiblioteca();
 
@@ -26537,6 +26566,15 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .mat-btn--primario { background: #113D35; border-color: #113D35; color: #fff; }
   html .mat-btn--primario, html .mat-btn--primario span { color: #fff !important; }
   .mat-btn--primario:hover { background: #1F5B4D; border-color: #1F5B4D; }
+  .mat-retos-aviso { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 0 0 18px; padding: 16px 20px; background: linear-gradient(120deg, #F4FBF8 0%, #E8F6F0 100%); border: 1px solid rgba(26, 168, 136, .28); border-radius: 18px; }
+  .mat-retos-aviso[hidden] { display: none; }
+  .mat-retos-txt { min-width: 0; flex: 1; }
+  .mat-retos-txt h3 { margin: 0 0 4px; font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -.02em; color: var(--stone-900); }
+  .mat-retos-txt p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--stone-600); }
+  .mat-retos-barra { height: 8px; margin: 10px 0 4px; max-width: 360px; border-radius: 99px; background: rgba(17, 61, 53, .12); overflow: hidden; }
+  .mat-retos-barra span { display: block; height: 100%; border-radius: 99px; background: #1AA888; transition: width .3s; }
+  .mat-retos-meta { font-size: 12px; color: var(--stone-500); }
+  @media (max-width: 700px) { .mat-retos-aviso { flex-direction: column; align-items: stretch; } .mat-retos-aviso .cred-btn { width: 100%; } }
   .mat-det-aviso { display: flex; align-items: flex-start; gap: 12px; max-width: 620px; margin-top: 22px; padding: 14px 16px; background: var(--bg-subtle); border: 1px dashed var(--border-card); border-radius: 14px; }
   .mat-det-aviso svg { flex: none; width: 20px; height: 20px; margin-top: 2px; fill: none; stroke: var(--text-secondary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .mat-det-aviso b { display: block; font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); }
