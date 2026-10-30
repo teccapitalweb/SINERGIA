@@ -15861,7 +15861,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var flecha = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
     var sig = cvEl('cvSeguir');
     sig.disabled = false;
-    sig.innerHTML = (yaVista ? (sIdx + 1 < total ? 'Siguiente clase' : 'Terminar') : (juegoPendiente(cid, sIdx) ? 'Jugar el mini juego y seguir' : 'Marcar vista y seguir')) + ' ' + flecha;
+    sig.innerHTML = (yaVista ? (actPendiente(cid, sIdx) ? 'Hacer la actividad y seguir' : (sIdx + 1 < total ? 'Siguiente clase' : 'Terminar')) : (juegoPendiente(cid, sIdx) ? 'Jugar el mini juego y seguir' : 'Marcar vista y seguir')) + ' ' + flecha;
     sig.onclick = function () { claseSeguir(cid, sIdx); };
 
     // Debajo del video: la clase que sigue, la actividad calificable y el mini juego
@@ -16112,6 +16112,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       if (d && d.cofre && d.cofre.creditos > 0) await window.cofreCursoTerminado(d.cofre, curso.titulo);
       // Con actividad pendiente (miembros) se sigue con ella; al aprobarla se pasa a la siguiente clase
       if (actPendiente(cursoId, sIdx)) { if (cvEl('cvFrame')) cvPintar(curso, sIdx); actAbrir(cursoId, sIdx); return; }
+    } else if (actPendiente(cursoId, sIdx)) {
+      // La clase ya estaba vista pero falta aprobar su actividad: se abre aquí mismo
+      actAbrir(cursoId, sIdx);
+      return;
     }
     window.claseSiguiente(cursoId, sIdx);
   }
