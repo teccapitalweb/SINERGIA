@@ -17840,7 +17840,19 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     try { logIntentar('contenido-primer-pdf'); } catch (e) {}
     if (it.privado) window.abrirMaterialCurso(it.cursoId, it.indice, it.titulo || '', it.gratis);
     else if (it.abrir === 'visor') window.abrirVisor(it.url || '', it.titulo || '', 'pdf', { materialGratis: it.gratis });
+    else if (matUrlEnVisor(it.url)) window.abrirVisor(it.url, it.titulo || '', 'pdf', { materialGratis: true });
     else if (matUrlSegura(it.url)) window.open(it.url, '_blank', 'noopener');
+  }
+  // Los libros se leen dentro del panel cuando su dirección permite incrustarse (este sitio, Drive y las fuentes abiertas que lo aceptan);
+  // el servidor solo entrega la dirección si el libro es gratis o la cuenta lo canjeó, por eso el visor no vuelve a pedir membresía.
+  var MAT_HOSTS_VISOR = ['drive.google.com', 'docs.google.com', 'libretexts.org', 'rngr.net'];
+  function matUrlEnVisor(u) {
+    try {
+      var h = new URL(u, location.href);
+      if (h.protocol !== 'https:' && h.host !== location.host) return false;
+      if (h.host === location.host || /(^|.)sinergiamexico.it.com$/.test(h.hostname)) return true;
+      return MAT_HOSTS_VISOR.some(function (d) { return h.hostname === d || h.hostname.endsWith('.' + d); });
+    } catch (e) { return false; }
   }
 
   // El aviso nunca debe impedir que la acción termine
@@ -19592,6 +19604,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     }
     // Botón pantalla completa: solo en clases (videos), oculto en material
     if (fsBtn) fsBtn.style.display = (tipo === 'video') ? '' : 'none';
+    // El recuadro que tapa el botón de Drive solo se necesita con Drive
+    const tapa = overlay.querySelector('.visor-cover-popup');
+    if (tapa) tapa.style.display = (tipo !== 'video' && !/(^|.)(drive|docs).google.com$/.test(new URL(previewUrl, location.href).hostname)) ? 'none' : '';
     overlay.classList.toggle('video-mode', tipo === 'video');
     overlay.classList.add('visible');
     document.body.style.overflow = 'hidden';
@@ -25685,7 +25700,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <span>Marcar como visto</span>
         </button>
-        <a id="visorDownload" class="visor-btn-action" href="#" target="_blank" rel="noopener" title="Abrir en Drive para descargar" style="display:none;">
+        <a id="visorDownload" class="visor-btn-action" href="#" target="_blank" rel="noopener" title="Abrir el archivo en otra pestaña para descargarlo" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="m7 11 5 5 5-5"/><path d="M12 4v12"/></svg>
           <span>Descargar</span>
         </a>
