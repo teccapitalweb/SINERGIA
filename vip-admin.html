@@ -5390,8 +5390,9 @@ body::before { display: none; }
     const cuerpo = '<p class="ct-modal-sub">Vas a eliminar a <b>' + esc(nombre) + '</b>.</p>' +
       '<ul class="mi-lista-aviso"><li>Se borran su cuenta de acceso, su ficha y su tarjeta del directorio.</li>' +
       '<li>' + (m.stripeSubscriptionId ? 'Se cancela su suscripción de Stripe si es de SINERGIA.' : 'No tiene suscripción de Stripe.') + '</li>' +
-      '<li>Se guarda un <b>respaldo por 30 días</b>: desde «Eliminados» puedes restaurarla.</li>' +
-      '<li>Se conservan su avance, créditos, logros y certificados.</li></ul>' +
+      '<li>Se guarda un <b>respaldo por 30 días</b>: desde «Eliminados» puedes restaurarla, y vuelve con su avance, créditos y logros.</li>' +
+      '<li>Pasados los 30 días se <b>borra todo definitivamente</b> (avance, actividades, créditos y respaldo), solo y sin que tengas que hacer nada.</li>' +
+      '<li>Se conservan sus <b>certificados</b>: el folio sigue verificándose para quien ya lo tiene.</li></ul>' +
       '<label class="form-label" for="miConfirma">Para confirmar, escribe su correo: <b>' + esc(esperado) + '</b></label><input type="text" id="miConfirma" class="form-input" autocomplete="off" data-esperado="' + esc(esperado) + '" oninput="miConfirmaCambio()"><div id="miElimError"></div>';
     miModal('Eliminar miembro', cuerpo, [
       { texto: 'Cancelar', alClic: miCerrar },
@@ -5400,7 +5401,7 @@ body::before { display: none; }
         try {
           const r = await callAdminEndpoint('/admin/miembros/' + encodeURIComponent(uid) + '/eliminar', { confirmarCorreo: document.getElementById('miConfirma').value });
           miCerrar();
-          showToast('Miembro eliminado. Se puede restaurar hasta el ' + formatDate(r.restaurableHasta) + (r.aviso ? ' · ' + r.aviso : ''));
+          showToast('Miembro eliminado. Se puede restaurar hasta el ' + formatDate(r.restaurableHasta) + ', y ese día se borra definitivamente' + (r.aviso ? ' · ' + r.aviso : ''));
           await loadMembers(); dbCargarCerts();
         } catch (e) { document.getElementById('miElimError').innerHTML = miError(e.message || 'No se pudo eliminar'); btn.disabled = false; }
       } }
@@ -5418,8 +5419,8 @@ body::before { display: none; }
     let r;
     try { r = await callAdminEndpoint('/admin/eliminados/listar', {}); }
     catch (e) { miModal('Eliminados', miError(e.message || 'No se pudo leer la lista. Si el servidor nuevo todavía no está arriba, esta función no está disponible.'), [{ texto: 'Cerrar', alClic: miCerrar }], true); return; }
-    const estado = { restaurable: 'Se puede restaurar hasta el ', vencido: 'Pasaron los ' + r.diasParaRestaurar + ' días', restaurado: 'Ya fue restaurada' };
-    const cuerpo = '<p class="ct-modal-sub">Quien se elimina queda respaldado ' + esc(r.diasParaRestaurar) + ' días. Al restaurar vuelve con el mismo identificador; su contraseña no se guarda, así que entra con «Olvidé mi contraseña» o con Google.</p>' +
+    const estado = { restaurable: 'Se puede restaurar hasta el ', vencido: 'Pasaron los ' + r.diasParaRestaurar + ' días (se borrará definitivamente en breve)', restaurado: 'Ya fue restaurada', purgado: 'Borrada definitivamente' };
+    const cuerpo = '<p class="ct-modal-sub">Quien se elimina queda respaldado ' + esc(r.diasParaRestaurar) + ' días y después se borra definitivamente, solo. Al restaurar vuelve con el mismo identificador; su contraseña no se guarda, así que entra con «Olvidé mi contraseña» o con Google.</p>' +
       (r.eliminados.length ? '<ul class="mi-prog mi-elim">' + r.eliminados.map(e => '<li><span>' + esc(e.nombre || '(sin nombre)') + '<small>' + esc(e.correo) + ' · eliminada el ' + esc(miFecha(e.eliminadoEn)) + (e.por ? ' por ' + esc(e.por) : '') + '</small></span>' +
         (e.estado === 'restaurable' ? '<button type="button" class="btn-secondary" data-restaurar="' + esc(e.uid) + '">Restaurar</button>' : '<em>' + esc(estado[e.estado] || '') + '</em>') + '</li>').join('') + '</ul>' : '<p class="mi-nada">Nadie se ha eliminado.</p>');
     miModal('Eliminados', cuerpo, [{ texto: 'Cerrar', alClic: miCerrar }], true);
