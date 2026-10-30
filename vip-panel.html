@@ -13984,14 +13984,6 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         }).join('') + '</ol>';
       }
     }
-    var otros = d.companeros || [];
-    if (otros.length) {
-      h += '<h4 class="rtp-otros-t">También participan</h4><ul class="rtp-lista rtp-lista--otros">' + otros.map(function (f) {
-        return '<li class="rtp-fila' + (f.esYo ? ' rtp-fila--yo' : '') + '"><span class="rtp-n" aria-hidden="true">·</span><span class="rtp-av rtp-av--s">' + rtpAvatar(f) + '</span>' +
-          '<span class="rtp-txt"><b>' + escapeHtml(f.nombre) + (f.esYo ? ' <em class="rtp-tu">Tú</em>' : '') + '</b><small>Aún sin puntos esta semana</small></span>' +
-          '<span class="rtp-px">0 pts</span></li>';
-      }).join('') + '</ul>';
-    }
     if (d.miembro && d.yo && d.yo.puesto && d.yo.puesto > pod.length) h += '<p class="rt-yo">Tu lugar: <b>' + d.yo.puesto + '</b> con <b>' + credNum(d.yo.puntos) + '</b> puntos.</p>';
     if (!d.miembro) h += '<p class="rt-yo">Solo los miembros compiten en el podio. <a onclick="__irASuscripcion()" style="cursor:pointer;text-decoration:underline;">Hazte miembro</a></p>';
     return h + '</section>';
@@ -14267,25 +14259,6 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     // Orden: Modo Historia arriba; luego tu práctica y los Retos de campo; después lo demás
     var html = '<div class="rtc-top"><div class="rtc-top-main">' + rtHistoriaHtml() + '</div>' + rtPracticaHtml(d) + '</div>' + rtCamposHtml(d);
 
-    // Juegos por curso
-    var grupos = {}, ordenCursos = [];
-    (d.juegos || []).forEach(function (j) { if (!grupos[j.cursoId]) { grupos[j.cursoId] = []; ordenCursos.push(j.cursoId); } grupos[j.cursoId].push(j); });
-    if (ordenCursos.length) {
-      html += '<section class="rt-bloque" aria-labelledby="rtJuegosTit"><span class="cred-eyebrow">Juegos de tus cursos</span><h3 id="rtJuegosTit">Juegos de clase</h3>' +
-        '<p>' + (d.miembro ? 'Juega el que quieras. Los puntos cuentan una vez por juego cada semana.' : 'Con membresía se abren todos.') + '</p>';
-      ordenCursos.forEach(function (id) {
-        var lista = grupos[id];
-        html += '<div class="rt-grupo"><h4>' + escapeHtml(lista[0].cursoTitulo) + '</h4><div class="rt-juegos">' + lista.map(function (j) {
-          var chip = j.completado ? '<span class="rt-chip rt-chip--ok">Jugado</span>' : (j.jugable ? '<span class="rt-chip">Disponible</span>' : '<span class="rt-chip">Con membresía</span>');
-          return '<article class="rt-juego"><small>' + escapeHtml(retosNombreJuego(j.tipo)) + '</small>' +
-            '<strong>' + escapeHtml(j.titulo || retosNombreJuego(j.tipo)) + '</strong><span style="font-size:12.5px;color:var(--text-secondary);">Clase ' + j.numeroClase + '</span>' +
-            '<div class="rt-juego-pie">' + chip + (j.jugable
-              ? '<button type="button" class="cred-btn" onclick="retosJugar(\'' + escapeHtml(j.id) + '\')">Jugar</button>'
-              : '<button type="button" class="cred-btn cred-btn--sec" onclick="__irASuscripcion()">Desbloquear</button>') + '</div></article>';
-        }).join('') + '</div></div>';
-      });
-      html += '</section>';
-    }
     // Podio de constancia (los datos siguen viniendo del servidor)
     html += rtPodioHtml(d);
 
@@ -14344,7 +14317,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     document.getElementById('canjeTitulo').textContent = tipo === 'herramienta' ? 'Desbloquea ' + nombre : 'Desbloquea «' + nombre + '»';
     document.getElementById('canjeDesc').textContent = tipo === 'herramienta'
       ? 'Es una herramienta de campo. Con tus créditos la tendrás siempre en tu cuenta, aunque no tengas membresía.'
-      : 'Con tus créditos lo tendrás siempre en tu cuenta, aunque no tengas membresía.';
+      : (window.isVIP === true ? 'Con tus créditos lo tendrás siempre en tu cuenta.' : 'Con tus créditos lo tendrás siempre en tu cuenta, aunque no tengas membresía.');
     document.getElementById('canjeSaldo').textContent = credNum(saldo) + ' créditos';
     var ok = document.getElementById('canjeOk');
     ok.disabled = false;
@@ -17762,7 +17735,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   // del servidor (GET /biblioteca) y su enlace solo se entrega a miembros con membresía activa.
   // ═══════════════════════════════════════════════════════════════════
   var matVista = null, matFiltro = "todo", matEnlazado = false, matUltimasCol = 0, matTimerAjuste = null, matDestacado = null, matDestActual = null;
-  var bib = { cargada: false, cargando: false, vip: null, colecciones: [], libros: [], retosHechos: 0, retosTotal: 0 };
+  var bib = { cargada: false, cargando: false, vip: null, miembro: false, colecciones: [], libros: [], retosHechos: 0, retosTotal: 0 };
   var MAT_ICONOS = { libro: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v16m8.001-2A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2a5 5 0 0 1 4-2z"/></svg>', guia: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10 9H8m8 4H8m8 4H8"/></g></svg>', manual: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 2v8l3-3l3 3V2"/><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></g></svg>', norma: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3v18m7-13l3 8a5 5 0 0 1-6 0zV7"/><path d="M3 7h1a17 17 0 0 0 8-2a17 17 0 0 0 8 2h1M5 8l3 8a5 5 0 0 1-6 0zV7m2 14h10"/></g></svg>', articulo: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M15 18h-5m8-4h-8m-6 8h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/></g></svg>', curso: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10 9H8m8 4H8m8 4H8"/></g></svg>' };
   var MAT_TIPOS = { libro: 'Libro', guia: 'Guía', manual: 'Manual', norma: 'Norma', articulo: 'Artículo', plantilla: 'Plantilla', hoja: 'Hoja de cálculo', curso: 'PDF' };
   var MAT_TONOS = [['#113D35', '#1F5B4D'], ['#2F4A2B', '#55703F'], ['#4D3626', '#80583A'], ['#22404C', '#3C6A7C'], ['#5A4C22', '#8C7539'], ['#2C3A38', '#4C5E5A']];
@@ -17820,7 +17793,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           locked: l.bloqueado === true, gratis: l.gratis === true, abrir: 'enlace', canjeable: l.bloqueado === true, tipoCanje: 'libro', recurso: l.id, licencia: l.licencia, fuente: l.fuente,
           descripcion: l.descripcion, idioma: l.idioma, anio: l.anio, paginas: l.paginas, paginaFuente: l.paginaFuente, coleccion: c.nombre,
           retosRequeridos: Number(l.retosRequeridos) || 0,
-          estado: l.bloqueado === true ? (window.isVIP === true ? 'Con créditos' : 'Con membresía') : (l.canjeado === true ? 'Canjeado' : (l.porRetos === true ? 'Desbloqueado con retos' : (l.gratis === true ? 'Gratis' : 'Disponible')))
+          estado: l.bloqueado === true ? ((bib.miembro === true || window.isVIP === true) ? 'Con créditos' : 'Con membresía') : (l.canjeado === true ? 'Canjeado' : (l.porRetos === true ? 'Desbloqueado con retos' : (l.gratis === true ? 'Gratis' : 'Disponible')))
         };
       });
       if (items.length) cols.push({ clave: 'b:' + c.id, origen: 'biblioteca', etiqueta: 'Colección', nombre: c.nombre, desc: c.descripcion || '', items: items });
@@ -17860,10 +17833,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       if (!resp.ok) throw new Error(data.error || ('Error ' + resp.status));
       bib.colecciones = data.colecciones || [];
       bib.libros = data.libros || [];
+      bib.miembro = data.miembro === true;
       bib.retosHechos = Number(data.retosHechos) || 0;
       bib.retosTotal = Number(data.retosTotal) || 0;
     } catch (e) {
-      bib.colecciones = []; bib.libros = []; bib.retosHechos = 0; bib.retosTotal = 0;
+      bib.colecciones = []; bib.libros = []; bib.miembro = false; bib.retosHechos = 0; bib.retosTotal = 0;
     }
     bib.cargada = true; bib.vip = vip; bib.cargando = false;
     renderMaterial();
@@ -17974,9 +17948,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (!it.locked && !esCurso && it.paginaFuente && matUrlSegura(it.paginaFuente)) acciones += '<button type="button" class="mat-btn" data-det="fuente"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6v6m-11 5L21 3m-3 10v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><span>Página oficial</span></button>';
     if (esCurso && it.cursoId) acciones += '<button type="button" class="mat-btn" data-det="curso"><span>Ir al curso</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7l-7 7"/></svg></button>';
     if (!esCurso && (it.licencia || it.fuente)) acciones += '<button type="button" class="mat-btn" data-det="derechos" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3v18m7-13l3 8a5 5 0 0 1-6 0zV7"/><path d="M3 7h1a17 17 0 0 0 8-2a17 17 0 0 0 8 2h1M5 8l3 8a5 5 0 0 1-6 0zV7m2 14h10"/></g></svg><span>Derechos</span></button>';
-    var aviso = it.locked
-      ? '<div class="mat-det-aviso"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg><div><b>' + matEsc(it.estado) + '</b><span>' + (it.estado === 'Con créditos' ? (it.retosRequeridos > 0 ? 'Resuelve ' + it.retosRequeridos + (it.retosRequeridos === 1 ? ' reto' : ' retos') + ' en Retos (llevas ' + Math.min(bib.retosHechos, it.retosRequeridos) + ') o canjéalo con tus créditos para leerlo.' : 'Canjéalo con tus créditos para leerlo. Aquí puedes ver de qué trata antes de decidir.') : it.estado === 'Con membresía'
-          ? (it.canjeable ? 'Hazte miembro o canjéalo con créditos para leerlo. Aquí puedes ver de qué trata antes de decidir.' : 'Hazte miembro para leer este material. Aquí puedes ver de qué trata antes de decidir.') : 'Este material se abrirá cuando llegue su fecha.') + '</span>' + (it.canjeable ? '<button type="button" class="cred-btn cred-btn--sm" data-det="canjear">' + matEsc(textoCanje(it)) + '</button>' : '') + '</div></div>' : '';
+    var aviso = it.locked ? matAvisoBloqueado(it) : '';
     var derechos = (!esCurso && (it.licencia || it.fuente))
       ? '<div class="mat-det-derechos" id="matDerechos" hidden><b>' + matEsc(it.licencia ? 'Licencia: ' + it.licencia : 'Derechos') + '</b>' +
         (it.fuente ? '<span>Fuente: ' + matEsc(it.fuente) + '</span>' : '') +
@@ -17986,6 +17958,22 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<h3 class="mat-det-titulo">' + matEsc(it.titulo) + '</h3>' + (autor ? '<p class="mat-det-autor">' + matEsc(autor) + '</p>' : '') +
       (desc ? '<p class="mat-det-desc">' + matEsc(desc) + '</p>' : '') + (acciones ? '<div class="mat-det-acciones">' + acciones + '</div>' : '') +
       aviso + datos + derechos + '</div></div></section>';
+  }
+  function matAvisoBloqueado(it) {
+    var texto, acciones = '';
+    if (it.estado === 'Con créditos') {
+      texto = it.retosRequeridos > 0
+        ? 'Resuelve ' + it.retosRequeridos + (it.retosRequeridos === 1 ? ' reto' : ' retos') + ' (llevas ' + Math.min(bib.retosHechos, it.retosRequeridos) + ') o canjéalo con tus créditos para leerlo.'
+        : 'Canjéalo con tus créditos para leerlo. Aquí puedes ver de qué trata antes de decidir.';
+    } else if (it.estado === 'Con membresía') {
+      texto = it.canjeable ? 'Hazte miembro o canjéalo con créditos para leerlo. Aquí puedes ver de qué trata antes de decidir.' : 'Hazte miembro para leer este material. Aquí puedes ver de qué trata antes de decidir.';
+    } else {
+      texto = 'Este material se abrirá cuando llegue su fecha.';
+    }
+    if (it.canjeable) acciones += '<button type="button" class="cred-btn cred-btn--sm" data-det="canjear">' + matEsc(textoCanje(it)) + '</button>';
+    if (it.estado === 'Con créditos' && it.retosRequeridos > 0) acciones += '<button type="button" class="cred-btn cred-btn--sm cred-btn--sec" data-det="retos">Ir a Retos</button>';
+    return '<div class="mat-det-aviso"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg>' +
+      '<div class="mat-det-aviso-cuerpo"><b>' + matEsc(it.estado) + '</b><span>' + texto + '</span>' + (acciones ? '<div class="mat-det-aviso-acciones">' + acciones + '</div>' : '') + '</div></div>';
   }
   function matEnlazarDestacada(grid, it) {
     grid.querySelectorAll('.mat-destacado [data-det]').forEach(function (b) {
@@ -17997,6 +17985,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         else if (k === 'fuente') window.open(it.paginaFuente, '_blank', 'noopener');
         else if (k === 'curso') window.openCursoModal(it.cursoId);
         else if (k === 'canjear') window.abrirCanje(it.tipoCanje, it.recurso, it.titulo);
+        else if (k === 'retos') { try { switchTab('retos'); } catch (e) {} }
         else if (k === 'derechos') {
           var p = document.getElementById('matDerechos');
           if (p) { p.hidden = !p.hidden; b.setAttribute('aria-expanded', p.hidden ? 'false' : 'true'); }
@@ -18052,7 +18041,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var el = document.getElementById('matRetosAviso');
     if (!el) return;
     var proximo = null;
-    if (window.isVIP === true) {
+    if (bib.miembro === true || window.isVIP === true) {
       bib.libros.forEach(function (l) {
         var pide = Number(l.retosRequeridos) || 0;
         if (l.bloqueado === true && pide > bib.retosHechos && (!proximo || pide < proximo.retosRequeridos)) proximo = { titulo: l.titulo, retosRequeridos: pide };
@@ -26579,6 +26568,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .mat-det-aviso svg { flex: none; width: 20px; height: 20px; margin-top: 2px; fill: none; stroke: var(--text-secondary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .mat-det-aviso b { display: block; font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); }
   .mat-det-aviso span { font-family: var(--font-body); font-size: 0.88rem; color: var(--text-secondary); }
+  .mat-det-aviso-cuerpo { min-width: 0; flex: 1; }
+  .mat-det-aviso-cuerpo b { margin-bottom: 4px; }
+  .mat-det-aviso-cuerpo > span { display: block; line-height: 1.5; }
+  .mat-det-aviso-acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .mat-det-aviso-acciones .cred-btn { margin-top: 0; white-space: nowrap; }
   .mat-det-derechos { display: flex; flex-direction: column; gap: 4px; max-width: 620px; margin-top: 16px; padding: 14px 16px; background: var(--bg-subtle); border-radius: 14px; font-family: var(--font-body); font-size: 0.88rem; line-height: 1.55; color: var(--text-secondary); }
   .mat-det-derechos[hidden] { display: none !important; }
   .mat-det-derechos b { font-family: var(--font-display); color: var(--text-primary); }
