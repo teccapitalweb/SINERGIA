@@ -4004,6 +4004,15 @@
     object-position: center;
     filter: drop-shadow(0 12px 18px rgba(13, 78, 65, .10));
   }
+  .panel-illustrated-intro--bib {
+    border-color: rgba(26, 168, 136, .35);
+    background: linear-gradient(120deg, #113D35 0%, #17564A 100%);
+  }
+  .panel-illustrated-intro--bib .panel-illustrated-eyebrow { color: #7FE0C8; }
+  .panel-illustrated-intro--bib .panel-title { color: #fff; }
+  .panel-illustrated-intro--bib .panel-title em { background: none; color: #7FE0C8; -webkit-text-fill-color: #7FE0C8; }
+  .panel-illustrated-intro--bib .panel-illustrated-text { color: rgba(255, 255, 255, .82); }
+  .panel-illustrated-intro--bib .panel-illustrated-image { max-height: 210px; filter: none; }
   .log-hero-illustration,
   .cert-hero-illustration {
     position: absolute;
@@ -4022,6 +4031,7 @@
   @media (max-width: 700px) {
     .panel-illustrated-intro { grid-template-columns: 1fr; padding: 23px; }
     .panel-illustrated-image { max-height: 130px; order: -1; }
+    .panel-illustrated-intro--bib .panel-illustrated-image { max-height: 130px; }
     .log-hero-illustration, .cert-hero-illustration {
       width: 145px;
       right: -12px;
@@ -11761,7 +11771,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
          6) MATERIAL
          ═══════════════════════════════════════════════════════════ -->
     <div class="tab-panel" data-panel="material">
-      <div class="panel-illustrated-intro">
+      <div class="panel-illustrated-intro panel-illustrated-intro--bib">
         <div class="panel-illustrated-copy">
           <p class="panel-illustrated-eyebrow">Biblioteca</p>
           <h2 class="panel-title">Tu <em class="headline-accent">biblioteca</em> del campo.</h2>
