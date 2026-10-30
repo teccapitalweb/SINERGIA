@@ -1,219 +1,93 @@
-// Mini juegos sugeridos para cada clase de los 10 cursos (borradores para revisar en el admin: Videoteca → Editar curso → «Sugerir juegos»).
-// Fertilización de Árboles Frutales se escribió con el material del curso (PLATICA-ARBOLES-FRUTALES.pdf); los demás, a partir del título de cada clase y del tema del curso,
-// no del contenido exacto del video: conviene revisarlos y ajustar lo que haga falta.
+// Mini juegos sugeridos para las clases (borradores para revisar en el admin: Videoteca → Editar curso → «Sugerir juegos»).
+// Se escribieron con el MATERIAL de cada curso (los PDF y presentaciones del curso); solo hay juego donde el material cubre esa clase.
+// Viveros no tiene material escrito, por eso no trae juegos. Hay que confirmar que cada juego corresponda a lo que se ve en el video de esa clase.
 // Un juego sugerido no se guarda solo: se carga en el formulario y se publica al pulsar «Guardar cambios».
 window.SINERGIA_JUEGOS_SUGERIDOS = [
   {
-    titulo: 'Administración y Operación de Viveros',
+    titulo: "Certificación Orgánica",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa del vivero', palabras: ['VIVERO', 'SUSTRATO', 'PLANTULA', 'ESPECIE', 'MERCADO'] },
-      { tipo: 'memoria', titulo: 'Memoria de la infraestructura', parejas: [
-        { a: 'Invernadero', b: 'Protege y controla el clima' },
-        { a: 'Malla sombra', b: 'Reduce el exceso de sol' },
-        { a: 'Charola', b: 'Germina semillas en celdas' },
-        { a: 'Mesa de cultivo', b: 'Eleva la planta del suelo' } ] },
-      { tipo: 'conecta', titulo: 'Conecta la propagación', pares: [
-        { izq: 'Semilla', der: 'Propagación sexual' },
-        { izq: 'Estaca', der: 'Propagación asexual' },
-        { izq: 'Injerto', der: 'Une dos plantas en una' },
-        { izq: 'Turba', der: 'Sustrato que retiene humedad' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama de administración', palabras: [
-        { palabra: 'COSTO', pista: 'Gasto necesario para producir cada planta' },
-        { palabra: 'MARGEN', pista: 'Ganancia que queda sobre el costo' },
-        { palabra: 'INVENTARIO', pista: 'Lista de las plantas que hay en el vivero' },
-        { palabra: 'REGISTRO', pista: 'Anotación escrita de lo que se hace' } ] },
-      { tipo: 'rompecabezas', titulo: 'Arma el vivero', imagen: 'https://sinergiamexico.it.com/assets/course-covers/viveros.webp', filas: 2, columnas: 3 }
+      {"tipo":"memoria","titulo":"LPO, NOP y quién certifica","parejas":[{"a":"LPO","b":"Ley federal mexicana de productos orgánicos"},{"a":"NOP","b":"Programa federal de EE. UU. (USDA) con sello USDA Organic"},{"a":"SENASICA","b":"Mantiene el padrón de organismos de certificación"},{"a":"EMA","b":"Acredita a los organismos certificadores (ISO/IEC 17065)"}]},
+      {"tipo":"conecta","titulo":"Marco legal: conceptos clave","pares":[{"izq":"7 CFR Part 205","der":"Reglamento federal en que se regula el NOP"},{"izq":"OSP","der":"Plan del Sistema Orgánico: describe prácticas, insumos y parcelas"},{"izq":"National List","der":"Lista de sustancias sintéticas permitidas y no sintéticas prohibidas"},{"izq":"DNPO","der":"Distintivo Nacional de Productos Orgánicos (México)"}]},
+      {"tipo":"sopa","titulo":"Suelo y manejo orgánico","palabras":["COMPOST","CONVERSIÓN","ROTACIÓN","AZUFRE","COBERTURA"]},
+      {"tipo":"crucigrama","titulo":"Registros y auditoría","palabras":[{"palabra":"AUDITORÍA","pista":"Revisión inicial en campo que hace el organismo certificador"},{"palabra":"REGISTROS","pista":"Se conservan al menos 5 años y sostienen la auditoría"},{"palabra":"LOTES","pista":"Se identifican claramente para lograr la trazabilidad"},{"palabra":"OSP","pista":"Plan del Sistema Orgánico, por sus siglas en inglés"}]}
     ]
   },
   {
-    titulo: 'Certificación Orgánica',
+    titulo: "Elaboración de Bioinsumos",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa orgánica', palabras: ['ORGANICO', 'NORMA', 'AUDITORIA', 'SELLO', 'INSPECTOR'] },
-      { tipo: 'memoria', titulo: 'Memoria del marco legal', parejas: [
-        { a: 'Ley de Productos Orgánicos', b: 'Ley mexicana que regula lo orgánico' },
-        { a: 'SENASICA', b: 'Autoridad que supervisa la producción orgánica' },
-        { a: 'Organismo de certificación', b: 'Evalúa y certifica la producción' },
-        { a: 'Lineamientos', b: 'Reglas que se deben cumplir' } ] },
-      { tipo: 'conecta', titulo: 'Conecta los requisitos', pares: [
-        { izq: 'Transición', der: 'Periodo para dejar de usar insumos prohibidos' },
-        { izq: 'Zona de amortiguamiento', der: 'Franja que protege de contaminación vecina' },
-        { izq: 'Composta', der: 'Fertilización orgánica permitida' },
-        { izq: 'Semilla sin transgénicos', der: 'Material de siembra aceptado' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama de trazabilidad', palabras: [
-        { palabra: 'BITACORA', pista: 'Registro diario de las labores del huerto' },
-        { palabra: 'LOTE', pista: 'Parte de la producción con una identificación' },
-        { palabra: 'AUDITORIA', pista: 'Revisión que hace el certificador' },
-        { palabra: 'REGISTRO', pista: 'Evidencia escrita de lo que se hace' } ] }
+      {"tipo":"conecta","titulo":"Bioinsumos según su función","pares":[{"izq":"Biopesticida M5","der":"Insecticida, nematicida y fungicida"},{"izq":"Sulfocalcio","der":"Acaricida-fungicida"},{"izq":"Bioestimulante de ortiga","der":"Estimula la raíz y da vigor"},{"izq":"Adherente de sábila","der":"Sirve de pega al mezclar con otros bioles"}]},
+      {"tipo":"sopa","titulo":"Biofermentos y bioles","palabras":["BIOL","MELAZA","SUERO","SÁBILA","BOTELLA","MANGUERA"]},
+      {"tipo":"memoria","titulo":"Microorganismos de montaña (MM)","parejas":[{"a":"Hongos","b":"Se forman a los 4 días en el MM líquido"},{"a":"Bacterias","b":"Se forman a los 8 días en el MM líquido"},{"a":"Levaduras","b":"Se forman a los 15 días en el MM líquido"},{"a":"Prueba del puño","b":"Con 40 % de humedad la mezcla hace un terrón"}]},
+      {"tipo":"crucigrama","titulo":"Ingredientes del Bokashi","palabras":[{"palabra":"BOKASHI","pista":"Abono rico en microorganismos que fermenta en sacos"},{"palabra":"GALLINAZA","pista":"Aporta el nitrógeno; se usa con secado previo"},{"palabra":"ARENA","pista":"De tajo o de río, aporta los minerales"},{"palabra":"MELAZA","pista":"Aporta la energía a la mezcla"}]},
+      {"tipo":"conecta","titulo":"Manejo orgánico de plagas","pares":[{"izq":"Bicarbonato","der":"Control de mildiu polvoso y botritis"},{"izq":"Caldo bordelés","der":"Tizón y roya; aplicar solo en hojas"},{"izq":"Reina de la Noche","der":"Mosca blanca; usar con cuidado con lombrices"},{"izq":"Insecticida APICHI","der":"Broca del café y trips"}]}
     ]
   },
   {
-    titulo: 'Elaboración de Bioinsumos',
+    titulo: "Fertirriego",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa de bioinsumos', palabras: ['BIOINSUMO', 'BACTERIA', 'HONGO', 'ABONO', 'COMPOST'] },
-      { tipo: 'memoria', titulo: 'Memoria de la fermentación', parejas: [
-        { a: 'Melaza', b: 'Alimento azucarado para los microbios' },
-        { a: 'Recipiente tapado', b: 'Fermenta con poco oxígeno' },
-        { a: 'Agua sin cloro', b: 'No mata a los microorganismos' },
-        { a: 'Sombra', b: 'Protege la fermentación del calor' } ] },
-      { tipo: 'conecta', titulo: 'Conecta el bioinsumo', pares: [
-        { izq: 'Bocashi', der: 'Abono orgánico fermentado sólido' },
-        { izq: 'Biol', der: 'Fermentado líquido sin aire' },
-        { izq: 'Té de compost', der: 'Extracto líquido y aireado de compost' },
-        { izq: 'Caldo sulfocálcico', der: 'Preparado mineral contra plagas y hongos' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama de ingredientes', palabras: [
-        { palabra: 'LEVADURA', pista: 'Hongo que acelera la fermentación' },
-        { palabra: 'MELAZA', pista: 'Miel de caña que alimenta a los microbios' },
-        { palabra: 'ESTIERCOL', pista: 'Base animal de muchos abonos' },
-        { palabra: 'CENIZA', pista: 'Aporta minerales como el potasio' } ] },
-      { tipo: 'rompecabezas', titulo: 'Arma los bioinsumos', imagen: 'https://sinergiamexico.it.com/assets/course-covers/bioinsumos.webp', filas: 2, columnas: 3 }
+      null,
+      {"tipo":"memoria","titulo":"Sistemas de inyección del fertilizante","parejas":[{"a":"Gravedad","b":"El tanque fertilizante va más alto que el canal"},{"a":"Venturi","b":"Chupa la solución del tanque con el flujo de agua"},{"a":"Presión diferencial","b":"Tanque metálico hermético y válvula mariposa"},{"a":"Presión positiva","b":"Bombas de inyección con relación predeterminada"}]},
+      null,
+      null,
+      {"tipo":"conecta","titulo":"Errores comunes en fertirriego","pares":[{"izq":"Sobredosificación","der":"Toxicidad, quema de raíces y contaminación del agua"},{"izq":"Mezclas incompatibles","der":"Calcio con sulfatos o fosfatos forma precipitados"},{"izq":"Falta de lixiviación","der":"Se acumulan sales por no dar riegos de limpieza"},{"izq":"Mala calibración","der":"Unas plantas reciben mucho y otras poco"}]}
     ]
   },
   {
-    titulo: 'Fertirriego',
+    titulo: "Fitohormonas y Estimuladores de Crecimiento",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa de la salinidad', palabras: ['SALINIDAD', 'SODIO', 'LAVADO', 'DRENAJE', 'RAIZ'] },
-      { tipo: 'memoria', titulo: 'Memoria del sistema de riego', parejas: [
-        { a: 'Gotero', b: 'Entrega el agua en el punto exacto' },
-        { a: 'Filtro', b: 'Evita que se tapen los emisores' },
-        { a: 'Inyector', b: 'Mezcla el fertilizante con el agua' },
-        { a: 'Tensiómetro', b: 'Ayuda a saber cuánta humedad hay' } ] },
-      { tipo: 'conecta', titulo: 'Conecta el diagnóstico', pares: [
-        { izq: 'Conductividad eléctrica', der: 'Mide la cantidad de sales' },
-        { izq: 'pH', der: 'Indica acidez o alcalinidad' },
-        { izq: 'Análisis de agua', der: 'Revisa sales antes de regar' },
-        { izq: 'Fracción de lavado', der: 'Agua extra que saca las sales de la raíz' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama del taller', palabras: [
-        { palabra: 'EMISOR', pista: 'Pieza que libera el agua en la línea' },
-        { palabra: 'PRESION', pista: 'Fuerza con que circula el agua' },
-        { palabra: 'DOSIS', pista: 'Cantidad de fertilizante por aplicación' },
-        { palabra: 'TANQUE', pista: 'Depósito de la solución nutritiva' } ] },
-      { tipo: 'rompecabezas', titulo: 'Arma el sistema de fertirriego', imagen: 'https://sinergiamexico.it.com/assets/course-covers/fertirriego.webp', filas: 2, columnas: 3 }
+      {"tipo":"sopa","titulo":"Las hormonas de la planta","palabras":["HORMONAS","AUXINAS","ETILENO","JASMONATOS","ABA"]},
+      {"tipo":"memoria","titulo":"Qué hace cada fitohormona","parejas":[{"a":"Auxinas","b":"Forma activa: ácido indolacético (IAA)"},{"a":"Citoquininas","b":"Retrasan la senescencia y favorecen ramificación lateral"},{"a":"Etileno","b":"Maduración de la fruta y abscisión de órganos"},{"a":"Ácido abscísico","b":"Cierre estomático y tolerancia al estrés hídrico o salino"}]},
+      {"tipo":"conecta","titulo":"Bioestimulantes y sustancias naturales","pares":[{"izq":"Aminoácidos","der":"El más usado es el ácido glutámico"},{"izq":"Ácidos húmicos","der":"Mejoran la estructura del suelo y la asimilación radical"},{"izq":"Extracto de algas","der":"Aporta 27 sustancias naturales similares a reguladores"},{"izq":"Fertilizantes","der":"Reponen nutrientes como nitrógeno, fósforo y potasio"}]},
+      {"tipo":"crucigrama","titulo":"Microorganismos promotores","palabras":[{"palabra":"PGPR","pista":"Rizobacteria promotora del crecimiento vegetal"},{"palabra":"KLOEPPER","pista":"Quien definió las PGPR en 1978"},{"palabra":"FÓSFORO","pista":"Nutriente que las PGPR solubilizan"},{"palabra":"NITRÓGENO","pista":"Las PGPR fijan el atmosférico"}]},
+      {"tipo":"conecta","titulo":"Métodos de aplicación","pares":[{"izq":"Pulverización foliar","der":"Se aplica sobre las hojas; absorción rápida y eficiente"},{"izq":"Tratamiento de semillas","der":"Recubrimiento antes de la siembra"},{"izq":"Riego por goteo","der":"Se añade al agua de riego; absorción gradual"},{"izq":"Inyección radicular","der":"Directo al sistema radicular; absorción precisa y rápida"}]}
     ]
   },
   {
-    titulo: 'Fitohormonas y Estimuladores de Crecimiento',
+    titulo: "Gestión Estratégica de Clientes y Ventas Agro",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa de fitohormonas', palabras: ['HORMONA', 'AUXINA', 'CITOCININA', 'GIBERELINA', 'ETILENO'] },
-      { tipo: 'memoria', titulo: 'Memoria de las auxinas', parejas: [
-        { a: 'Auxina', b: 'Favorece el enraizamiento' },
-        { a: 'Dominancia apical', b: 'La yema principal frena a las laterales' },
-        { a: 'Callo', b: 'Tejido que se forma en un corte antes de la raíz' },
-        { a: 'AIB', b: 'Auxina usada para enraizar estacas' } ] },
-      { tipo: 'conecta', titulo: 'Conecta el bioestimulante', pares: [
-        { izq: 'Extracto de algas', der: 'Fuente natural de hormonas y minerales' },
-        { izq: 'Ácidos húmicos', der: 'Mejoran el suelo y la absorción de nutrientes' },
-        { izq: 'Aminoácidos', der: 'Apoyan a la planta en etapas de estrés' },
-        { izq: 'Quitosano', der: 'Estimula las defensas de la planta' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama de microorganismos', palabras: [
-        { palabra: 'MICORRIZA', pista: 'Hongo aliado que se une a la raíz' },
-        { palabra: 'RIZOSFERA', pista: 'Zona del suelo alrededor de la raíz' },
-        { palabra: 'BACILLUS', pista: 'Bacteria benéfica muy usada en el campo' },
-        { palabra: 'PGPR', pista: 'Siglas de bacterias promotoras del crecimiento' } ] },
-      { tipo: 'rompecabezas', titulo: 'Arma el cultivo', imagen: 'https://sinergiamexico.it.com/assets/course-covers/fitohormonas.webp', filas: 2, columnas: 3 }
+      {"tipo":"memoria","titulo":"Perfiles del cliente agro","parejas":[{"a":"Productor agrícola","b":"Busca rendimiento, economía y soporte técnico"},{"a":"Distribuidor","b":"Compra por volumen y necesita margen de ganancia claro"},{"a":"Consumidor final","b":"Demanda calidad uniforme, inocuidad y trazabilidad"},{"a":"Cliente ideal","b":"Necesita, valora y está dispuesto a pagar tu producto"}]},
+      {"tipo":"sopa","titulo":"Gestión de la cartera","palabras":["CARTERA","SEGMENTA","CRM","POSTVENTA","RECOMPRA"]},
+      {"tipo":"conecta","titulo":"Herramientas de prospección","pares":[{"izq":"Visitas a campo","der":"Genera confianza inmediata y muestra problemas reales"},{"izq":"Ferias agrícolas","der":"Contactas muchos productores en poco tiempo"},{"izq":"Referidos","der":"Alta tasa de conversión; es gratis y muy efectiva"},{"izq":"Base de datos","der":"No olvidas a nadie y contactas en el momento correcto"}]},
+      {"tipo":"crucigrama","titulo":"Objeciones y cierre","palabras":[{"palabra":"OBJECIÓN","pista":"Duda del cliente, como \"Está muy caro\""},{"palabra":"CIERRE","pista":"Estrategia para concretar la venta"},{"palabra":"ESCASEZ","pista":"Cierre que crea oportunidad limitada"},{"palabra":"MUESTRA","pista":"Cierre por prueba: se entrega una pequeña cantidad"}]},
+      {"tipo":"memoria","titulo":"Generar confianza","parejas":[{"a":"Habla el idioma del productor","b":"Usa ejemplos sencillos y reales"},{"a":"Educa, no presiones","b":"Da información útil aunque no compre hoy"},{"a":"Muestra resultados reales","b":"Casos de éxito, fotos de antes y después"},{"a":"Cumple lo que prometes","b":"Puntualidad, respeto y seguimiento"}]}
     ]
   },
   {
-    titulo: 'Gestión Estratégica de Clientes y Ventas Agro',
+    titulo: "Inocuidad Alimentaria y Buenas Prácticas Agroalimentarias",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa del cliente agro', palabras: ['CLIENTE', 'SEGMENTO', 'PERFIL', 'NECESIDAD', 'COMPRA'] },
-      { tipo: 'memoria', titulo: 'Memoria de la gestión de clientes', parejas: [
-        { a: 'CRM', b: 'Sistema para ordenar contactos y seguimiento' },
-        { a: 'Seguimiento', b: 'Contacto después de la venta' },
-        { a: 'Cartera', b: 'Conjunto de clientes de la empresa' },
-        { a: 'Valor de vida', b: 'Lo que un cliente aporta con el tiempo' } ] },
-      { tipo: 'conecta', titulo: 'Conecta la prospección', pares: [
-        { izq: 'Prospecto', der: 'Posible cliente' },
-        { izq: 'Referido', der: 'Cliente que llega por recomendación' },
-        { izq: 'Llamada en frío', der: 'Primer contacto sin cita previa' },
-        { izq: 'Embudo', der: 'Etapas desde el interés hasta la compra' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama de negociación', palabras: [
-        { palabra: 'OBJECION', pista: 'Duda o razón que pone el cliente' },
-        { palabra: 'ESCUCHA', pista: 'Primer paso para entender al cliente' },
-        { palabra: 'ACUERDO', pista: 'Resultado de una buena negociación' },
-        { palabra: 'PRECIO', pista: 'Valor que se pide por el producto' } ] },
-      { tipo: 'rompecabezas', titulo: 'Arma la venta', imagen: 'https://sinergiamexico.it.com/assets/course-covers/ventas-agro.webp', filas: 2, columnas: 3 }
+      {"tipo":"memoria","titulo":"Conceptos básicos de inocuidad","parejas":[{"a":"Inocuidad","b":"Garantiza que el alimento no dañará al consumidor"},{"a":"Contaminación cruzada","b":"Viene de otra etapa, proceso o producto distinto"},{"a":"Peligro","b":"Agente biológico, químico o físico que daña la salud"},{"a":"Rastreabilidad","b":"Poder seguir el desplazamiento de un alimento"}]},
+      {"tipo":"conecta","titulo":"Buenas prácticas en el campo","pares":[{"izq":"Ruta fecal-oral","der":"Vía más común si no se lavan las manos tras ir al baño"},{"izq":"Trabajador enfermo","der":"Se excluye si tiene diarrea, vómito, fiebre o tos frecuente"},{"izq":"Agroquímicos","der":"Van en envases originales, etiquetados y lejos del cultivo"},{"izq":"Agua de uso agrícola","der":"Debe ser inocua y de calidad sanitaria adecuada"}]},
+      {"tipo":"crucigrama","titulo":"Limpieza e instalaciones","palabras":[{"palabra":"LIMPIEZA","pista":"Quita la suciedad; va antes de desinfectar"},{"palabra":"PLAGAS","pista":"Vectores de patógenos; se vigilan con trampas"},{"palabra":"DRENAJE","pista":"Los pisos van inclinados para facilitarlo"},{"palabra":"INOXIDABLE","pista":"Tipo de acero de los equipos fáciles de limpiar"}]},
+      {"tipo":"sopa","titulo":"Sopa de BPM y HACCP","palabras":["HACCP","MONITOREO","FIFO","FEFO","SSOP","PCC"]},
+      {"tipo":"conecta","titulo":"Trazabilidad y auditorías","pares":[{"izq":"Trazabilidad hacia atrás","der":"Sigue el origen del producto"},{"izq":"Trazabilidad interna","der":"Sigue los procesos dentro de la empresa"},{"izq":"Trazabilidad hacia adelante","der":"Sigue el destino del producto"},{"izq":"Auditoría de tercera parte","der":"La hace una organización independiente y externa"}]}
     ]
   },
   {
-    titulo: 'Inocuidad Alimentaria y Buenas Prácticas Agroalimentarias',
+    titulo: "Lombricomposta",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa de inocuidad', palabras: ['INOCUIDAD', 'PELIGRO', 'RIESGO', 'ALIMENTO', 'HIGIENE'] },
-      { tipo: 'memoria', titulo: 'Memoria de las buenas prácticas', parejas: [
-        { a: 'Agua de riego', b: 'Debe ser de buena calidad para no contaminar' },
-        { a: 'Sanitarios', b: 'Cercanos y limpios para el personal' },
-        { a: 'Lavado de manos', b: 'Evita pasar microbios al producto' },
-        { a: 'Estiércol sin tratar', b: 'Fuente de microbios peligrosos' } ] },
-      { tipo: 'conecta', titulo: 'Conecta la limpieza', pares: [
-        { izq: 'Limpieza', der: 'Quita la suciedad visible' },
-        { izq: 'Desinfección', der: 'Reduce los microbios que quedan' },
-        { izq: 'Cloro', der: 'Desinfectante que se usa en dosis controlada' },
-        { izq: 'Instalaciones', der: 'Pisos y paredes fáciles de lavar' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama del HACCP', palabras: [
-        { palabra: 'HACCP', pista: 'Sistema que controla los puntos críticos' },
-        { palabra: 'CONTROL', pista: 'Medida para evitar el peligro' },
-        { palabra: 'CRITICO', pista: 'Tipo de punto que exige vigilancia' },
-        { palabra: 'MONITOREO', pista: 'Vigilar que se cumpla el límite' } ] },
-      { tipo: 'rompecabezas', titulo: 'Arma la cadena segura', imagen: 'https://sinergiamexico.it.com/assets/course-covers/inocuidad.webp', filas: 2, columnas: 3 }
+      {"tipo":"sopa","titulo":"Sopa de la lombricultura","palabras":["LOMBRIZ","EISENIA","CLITELIUM","HUMUS","LECHO","ANELIDO"]},
+      {"tipo":"memoria","titulo":"Cosecha del humus","parejas":[{"a":"Antes de cosechar","b":"Se deja de dar alimento una semana"},{"a":"Cordones de estiércol","b":"Atraen a las lombrices; se separan a los 5 días"},{"a":"Humus retirado","b":"Se orea hasta tener 50% de humedad"},{"a":"Recogidas al año","b":"Marzo, septiembre y diciembre"}]},
+      {"tipo":"conecta","titulo":"Condiciones de la lombriz","pares":[{"izq":"Temperatura","der":"Rango óptimo de crecimiento: 12 a 25 °C"},{"izq":"pH","der":"El valor óptimo es 7"},{"izq":"Aireación","der":"Si falta, baja el consumo de alimento y la reproducción"},{"izq":"Pájaros","der":"Depredadores; se cubre el lecho con ramas o mallas"}]},
+      {"tipo":"crucigrama","titulo":"Abonos orgánicos","palabras":[{"palabra":"BOCASHI","pista":"Abono fermentado que dura hasta 3 meses"},{"palabra":"COMPOSTA","pista":"Abono de pila en capas de carbono y nitrógeno"},{"palabra":"PURIN","pista":"Abono líquido que se diluye 1:10 en agua sin cloro"},{"palabra":"MELAZA","pista":"Se mezcla con levadura para hacer bocashi"}]},
+      {"tipo":"memoria","titulo":"Preparados y aplicación","parejas":[{"a":"Té de composta","b":"2 kg de composta en 20 L de agua con bomba de aire"},{"a":"Purín","b":"Se diluye 1:10 en agua sin cloro"},{"a":"Súper magro","b":"Abono líquido que reactiva la vida del suelo"},{"a":"Agroplus en suelos","b":"1 parte con 3 de agua, cada 10 días"}]}
     ]
   },
   {
-    titulo: 'Lombricomposta',
+    titulo: "Del Cacao al Chocolate",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa de la lombricomposta', palabras: ['LOMBRIZ', 'HUMUS', 'COMPOSTA', 'LECHO', 'ORGANICO'] },
-      { tipo: 'memoria', titulo: 'Memoria de la cosecha', parejas: [
-        { a: 'Tamiz', b: 'Separa el humus de lo que no se descompone' },
-        { a: 'Trampa de alimento', b: 'Atrae a las lombrices para separarlas' },
-        { a: 'Humus', b: 'Producto final rico en nutrientes' },
-        { a: 'Conos con luz', b: 'Las lombrices huyen de la luz y bajan' } ] },
-      { tipo: 'conecta', titulo: 'Conecta el manejo', pares: [
-        { izq: 'Humedad', der: 'Como una esponja exprimida' },
-        { izq: 'Temperatura', der: 'Ni muy fría ni muy caliente' },
-        { izq: 'Alimento', der: 'Residuos vegetales, sin carne ni lácteos' },
-        { izq: 'Cítricos y picante', der: 'Se dan en muy poca cantidad' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama del humus', palabras: [
-        { palabra: 'ABONO', pista: 'Material que nutre al suelo' },
-        { palabra: 'LIXIVIADO', pista: 'Líquido que escurre del lecho' },
-        { palabra: 'ESTIERCOL', pista: 'Alimento que se deja madurar antes' },
-        { palabra: 'SUELO', pista: 'Donde se aplica el humus' } ] },
-      { tipo: 'rompecabezas', titulo: 'Arma la lombricomposta', imagen: 'https://sinergiamexico.it.com/assets/course-covers/lombricomposta.webp', filas: 2, columnas: 3 }
+      {"tipo":"sopa","titulo":"Introducción al cacao","palabras":["CRIOLLO","FORASTERO","TRINITARIO","TABASCO","OLMECA"]},
+      null,
+      null,
+      {"tipo":"memoria","titulo":"Secado y almacenamiento","parejas":[{"a":"Secado inicial","b":"Días 1 a 3: lento, libera ácidos volátiles"},{"a":"Secado final","b":"Desde el día 4, hasta 6 a 7 % de humedad"},{"a":"Zarandas","b":"Separan granos por tamaño y quitan impurezas"},{"a":"Tarimas","b":"Mantienen los sacos a 15 cm del suelo"}]},
+      null
     ]
   },
   {
-    titulo: 'Del Cacao al Chocolate',
+    titulo: "Fertilización de Árboles Frutales",
     juegos: [
-      { tipo: 'sopa', titulo: 'Sopa del cacao', palabras: ['CACAO', 'MAZORCA', 'CHOCOLATE', 'ALMENDRA', 'SOMBRA'] },
-      { tipo: 'memoria', titulo: 'Memoria de la cosecha', parejas: [
-        { a: 'Mazorca madura', b: 'Cambia de color al madurar' },
-        { a: 'Tijera de podar', b: 'Corta sin dañar el árbol' },
-        { a: 'Mazorca enferma', b: 'Se retira para no contagiar' },
-        { a: 'Desgrane', b: 'Sacar las almendras de la mazorca' } ] },
-      { tipo: 'conecta', titulo: 'Conecta la fermentación', pares: [
-        { izq: 'Cajón', der: 'Recipiente de madera para fermentar' },
-        { izq: 'Remover', der: 'Airea la masa para fermentar parejo' },
-        { izq: 'Mucílago', der: 'La baba blanca que rodea la almendra' },
-        { izq: 'Temperatura', der: 'Sube durante los días de fermentación' } ] },
-      { tipo: 'crucigrama', titulo: 'Crucigrama del secado', palabras: [
-        { palabra: 'HUMEDAD', pista: 'Debe bajar para guardar el grano' },
-        { palabra: 'SECADO', pista: 'Paso que conserva el grano' },
-        { palabra: 'ALMACEN', pista: 'Lugar ventilado para guardar el cacao' },
-        { palabra: 'MOHO', pista: 'Hongo que sale si se guarda húmedo' } ] },
-      { tipo: 'rompecabezas', titulo: 'Arma el cacao', imagen: 'https://sinergiamexico.it.com/assets/course-covers/del-cacao-al-chocolate.webp', filas: 2, columnas: 3 }
-    ]
-  },
-  {
-    titulo: 'Fertilización de Árboles Frutales',
-    juegos: [
-      { tipo: 'sopa', titulo: 'Sopa del diagnóstico del huerto', palabras: ['POMOLOGIA', 'FOLIAR', 'DRENAJE', 'SALINIDAD', 'TEXTURA'] },
-      { tipo: 'memoria', titulo: 'Memoria de los nutrientes', parejas: [
-        { a: 'Nitrógeno', b: 'Crecimiento vegetativo; forma proteínas y clorofila' },
-        { a: 'Fósforo', b: 'Fotosíntesis, raíces y formación de frutos' },
-        { a: 'Potasio', b: 'Calidad del fruto y resistencia al estrés' },
-        { a: 'Calcio', b: 'Paredes celulares: frutos más firmes y de mayor vida útil' } ] },
-      { tipo: 'conecta', titulo: 'Conecta la deficiencia con su síntoma', pares: [
-        { izq: 'Nitrógeno', der: 'Hojas pálidas o amarillentas (clorosis)' },
-        { izq: 'Fósforo', der: 'Hojas violáceas o rojizas' },
-        { izq: 'Potasio', der: 'Quemaduras en los bordes de las hojas' },
-        { izq: 'Hierro', der: 'Hojas amarillas con las venas verdes' } ] }
+      {"tipo":"sopa","titulo":"Sopa del diagnóstico del huerto","palabras":["POMOLOGIA","FOLIAR","DRENAJE","SALINIDAD","TEXTURA"]},
+      {"tipo":"memoria","titulo":"Memoria de los nutrientes","parejas":[{"a":"Nitrógeno","b":"Crecimiento vegetativo; forma proteínas y clorofila"},{"a":"Fósforo","b":"Fotosíntesis, raíces y formación de frutos"},{"a":"Potasio","b":"Calidad del fruto y resistencia al estrés"},{"a":"Calcio","b":"Paredes celulares: frutos más firmes y de mayor vida útil"}]},
+      {"tipo":"conecta","titulo":"Conecta la deficiencia con su síntoma","pares":[{"izq":"Nitrógeno","der":"Hojas pálidas o amarillentas (clorosis)"},{"izq":"Fósforo","der":"Hojas violáceas o rojizas"},{"izq":"Potasio","der":"Quemaduras en los bordes de las hojas"},{"izq":"Hierro","der":"Hojas amarillas con las venas verdes"}]}
     ]
   }
 ];
