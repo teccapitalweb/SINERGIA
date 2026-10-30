@@ -14499,7 +14499,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       (t.disponible ? '<span class="dc-disp">Disponible para proyectos</span>' : '') +
       (chips ? '<div class="dc-chips">' + chips + '</div>' : '') +
       (ubic ? '<p class="dc-ubi">' + DC_IC.pin + '<span>' + escapeHtml(ubic) + '</span></p>' : '') +
-      (t.bio ? '<p class="dc-bio">' + escapeHtml(t.bio) + '</p>' : '') + '</div>' +
+      (t.bio ? '<p class="dc-bio">' + escapeHtml(t.bio) + '</p>' : '') + (t.provisional ? '<p class="dc-bio">Toca tu tarjeta para completarla.</p>' : '') + '</div>' +
       (pie ? '<div class="dc-pie">' + pie + '</div>' : '') + '</article>';
   }
   function dcSeccion(icono, titulo, lista) {
