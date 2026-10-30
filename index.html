@@ -221,6 +221,20 @@
   .r-reset { min-height: 48px; padding: 0 12px; border: 0; background: transparent; font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; }
   .r-reset:hover { color: var(--forest); }
   .r-fine { margin-top: 14px; font-size: 12.5px; color: var(--text-2); }
+  .q-aviso { margin-top: 18px; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+  .q-aviso a, .r-fine a, .rc-acepto a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+  .r-contacto { margin-top: 18px; padding: 18px 20px; border-radius: 14px; background: #fff; border: 1.5px solid var(--border); }
+  .r-contacto h4 { font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--forest); margin: 0 0 4px; }
+  .r-contacto p { margin: 0 0 12px; font-size: 14px; line-height: 1.5; color: var(--text); }
+  .rc-fila { display: flex; flex-wrap: wrap; gap: 10px; }
+  .rc-fila input[type="tel"] { flex: 1 1 200px; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--ivory); font: 600 15px var(--font-body); color: var(--forest); }
+  .rc-fila input[type="tel"]:focus-visible { outline: 3px solid var(--mint, #1AA888); outline-offset: 1px; }
+  .rc-acepto { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; font-size: 13px; line-height: 1.45; color: var(--text-2); cursor: pointer; }
+  .rc-acepto input { flex: none; width: 18px; height: 18px; margin-top: 1px; accent-color: var(--forest); }
+  .rc-msg { margin: 10px 0 0 !important; font-size: 13.5px !important; font-weight: 600; min-height: 1.2em; }
+  .rc-msg.error { color: #B3392B; }
+  .r-contacto.listo { background: var(--subtle); }
+  .r-contacto.listo p { margin: 0; }
 
   /* ───────── Tu espacio (perfil y panel) ───────── */
   .panel { position: relative; overflow: hidden; isolation: isolate; background: var(--forest); color: var(--on-forest); padding: 104px 0; }
@@ -1409,7 +1423,7 @@
 })();
 </script>
 
-<!-- Ruta de aprendizaje: preguntas, perfil y cursos recomendados. Se queda en el navegador; solo si aceptas «Estadísticas» en el aviso de cookies se envían tus respuestas, de forma anónima (encuesta-envio.js). -->
+<!-- Ruta de aprendizaje: preguntas, perfil y cursos recomendados. Las respuestas se guardan de forma anónima (aviso visible) y, si la persona quiere, deja su WhatsApp para que un asesor le escriba (encuesta-envio.js). -->
 <script>
 (function () {
   var body = document.getElementById('qBody');
@@ -1586,7 +1600,8 @@
     body.innerHTML = '<h3 class="q-title" id="qTitulo" tabindex="-1">' + esc(p.d.q) + '</h3>' +
       '<div class="q-opts" role="group" aria-labelledby="qTitulo">' +
       p.d.opts.map(function (o) { return '<button type="button" class="q-opt' + (r[p.k] === o ? ' on' : '') + '" data-v="' + esc(o) + '">' + esc(o) + '</button>'; }).join('') +
-      '</div>';
+      '</div>' +
+      '<p class="q-aviso">Tus respuestas se guardan de forma anónima, sin tu nombre ni tu contacto, para mejorar los cursos. <a href="privacidad.html#datos" target="_blank" rel="noopener">Más información</a></p>';
     entra();
     if (enfocar) { var t = el('qTitulo'); if (t) t.focus({ preventScroll: true }); }
   }
@@ -1623,6 +1638,20 @@
     return 'https://wa.me/' + WA + '?text=' + encodeURIComponent(t);
   }
 
+  // Dejar el WhatsApp es opcional y es un dato personal: exige aceptar el Aviso de privacidad
+  function contactoHtml() {
+    var dejado = false; try { dejado = localStorage.getItem('sinergia_ruta_contacto') === '1'; } catch (e) { dejado = false; }
+    if (dejado) return '<div class="r-contacto listo" role="status"><h4>¡Listo!</h4><p>Recibimos tu número. Un asesor te escribirá por WhatsApp para ayudarte a empezar con tu ruta.</p></div>';
+    return '<form class="r-contacto" id="rContacto" novalidate>' +
+      '<h4>¿Prefieres que un asesor te escriba?</h4>' +
+      '<p>Déjanos tu WhatsApp y te ayudamos a empezar con tu ruta. Es opcional.</p>' +
+      '<div class="rc-fila"><input type="tel" id="rcTel" inputmode="tel" autocomplete="tel-national" maxlength="20" placeholder="Tu WhatsApp a 10 dígitos" aria-label="Tu número de WhatsApp a 10 dígitos">' +
+      '<button type="submit" class="btn btn-forest" id="rcEnviar">Que me escriban</button></div>' +
+      '<label class="rc-acepto"><input type="checkbox" id="rcAcepto"><span>Acepto que Sinergia-Agrícola use mi número solo para escribirme sobre mi ruta, según el <a href="privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a>.</span></label>' +
+      '<p class="rc-msg" id="rcMsg" role="status" aria-live="polite"></p>' +
+    '</form>';
+  }
+
   function verResultado(enfocar, celebrar) {
     var top = recomendar(r);
     try { localStorage.setItem('sinergia_ruta_resultado', JSON.stringify({ perfil: r.perfil, meta: r.meta, cursos: top.map(function (x) { return x.c.titulo; }) })); } catch (e) { /* sin almacenamiento */ }
@@ -1641,15 +1670,13 @@
         var meta = [x.c.nivel, x.c.n ? x.c.n + (x.c.n === 1 ? ' sesión' : ' sesiones') : ''].filter(Boolean).join(' · ');
         return '<li class="r-item"><span class="r-n">' + (i + 1) + '</span><a class="r-card" href="' + esc(cursoHref(x.c.titulo)) + '"><span class="r-th"' + th + '></span><div><h4>' + esc(x.c.titulo) + '</h4>' + (meta ? '<small>' + esc(meta) + '</small>' : '') + '<em>' + esc(x.motivo) + '</em></div></a></li>';
       }).join('') + '</ol>' +
-      '<p class="r-note">' + esc(mensajeFreno(r.freno)) + '</p>' +
+      '<p class="r-note">' + esc(mensajeFreno(r.freno)) + '</p>' + contactoHtml() +
       '<div class="r-ctas">' +
         '<a class="btn btn-forest" href="#planes">Ver planes <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>' +
         '<a class="btn btn-line-dark" href="' + resumenWhatsApp(top) + '" target="_blank" rel="noopener">Hablar por WhatsApp</a>' +
         '<button type="button" class="r-reset" id="rReset">Empezar de nuevo</button>' +
       '</div>' +
-      '<p class="r-fine">' + (window.sinergiaEncuesta && window.sinergiaEncuesta.activa()
-        ? 'Con tu permiso de estadísticas, guardamos tus respuestas de forma anónima (sin tu nombre ni tu contacto) para mejorar los cursos.'
-        : 'Tus respuestas se quedan en este navegador; no se envían a ningún lado.') + '</p>';
+      '<p class="r-fine">Tus respuestas se guardan de forma anónima, sin tu nombre ni tu contacto, para mejorar los cursos. <a href="privacidad.html#datos" target="_blank" rel="noopener">Más información</a></p>';
     entra();
     if (enfocar) { var t = el('qTitulo'); if (t) t.focus({ preventScroll: true }); }
   }
@@ -1660,11 +1687,27 @@
     if (e.target.closest('a[href^="https://wa.me/"]') && window.sinergiaEncuesta) window.sinergiaEncuesta.hablo();
     if (e.target.closest('#rReset')) {
       r = {}; paso = 0; hecho = false; limpiar();
-      try { localStorage.removeItem('sinergia_ruta_resultado'); } catch (e) { /* sin almacenamiento */ }
+      try { localStorage.removeItem('sinergia_ruta_resultado'); localStorage.removeItem('sinergia_ruta_contacto'); } catch (e) { /* sin almacenamiento */ }
       document.dispatchEvent(new Event('sinergia:ruta'));
       decir('¡Hola de nuevo!', 'Soy Savia. Son preguntas rápidas: toma menos de un minuto.');
       verPregunta(true);
     }
+  });
+  body.addEventListener('submit', function (e) {
+    var f = e.target.closest('#rContacto'); if (!f) return;
+    e.preventDefault();
+    var tel = el('rcTel').value, msg = el('rcMsg'), btn = el('rcEnviar');
+    function aviso(t, error) { msg.textContent = t; msg.className = 'rc-msg' + (error ? ' error' : ''); }
+    if (String(tel).replace(/\D/g, '').length < 10) { aviso('Escribe tu número de WhatsApp a 10 dígitos.', true); el('rcTel').focus(); return; }
+    if (!el('rcAcepto').checked) { aviso('Para dejar tu número, acepta el Aviso de privacidad.', true); return; }
+    if (!window.sinergiaEncuesta) { aviso('No se pudo guardar tu número. Escríbenos por WhatsApp.', true); return; }
+    btn.disabled = true; aviso('Guardando…', false);
+    window.sinergiaEncuesta.contacto(tel, r).then(function (res) {
+      if (res.ok) {
+        try { localStorage.setItem('sinergia_ruta_contacto', '1'); } catch (er) { /* sin almacenamiento */ }
+        verResultado(false);
+      } else { btn.disabled = false; aviso(res.error, true); }
+    });
   });
   el('qBack').addEventListener('click', function () {
     if (ocupado) return;
@@ -1714,7 +1757,7 @@
 })();
 </script>
 
-<!-- Chat con Savia: guía automática con respuestas escritas. No usa inteligencia artificial. Solo si aceptas «Estadísticas» en el aviso de cookies, anota de forma anónima las preguntas que no supo contestar (encuesta-envio.js). -->
+<!-- Chat con Savia: guía automática con respuestas escritas. No usa inteligencia artificial. Anota de forma anónima las preguntas que no supo contestar y lo avisa en su saludo (encuesta-envio.js). -->
 <script>
 (function () {
   var launch = document.getElementById('svLaunch'), panel = document.getElementById('svPanel');
@@ -1979,7 +2022,7 @@
   function inicio() {
     msgs.innerHTML = ''; retrato('bienvenida');
     ocupado = false;
-    burbujaBot({ p: ['¡Hola! Soy <b>Savia</b>, la guía virtual de Sinergia-Agrícola. Soy una guía automática: respondo con la información de esta página y no te pido tus datos.', '¿Qué te gustaría saber?'], c: INICIAL });
+    burbujaBot({ p: ['¡Hola! Soy <b>Savia</b>, la guía virtual de Sinergia-Agrícola. Soy una guía automática: respondo con la información de esta página y no te pido tus datos. Si algo no sé contestar, anoto tu pregunta de forma anónima para mejorar.', '¿Qué te gustaría saber?'], c: INICIAL });
   }
 
   var abierto = false, primera = true;

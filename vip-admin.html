@@ -2821,7 +2821,7 @@ body::before { display: none; }
       <div class="panel-head">
         <div class="panel-head-info">
           <h2 class="panel-title">Encuesta <em>de la portada</em></h2>
-          <p class="panel-sub">Quién usa la ruta de aprendizaje, qué busca, qué tan pronto quiere empezar y qué le preguntó a Savia que ella no supo contestar. Se cuenta una vez por visitante y solo de quienes aceptaron «Estadísticas» en el aviso de cookies, así que son menos que las visitas reales. Sin nombres ni contacto.</p>
+          <p class="panel-sub">Quién usa la ruta de aprendizaje, qué busca, qué tan pronto quiere empezar y qué le preguntó a Savia que ella no supo contestar. Se cuenta una vez por visitante. Las respuestas son anónimas; el WhatsApp solo lo dejan quienes piden que un asesor les escriba, y aparece oculto.</p>
         </div>
         <div class="panel-head-accion">
           <button type="button" class="btn-secondary" data-en-accion="actualizar">Actualizar</button>
@@ -2863,6 +2863,12 @@ body::before { display: none; }
           <div class="widget-head"><span class="widget-name">Resumen por perfil</span></div>
           <p class="en-sub">Cuántas personas empezaron con cada perfil, cuántas llegaron al final y en qué pregunta se quedan las demás.</p>
           <div id="enRama"></div>
+        </div>
+
+        <div class="widget-box cg-caja" style="margin-bottom:16px;">
+          <div class="widget-head"><span class="widget-name">Personas que pidieron que un asesor las escriba</span></div>
+          <p class="en-sub">Dejaron su WhatsApp al final de la ruta y aceptaron el Aviso de privacidad. El número aparece oculto: se ve completo solo al pulsar «Abrir WhatsApp».</p>
+          <div id="enAsesor"></div>
         </div>
 
         <div class="widget-box cg-caja" style="margin-bottom:16px;">
@@ -4844,49 +4850,60 @@ body::before { display: none; }
     const grupos = {}; filas.forEach(f => { const k = f.perfil || 'Sin perfil'; (grupos[k] || (grupos[k] = [])).push(f); });
     const lista = Object.keys(grupos).map(k => ({ k, f: grupos[k] })).sort((a, b) => b.f.length - a.f.length), max = Math.max(1, ...lista.map(x => x.f.length));
     const top = (arr, clave) => { const c = {}; arr.forEach(f => { if (f[clave]) c[f[clave]] = (c[f[clave]] || 0) + 1; }); const o = Object.keys(c).sort((a, b) => c[b] - c[a]); return o.length ? [o[0], c[o[0]]] : null; };
-    host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Perfil</th><th>Empezaron</th><th>Terminaron</th><th class="n">Calientes</th><th class="n">Hablaron por WhatsApp</th><th>Reto más frecuente</th><th>Dónde se quedan</th></tr></thead><tbody>' + lista.map(x => {
-      const term = x.f.filter(f => f.terminada).length, cal = x.f.filter(f => f.urge === 'Lo antes posible').length, wa = x.f.filter(f => f.hablo).length, reto = top(x.f, 'reto'), donde = top(x.f.filter(f => !f.terminada && f.ultima).map(f => ({ u: f.ultima })), 'u');
+    host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Perfil</th><th>Empezaron</th><th>Terminaron</th><th class="n">Calientes</th><th class="n">Dejaron su WhatsApp</th><th>Reto más frecuente</th><th>Dónde se quedan</th></tr></thead><tbody>' + lista.map(x => {
+      const term = x.f.filter(f => f.terminada).length, cal = x.f.filter(f => f.urge === 'Lo antes posible').length, wa = x.f.filter(f => f.contacto).length, reto = top(x.f, 'reto'), donde = top(x.f.filter(f => !f.terminada && f.ultima).map(f => ({ u: f.ultima })), 'u');
       return '<tr><td><b>' + esc(x.k) + '</b></td><td><div class="mt-barra-h" style="padding:0;"><span></span><b>' + mtNum(x.f.length) + '</b><div class="cr-barra"><i style="width:' + Math.max(4, Math.round(x.f.length / max * 100)) + '%;background:#1F7A4D"></i></div></div></td><td>' + mtNum(term) + ' (' + mtPct(term, x.f.length) + ' %)</td><td class="n">' + mtNum(cal) + '</td><td class="n">' + mtNum(wa) + '</td><td>' + (reto ? esc(reto[0]) + ' (' + reto[1] + ')' : '—') + '</td><td>' + (donde ? esc(EN_NOMBRE[donde[0]]) + ' (' + donde[1] + ')' : '<span style="color:var(--stone-500)">Nadie abandona</span>') + '</td></tr>';
     }).join('') + '</tbody></table></div>' + enLeer('El perfil es lo que la persona elige al principio. «' + esc(lista[0].k) + '» es el que más empieza (' + enPers(lista[0].f.length) + ') y ' + mtPct(lista[0].f.filter(f => f.terminada).length, lista[0].f.length) + ' % lo termina.');
   }
 
   function enListaPintar(filas) {
-    const host = document.getElementById('enLista'), term = filas.filter(f => f.terminada).length, wa = filas.filter(f => f.hablo).length;
-    const filtros = [['todas', 'Todas', filas.length], ['terminaron', 'Terminaron', term], ['no', 'No terminaron', filas.length - term], ['whatsapp', 'Hablaron por WhatsApp', wa]];
+    const host = document.getElementById('enLista'), term = filas.filter(f => f.terminada).length, con = filas.filter(f => f.contacto).length, porAt = filas.filter(f => f.contacto === 'por-atender').length;
+    const filtros = [['todas', 'Todas', filas.length], ['terminaron', 'Terminaron', term], ['no', 'No terminaron', filas.length - term], ['whatsapp', 'Dejaron WhatsApp', con], ['porAtender', 'Por atender', porAt], ['atendidas', 'Atendidas', con - porAt]];
     document.getElementById('enFiltros').innerHTML = filtros.map(f => '<button type="button" class="chip' + (EN.filtro === f[0] ? ' active' : '') + '" data-en-filtro="' + f[0] + '">' + f[1] + ' · ' + f[2] + '</button>').join('');
-    const ver = filas.filter(f => EN.filtro === 'terminaron' ? f.terminada : EN.filtro === 'no' ? !f.terminada : EN.filtro === 'whatsapp' ? f.hablo : true);
+    const ver = filas.filter(f => EN.filtro === 'terminaron' ? f.terminada : EN.filtro === 'no' ? !f.terminada : EN.filtro === 'whatsapp' ? !!f.contacto : EN.filtro === 'porAtender' ? f.contacto === 'por-atender' : EN.filtro === 'atendidas' ? f.contacto === 'atendida' : true);
     if (!ver.length) { host.innerHTML = '<div class="sb-vacio">No hay respuestas con este filtro.</div>'; return; }
     const parte = ver.slice(0, EN.visibles);
     host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Perfil</th><th>Fecha</th><th>Reto</th><th>Cuándo quiere empezar</th><th>Estado</th><th>WhatsApp</th></tr></thead><tbody>' + parte.map(f => {
       const abierta = EN.abierta === f.id;
-      return '<tr class="en-tabla-fila" data-en-fila="' + esc(f.id) + '"><td><b>' + esc(f.perfil || 'Sin perfil') + '</b>' + (f.area ? '<small>' + esc(f.area) + '</small>' : '') + '</td><td>' + (f.ms ? esc(mtFechaLarga(f.ms)) : esc(f.dia)) + '</td><td>' + (f.reto ? esc(f.reto) : '—') + '</td><td>' + (f.urge ? esc(f.urge) : '—') + '</td><td><span class="en-pill ' + (f.terminada ? 'ok' : 'no') + '">' + (f.terminada ? 'Terminó' : 'No terminó') + '</span></td><td>' + (f.hablo ? '<span class="en-pill pend">Pidió hablar</span>' : '<span style="color:var(--stone-500)">—</span>') + '</td></tr>' +
+      return '<tr class="en-tabla-fila" data-en-fila="' + esc(f.id) + '"><td><b>' + esc(f.perfil || 'Sin perfil') + '</b>' + (f.area ? '<small>' + esc(f.area) + '</small>' : '') + '</td><td>' + (f.ms ? esc(mtFechaLarga(f.ms)) : esc(f.dia)) + '</td><td>' + (f.reto ? esc(f.reto) : '—') + '</td><td>' + (f.urge ? esc(f.urge) : '—') + '</td><td><span class="en-pill ' + (f.terminada ? 'ok' : 'no') + '">' + (f.terminada ? 'Terminó' : 'No terminó') + '</span></td><td>' + (f.contacto ? '<span class="en-pill ' + (f.contacto === 'atendida' ? 'ok' : 'pend') + '">' + (f.contacto === 'atendida' ? 'Atendida' : 'Dejó su número') + '</span>' : f.hablo ? '<span style="color:var(--stone-500)">Tocó el botón</span>' : '<span style="color:var(--stone-500)">No dejó</span>') + '</td></tr>' +
         (abierta ? '<tr class="en-detalle"><td colspan="6"><dl>' + EN_ORDEN.map(k => '<div><dt>' + esc(EN_NOMBRE[k]) + '</dt><dd>' + (f[k] ? esc(f[k]) : '—') + '</dd></div>').join('') + '</dl></td></tr>' : '');
     }).join('') + '</tbody></table></div><p class="en-pie">Mostrando ' + mtNum(parte.length) + ' de ' + mtNum(ver.length) + (ver.length > parte.length ? ' <button type="button" class="btn-secondary" data-en-accion="mas">Mostrar ' + Math.min(25, ver.length - parte.length) + ' más</button>' : '') + '</p>';
+  }
+
+  // Quienes dejaron su WhatsApp. El número completo nunca viaja en la lista: se pide uno por uno al pulsar «Abrir WhatsApp»
+  function enAsesorPintar(filas) {
+    const host = document.getElementById('enAsesor'), lista = filas.filter(f => f.contacto).sort((a, b) => (a.contacto === 'por-atender' ? 0 : 1) - (b.contacto === 'por-atender' ? 0 : 1) || (b.contactoMs || 0) - (a.contactoMs || 0));
+    if (!lista.length) { host.innerHTML = '<div class="sb-vacio">Nadie ha dejado su WhatsApp todavía.</div>'; return; }
+    host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Perfil</th><th>Fecha</th><th>Reto</th><th>Cuándo quiere empezar</th><th>WhatsApp</th><th>Estado</th><th></th></tr></thead><tbody>' + lista.map(f =>
+      '<tr><td><b>' + esc(f.perfil || 'Sin perfil') + '</b>' + (f.area ? '<small>' + esc(f.area) + '</small>' : '') + '</td><td>' + (f.contactoMs ? esc(mtFechaLarga(f.contactoMs)) : '—') + '</td><td>' + (f.reto ? esc(f.reto) : '—') + '</td><td>' + (f.urge ? esc(f.urge) : '—') + '</td><td>•••• ' + esc(f.tel4 || '') + '</td>' +
+      '<td><span class="en-pill ' + (f.contacto === 'atendida' ? 'ok' : 'pend') + '">' + (f.contacto === 'atendida' ? 'Atendida' : 'Por atender') + '</span></td>' +
+      '<td class="n" style="white-space:nowrap;"><button type="button" class="btn-secondary" data-en-contacto="ver" data-en-cid="' + esc(f.cid) + '">Abrir WhatsApp</button> <button type="button" class="btn-secondary" data-en-contacto="' + (f.contacto === 'atendida' ? 'por-atender' : 'atendida') + '" data-en-cid="' + esc(f.cid) + '">' + (f.contacto === 'atendida' ? 'Volver a por atender' : 'Marcar atendida') + '</button> <button type="button" class="btn-secondary" data-en-contacto="eliminar" data-en-cid="' + esc(f.cid) + '">Eliminar</button></td></tr>').join('') + '</tbody></table></div>' +
+      enLeer('Escríbeles pronto: ' + mtNum(lista.filter(f => f.contacto === 'por-atender').length) + ' ' + (lista.filter(f => f.contacto === 'por-atender').length === 1 ? 'espera' : 'esperan') + ' respuesta. «Eliminar» borra el número por completo; úsalo si la persona pide que lo quitemos.');
   }
 
   function enPreguntasSaviaPintar() {
     const host = document.getElementById('enPreguntasSavia'), todas = (EN.datos && EN.datos.preguntas) || [], ver = todas.filter(p => !EN.ocultarAtendidas || p.estado !== 'atendida');
     document.getElementById('enOcultar').textContent = EN.ocultarAtendidas ? 'Mostrar las atendidas' : 'Ocultar las atendidas';
-    if (!ver.length) { host.innerHTML = '<div class="sb-vacio">' + (todas.length ? 'No hay preguntas por atender.' : 'Todavía no hay preguntas. Aparecen cuando alguien le pregunta a Savia algo que no supo contestar y aceptó «Estadísticas» en el aviso de cookies.') + '</div>'; return; }
+    if (!ver.length) { host.innerHTML = '<div class="sb-vacio">' + (todas.length ? 'No hay preguntas por atender.' : 'Todavía no hay preguntas. Aparecen cuando alguien le pregunta a Savia algo que no supo contestar.') + '</div>'; return; }
     host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Pregunta</th><th class="n">Veces</th><th>Última vez</th><th>Estado</th><th></th></tr></thead><tbody>' + ver.map(p =>
       '<tr><td><b>' + esc(p.texto) + '</b></td><td class="n">' + mtNum(p.veces) + '</td><td>' + (p.ms ? esc(mtFechaLarga(p.ms)) : '—') + '</td><td><span class="en-pill ' + (p.estado === 'atendida' ? 'ok' : 'pend') + '">' + (p.estado === 'atendida' ? 'Atendida' : 'Por atender') + '</span></td><td class="n"><button type="button" class="btn-secondary" data-en-pregunta="' + esc(p.id) + '" data-en-estado="' + (p.estado === 'atendida' ? 'por-atender' : 'atendida') + '">' + (p.estado === 'atendida' ? 'Volver a por atender' : 'Marcar atendida') + '</button></td></tr>').join('') + '</tbody></table></div>';
   }
 
   function enRender() {
     if (!document.getElementById('enKpis')) return;
-    const filas = enFilas(), term = filas.filter(f => f.terminada).length, cal = filas.filter(f => f.urge === 'Lo antes posible').length, wa = filas.filter(f => f.hablo).length;
+    const filas = enFilas(), term = filas.filter(f => f.terminada).length, cal = filas.filter(f => f.urge === 'Lo antes posible').length, wa = filas.filter(f => f.hablo).length, con = filas.filter(f => f.contacto).length, porAt = filas.filter(f => f.contacto === 'por-atender').length;
     const kpi = (ico, titulo, valor, sub) => '<div class="stat-card mt-kpi"><div class="stat-label" style="display:flex;gap:8px;align-items:center;">' + dbIco(ico) + '<span>' + titulo + '</span></div><div class="stat-value">' + valor + '</div><div class="sb-sub">' + sub + '</div></div>';
     const listo = !!EN.datos;
     document.getElementById('enKpis').innerHTML =
       kpi('users', 'Personas que respondieron', listo ? mtNum(filas.length) : '…', 'Una por visitante, incluye completas y a medias') +
       kpi('check', 'Terminaron la encuesta', listo ? mtNum(term) : '…', listo ? mtPct(term, filas.length) + ' % de quienes empezaron' : '') +
       kpi('clock', 'Leads calientes', listo ? mtNum(cal) : '…', 'Quieren empezar lo antes posible') +
-      kpi('user', 'Pidieron hablar por WhatsApp', listo ? mtNum(wa) : '…', 'Tocaron «Hablar por WhatsApp» al terminar su ruta');
+      kpi('user', 'Dejaron su WhatsApp', listo ? mtNum(con) : '…', listo ? mtNum(wa) + ' tocaron «Hablar por WhatsApp» · ' + mtNum(porAt) + ' por atender' : '');
     const nav = document.getElementById('navEncCount'); if (nav) nav.textContent = listo ? mtNum(filas.length) : '·';
     const vacio = document.getElementById('enVacio'), cuerpo = document.getElementById('enCuerpo');
     if (EN.error && !listo) { vacio.innerHTML = '<div class="widget-box"><div class="sb-vacio">No se pudo leer la encuesta: ' + esc(EN.error) + '</div></div>'; cuerpo.style.display = 'none'; enPreguntasSaviaPintar(); return; }
     if (!listo) { vacio.innerHTML = '<div class="widget-box"><div class="sb-vacio">Leyendo datos…</div></div>'; cuerpo.style.display = 'none'; return; }
-    if (!filas.length) { vacio.innerHTML = '<div class="widget-box"><div class="sb-vacio">Todavía no hay respuestas. Se guardan cuando alguien usa la ruta de aprendizaje de la portada y aceptó «Estadísticas» en el aviso de cookies.</div></div>'; cuerpo.style.display = 'none'; enPreguntasSaviaPintar(); return; }
+    if (!filas.length) { vacio.innerHTML = '<div class="widget-box"><div class="sb-vacio">Todavía no hay respuestas. Se guardan cuando alguien usa la ruta de aprendizaje de la portada.</div></div>'; cuerpo.style.display = 'none'; enPreguntasSaviaPintar(); return; }
     vacio.innerHTML = ''; cuerpo.style.display = '';
 
     document.getElementById('enCompletas').innerHTML = '<div class="en-dona">' + mtDona([{ valor: term, color: '#1F7A4D' }, { valor: filas.length - term, color: '#C24D3C' }], filas.length, String(filas.length), filas.length === 1 ? 'persona' : 'personas') +
@@ -4901,7 +4918,7 @@ body::before { display: none; }
       enBarrasVCaja('Cuándo quieren empezar', 'Del más urgente al más tranquilo.', 'urge', filas, (p, b) => enTop(p, b, 'Lo más común') + (p[0].n ? ' Quienes quieren empezar lo antes posible (' + enPers(p[0].n) + ') son los contactos más calientes.' : '')) +
       enBarrasHCaja('Qué los detiene hoy', 'Lo que frena a la persona para empezar.', 'freno', filas, (p, b) => enTop(p, b, 'Lo que más los detiene')) +
       enDonaCaja('Experiencia con cursos en línea', 'Si ya estudió en línea.', 'exper', filas, (p, b) => enTop(p, b, 'Lo más común'));
-    enRetosPintar(filas); enAbandonoPintar(filas); enRamaPintar(filas); enListaPintar(filas); enPreguntasSaviaPintar();
+    enRetosPintar(filas); enAbandonoPintar(filas); enRamaPintar(filas); enAsesorPintar(filas); enListaPintar(filas); enPreguntasSaviaPintar();
   }
 
   window.enCargar = async function() {
@@ -4914,10 +4931,27 @@ body::before { display: none; }
   };
 
   document.addEventListener('click', async (e) => {
-    const t = e.target.closest && e.target.closest('[data-en-accion],[data-en-filtro],[data-en-fila],[data-en-pregunta]');
+    const t = e.target.closest && e.target.closest('[data-en-accion],[data-en-filtro],[data-en-fila],[data-en-pregunta],[data-en-contacto]');
     if (!t) return;
     if (t.dataset.enFiltro) { EN.filtro = t.dataset.enFiltro; EN.visibles = 25; enListaPintar(enFilas()); }
     else if (t.dataset.enFila) { EN.abierta = EN.abierta === t.dataset.enFila ? '' : t.dataset.enFila; enListaPintar(enFilas()); }
+    else if (t.dataset.enContacto) {
+      const accion = t.dataset.enContacto, cid = t.dataset.enCid, f = enFilas().find(x => x.cid === cid);
+      if (!f) return;
+      if (accion === 'eliminar' && !confirm('¿Eliminar este número de WhatsApp? Se borra por completo y no se puede deshacer.')) return;
+      const ventana = accion === 'ver' ? window.open('about:blank', '_blank') : null;
+      t.disabled = true;
+      try {
+        const r = await callAdminEndpoint('/admin/encuesta/contacto', { id: cid, accion });
+        if (accion === 'ver') {
+          const texto = 'Hola, hiciste la ruta de aprendizaje en la página de Sinergia-Agrícola y dejaste tu WhatsApp. ¿Te ayudo a empezar con ' + (f.reto ? 'tu meta: ' + String(f.reto).toLowerCase() : 'tu ruta') + '?';
+          if (ventana) ventana.location.href = 'https://wa.me/' + encodeURIComponent(r.whatsapp) + '?text=' + encodeURIComponent(texto);
+        } else if (accion === 'eliminar') { delete f.contacto; delete f.cid; delete f.tel4; delete f.contactoMs; showToast('Número eliminado'); }
+        else { f.contacto = accion; showToast(accion === 'atendida' ? 'Marcada como atendida' : 'De vuelta en por atender'); }
+      } catch (err) { if (ventana) ventana.close(); showToast('No se pudo completar: ' + ((err && err.message) || 'error'), 'error'); }
+      t.disabled = false;
+      enRender();
+    }
     else if (t.dataset.enPregunta) {
       const id = t.dataset.enPregunta, estado = t.dataset.enEstado;
       t.disabled = true;
@@ -4932,7 +4966,7 @@ body::before { display: none; }
     else if (t.dataset.enAccion === 'mas') { EN.visibles += 25; enListaPintar(enFilas()); }
     else if (t.dataset.enAccion === 'ocultar') { EN.ocultarAtendidas = !EN.ocultarAtendidas; enPreguntasSaviaPintar(); }
     else if (t.dataset.enAccion === 'csv') {
-      mtCsv('encuesta-portada-' + mtISO(Date.now()) + '.csv', [['Fecha', 'Perfil', 'Qué quiere lograr', 'Área de interés', 'Reto', 'Cursos en línea', 'Cuándo quiere empezar', 'Qué lo detiene', 'Cómo nos conoció', 'Terminó', 'Pidió hablar por WhatsApp']].concat(enFilas().map(f => [f.dia || '', f.perfil || '', f.meta || '', f.area || '', f.reto || '', f.exper || '', f.urge || '', f.freno || '', f.origen || '', f.terminada ? 'Sí' : 'No', f.hablo ? 'Sí' : 'No'])));
+      mtCsv('encuesta-portada-' + mtISO(Date.now()) + '.csv', [['Fecha', 'Perfil', 'Qué quiere lograr', 'Área de interés', 'Reto', 'Cursos en línea', 'Cuándo quiere empezar', 'Qué lo detiene', 'Cómo nos conoció', 'Terminó', 'Tocó «Hablar por WhatsApp»', 'Dejó su WhatsApp', 'Estado del contacto']].concat(enFilas().map(f => [f.dia || '', f.perfil || '', f.meta || '', f.area || '', f.reto || '', f.exper || '', f.urge || '', f.freno || '', f.origen || '', f.terminada ? 'Sí' : 'No', f.hablo ? 'Sí' : 'No', f.contacto ? 'Sí' : 'No', f.contacto === 'atendida' ? 'Atendida' : f.contacto ? 'Por atender' : ''])));
     }
     else if (t.dataset.enAccion === 'csvPreguntas') {
       mtCsv('preguntas-savia-' + mtISO(Date.now()) + '.csv', [['Pregunta', 'Veces', 'Última vez', 'Estado']].concat((((EN.datos && EN.datos.preguntas) || [])).map(p => [p.texto, p.veces, p.ms ? mtISO(p.ms) : '', p.estado === 'atendida' ? 'Atendida' : 'Por atender'])));
