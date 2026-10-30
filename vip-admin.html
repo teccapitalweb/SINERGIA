@@ -1380,6 +1380,48 @@
 <style id="sinergia-fase3d">
   /* Fase 3d: Marketing · Cursos gratis */
   .cg-caja { margin-bottom: 16px; }
+  .pg-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .pg-trio .cg-caja { margin-bottom: 16px; }
+  .pg-leyenda { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--stone-600); margin-bottom: 8px; }
+  .pg-leyenda i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .pg-rank { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; }
+  .pg-rank > b { width: 26px; height: 26px; border-radius: 50%; background: var(--stone-100); color: var(--stone-600); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .pg-rank.top > b { background: #0F8B7A; color: #fff; }
+  .pg-rank .t { font-size: 13.5px; color: var(--stone-800); line-height: 1.3; }
+  .pg-rank em { font-style: normal; font-weight: 700; color: var(--stone-800); white-space: nowrap; }
+  .pg-rank em span { font-weight: 400; color: var(--stone-500); margin-left: 6px; font-size: 12px; }
+  .pg-fila-av { padding: 9px 0; }
+  .pg-fila-av .l { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; color: var(--stone-800); }
+  .pg-fila-av .l b { font-weight: 700; }
+  .pg-fila-av .l b span { font-weight: 400; color: var(--stone-500); margin-left: 6px; font-size: 12px; }
+  .pg-paso { display: flex; gap: 10px; align-items: center; font-size: 12.5px; color: var(--stone-500); padding: 6px 0 6px 16px; border-left: 2px dotted var(--stone-200); margin-left: 12px; }
+  .pg-donut { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  .pg-donut svg { flex: 0 0 auto; }
+  .pg-leyenda-d { display: grid; gap: 10px; font-size: 13.5px; min-width: 220px; }
+  .pg-leyenda-d div { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; }
+  .pg-leyenda-d i { width: 12px; height: 12px; border-radius: 3px; }
+  .pg-leyenda-d span { color: var(--stone-500); font-size: 12px; }
+  .pg-tabla { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .pg-tabla th { text-align: right; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--stone-500); padding: 10px 12px; background: var(--stone-50); }
+  .pg-tabla th:first-child, .pg-tabla td:first-child { text-align: left; }
+  .pg-tabla td { text-align: right; padding: 11px 12px; border-top: 1px solid var(--stone-100); }
+  .pg-tabla td:first-child { color: var(--stone-800); font-weight: 600; }
+  .pg-filtros { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 320px); gap: 10px 14px; margin: 12px 0; align-items: center; }
+  .pg-filtros .chip-filter { grid-row: 1 / span 2; }
+  .pg-fila { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: 14px; align-items: center; padding: 12px 6px; border-top: 1px solid var(--stone-100); font-size: 13px; }
+  .pg-fila.pg-sin { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.6fr) minmax(0, 1.1fr); }
+  .pg-fila.cab { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--stone-500); font-weight: 700; border-top: 0; background: var(--stone-50); border-radius: 10px; }
+  .pg-fila small { display: block; color: var(--stone-500); font-size: 12px; margin-top: 2px; }
+  .pg-fila b { color: var(--stone-800); font-size: 14px; }
+  .pg-persona { display: flex; gap: 12px; align-items: center; min-width: 0; }
+  .pg-persona > div:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .pg-av { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; background: #E6F4EA; color: #17603A; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .pg-curso { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pg-prog { display: flex; align-items: center; gap: 8px; }
+  .pg-prog .cr-barra { flex: 0 0 64px; margin: 0; height: 8px; }
+  .cr-b.termino { background: #E3F0FB; color: #1D5B8F; }
+  @media (max-width: 1100px) { .pg-trio { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .pg-filtros { grid-template-columns: 1fr; } .pg-filtros .chip-filter { grid-row: auto; } .pg-fila, .pg-fila.pg-sin { grid-template-columns: minmax(0, 1fr); gap: 6px; } .pg-fila.cab { display: none; } .pg-curso { white-space: normal; } }
   .cg-caja .members-table { width: 100%; }
   .cg-barra { display: inline-block; vertical-align: middle; width: 120px; height: 6px; background: var(--stone-100); border-radius: 100px; overflow: hidden; margin-right: 10px; }
   .cg-barra i { display: block; height: 100%; background: var(--teal-500); border-radius: 100px; min-width: 2px; }
@@ -2281,7 +2323,7 @@ body::before { display: none; }
     </button>
     <button class="nav-item" data-tab="freecourses">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-      <span class="nav-item-text">Cursos gratis</span>
+      <span class="nav-item-text">Pruebas gratuitas</span>
       <span id="navGratisCount" class="nav-item-count" title="Cuentas sin membresía que aún no eligen curso gratis">0</span>
     </button>
     <button class="nav-item" data-tab="notifications">
@@ -2576,21 +2618,63 @@ body::before { display: none; }
     <div class="tab-panel" data-panel="freecourses">
       <div class="panel-head">
         <div class="panel-head-info">
-          <h2 class="panel-title">Cursos <em>gratis</em></h2>
-          <p class="panel-sub">Qué curso eligen las cuentas sin membresía como su curso gratis y cuántas terminan con membresía. Solo cuentan cuentas con login.</p>
+          <h2 class="panel-title">Pruebas <em>gratuitas</em></h2>
+          <p class="panel-sub">Quién eligió su curso de prueba, cuánto avanzó en las clases gratis y si ya se hizo miembro. La elección es definitiva para cada persona. Solo cuentan cuentas con login.</p>
+        </div>
+        <div class="panel-head-accion">
+          <button type="button" class="btn-secondary" onclick="cargarAvanceGratis(true)">Actualizar</button>
         </div>
       </div>
 
       <div class="stats-grid" id="cgKpis"></div>
-      <div class="widget-box sb-aviso" id="cgAviso"></div>
 
       <div class="widget-box cg-caja">
-        <div class="widget-head"><span class="widget-name">Por curso</span></div>
-        <div id="cgPorCurso"></div>
+        <div class="widget-head"><span class="widget-name">Cuentas nuevas y pruebas elegidas por semana</span></div>
+        <p class="cr-sub">Doce semanas: cuántas personas crean su cuenta y cuántas eligen su curso de prueba.</p>
+        <div class="pg-leyenda"><span><i style="background:#8FB5C9"></i>Cuentas nuevas</span><span><i style="background:#0F8B7A"></i>Pruebas elegidas</span></div>
+        <div id="cgSemanas"></div>
       </div>
+
+      <div class="pg-trio">
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Curso que eligen para su prueba</span></div>
+          <p class="cr-sub">Cuántas pruebas eligió cada curso.</p>
+          <div id="cgPorCurso"></div>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Avance de la prueba</span></div>
+          <p class="cr-sub">Dónde va cada persona dentro de sus clases gratis.</p>
+          <div id="cgAvance"></div>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Cuántas personas llegan a la última clase gratis</span></div>
+          <p class="cr-sub">Cada paso cuenta solo a quienes llegaron al anterior.</p>
+          <div id="cgEmbudo"></div>
+        </div>
+      </div>
+
       <div class="widget-box cg-caja">
-        <div class="widget-head"><span class="widget-name">Últimas elecciones</span></div>
-        <div id="cgUltimas"></div>
+        <div class="widget-head"><span class="widget-name">Cuántas pagan después</span></div>
+        <p class="cr-sub">Quienes eligieron una prueba y hoy tienen membresía.</p>
+        <div id="cgPagan"></div>
+      </div>
+
+      <div class="widget-box cg-caja">
+        <div class="widget-head"><span class="widget-name">Detalle por curso</span></div>
+        <p class="cr-sub">Cuántas personas eligieron cada curso, cuántas terminaron sus clases gratis y cuántas llegaron a la membresía.</p>
+        <div id="cgDetalle"></div>
+      </div>
+
+      <div class="widget-box cg-caja">
+        <div class="widget-head"><span class="widget-name">Quiénes eligieron</span></div>
+        <p class="cr-sub">La prueba abre todas las clases del curso menos la última.</p>
+        <div class="chip-filter" id="cgVista"></div>
+        <div class="pg-filtros">
+          <div class="chip-filter" id="cgFiltros"></div>
+          <input type="text" class="form-input" id="cgBusca" placeholder="Buscar persona o curso" oninput="cgBuscar(this.value)">
+          <select class="form-input" id="cgCursoSel" onchange="cgElegirCurso(this.value)"><option value="">Todos los cursos</option></select>
+        </div>
+        <div id="cgQuienes"></div>
       </div>
     </div>
 
@@ -3851,7 +3935,7 @@ body::before { display: none; }
       'dashboard': 'Dashboard',
       'members': 'Gestión de miembros',
       'subscriptions': 'Suscripciones',
-      'freecourses': 'Cursos gratis',
+      'freecourses': 'Pruebas gratuitas',
       'forum': 'Foro · moderación',
       'directory': 'Directorio · moderación',
       'notifications': 'Notificaciones',
@@ -4166,73 +4250,182 @@ body::before { display: none; }
   // ═══════════════════════════════════════════════════
   const tituloCursoGratis = (id) => { const c = _adminCursosCache.find(x => x.id === id); return (c && c.titulo) || id; };
 
+  // Estado de la pantalla: el avance de cada prueba lo lee el servidor (clases vistas); lo demás sale de los datos de los miembros
+  const CG = { avance: null, cursos: [], cargando: false, vista: 'eligieron', filtro: 'todos', curso: '', busca: '', visibles: 20, verTodosCursos: false };
+  const cgNum = (n) => Number(n || 0).toLocaleString('es-MX');
+  const cgPct = (n, t) => t ? Math.round(n / t * 100) : 0;
+  const cgTitulo = (id) => { const c = CG.cursos.find(x => x.id === id); return (c && c.titulo) || tituloCursoGratis(id); };
+  const cgFechaCorta = (ts) => { const d = toDate(ts); return d ? d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'; };
+  const cgIniciales = (m) => String(m.nombre || m.email || '?').trim().split(/\s+/).slice(0, 2).map(p => p[0]).join('').toUpperCase();
+  function cgInfo(m) {
+    const c = CG.cursos.find(x => x.id === m.cursoGratisElegido), gratis = c ? c.gratis : 0, a = CG.avance && CG.avance[m.uid], vistas = a ? a.vistas : 0;
+    return { gratis, vistas, termino: gratis > 0 && vistas >= gratis, miembro: tieneAcceso(m) };
+  }
+
+  window.cargarAvanceGratis = async function(forzar) {
+    if (CG.cargando || (CG.avance && forzar !== true)) return;
+    CG.cargando = true;
+    try {
+      const r = await callAdminEndpoint('/admin/cursos-gratis/avance', {});
+      CG.avance = r.avance || {}; CG.cursos = r.cursos || [];
+    } catch (err) {
+      showToast('No se pudo leer el avance de las pruebas: ' + (err.message || 'error'), 'error');
+    }
+    CG.cargando = false;
+    renderCursosGratis();
+  };
+
+  function cgSemanas(cuentas, eligieron) {
+    const lunes = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x.getTime(); };
+    const hoy = lunes(new Date()), sem = [];
+    for (let i = 11; i >= 0; i--) { const t = new Date(hoy); t.setDate(t.getDate() - 7 * i); sem.push({ t: t.getTime(), nuevas: 0, pruebas: 0 }); }
+    const sumar = (d, k) => { if (!d) return; const s = sem.find(x => x.t === lunes(d)); if (s) s[k]++; };
+    cuentas.forEach(m => sumar(fechaAlta(m), 'nuevas'));
+    eligieron.forEach(m => sumar(toDate(m.cursoGratisElegidoEn), 'pruebas'));
+    return sem;
+  }
+
+  function cgGrafica(sem) {
+    const maxReal = Math.max(1, ...sem.map(s => Math.max(s.nuevas, s.pruebas)));
+    const paso = Math.pow(10, Math.floor(Math.log10(maxReal)));
+    let tope = Math.ceil(maxReal / paso) * paso; if (tope < 9) tope = Math.ceil(tope / 3) * 3;   // con pocos datos, que las tres divisiones den enteros
+    const W = 900, H = 230, izq = 44, abajo = 30, alto = H - abajo - 10, ancho = W - izq - 10, col = ancho / sem.length;
+    let g = '';
+    for (let i = 0; i <= 3; i++) { const y = 10 + alto - alto * i / 3; g += '<line x1="' + izq + '" x2="' + (W - 10) + '" y1="' + y + '" y2="' + y + '" stroke="#E7E5E4" stroke-dasharray="3 4"/><text x="' + (izq - 8) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="#78716C">' + Math.round(tope * i / 3) + '</text>'; }
+    sem.forEach((s, i) => {
+      const x = izq + i * col + col * 0.18, bw = col * 0.31, h1 = alto * s.nuevas / tope, h2 = alto * s.pruebas / tope, f = new Date(s.t);
+      g += '<rect x="' + x + '" y="' + (10 + alto - h1) + '" width="' + bw + '" height="' + Math.max(h1, s.nuevas ? 2 : 0) + '" rx="2" fill="#8FB5C9"><title>' + esc(f.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })) + ': ' + s.nuevas + ' cuentas nuevas</title></rect>' +
+           '<rect x="' + (x + bw + 2) + '" y="' + (10 + alto - h2) + '" width="' + bw + '" height="' + Math.max(h2, s.pruebas ? 2 : 0) + '" rx="2" fill="#0F8B7A"><title>' + esc(f.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })) + ': ' + s.pruebas + ' pruebas elegidas</title></rect>';
+      if (i % 3 === 0 || i === sem.length - 1) g += '<text x="' + (x + bw) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="11" fill="#78716C">' + esc(f.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }).replace('.', '')) + '</text>';
+    });
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img" aria-label="Cuentas nuevas y pruebas elegidas por semana">' + g + '</svg>';
+  }
+
   function renderCursosGratis() {
     const kpis = document.getElementById('cgKpis');
-    if (!kpis) return;
     const cuentas = allMembers.filter(conCuenta);
     const eligieron = cuentas.filter(m => m.cursoGratisElegido);
     const sinMembresia = cuentas.filter(m => ['gratis', 'ex'].includes(claseAcceso(m).grupo));
     const sinElegir = sinMembresia.filter(m => !m.cursoGratisElegido);
-    const conMembresia = cuentas.filter(tieneAcceso);
-    const eligieronYPagan = eligieron.filter(tieneAcceso);
-    const pagaronSinElegir = conMembresia.filter(m => !m.cursoGratisElegido);
-    const tasa = eligieron.length ? Math.round(eligieronYPagan.length / eligieron.length * 100) : 0;
-    const pct = (n, t) => t ? Math.round(n / t * 100) + '%' : '0%';
-
-    const tarjeta = (clase, valor, etiqueta, sub, ayuda) => '<div class="stat-card ' + clase + '"><div class="stat-value">' + valor + '</div><div class="stat-label" title="' + esc(ayuda || '') + '">' + etiqueta + '</div><div class="sb-sub">' + sub + '</div></div>';
-    kpis.innerHTML =
-      tarjeta('teal', eligieron.length, 'ELIGIERON CURSO GRATIS', pct(eligieron.length, cuentas.length) + ' de las ' + cuentas.length + ' cuentas con login', 'Cuentas que ya eligieron su curso gratis') +
-      tarjeta('amber', sinElegir.length, 'SIN ELEGIR TODAVÍA', 'Sin membresía y sin curso gratis elegido', 'Se registraron y aún no escogen: son las que conviene invitar a elegir') +
-      tarjeta('green', eligieronYPagan.length, 'ELIGIERON Y YA TIENEN MEMBRESÍA', pct(eligieronYPagan.length, eligieron.length) + ' de las que eligieron', 'Con acceso hoy por membresía') +
-      tarjeta('violet', pagaronSinElegir.length, 'TIENEN MEMBRESÍA SIN HABER ELEGIDO', 'Para comparar contra las que sí eligieron', '') +
-      tarjeta('sky', tasa + '%', 'CONVERSIÓN', 'De curso gratis a membresía', 'Eligieron curso gratis y hoy tienen acceso, entre todas las que eligieron') +
-      tarjeta('rose', sinMembresia.length, 'CUENTAS SIN MEMBRESÍA', 'Nunca pagaron o ya terminaron', '');
-
-    const aviso = document.getElementById('cgAviso');
-    if (aviso) {
-      aviso.innerHTML = eligieron.length
-        ? 'Cada cuenta sin membresía elige <b>un curso</b> y recibe todas sus clases menos la última, más 1 material. La elección se guarda en el servidor (<code>cursoGratisElegido</code>).'
-        : '<b>Todavía nadie ha elegido curso gratis.</b> La elección se guarda en cada miembro (<code>cursoGratisElegido</code>) y empieza a llenarse cuando se publique el panel nuevo con «Elige tu curso gratis». Mientras tanto, los números de «Sin elegir» son todas las cuentas sin membresía.';
-    }
-
-    // Por curso
-    const porCurso = {};
-    eligieron.forEach(m => {
-      const k = m.cursoGratisElegido;
-      porCurso[k] = porCurso[k] || { id: k, n: 0, pagan: 0 };
-      porCurso[k].n++;
-      if (tieneAcceso(m)) porCurso[k].pagan++;
-    });
-    const filasCurso = Object.values(porCurso).sort((a, b) => b.n - a.n);
-    const max = Math.max(1, ...filasCurso.map(f => f.n));
-    const tablaCurso = document.getElementById('cgPorCurso');
-    if (tablaCurso) {
-      tablaCurso.innerHTML = filasCurso.length
-        ? '<table class="members-table"><thead><tr><th>Curso</th><th>Lo eligieron</th><th>Hoy con membresía</th><th>Conversión</th></tr></thead><tbody>' +
-          filasCurso.map(f => '<tr><td data-label="Curso"><div class="m-name">' + esc(tituloCursoGratis(f.id)) + '</div></td>' +
-            '<td data-label="Lo eligieron"><div class="cg-barra"><i style="width:' + Math.round(f.n / max * 100) + '%"></i></div><b>' + f.n + '</b></td>' +
-            '<td data-label="Hoy con membresía">' + f.pagan + '</td>' +
-            '<td data-label="Conversión">' + pct(f.pagan, f.n) + '</td></tr>').join('') + '</tbody></table>'
-        : '<div class="sb-vacio">Aún no hay elecciones.</div>';
-    }
-
-    // Últimas elecciones
-    const ultimas = eligieron.slice().sort((a, b) => (toDate(b.cursoGratisElegidoEn) || 0) - (toDate(a.cursoGratisElegidoEn) || 0)).slice(0, 10);
-    const tablaUlt = document.getElementById('cgUltimas');
-    if (tablaUlt) {
-      tablaUlt.innerHTML = ultimas.length
-        ? '<table class="members-table"><thead><tr><th>Miembro</th><th>Curso elegido</th><th>Cuándo</th><th>Hoy</th></tr></thead><tbody>' +
-          ultimas.map(m => { const v = vistaMiembro(m); return '<tr>' +
-            '<td data-label="Miembro"><div class="m-info"><div class="m-name">' + esc(m.nombre || '(sin nombre)') + '</div><div class="m-email">' + esc(m.email || '—') + '</div></div></td>' +
-            '<td data-label="Curso">' + esc(tituloCursoGratis(m.cursoGratisElegido)) + '</td>' +
-            '<td data-label="Cuándo">' + esc(formatTimeAgo(m.cursoGratisElegidoEn)) + '</td>' +
-            '<td data-label="Hoy"><span class="m-status ' + v.tono + '"><span class="m-status-dot"></span>' + esc(v.estado) + '</span></td></tr>'; }).join('') + '</tbody></table>'
-        : '<div class="sb-vacio">Aún no hay elecciones.</div>';
-    }
-
     const badge = document.getElementById('navGratisCount');
     if (badge) badge.textContent = String(sinElegir.length);
+    if (!kpis) return;
+
+    const listo = CG.avance !== null;
+    const info = new Map(eligieron.map(m => [m.uid, cgInfo(m)]));
+    const terminaron = eligieron.filter(m => info.get(m.uid).termino), miembros = eligieron.filter(m => info.get(m.uid).miembro);
+    const empezaron = eligieron.filter(m => info.get(m.uid).vistas >= 1);
+    const n = eligieron.length;
+
+    const tarjeta = (clase, valor, etiqueta, sub) => '<div class="stat-card ' + clase + '"><div class="stat-value">' + valor + '</div><div class="stat-label">' + etiqueta + '</div><div class="sb-sub">' + sub + '</div></div>';
+    kpis.innerHTML =
+      tarjeta('teal', cgNum(n), 'PRUEBAS ELEGIDAS', 'Desde que existe la función') +
+      tarjeta('green', listo ? cgNum(terminaron.length) : '…', 'TERMINARON LAS CLASES GRATIS', listo ? cgPct(terminaron.length, n) + ' % de quienes eligieron' : 'Leyendo el avance…') +
+      tarjeta('amber', cgNum(miembros.length), 'SE HICIERON MIEMBROS', cgPct(miembros.length, n) + ' % de quienes eligieron') +
+      tarjeta('sky', cgNum(sinElegir.length), 'CUENTAS SIN ELEGIR', 'Sin membresía y sin curso de prueba');
+
+    // Por semana
+    const sem = cgSemanas(cuentas, eligieron), totNuevas = sem.reduce((a, s) => a + s.nuevas, 0), totPruebas = sem.reduce((a, s) => a + s.pruebas, 0);
+    const mejor = sem.reduce((a, s) => s.nuevas > a.nuevas ? s : a, sem[0]);
+    document.getElementById('cgSemanas').innerHTML = cgGrafica(sem) +
+      '<p class="cr-ayuda"><b>' + cgNum(totNuevas) + '</b> ' + (totNuevas === 1 ? 'cuenta nueva' : 'cuentas nuevas') + ' · <b>' + cgNum(totPruebas) + '</b> ' + (totPruebas === 1 ? 'prueba elegida' : 'pruebas elegidas') + (mejor.nuevas ? ' · Más alto: <b>' + mejor.nuevas + '</b> (semana del ' + esc(new Date(mejor.t).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })) + ')' : '') + '</p>' +
+      '<div class="cr-nota"><b>Cómo leerlo:</b> en las últimas 12 semanas se ' + (totNuevas === 1 ? 'creó ' : 'crearon ') + cgNum(totNuevas) + (totNuevas === 1 ? ' cuenta y ' : ' cuentas y ') + cgNum(totPruebas) + (totPruebas === 1 ? ' persona eligió' : ' personas eligieron') + ' su curso de prueba' + (totNuevas ? ' (' + Math.round(totPruebas / totNuevas * 10) + ' por cada 10 cuentas nuevas)' : '') + '. Cada par de columnas es una semana.</div>';
+
+    // Curso que eligen
+    const porCurso = {};
+    eligieron.forEach(m => { const k = m.cursoGratisElegido, i = info.get(m.uid); const f = porCurso[k] || (porCurso[k] = { id: k, n: 0, term: 0, miembros: 0 }); f.n++; if (i.termino) f.term++; if (i.miembro) f.miembros++; });
+    const ranking = Object.values(porCurso).sort((a, b) => b.n - a.n);
+    const verRank = CG.verTodosCursos ? ranking : ranking.slice(0, 6), maxR = ranking.length ? ranking[0].n : 1;
+    document.getElementById('cgPorCurso').innerHTML = ranking.length
+      ? verRank.map((f, i) => '<div class="pg-rank' + (i === 0 ? ' top' : '') + '"><b>' + (i + 1) + '</b><div><div class="t">' + esc(cgTitulo(f.id)) + '</div><div class="cr-barra"><i style="width:' + Math.max(3, Math.round(f.n / maxR * 100)) + '%"></i></div></div><em>' + cgNum(f.n) + '<span>' + cgPct(f.n, n) + ' %</span></em></div>').join('') +
+        (ranking.length > 6 ? '<div class="cr-acciones"><button type="button" class="btn-secondary" onclick="cgVerTodosCursos()">' + (CG.verTodosCursos ? 'Ver menos' : 'Ver todos (' + ranking.length + ')') + '</button></div>' : '') +
+        '<p class="cr-ayuda">Cada barra se compara con el primer lugar; el porcentaje es la parte del total (' + cgNum(n) + ' pruebas).</p>' +
+        '<div class="cr-nota"><b>Cómo leerlo:</b> el curso más elegido es «' + esc(cgTitulo(ranking[0].id)) + '»: ' + cgNum(ranking[0].n) + (ranking[0].n === 1 ? ' persona (' : ' personas (') + cgPct(ranking[0].n, n) + ' % de las pruebas).</div>'
+      : '<div class="sb-vacio">Aún no hay elecciones.</div>';
+
+    // Avance de la prueba
+    const sinEmpezar = eligieron.filter(m => info.get(m.uid).vistas === 0).length;
+    const menosMitad = eligieron.filter(m => { const i = info.get(m.uid); return i.vistas > 0 && !i.termino && i.vistas < i.gratis / 2; }).length;
+    const mitadMas = eligieron.filter(m => { const i = info.get(m.uid); return i.vistas > 0 && !i.termino && i.vistas >= i.gratis / 2; }).length;
+    const filaAv = (et, v, color) => '<div class="pg-fila-av"><div class="l"><span>' + et + '</span><b>' + cgNum(v) + '<span>' + cgPct(v, n) + ' %</span></b></div><div class="cr-barra"><i style="width:' + (v ? Math.max(3, cgPct(v, n)) : 0) + '%;background:' + color + '"></i></div></div>';
+    document.getElementById('cgAvance').innerHTML = !n ? '<div class="sb-vacio">Aún no hay elecciones.</div>' : !listo ? '<div class="sb-vacio">Leyendo el avance…</div>' :
+      filaAv('Sin empezar', sinEmpezar, '#6B7280') + filaAv('Menos de la mitad', menosMitad, '#2E7D9A') + filaAv('La mitad o más', mitadMas, '#2E7D9A') + filaAv('Terminaron las clases gratis', terminaron.length, '#1F7A4D') +
+      '<div class="cr-nota"><b>Cómo leerlo:</b> de ' + cgNum(n) + ' personas con clases gratis, ' + cgNum(sinEmpezar) + ' todavía no empezaron y ' + cgNum(terminaron.length) + ' ya terminaron.</div>';
+
+    // Embudo
+    document.getElementById('cgEmbudo').innerHTML = !n ? '<div class="sb-vacio">Aún no hay elecciones.</div>' : !listo ? '<div class="sb-vacio">Leyendo el avance…</div>' :
+      '<div class="pg-fila-av"><div class="l"><span>1 · Eligieron su prueba</span><b>' + cgNum(n) + '</b></div><div class="cr-barra"><i style="width:100%;background:#1F7A4D"></i></div></div>' +
+      '<div class="pg-paso"><b>' + cgPct(empezaron.length, n) + ' %</b> pasa al siguiente paso</div>' +
+      '<div class="pg-fila-av"><div class="l"><span>2 · Empezaron el curso</span><b>' + cgNum(empezaron.length) + '<span>' + cgPct(empezaron.length, n) + ' % del total</span></b></div><div class="cr-barra"><i style="width:' + (empezaron.length ? Math.max(3, cgPct(empezaron.length, n)) : 0) + '%;background:#2E7D9A"></i></div></div>' +
+      '<div class="pg-paso"><b>' + cgPct(terminaron.length, empezaron.length) + ' %</b> pasa al siguiente paso</div>' +
+      '<div class="pg-fila-av"><div class="l"><span>3 · Llegaron a la última clase gratis</span><b>' + cgNum(terminaron.length) + '<span>' + cgPct(terminaron.length, n) + ' % del total</span></b></div><div class="cr-barra"><i style="width:' + (terminaron.length ? Math.max(3, cgPct(terminaron.length, n)) : 0) + '%;background:#B7791F"></i></div></div>' +
+      '<div class="cr-nota"><b>Cómo leerlo:</b> de cada 10 personas que eligieron su prueba, ' + Math.round(empezaron.length / n * 10) + ' empiezan el curso y ' + (Math.round(terminaron.length / n * 100) / 10).toLocaleString('es-MX') + ' llegan a la última clase gratis.</div>';
+
+    // Cuántas pagan después
+    const noMiembros = n - miembros.length, pm = cgPct(miembros.length, n), circ = 2 * Math.PI * 70;
+    document.getElementById('cgPagan').innerHTML = !n ? '<div class="sb-vacio">Aún no hay elecciones.</div>' :
+      '<div class="pg-donut"><svg width="190" height="190" viewBox="0 0 190 190" role="img" aria-label="Quienes ya son miembros"><circle cx="95" cy="95" r="70" fill="none" stroke="#6B7280" stroke-width="22"/><circle cx="95" cy="95" r="70" fill="none" stroke="#1F7A4D" stroke-width="22" stroke-dasharray="' + (circ * miembros.length / n).toFixed(1) + ' ' + circ.toFixed(1) + '" transform="rotate(-90 95 95)"/><text x="95" y="96" text-anchor="middle" font-size="30" font-weight="800" fill="#1C1917">' + pm + ' %</text><text x="95" y="116" text-anchor="middle" font-size="11" fill="#78716C">ya son miembros</text></svg>' +
+      '<div class="pg-leyenda-d"><div><i style="background:#1F7A4D"></i><b>Ya son miembros</b><b>' + cgNum(miembros.length) + '</b><span>' + pm + ' %</span></div><div><i style="background:#6B7280"></i><b>Todavía no son miembros</b><b>' + cgNum(noMiembros) + '</b><span>' + (100 - pm) + ' %</span></div></div></div>' +
+      '<div class="cr-nota"><b>Cómo leerlo:</b> de cada 10 personas que eligieron una prueba, ' + (miembros.length * 10 / n < 1 ? 'menos de 1' : Math.round(miembros.length * 10 / n)) + ' ya son miembros.</div>';
+
+    // Detalle por curso
+    document.getElementById('cgDetalle').innerHTML = ranking.length
+      ? '<div style="overflow-x:auto"><table class="pg-tabla"><thead><tr><th>Curso</th><th>Eligieron</th><th>Terminaron las clases gratis</th><th>Ya son miembros</th></tr></thead><tbody>' +
+        ranking.map(f => '<tr><td>' + esc(cgTitulo(f.id)) + '</td><td>' + cgNum(f.n) + '</td><td>' + (listo ? cgNum(f.term) : '…') + '</td><td>' + cgNum(f.miembros) + '</td></tr>').join('') + '</tbody></table></div>'
+      : '<div class="sb-vacio">Aún no hay elecciones.</div>';
+
+    // Quiénes eligieron
+    document.getElementById('cgVista').innerHTML = [['eligieron', 'Eligieron · ' + n], ['sinelegir', 'Sin elegir · ' + sinElegir.length]].map(v => '<button type="button" class="chip' + (CG.vista === v[0] ? ' active' : '') + '" onclick="cgElegirVista(\'' + v[0] + '\')">' + v[1] + '</button>').join('');
+    const fil = document.getElementById('cgFiltros');
+    fil.style.display = CG.vista === 'eligieron' ? '' : 'none';
+    document.getElementById('cgCursoSel').style.display = CG.vista === 'eligieron' ? '' : 'none';
+    fil.innerHTML = [['todos', 'Todos'], ['terminaron', 'Terminaron las clases gratis'], ['siguen', 'Siguen en clases gratis'], ['miembros', 'Ya son miembros'], ['nomiembros', 'Aún no son miembros']]
+      .map(f => '<button type="button" class="chip' + (CG.filtro === f[0] ? ' active' : '') + '" onclick="cgElegirFiltro(\'' + f[0] + '\')">' + f[1] + '</button>').join('');
+    const sel = document.getElementById('cgCursoSel'), previo = CG.curso;
+    sel.innerHTML = '<option value="">Todos los cursos</option>' + ranking.map(f => '<option value="' + esc(f.id) + '">' + esc(cgTitulo(f.id)) + '</option>').join('');
+    sel.value = previo;
+    cgPintarQuienes(eligieron, sinElegir, info);
   }
+
+  function cgPintarQuienes(eligieron, sinElegir, info) {
+    const host = document.getElementById('cgQuienes'), q = CG.busca;
+    const persona = (m) => '<div class="pg-persona"><div class="pg-av">' + esc(cgIniciales(m)) + '</div><div><b>' + esc(m.nombre || '(sin nombre)') + '</b><small>' + esc(m.email || '—') + '</small></div></div>';
+    let lista, html;
+    if (CG.vista === 'sinelegir') {
+      lista = sinElegir.filter(m => !q || ((m.nombre || '') + ' ' + (m.email || '')).toLowerCase().includes(q)).sort((a, b) => (fechaAlta(b) || 0) - (fechaAlta(a) || 0));
+      if (!lista.length) { host.innerHTML = '<div class="sb-vacio">' + (sinElegir.length ? 'Nadie coincide.' : 'Todas las cuentas sin membresía ya eligieron su prueba.') + '</div>'; return; }
+      const ver = lista.slice(0, CG.visibles);
+      html = '<div class="pg-fila pg-sin cab"><span>Persona</span><span>Se registró</span><span>Estado</span></div>' + ver.map(m => '<div class="pg-fila pg-sin">' + persona(m) + '<div>' + esc(cgFechaCorta(fechaAlta(m))) + '<small>' + esc(fechaAlta(m) ? formatTimeAgo(fechaAlta(m)) : '') + '</small></div><div><span class="cr-b">' + (claseAcceso(m).grupo === 'ex' ? 'Ex miembro' : 'Sin membresía') + '</span></div></div>').join('');
+      html += cgPie(lista.length, ver.length);
+    } else {
+      lista = eligieron.filter(m => {
+        const i = info.get(m.uid);
+        if (CG.curso && m.cursoGratisElegido !== CG.curso) return false;
+        if (CG.filtro === 'terminaron' && !i.termino) return false;
+        if (CG.filtro === 'siguen' && (i.termino || i.miembro)) return false;
+        if (CG.filtro === 'miembros' && !i.miembro) return false;
+        if (CG.filtro === 'nomiembros' && i.miembro) return false;
+        return !q || ((m.nombre || '') + ' ' + (m.email || '') + ' ' + cgTitulo(m.cursoGratisElegido)).toLowerCase().includes(q);
+      }).sort((a, b) => (toDate(b.cursoGratisElegidoEn) || 0) - (toDate(a.cursoGratisElegidoEn) || 0));
+      if (!lista.length) { host.innerHTML = '<div class="sb-vacio">' + (eligieron.length ? 'Nada coincide con esos filtros.' : 'Aún no hay elecciones.') + '</div>'; return; }
+      const ver = lista.slice(0, CG.visibles);
+      html = '<div class="pg-fila cab"><span>Persona</span><span>Curso elegido</span><span>Avance</span><span>Estado</span></div>' + ver.map(m => {
+        const i = info.get(m.uid), listo = CG.avance !== null;
+        const estado = i.miembro ? '<span class="cr-b acceso">Ya es miembro</span>' : i.termino ? '<span class="cr-b termino">Terminó las clases gratis</span>' : '<span class="cr-b">En clases gratis</span>';
+        return '<div class="pg-fila">' + persona(m) + '<div><div class="pg-curso" title="' + esc(cgTitulo(m.cursoGratisElegido)) + '">' + esc(cgTitulo(m.cursoGratisElegido)) + '</div><small>Elegida ' + esc(cgFechaCorta(m.cursoGratisElegidoEn)) + ' · ' + esc(formatTimeAgo(m.cursoGratisElegidoEn)) + '</small></div>' +
+          '<div class="pg-prog">' + (listo ? '<div class="cr-barra"><i style="width:' + (i.gratis ? Math.round(i.vistas / i.gratis * 100) : 0) + '%;background:#1F7A4D"></i></div><span>' + i.vistas + ' de ' + i.gratis + '</span>' : '<span>…</span>') + '</div><div>' + estado + '</div></div>';
+      }).join('');
+      html += cgPie(lista.length, ver.length);
+    }
+    host.innerHTML = html;
+  }
+  const cgPie = (total, ver) => total > ver ? '<div class="cr-acciones"><button type="button" class="btn-secondary" onclick="cgMas()">Mostrar ' + Math.min(20, total - ver) + ' más</button><span class="cr-ayuda" style="margin:0;">Mostrando ' + ver + ' de ' + total + '</span></div>' : '<p class="cr-ayuda">Mostrando ' + ver + ' de ' + total + '</p>';
+  window.cgMas = function() { CG.visibles += 20; renderCursosGratis(); };
+  window.cgVerTodosCursos = function() { CG.verTodosCursos = !CG.verTodosCursos; renderCursosGratis(); };
+  window.cgElegirVista = function(v) { CG.vista = v; CG.visibles = 20; renderCursosGratis(); };
+  window.cgElegirFiltro = function(f) { CG.filtro = f; CG.visibles = 20; renderCursosGratis(); };
+  window.cgElegirCurso = function(c) { CG.curso = c; CG.visibles = 20; renderCursosGratis(); };
+  window.cgBuscar = function(t) { CG.busca = String(t || '').trim().toLowerCase(); CG.visibles = 20; renderCursosGratis(); };
 
   /* FASE3O-ANUNCIOS */
   // ═══════════════════════════════════════════════════
@@ -6714,6 +6907,7 @@ let _bibLibrosCargados = false;
     if (tabName === 'materials' || tabName === 'library') setTimeout(matActualizar, 0);
     if (tabName === 'creditos') setTimeout(() => cargarCreditosAdmin(false), 0);
     if (tabName === 'retos') setTimeout(() => cargarRetosAdmin(true), 0);
+    if (tabName === 'freecourses') setTimeout(() => cargarAvanceGratis(true), 0);
     if (tabName === 'valores') setTimeout(cargarValoresAdmin, 0);
   };
   document.addEventListener('click', (e) => {
