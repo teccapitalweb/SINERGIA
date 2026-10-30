@@ -550,6 +550,8 @@
   .f-contact { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 14.5px; }
   .f-contact .ico { width: 18px; height: 18px; color: var(--mint); margin-top: 2px; }
   .f-contact a:hover { color: #fff; }
+  .footer-legal a, .footer-legal button { color: inherit; background: none; border: 0; padding: 0; font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(250, 249, 245, .35); transition: color .2s, text-decoration-color .2s; }
+  .footer-legal a:hover, .footer-legal button:hover { color: #fff; text-decoration-color: #fff; }
   .footer-bottom { padding-right: 200px; margin-top: 52px; padding-top: 24px; border-top: 1px solid rgba(250, 249, 245, .14); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: 13px; }
 
   /* ───────── Responsive ───────── */
@@ -1156,6 +1158,7 @@
     </div>
     <div class="footer-bottom">
       <div>© 2026 Sinergia-Agrícola · Todos los derechos reservados</div>
+      <div class="footer-legal"><a href="terminos.html">Términos y condiciones</a> · <a href="privacidad.html">Aviso de privacidad</a> · <button type="button" data-cookies-abrir>Configurar cookies</button></div>
       <div>Powered by Tec Capital Group</div>
     </div>
   </div>
@@ -2037,6 +2040,8 @@
     console.error('Firebase no disponible:', err);
   }
 </script>
+
+<script src="cookies.js?v=1" defer></script>
 
 </body>
 </html>

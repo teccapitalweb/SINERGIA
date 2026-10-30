@@ -1,0 +1,55 @@
+:root {
+  --forest: #113D35; --forest-2: #1F5B4D; --forest-deep: #0D2F29; --accent: #1AA888; --accent-text: #087F70;
+  --mint: #A9DDB9; --ivory: #FAF9F5; --card: #FFFFFF; --subtle: #EDF4F0; --border: #D9E5DF; --text: #183A33; --text-2: #5A7168;
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--ivory); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent-text); text-decoration: underline; text-underline-offset: 2px; }
+a:hover { color: var(--forest); }
+
+.lg-top { background: var(--forest); color: var(--ivory); }
+.lg-top .in { max-width: 920px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.lg-brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ivory); text-decoration: none; font-family: var(--font-display); line-height: 1.1; }
+.lg-brand img { width: 38px; height: 38px; border-radius: 10px; object-fit: cover; }
+.lg-brand b { display: block; font-size: 16px; font-weight: 800; }
+.lg-brand span { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+.lg-back { color: var(--ivory); font-size: 14px; font-weight: 600; text-decoration: none; padding: 9px 16px; border: 1px solid rgba(250,249,245,.4); border-radius: 99px; white-space: nowrap; }
+.lg-back:hover { background: rgba(250,249,245,.1); color: #fff; }
+
+.lg-hero { background: var(--forest-deep); color: var(--ivory); }
+.lg-hero .in { max-width: 920px; margin: 0 auto; padding: 44px 20px 40px; }
+.lg-hero h1 { font-family: var(--font-display); font-size: clamp(28px, 5vw, 40px); font-weight: 800; line-height: 1.15; letter-spacing: -.01em; }
+.lg-hero p { margin-top: 10px; color: rgba(250,249,245,.76); font-size: 15px; }
+
+.lg-main { max-width: 920px; margin: 0 auto; padding: 36px 20px 72px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 44px; align-items: start; }
+.lg-toc { position: sticky; top: 20px; font-size: 14px; }
+.lg-toc b { display: block; font-family: var(--font-display); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 10px; }
+.lg-toc a { display: block; padding: 6px 0; color: var(--text-2); text-decoration: none; line-height: 1.4; }
+.lg-toc a:hover { color: var(--forest); }
+
+.lg-doc h2 { font-family: var(--font-display); font-size: 21px; font-weight: 800; color: var(--forest); margin: 38px 0 10px; scroll-margin-top: 20px; }
+.lg-doc h2:first-child { margin-top: 0; }
+.lg-doc p { margin-bottom: 12px; color: var(--text); }
+.lg-doc ul { margin: 4px 0 14px 20px; }
+.lg-doc li { margin-bottom: 7px; }
+.lg-doc strong { color: var(--forest); }
+.lg-aviso { background: var(--subtle); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; margin-bottom: 26px; font-size: 14.5px; color: var(--text-2); }
+.lg-tabla { width: 100%; border-collapse: collapse; margin: 6px 0 16px; font-size: 14px; }
+.lg-tabla th, .lg-tabla td { text-align: left; padding: 10px 12px; border: 1px solid var(--border); vertical-align: top; }
+.lg-tabla th { background: var(--subtle); font-family: var(--font-display); font-size: 12.5px; letter-spacing: .04em; color: var(--forest); }
+.lg-btn { display: inline-block; margin-top: 4px; padding: 11px 20px; border-radius: 99px; background: var(--forest); color: #fff; border: 0; font: 700 14px/1 var(--font-display); cursor: pointer; text-decoration: none; }
+.lg-btn:hover { background: var(--forest-2); color: #fff; }
+
+.lg-foot { background: var(--forest-deep); color: rgba(250,249,245,.7); font-size: 13.5px; }
+.lg-foot .in { max-width: 920px; margin: 0 auto; padding: 24px 20px; display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: space-between; }
+.lg-foot a { color: rgba(250,249,245,.85); }
+.lg-foot a:hover { color: #fff; }
+
+@media (max-width: 760px) {
+  .lg-main { grid-template-columns: 1fr; gap: 20px; padding-top: 26px; }
+  .lg-toc { position: static; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; }
+  .lg-tabla { display: block; overflow-x: auto; }
+}
