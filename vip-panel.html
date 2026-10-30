@@ -11777,7 +11777,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           <h2 class="panel-title">Tu <em class="headline-accent">biblioteca</em> del campo.</h2>
           <p class="panel-illustrated-text">Los materiales de tus cursos, guías y libros abiertos reunidos en colecciones, listos para consultar y aplicar en tu parcela.</p>
         </div>
-        <img class="panel-illustrated-image" src="assets/illustrations/materials-videoteca-agricola-pencil.png" alt="Ilustración de biblioteca agrícola digital">
+        <img class="panel-illustrated-image" src="assets/illustrations/biblioteca-libros-menta.png" alt="Pila de libros de la biblioteca agrícola">
       </div>
 
       <div id="matRetosAviso" class="mat-retos-aviso" hidden></div>
@@ -17961,6 +17961,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   }
   function matAvisoBloqueado(it) {
     var texto, acciones = '';
+    var titulo = it.estado === 'Con membresía' ? (it.canjeable ? 'Bloqueado: créditos o membresía' : 'Bloqueado: solo con membresía')
+      : it.estado === 'Con créditos' ? (it.retosRequeridos > 0 ? 'Bloqueado: créditos o retos' : 'Bloqueado: solo con créditos') : it.estado;
     if (it.estado === 'Con créditos') {
       texto = it.retosRequeridos > 0
         ? 'Resuelve ' + it.retosRequeridos + (it.retosRequeridos === 1 ? ' reto' : ' retos') + ' (llevas ' + Math.min(bib.retosHechos, it.retosRequeridos) + ') o canjéalo con tus créditos para leerlo.'
@@ -17973,7 +17975,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (it.canjeable) acciones += '<button type="button" class="cred-btn cred-btn--sm" data-det="canjear">' + matEsc(textoCanje(it)) + '</button>';
     if (it.estado === 'Con créditos' && it.retosRequeridos > 0) acciones += '<button type="button" class="cred-btn cred-btn--sm cred-btn--sec" data-det="retos">Ir a Retos</button>';
     return '<div class="mat-det-aviso"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg>' +
-      '<div class="mat-det-aviso-cuerpo"><b>' + matEsc(it.estado) + '</b><span>' + texto + '</span>' + (acciones ? '<div class="mat-det-aviso-acciones">' + acciones + '</div>' : '') + '</div></div>';
+      '<div class="mat-det-aviso-cuerpo"><b>' + matEsc(titulo) + '</b><span>' + texto + '</span>' + (acciones ? '<div class="mat-det-aviso-acciones">' + acciones + '</div>' : '') + '</div></div>';
   }
   function matEnlazarDestacada(grid, it) {
     grid.querySelectorAll('.mat-destacado [data-det]').forEach(function (b) {
