@@ -1487,6 +1487,16 @@
   .rt-barra.con-cambios { border-color: #D9A441; background: #FFFBEF; color: #8A5A14; font-weight: 600; box-shadow: 0 8px 24px rgba(17, 61, 53, 0.1); }
   .rt-barra-acc { display: flex; gap: 8px; }
   .rt-barra-acc button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .rt2-filtros { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) auto; gap: 12px; align-items: end; }
+  .rt2-filtros .btn-secondary { height: 42px; }
+  .rt2-fila { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.8fr) minmax(0, 1.2fr) 80px; gap: 14px; align-items: center; padding: 12px 4px; border-top: 1px solid var(--stone-100); font-size: 13px; }
+  .rt2-fila b { color: var(--stone-800); font-size: 14px; }
+  .rt2-fila small { display: block; color: var(--stone-500); font-size: 12px; margin-top: 2px; }
+  .rt2-fila em { font-style: normal; font-weight: 700; color: var(--teal-700); text-align: right; }
+  .rt2-pers { grid-template-columns: 34px minmax(0, 1.4fr) minmax(0, .8fr) minmax(0, .7fr) minmax(0, .7fr) minmax(0, 1.4fr) minmax(0, 1fr); }
+  .rt2-cab { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--stone-500); font-weight: 700; border-top: 0; padding-bottom: 6px; }
+  .rt2-cab em { color: var(--stone-500); text-align: left; }
+  @media (max-width: 860px) { .rt2-filtros { grid-template-columns: 1fr 1fr; } .rt2-filtros > :first-child { grid-column: 1 / -1; } .rt2-fila, .rt2-pers { grid-template-columns: minmax(0, 1fr); gap: 4px; } .rt2-fila em { text-align: left; } .rt2-cab { display: none; } }
   .cr-caja { margin-top: 14px; }
   .cr-sub { margin: 2px 0 14px; font-size: 13px; color: var(--stone-500); line-height: 1.5; }
   .cr-form { display: grid; grid-template-columns: 1.6fr 1fr 1.2fr; gap: 12px; }
@@ -2234,18 +2244,6 @@ body::before { display: none; }
       <span class="nav-item-text">Videoteca</span>
       <span id="navCoursesCount" class="nav-item-count">0</span>
     </button>
-    <button class="nav-item" data-tab="ratings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span class="nav-item-text">Calificaciones</span>
-    </button>
-    <button class="nav-item" data-tab="retos">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-      <span class="nav-item-text">Retos</span>
-    </button>
-    <button class="nav-item" data-tab="creditos">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
-      <span class="nav-item-text">Créditos</span>
-    </button>
     <button class="nav-item" data-tab="library">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       <span class="nav-item-text">Material</span>
@@ -2255,11 +2253,9 @@ body::before { display: none; }
       <span class="nav-item-text">Clases en vivo</span>
       <span id="navWebinarsCount" class="nav-item-count">0</span>
     </button>
-
-    <div class="nav-label">Comunicación</div>
-    <button class="nav-item" data-tab="notifications">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      <span class="nav-item-text">Notificaciones</span>
+    <button class="nav-item" data-tab="ratings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="nav-item-text">Calificaciones</span>
     </button>
 
     <div class="nav-label">Comunidad</div>
@@ -2273,15 +2269,31 @@ body::before { display: none; }
       <span class="nav-item-text">Directorio</span>
       <span id="navDirCount" class="nav-item-count" title="Tarjetas en el directorio">·</span>
     </button>
+    <button class="nav-item" data-tab="retos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      <span class="nav-item-text">Retos</span>
+    </button>
 
     <div class="nav-label">Marketing</div>
+    <button class="nav-item" data-tab="creditos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+      <span class="nav-item-text">Créditos</span>
+    </button>
     <button class="nav-item" data-tab="freecourses">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
       <span class="nav-item-text">Cursos gratis</span>
       <span id="navGratisCount" class="nav-item-count" title="Cuentas sin membresía que aún no eligen curso gratis">0</span>
     </button>
+    <button class="nav-item" data-tab="notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span class="nav-item-text">Notificaciones</span>
+    </button>
 
     <div class="nav-label">Sistema</div>
+    <button class="nav-item" data-tab="valores">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      <span class="nav-item-text">Valores de créditos</span>
+    </button>
     <button class="nav-item" data-tab="config">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       <span class="nav-item-text">Configuración</span>
@@ -3244,13 +3256,52 @@ body::before { display: none; }
       <div class="panel-head">
         <div class="panel-head-info">
           <h2 class="panel-title"><em>Retos</em> y puntos</h2>
-          <p class="panel-sub">Los créditos son lo único que desbloquea cosas; los puntos solo arman el podio semanal. Aquí ajustas cuánto se gana y cuánto cuesta cada cosa, sin tocar código. Para regalar créditos o crear cupones ve a <a href="#" onclick="switchTab('creditos');return false;">Créditos</a>.</p>
+          <p class="panel-sub">Quién resuelve los retos, cuáles y cuándo, y cuántos puntos ganó. Es solo lectura: aquí no se regala nada. Los créditos se regalan en <a href="#" onclick="switchTab('creditos');return false;">Créditos</a> y lo que se gana o cuesta cada cosa se cambia en <a href="#" onclick="switchTab('valores');return false;">Valores de créditos</a>.</p>
+        </div>
+        <div class="panel-head-accion">
+          <button type="button" class="btn-secondary" onclick="cargarRetosAdmin(true)">Actualizar</button>
+        </div>
+      </div>
+      <div class="stats-grid" id="retosKpis"></div>
+
+      <div class="widget-box rt-caja">
+        <div class="widget-head"><span class="widget-name">Historial de retos resueltos</span></div>
+        <p class="cr-sub">Cada vez que alguien suma puntos: quién, qué reto, de qué tipo, cuándo (hora de México) y cuántos puntos ganó.</p>
+        <div class="rt2-filtros">
+          <input type="text" class="form-input" id="rtBuscaHist" placeholder="Buscar persona o reto" oninput="rtFiltrarHist()">
+          <div><label class="form-label" for="rtTipoHist">Tipo</label><select class="form-input" id="rtTipoHist" onchange="rtFiltrarHist()"><option value="">Todos</option><option value="reto">Retos y juegos</option><option value="clase">Clases vistas</option><option value="actividad">Actividades</option></select></div>
+          <div><label class="form-label" for="rtDesdeHist">Desde</label><input type="date" class="form-input" id="rtDesdeHist" onchange="rtFiltrarHist()"></div>
+          <div><label class="form-label" for="rtHastaHist">Hasta</label><input type="date" class="form-input" id="rtHastaHist" onchange="rtFiltrarHist()"></div>
+          <button type="button" class="btn-secondary" onclick="rtLimpiarHist()">Limpiar</button>
+        </div>
+        <div class="cr-nota" id="rtHistNota"></div>
+        <div id="rtHistorial"></div>
+      </div>
+
+      <div class="widget-box rt-caja">
+        <div class="widget-head"><span class="widget-name">Totales por persona</span></div>
+        <p class="cr-sub">Retos resueltos y puntos de cada persona desde que existe el historial.</p>
+        <input type="text" class="form-input cr-busca" id="rtBuscaPers" placeholder="Buscar por nombre" oninput="rtFiltrarPers()">
+        <div id="rtPersonas"></div>
+      </div>
+
+      <div class="widget-box rt-caja">
+        <div class="widget-head"><span class="widget-name">Podio de esta semana</span></div>
+        <div id="retosTop"></div>
+        <div class="rt-nota">La semana va de lunes a domingo (hora de México) y solo cuenta a miembros, no a administradores.</div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="valores">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Valores de <em>créditos</em></h2>
+          <p class="panel-sub">Cuánto se gana y cuánto cuesta cada cosa: regalos por acciones, invitaciones, costos de canje y los límites de los retos. Se cambia aquí sin tocar código.</p>
         </div>
         <div class="panel-head-accion">
           <button type="button" class="btn-secondary" onclick="recomendadosRetosAdmin()" title="Rellena los campos con los valores recomendados; no se guardan hasta que pulses Guardar">Valores recomendados</button>
         </div>
       </div>
-      <div class="stats-grid" id="retosKpis"></div>
       <div class="widget-box sb-aviso rt-signif" id="retosSignif"></div>
       <div class="form-grid rt-grupos" id="retosGrupos"></div>
       <div class="rt-barra" id="retosBarra">
@@ -3259,21 +3310,6 @@ body::before { display: none; }
           <button type="button" class="btn-secondary" id="retosDescartarBtn" onclick="descartarRetosAdmin()" disabled>Descartar</button>
           <button type="button" class="btn-primary" id="retosGuardarBtn" onclick="guardarRetosAdmin()" disabled>Guardar cambios</button>
         </span>
-      </div>
-      <div class="widget-box rt-caja">
-        <div class="widget-head"><span class="widget-name">Podio de esta semana</span></div>
-        <div id="retosTop"></div>
-        <div class="rt-nota">La semana va de lunes a domingo (hora de México) y solo cuenta a miembros, no a administradores.</div>
-      </div>
-      <div class="widget-box rt-caja">
-        <div class="widget-head"><span class="widget-name">Actividad reciente de retos</span></div>
-        <div id="retosHistorial"></div>
-        <div class="rt-nota">Lo último que se jugó esta semana: quién, qué y cuántos puntos sumó. Solo lectura.</div>
-      </div>
-      <div class="widget-box rt-caja">
-        <div class="widget-head"><span class="widget-name">Créditos dados por el Reto del día</span></div>
-        <div id="retosCreditosRec"></div>
-        <div class="rt-nota">Los últimos créditos que dio el Reto del día a cuentas sin membresía. Los regalos y los cupones están en Créditos.</div>
       </div>
     </div>
 
@@ -3827,6 +3863,7 @@ body::before { display: none; }
       'ratings': 'Calificaciones de los cursos',
       'retos': 'Retos',
       'creditos': 'Créditos',
+      'valores': 'Valores de créditos',
       'config': 'Configuración del sistema'
     };
     const titleEl = document.getElementById('topbarTitle');
@@ -6676,6 +6713,8 @@ let _bibLibrosCargados = false;
     }
     if (tabName === 'materials' || tabName === 'library') setTimeout(matActualizar, 0);
     if (tabName === 'creditos') setTimeout(() => cargarCreditosAdmin(false), 0);
+    if (tabName === 'retos') setTimeout(() => cargarRetosAdmin(true), 0);
+    if (tabName === 'valores') setTimeout(cargarValoresAdmin, 0);
   };
   document.addEventListener('click', (e) => {
     if (e.target.closest && e.target.closest('[data-tab="materials"]')) setTimeout(() => { if (typeof cargarBibliotecaAdmin === 'function') cargarBibliotecaAdmin(); }, 150);
@@ -8055,33 +8094,90 @@ let _bibLibrosCargados = false;
     if (caja) caja.innerHTML = '<b>Lo que significan estos números</b><ul>' + lineas.map(l => '<li>' + l + '</li>').join('') + '</ul>' + (avisos.length ? '<div class="rt-avisos">' + avisos.map(a => '<div>' + esc(a) + '</div>').join('') + '</div>' : '');
   };
 
-  async function cargarRetosAdmin() {
+  // Valores de créditos (Sistema): solo la configuración
+  async function cargarValoresAdmin() {
     if (RT.cargando) return;
     RT.cargando = true;
     try {
-      const [c, r] = await Promise.all([callAdminEndpoint('/admin/retos/config', {}), callAdminEndpoint('/admin/retos/resumen', {})]);
+      const c = await callAdminEndpoint('/admin/retos/config', {});
       RT.guardado = { retos: c.retos, creditos: c.creditos };
       RT.defectos = c.defectos || { retos: c.retos, creditos: c.creditos };
-      RT.semana = r.semana || '';
       rtDibujarCampos();
-      const kpi = (clase, valor, etiqueta, sub) => '<div class="stat-card ' + clase + '"><div class="stat-value">' + valor + '</div><div class="stat-label">' + etiqueta + '</div><div class="sb-sub">' + sub + '</div></div>';
-      document.getElementById('retosKpis').innerHTML =
-        kpi('teal', r.jugadoresConPuntos, 'MIEMBROS CON PUNTOS ESTA SEMANA', 'Semana ' + esc(r.semana || '')) + kpi('green', r.juegosDisponibles, 'JUEGOS PUBLICADOS', 'Los que el admin puso en las clases') +
-        kpi('amber', r.creditosPorRetos, 'CRÉDITOS REGALADOS POR RETOS', 'Solo el Reto del día de quien no es miembro') + kpi('sky', c.retos.retosGratisPorDia, 'RETOS GRATIS POR DÍA', 'Para quien no es miembro');
-      document.getElementById('retosHistorial').innerHTML = (r.historial && r.historial.length)
-        ? r.historial.map(h => '<div class="rt-fila"><span><b style="display:inline-flex;width:auto;height:auto;background:none;color:inherit;font-size:13.5px;">' + esc(h.nombre) + '</b> · ' + esc(h.juego || 'juego') + (h.dia ? ' · ' + esc(h.dia) : '') + '</span><em>+' + esc(h.puntos) + ' pts</em></div>').join('')
-        : '<div class="sb-vacio">Todavía no hay actividad esta semana.</div>';
-      document.getElementById('retosCreditosRec').innerHTML = (r.creditosRecientes && r.creditosRecientes.length)
-        ? r.creditosRecientes.map(c => '<div class="rt-fila"><span>' + esc(c.nombre) + (c.juego ? ' · ' + esc(c.juego) : '') + (c.creadoEn ? ' · ' + esc(formatDate(new Date(c.creadoEn))) : '') + '</span><em>+' + esc(c.monto) + ' créditos</em></div>').join('')
-        : '<div class="sb-vacio">Todavía no se han dado créditos por retos.</div>';
-      document.getElementById('retosTop').innerHTML = (r.top && r.top.length)
-        ? r.top.map(f => '<div class="rt-fila' + (f.puesto <= 3 ? ' top' : '') + '"><b>' + f.puesto + '</b><span>' + esc(f.nombre) + '</span><em>' + f.puntos + ' pts</em></div>').join('')
-        : '<div class="sb-vacio">Todavía nadie suma puntos esta semana.</div>';
     } catch (err) {
       showToast('No se pudo cargar: ' + (err.message || 'error'), 'error');
     }
     RT.cargando = false;
   }
+  window.cargarValoresAdmin = cargarValoresAdmin;
+
+  // Retos (Comunidad): resumen, historial de retos resueltos y totales por persona (solo lectura)
+  const RTD = { cargado: false, cargando: false, eventos: [], personas: [], visibles: 20, visiblesPers: 20 };
+  const rtNum = (n) => Number(n || 0).toLocaleString('es-MX');
+  const rtCuando = (ms) => ms ? new Date(ms).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '—';
+  const rtHace = (ms) => { if (!ms) return ''; const d = Math.floor((Date.now() - ms) / 86400000); return d <= 0 ? 'hoy' : d === 1 ? 'hace 1 día' : 'hace ' + d + ' días'; };
+  const RT_TIPOS = { reto: 'Reto o juego', clase: 'Clase vista', actividad: 'Actividad' };
+
+  async function cargarRetosAdmin(forzar) {
+    if (RTD.cargando || (RTD.cargado && forzar !== true)) { if (RTD.cargado) rtPintarRetos(); return; }
+    RTD.cargando = true;
+    try {
+      const [r, d] = await Promise.all([callAdminEndpoint('/admin/retos/resumen', {}), callAdminEndpoint('/admin/retos/detalle', {})]);
+      RT.semana = r.semana || '';
+      RTD.eventos = d.eventos || []; RTD.personas = d.personas || []; RTD.totales = d.totales; RTD.recortado = d.recortado; RTD.resumen = r; RTD.cargado = true;
+      RTD.visibles = 20; RTD.visiblesPers = 20;
+      rtPintarRetos();
+    } catch (err) {
+      showToast('No se pudo cargar Retos: ' + (err.message || 'error'), 'error');
+    }
+    RTD.cargando = false;
+  }
+
+  function rtPintarRetos() {
+    const t = RTD.totales || { personas: 0, eventos: 0, puntos: 0 }, r = RTD.resumen || {};
+    const kpi = (clase, valor, etiqueta, sub) => '<div class="stat-card ' + clase + '"><div class="stat-value">' + valor + '</div><div class="stat-label">' + etiqueta + '</div><div class="sb-sub">' + sub + '</div></div>';
+    document.getElementById('retosKpis').innerHTML =
+      kpi('teal', rtNum(t.personas), 'PERSONAS CON ACTIVIDAD', 'Han sumado puntos alguna vez') + kpi('green', rtNum(t.eventos), 'RETOS RESUELTOS', 'Retos, clases vistas y actividades') +
+      kpi('amber', rtNum(t.puntos), 'PUNTOS ACUMULADOS', 'Solo arman el podio semanal') + kpi('sky', t.personas ? rtNum(Math.round(t.puntos / t.personas)) : '0', 'PUNTOS POR PERSONA', 'Promedio entre quienes participan');
+    document.getElementById('retosTop').innerHTML = (r.top && r.top.length)
+      ? r.top.map(f => '<div class="rt-fila' + (f.puesto <= 3 ? ' top' : '') + '"><b>' + f.puesto + '</b><span>' + esc(f.nombre) + '</span><em>' + f.puntos + ' pts</em></div>').join('')
+      : '<div class="sb-vacio">Todavía nadie suma puntos esta semana.</div>';
+    rtFiltrarHist(true); rtFiltrarPers(true);
+  }
+
+  window.rtLimpiarHist = function() {
+    ['rtBuscaHist', 'rtTipoHist', 'rtDesdeHist', 'rtHastaHist'].forEach(id => { document.getElementById(id).value = ''; });
+    rtFiltrarHist();
+  };
+  window.rtMasHist = function() { RTD.visibles += 20; rtFiltrarHist(true); };
+  window.rtFiltrarHist = function(conservar) {
+    if (conservar !== true) RTD.visibles = 20;
+    const q = document.getElementById('rtBuscaHist').value.trim().toLowerCase(), tipo = document.getElementById('rtTipoHist').value;
+    const desde = document.getElementById('rtDesdeHist').value, hasta = document.getElementById('rtHastaHist').value;
+    const lista = RTD.eventos.filter(e => (!tipo || e.tipo === tipo) && (!desde || e.dia >= desde) && (!hasta || e.dia <= hasta) && (!q || (e.nombre + ' ' + e.etiqueta).toLowerCase().includes(q)));
+    document.getElementById('rtHistNota').textContent = RTD.recortado ? 'Se muestran los ' + rtNum(RTD.eventos.length) + ' más recientes; los totales por persona incluyen todo.' : 'Aquí aparece todo lo que se ha registrado hasta hoy.';
+    const host = document.getElementById('rtHistorial');
+    if (!lista.length) { host.innerHTML = '<div class="sb-vacio">' + (RTD.eventos.length ? 'Nada coincide con esos filtros.' : 'Todavía no hay retos resueltos.') + '</div>'; return; }
+    const ver = lista.slice(0, RTD.visibles);
+    host.innerHTML = '<div class="rt2-fila rt2-cab"><span>Persona</span><span>Reto</span><span>Cuándo</span><em>Puntos</em></div>' + ver.map(e =>
+      '<div class="rt2-fila"><b>' + esc(e.nombre) + '</b><div>' + esc(e.etiqueta) + '<small>' + esc(RT_TIPOS[e.tipo] || 'Reto') + '</small></div><div>' + esc(rtCuando(e.ms)) + '<small>' + esc(rtHace(e.ms)) + '</small></div><em>+' + rtNum(e.puntos) + '</em></div>').join('') +
+      (lista.length > ver.length ? '<div class="cr-acciones"><button type="button" class="btn-secondary" onclick="rtMasHist()">Mostrar ' + Math.min(20, lista.length - ver.length) + ' más</button><span class="cr-ayuda" style="margin:0;">Mostrando ' + ver.length + ' de ' + lista.length + '</span></div>' : '<p class="cr-ayuda">Mostrando ' + ver.length + ' de ' + lista.length + '</p>');
+  };
+
+  window.rtMasPers = function() { RTD.visiblesPers += 20; rtFiltrarPers(true); };
+  window.rtFiltrarPers = function(conservar) {
+    if (conservar !== true) RTD.visiblesPers = 20;
+    const q = document.getElementById('rtBuscaPers').value.trim().toLowerCase();
+    const lista = RTD.personas.filter(p => !q || p.nombre.toLowerCase().includes(q));
+    const host = document.getElementById('rtPersonas');
+    if (!lista.length) { host.innerHTML = '<div class="sb-vacio">' + (RTD.personas.length ? 'Nadie coincide.' : 'Todavía nadie ha sumado puntos.') + '</div>'; return; }
+    const ver = lista.slice(0, RTD.visiblesPers);
+    host.innerHTML = '<div class="rt2-fila rt2-pers rt2-cab"><span>#</span><span>Persona</span><em>Retos resueltos</em><em>Puntos</em><em>Días activos</em><span>Por tipo</span><span>Última vez</span></div>' + ver.map((p, i) =>
+      '<div class="rt2-fila rt2-pers"><span>' + (i + 1) + '</span><b>' + esc(p.nombre) + '</b><span>' + rtNum(p.eventos) + '</span><span><b>' + rtNum(p.puntos) + '</b></span><span>' + rtNum(p.dias) + '</span>' +
+      '<span>' + [['reto', 'Retos'], ['clase', 'Clases'], ['actividad', 'Actividades']].filter(x => p.porTipo[x[0]]).map(x => x[1] + ' ' + p.porTipo[x[0]]).join(' · ') + '</span>' +
+      '<span>' + esc(rtCuando(p.ultimo).split(',').slice(0, 2).join(',')) + '<small>' + esc(rtHace(p.ultimo)) + '</small></span></div>').join('') +
+      (lista.length > ver.length ? '<div class="cr-acciones"><button type="button" class="btn-secondary" onclick="rtMasPers()">Mostrar ' + Math.min(20, lista.length - ver.length) + ' más</button><span class="cr-ayuda" style="margin:0;">Mostrando ' + ver.length + ' de ' + lista.length + '</span></div>' : '<p class="cr-ayuda">Mostrando ' + ver.length + ' de ' + lista.length + '</p>');
+  };
+
   window.cargarRetosAdmin = cargarRetosAdmin;
 
   window.guardarRetosAdmin = function () {
@@ -8100,7 +8196,7 @@ let _bibLibrosCargados = false;
           await callAdminEndpoint('/admin/retos/config', { guardar: true, retos: act.retos, creditos: act.creditos });
           showToast('Valores guardados');
           RT.cargando = false;
-          await cargarRetosAdmin();
+          await cargarValoresAdmin();
         } catch (err) { showToast('No se guardó: ' + (err.message || 'revisa los números'), 'error'); }
       }
     });
@@ -8113,9 +8209,6 @@ let _bibLibrosCargados = false;
     showToast('Valores recomendados cargados: revisa y guarda si estás de acuerdo');
   };
 
-  document.addEventListener('click', (e) => {
-    if (e.target.closest && e.target.closest('[data-tab="retos"]')) setTimeout(cargarRetosAdmin, 150);
-  });
 
   // ═══════════════════════════════════════════════════
   // CRÉDITOS: cupones, regalos, historial y materiales más canjeados (todo lo calcula y guarda el servidor)
