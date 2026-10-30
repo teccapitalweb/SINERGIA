@@ -7654,18 +7654,25 @@ let _bibLibrosCargados = false;
   window.jgSugerir = function (idx) {
     const s = _cursoEditandoSesiones[idx], sug = jgSugerencia(idx);
     if (!s || !sug) return;
+    const borrador = sug.borrador === true;
     s.juego = JSON.parse(JSON.stringify(sug));
+    delete s.juego.borrador;
     renderSesionesEnModal();
-    showToast('Juego sugerido cargado. Revísalo y pulsa «Guardar cambios» para publicarlo.');
+    showToast(borrador ? 'Juego cargado. Se hizo con el título de la clase (no hay material): revísalo con cuidado antes de guardar.' : 'Juego sugerido cargado. Revísalo y pulsa «Guardar cambios» para publicarlo.');
   };
   window.jgSugerirTodos = function () {
     const lista = jgSugerencias();
     if (!lista) { showToast('Este curso no tiene juegos sugeridos (solo los cursos del catálogo).', 'error'); return; }
     if (!_cursoEditandoSesiones.length) { showToast('Primero agrega las clases del curso.', 'error'); return; }
-    let n = 0;
-    _cursoEditandoSesiones.forEach((s, i) => { if (!s.juego && lista[i]) { s.juego = JSON.parse(JSON.stringify(lista[i])); n++; } });
+    let n = 0, borradores = 0;
+    _cursoEditandoSesiones.forEach((s, i) => {
+      if (!s.juego && lista[i]) {
+        if (lista[i].borrador === true) borradores++;
+        s.juego = JSON.parse(JSON.stringify(lista[i])); delete s.juego.borrador; n++;
+      }
+    });
     renderSesionesEnModal();
-    showToast(n ? n + (n === 1 ? ' juego sugerido cargado' : ' juegos sugeridos cargados') + '. Revísalos y pulsa «Guardar cambios» para publicarlos.' : 'Todas las clases ya tienen su juego.');
+    showToast(n ? n + (n === 1 ? ' juego sugerido cargado' : ' juegos sugeridos cargados') + (borradores ? ' (' + borradores + ' hecho' + (borradores === 1 ? '' : 's') + ' solo con el título de la clase: revísalo' + (borradores === 1 ? '' : 's') + ' con cuidado)' : '') + '. Revísalos y pulsa «Guardar cambios» para publicarlos.' : 'Todas las clases ya tienen su juego.');
   };
   window.jgElegir = function (idx, tipo) {
     const s = _cursoEditandoSesiones[idx]; if (!s) return;

@@ -1,15 +1,15 @@
 // Mini juegos sugeridos para las clases (borradores para revisar en el admin: Videoteca → Editar curso → «Sugerir juegos»).
-// Se escribieron con el MATERIAL de cada curso (los PDF y presentaciones del curso); solo hay juego donde el material cubre esa clase.
-// Viveros solo trae un juego (clase 5): el material que hay es un manual de buenas prácticas agrícolas y de empaque. Hay que confirmar que cada juego corresponda a lo que se ve en el video de esa clase.
+// Los que NO llevan «borrador» se escribieron con el MATERIAL del curso (PDF y presentaciones). Los marcados «borrador: true» se hicieron con el título de la clase y el tema
+// del curso porque no hay material escrito de esa clase: hay que revisarlos con más cuidado. Todos deben coincidir con lo que se ve en el video de la clase.
 // Un juego sugerido no se guarda solo: se carga en el formulario y se publica al pulsar «Guardar cambios».
 window.SINERGIA_JUEGOS_SUGERIDOS = [
   {
     titulo: "Administración y Operación de Viveros",
     juegos: [
-      null,
-      null,
-      null,
-      null,
+      {"tipo":"sopa","titulo":"Sopa del vivero","palabras":["VIVERO","SUSTRATO","PLANTULA","ESPECIE","MERCADO"],"borrador":true},
+      {"tipo":"memoria","titulo":"Memoria de la infraestructura","parejas":[{"a":"Invernadero","b":"Protege y controla el clima"},{"a":"Malla sombra","b":"Reduce el exceso de sol"},{"a":"Charola","b":"Germina semillas en celdas"},{"a":"Mesa de cultivo","b":"Eleva la planta del suelo"}],"borrador":true},
+      {"tipo":"conecta","titulo":"Conecta la propagación","pares":[{"izq":"Semilla","der":"Propagación sexual"},{"izq":"Estaca","der":"Propagación asexual"},{"izq":"Injerto","der":"Une dos plantas en una"},{"izq":"Turba","der":"Sustrato que retiene humedad"}],"borrador":true},
+      {"tipo":"crucigrama","titulo":"Crucigrama de administración","palabras":[{"palabra":"COSTO","pista":"Gasto necesario para producir cada planta"},{"palabra":"MARGEN","pista":"Ganancia que queda sobre el costo"},{"palabra":"INVENTARIO","pista":"Lista de las plantas que hay en el vivero"},{"palabra":"REGISTRO","pista":"Anotación escrita de lo que se hace"}],"borrador":true},
       {"tipo":"conecta","titulo":"Del empaque al embarque","pares":[{"izq":"Etiqueta de la estiba","der":"Dice productor, producto, variedad y fecha de empaque"},{"izq":"Identificación de origen","der":"Permite rastrear dónde se contaminó el producto"},{"izq":"Cortinas de plástico","der":"Evitan perder frío al cargar el trailer"},{"izq":"Trampas de laberinto","der":"Controlan plagas sin rodenticidas químicos en el empaque"}]}
     ]
   },
@@ -35,10 +35,10 @@ window.SINERGIA_JUEGOS_SUGERIDOS = [
   {
     titulo: "Fertirriego",
     juegos: [
-      null,
+      {"tipo":"sopa","titulo":"Sopa de la salinidad","palabras":["SALINIDAD","SODIO","LAVADO","DRENAJE","RAIZ"],"borrador":true},
       {"tipo":"memoria","titulo":"Sistemas de inyección del fertilizante","parejas":[{"a":"Gravedad","b":"El tanque fertilizante va más alto que el canal"},{"a":"Venturi","b":"Chupa la solución del tanque con el flujo de agua"},{"a":"Presión diferencial","b":"Tanque metálico hermético y válvula mariposa"},{"a":"Presión positiva","b":"Bombas de inyección con relación predeterminada"}]},
-      null,
-      null,
+      {"tipo":"conecta","titulo":"Conecta el diagnóstico","pares":[{"izq":"Conductividad eléctrica","der":"Mide la cantidad de sales"},{"izq":"pH","der":"Indica acidez o alcalinidad"},{"izq":"Análisis de agua","der":"Revisa sales antes de regar"},{"izq":"Fracción de lavado","der":"Agua extra que saca las sales de la raíz"}],"borrador":true},
+      {"tipo":"crucigrama","titulo":"Crucigrama del taller","palabras":[{"palabra":"EMISOR","pista":"Pieza que libera el agua en la línea"},{"palabra":"PRESION","pista":"Fuerza con que circula el agua"},{"palabra":"DOSIS","pista":"Cantidad de fertilizante por aplicación"},{"palabra":"TANQUE","pista":"Depósito de la solución nutritiva"}],"borrador":true},
       {"tipo":"conecta","titulo":"Errores comunes en fertirriego","pares":[{"izq":"Sobredosificación","der":"Toxicidad, quema de raíces y contaminación del agua"},{"izq":"Mezclas incompatibles","der":"Calcio con sulfatos o fosfatos forma precipitados"},{"izq":"Falta de lixiviación","der":"Se acumulan sales por no dar riegos de limpieza"},{"izq":"Mala calibración","der":"Unas plantas reciben mucho y otras poco"}]}
     ]
   },
@@ -86,10 +86,10 @@ window.SINERGIA_JUEGOS_SUGERIDOS = [
     titulo: "Del Cacao al Chocolate",
     juegos: [
       {"tipo":"sopa","titulo":"Introducción al cacao","palabras":["CRIOLLO","FORASTERO","TRINITARIO","TABASCO","OLMECA"]},
-      null,
-      null,
+      {"tipo":"memoria","titulo":"Memoria de la cosecha","parejas":[{"a":"Mazorca madura","b":"Cambia de color al madurar"},{"a":"Tijera de podar","b":"Corta sin dañar el árbol"},{"a":"Mazorca enferma","b":"Se retira para no contagiar"},{"a":"Desgrane","b":"Sacar las almendras de la mazorca"}],"borrador":true},
+      {"tipo":"conecta","titulo":"Conecta la fermentación","pares":[{"izq":"Cajón","der":"Recipiente de madera para fermentar"},{"izq":"Remover","der":"Airea la masa para fermentar parejo"},{"izq":"Mucílago","der":"La baba blanca que rodea la almendra"},{"izq":"Temperatura","der":"Sube durante los días de fermentación"}],"borrador":true},
       {"tipo":"memoria","titulo":"Secado y almacenamiento","parejas":[{"a":"Secado inicial","b":"Días 1 a 3: lento, libera ácidos volátiles"},{"a":"Secado final","b":"Desde el día 4, hasta 6 a 7 % de humedad"},{"a":"Zarandas","b":"Separan granos por tamaño y quitan impurezas"},{"a":"Tarimas","b":"Mantienen los sacos a 15 cm del suelo"}]},
-      null
+      {"tipo":"rompecabezas","titulo":"Arma el cacao","imagen":"https://sinergiamexico.it.com/assets/course-covers/del-cacao-al-chocolate.webp","filas":2,"columnas":3,"borrador":true}
     ]
   },
   {
