@@ -1404,6 +1404,41 @@
   .mt-barra-h { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 13.5px; padding: 6px 0; }
   .mt-barra-h b { font-weight: 700; }
   .mt-barra-h .cr-barra { grid-column: 1 / -1; margin: 0; height: 12px; }
+  /* Encuesta de la portada */
+  .en-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; align-items: start; margin-bottom: 16px; }
+  .en-rejilla .cg-caja { margin-bottom: 0; }
+  .en-dona { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin: 6px 0 14px; }
+  .en-dona svg { flex: none; max-width: 100%; }
+  .en-leyenda { flex: 1 1 150px; display: grid; gap: 8px; font-size: 13.5px; }
+  .en-leyenda > div { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; gap: 8px; align-items: center; }
+  .en-leyenda i { width: 12px; height: 12px; border-radius: 3px; display: block; }
+  .en-leyenda b { font-weight: 700; text-align: right; }
+  .en-leyenda span.p { color: var(--stone-500); font-size: 12px; min-width: 38px; text-align: right; }
+  .en-leer { background: #EDF4F0; border: 1px solid #D4E6DC; border-radius: 12px; padding: 11px 14px; font-size: 13px; line-height: 1.5; color: var(--stone-700); margin-top: 12px; }
+  .en-leer b { color: #0F5132; }
+  .en-sub { color: var(--stone-500); font-size: 13px; margin: -2px 0 12px; }
+  .en-pie { font-size: 13px; color: var(--stone-600); margin: 8px 0 0; display: flex; gap: 14px; flex-wrap: wrap; }
+  .en-apilada { display: flex; height: 26px; border-radius: 8px; overflow: hidden; background: #E7ECEA; margin: 6px 0 8px; }
+  .en-apilada i { display: block; height: 100%; min-width: 3px; border-right: 1px solid #fff; }
+  .en-perfil { padding: 12px 0; border-top: 1px solid var(--stone-100, #EEF1EF); }
+  .en-perfil:first-of-type { border-top: 0; padding-top: 0; }
+  .en-perfil-cab { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
+  .en-perfil-cab span { color: var(--stone-500); font-size: 12.5px; }
+  .en-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .en-pill.ok { background: #E3F4EA; color: #14633C; }
+  .en-pill.no { background: #F1EEE8; color: #6B6258; }
+  .en-pill.pend { background: #FDF3DA; color: #8A5A0B; }
+  .en-tabla-fila { cursor: pointer; }
+  .en-tabla-fila:hover td { background: var(--stone-50); }
+  .en-detalle td { background: var(--stone-50); font-size: 13px; text-align: left !important; }
+  .en-detalle dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px 18px; margin: 0; }
+  .en-detalle dt { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--stone-500); }
+  .en-detalle dd { margin: 2px 0 0; font-weight: 600; }
+  .en-tabla-ancha { overflow-x: auto; }
+  .en-tabla-ancha .pg-tabla th, .en-tabla-ancha .pg-tabla td { text-align: left; }
+  .en-tabla-ancha .pg-tabla td.n, .en-tabla-ancha .pg-tabla th.n { text-align: right; }
+  .en-tabla-ancha .pg-tabla td { padding: 10px 12px; border-top: 1px solid var(--stone-100, #EEF1EF); vertical-align: middle; }
+  .en-tabla-ancha small { display: block; color: var(--stone-500); font-size: 12px; font-weight: 400; }
   @media (max-width: 1100px) { .mt-dos { grid-template-columns: 1fr; } }
   .pg-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
   .pg-trio .cg-caja { margin-bottom: 16px; }
@@ -2355,6 +2390,11 @@ body::before { display: none; }
       <span class="nav-item-text">Pruebas gratuitas</span>
       <span id="navGratisCount" class="nav-item-count" title="Cuentas sin membresía que aún no eligen curso gratis">0</span>
     </button>
+    <button class="nav-item" data-tab="encuesta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="nav-item-text">Encuesta</span>
+      <span id="navEncCount" class="nav-item-count" title="Personas que respondieron la ruta de la portada">0</span>
+    </button>
     <button class="nav-item" data-tab="notifications">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       <span class="nav-item-text">Notificaciones</span>
@@ -2775,6 +2815,73 @@ body::before { display: none; }
         <div id="mtCursosEmp"></div>
       </div>
       <p class="cr-ayuda" id="mtPie"></p>
+    </div>
+
+    <div class="tab-panel" data-panel="encuesta">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Encuesta <em>de la portada</em></h2>
+          <p class="panel-sub">Quién usa la ruta de aprendizaje, qué busca, qué tan pronto quiere empezar y qué le preguntó a Savia que ella no supo contestar. Se cuenta una vez por visitante y solo de quienes aceptaron «Estadísticas» en el aviso de cookies, así que son menos que las visitas reales. Sin nombres ni contacto.</p>
+        </div>
+        <div class="panel-head-accion">
+          <button type="button" class="btn-secondary" data-en-accion="actualizar">Actualizar</button>
+        </div>
+      </div>
+
+      <div class="stats-grid" id="enKpis"></div>
+      <div id="enVacio"></div>
+
+      <div id="enCuerpo">
+        <div class="mt-dos">
+          <div class="widget-box cg-caja">
+            <div class="widget-head"><span class="widget-name">Encuestas completas y parciales</span></div>
+            <p class="en-sub">Cuántas personas llegaron hasta el final.</p>
+            <div id="enCompletas"></div>
+          </div>
+          <div class="widget-box cg-caja">
+            <div class="widget-head"><span class="widget-name">Respuestas por fecha</span></div>
+            <p class="en-sub">Cuántas respuestas hubo cada día. Hora de México.</p>
+            <div id="enFecha"></div>
+          </div>
+        </div>
+
+        <div class="en-rejilla" id="enPreguntas"></div>
+
+        <div class="widget-box cg-caja" style="margin-bottom:16px;">
+          <div class="widget-head"><span class="widget-name">Reto principal por perfil</span></div>
+          <p class="en-sub">Cada perfil tiene sus propios retos, por eso cada barra tiene partes distintas.</p>
+          <div id="enRetos"></div>
+        </div>
+
+        <div class="widget-box cg-caja" style="margin-bottom:16px;">
+          <div class="widget-head"><span class="widget-name">Dónde se quedan quienes no terminan</span></div>
+          <p class="en-sub">Última pregunta que contestaron antes de irse.</p>
+          <div id="enAbandono"></div>
+        </div>
+
+        <div class="widget-box cg-caja" style="margin-bottom:16px;">
+          <div class="widget-head"><span class="widget-name">Resumen por perfil</span></div>
+          <p class="en-sub">Cuántas personas empezaron con cada perfil, cuántas llegaron al final y en qué pregunta se quedan las demás.</p>
+          <div id="enRama"></div>
+        </div>
+
+        <div class="widget-box cg-caja" style="margin-bottom:16px;">
+          <div class="widget-head"><span class="widget-name">Respuestas, una por persona</span><button type="button" class="btn-secondary" data-en-accion="csv">Descargar lista (CSV)</button></div>
+          <p class="en-sub">Datos mínimos: sin nombre, correo ni teléfono. Toca una fila para ver todas sus respuestas.</p>
+          <div class="chip-filter" id="enFiltros"></div>
+          <div id="enLista"></div>
+        </div>
+      </div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:16px;">
+        <div class="widget-head"><span class="widget-name">Preguntas que Savia no supo contestar</span></div>
+        <p class="en-sub">De la más frecuente a la menos: sirven para decidir qué respuestas o cursos agregar. Los textos se limpian en el servidor (sin correos, teléfonos ni enlaces). Si una pregunta atendida vuelve a llegar, regresa a «Por atender».</p>
+        <div class="cr-acciones" style="margin:0 0 10px;">
+          <button type="button" class="btn-secondary" data-en-accion="ocultar" id="enOcultar">Ocultar las atendidas</button>
+          <button type="button" class="btn-secondary" data-en-accion="csvPreguntas">Descargar lista (CSV)</button>
+        </div>
+        <div id="enPreguntasSavia"></div>
+      </div>
     </div>
 
     <div class="tab-panel" data-panel="freecourses">
@@ -4607,6 +4714,230 @@ body::before { display: none; }
   window.cgElegirFiltro = function(f) { CG.filtro = f; CG.visibles = 20; renderCursosGratis(); };
   window.cgElegirCurso = function(c) { CG.curso = c; CG.visibles = 20; renderCursosGratis(); };
   window.cgBuscar = function(t) { CG.busca = String(t || '').trim().toLowerCase(); CG.visibles = 20; renderCursosGratis(); };
+
+  /* FASE3P-ENCUESTA */
+  // ═══════════════════════════════════════════════════
+  // ENCUESTA DE LA PORTADA (formato de Zoorigen, datos de SINERGIA)
+  // Lee /admin/encuesta/datos: las respuestas de la ruta de aprendizaje (una fila por visitante, sin nombre ni contacto) y las preguntas
+  // que Savia no supo contestar. Todo es solo lectura salvo marcar una pregunta como atendida. No hay datos de ejemplo.
+  // ═══════════════════════════════════════════════════
+  const EN = { datos: null, cargando: false, error: '', filtro: 'todas', visibles: 25, abierta: '', ocultarAtendidas: false };
+  const EN_ORDEN = ['meta', 'perfil', 'area', 'reto', 'exper', 'urge', 'freno', 'origen'];
+  const EN_NOMBRE = { meta: 'Qué quieren lograr', perfil: 'Perfil', area: 'Área de interés', reto: 'Reto', exper: 'Cursos en línea', urge: 'Cuándo quieren empezar', freno: 'Qué los detiene hoy', origen: 'Cómo nos conocieron' };
+  const EN_OPC = {
+    meta: ['Aprender desde cero', 'Producir más y mejor', 'Vender mejor lo que cosecho', 'Certificarme y destacar en mi currículum'],
+    perfil: ['Estudiante', 'Productor o productora', 'Técnico o agrónomo', 'Emprendedor agroalimentario', 'Aficionado a la agricultura'],
+    area: ['Cultivos y frutales', 'Suelos, nutrición y riego', 'Bioinsumos y producción orgánica', 'Inocuidad y certificaciones', 'Ventas y administración agro'],
+    exper: ['Sí, me gustan', 'Prefiero presencial', 'Es mi primera vez'],
+    urge: ['Lo antes posible', 'En el próximo mes', 'Solo estoy explorando'],
+    freno: ['El precio', 'El tiempo', 'No estoy seguro', 'Nada, estoy listo'],
+    origen: ['Redes sociales', 'Recomendación', 'Buscador', 'Otro']
+  };
+  const EN_RETOS = {
+    'Estudiante': ['Complementar mi carrera', 'Prepararme para trabajar en campo', 'Elegir mi especialidad'],
+    'Productor o productora': ['Aumentar mi rendimiento', 'Reducir costos de insumos', 'Vender a mejor precio'],
+    'Técnico o agrónomo': ['Actualizarme en técnicas', 'Asesorar a más productores', 'Certificar procesos'],
+    'Emprendedor agroalimentario': ['Montar mi negocio', 'Cumplir normas para vender', 'Mejorar la producción'],
+    'Aficionado a la agricultura': ['Tener mi huerto en casa', 'Producir de forma orgánica', 'Aprender lo básico']
+  };
+  const EN_CORTO = {
+    meta: { 'Aprender desde cero': 'Desde cero', 'Producir más y mejor': 'Producir más', 'Vender mejor lo que cosecho': 'Vender mejor', 'Certificarme y destacar en mi currículum': 'Certificarme' },
+    urge: { 'Lo antes posible': 'Lo antes posible', 'En el próximo mes': 'En el próximo mes', 'Solo estoy explorando': 'Solo explorando' }
+  };
+  const EN_COL = ['#1F7A4D', '#2E7D9A', '#B7791F', '#C24D3C', '#6B5CA5', '#6B7280'];
+  const enPers = (n) => mtNum(n) + (n === 1 ? ' persona' : ' personas');
+  const enFilas = () => (EN.datos && EN.datos.respuestas) || [];
+  const enLeer = (t) => '<div class="en-leer"><b>Cómo leerlo:</b> ' + t + '</div>';
+
+  // Cuenta cada opción de una pregunta (en el orden de la encuesta) y la base de quienes la contestaron
+  function enContar(clave, filas) {
+    const opc = clave === 'reto' ? [].concat(...Object.values(EN_RETOS)) : EN_OPC[clave];
+    const por = {}; let base = 0;
+    filas.forEach(f => { if (f[clave]) { por[f[clave]] = (por[f[clave]] || 0) + 1; base++; } });
+    return { base, partes: opc.map((op, i) => ({ op, n: por[op] || 0, color: EN_COL[i % EN_COL.length] })) };
+  }
+  // «Lo más común es «A»: 7 personas de 14 (50 %). Le sigue «B» con 36 %.»
+  function enTop(partes, base, quien) {
+    const o = partes.filter(p => p.n > 0).sort((a, b) => b.n - a.n);
+    if (!o.length) return 'Todavía no hay respuestas.';
+    const emp = o.filter(p => p.n === o[0].n);
+    if (emp.length > 1) return 'Hay empate entre ' + emp.map(p => '«' + esc(p.op) + '»').join(' y ') + ': ' + enPers(o[0].n) + ' cada una (' + mtPct(o[0].n, base) + ' %).';
+    return quien + ' es «' + esc(o[0].op) + '»: ' + enPers(o[0].n) + ' de ' + mtNum(base) + ' (' + mtPct(o[0].n, base) + ' %).' + (o[1] ? ' Le sigue «' + esc(o[1].op) + '» con ' + mtPct(o[1].n, base) + ' %.' : '');
+  }
+  const enBase = (txt, base) => ' Base: ' + enPers(base) + ' que contestaron esta pregunta.';
+
+  function enLeyenda(partes, base) {
+    return '<div class="en-leyenda">' + partes.filter(p => p.n > 0).map(p => '<div><i style="background:' + p.color + '"></i><span>' + esc(p.op) + '</span><b>' + mtNum(p.n) + '</b><span class="p">' + mtPct(p.n, base) + ' %</span></div>').join('') + '</div>';
+  }
+  function enDonaCaja(titulo, sub, clave, filas, leer) {
+    const { base, partes } = enContar(clave, filas);
+    return '<div class="widget-box cg-caja"><div class="widget-head"><span class="widget-name">' + esc(titulo) + '</span></div><p class="en-sub">' + sub + enBase('', base) + '</p>' +
+      (base ? '<div class="en-dona">' + mtDona(partes.map(p => ({ valor: p.n, color: p.color })), base, String(base), base === 1 ? 'persona' : 'personas') + enLeyenda(partes, base) + '</div>' + enLeer(leer(partes, base)) : '<div class="sb-vacio">Todavía no hay respuestas.</div>') + '</div>';
+  }
+  function enBarrasHCaja(titulo, sub, clave, filas, leer) {
+    const { base, partes } = enContar(clave, filas), o = partes.filter(p => p.n > 0).sort((a, b) => b.n - a.n), max = o.length ? o[0].n : 1;
+    return '<div class="widget-box cg-caja"><div class="widget-head"><span class="widget-name">' + esc(titulo) + '</span></div><p class="en-sub">' + sub + enBase('', base) + '</p>' +
+      (base ? o.map(p => '<div class="mt-barra-h"><span>' + esc(p.op) + '</span><b>' + mtNum(p.n) + ' <span style="font-weight:400;color:var(--stone-500);font-size:12px;">' + mtPct(p.n, base) + ' %</span></b><div class="cr-barra"><i style="width:' + Math.max(3, Math.round(p.n / max * 100)) + '%;background:#1F7A4D"></i></div></div>').join('') + enLeer(leer(partes, base)) : '<div class="sb-vacio">Todavía no hay respuestas.</div>') + '</div>';
+  }
+  function enBarrasVCaja(titulo, sub, clave, filas, leer) {
+    const { base, partes } = enContar(clave, filas), corto = EN_CORTO[clave] || {};
+    const cub = partes.map(p => ({ etiqueta: corto[p.op] || p.op }));
+    const max = Math.max(0, ...partes.map(p => p.n)), i = partes.findIndex(p => p.n === max);
+    return '<div class="widget-box cg-caja"><div class="widget-head"><span class="widget-name">' + esc(titulo) + '</span></div><p class="en-sub">' + sub + enBase('', base) + '</p>' +
+      (base ? mtBarras(partes.map(p => p.n), cub, '#1F7A4D', null, null, 'personas', 520) + '<p class="en-pie"><span><b>' + mtNum(base) + '</b> ' + (base === 1 ? 'persona' : 'personas') + '</span>' + (max > 0 ? '<span>Más alto: <b>' + mtNum(max) + '</b> (' + esc(partes[i].op) + ')</span>' : '') + '</p>' + enLeer(leer(partes, base)) : '<div class="sb-vacio">Todavía no hay respuestas.</div>') + '</div>';
+  }
+
+  // Respuestas por día: personas y completas (últimos 60 días con respuestas)
+  function enFechaPintar(filas) {
+    const por = {}; filas.forEach(f => { if (!f.dia) return; const x = por[f.dia] || (por[f.dia] = { p: 0, c: 0 }); x.p++; if (f.terminada) x.c++; });
+    const dias = Object.keys(por).sort(), host = document.getElementById('enFecha');
+    if (!dias.length) { host.innerHTML = '<div class="sb-vacio">Todavía no hay respuestas.</div>'; return; }
+    const ini = new Date(dias[0] + 'T12:00:00').getTime(), fin = Math.max(new Date(dias[dias.length - 1] + 'T12:00:00').getTime(), mtIniDia(Date.now()));
+    let cub = []; for (let d = ini; d <= fin && cub.length < 800; d = mtMas(d, 1)) cub.push({ etiqueta: mtISO(d), iso: mtISO(d) });
+    cub = cub.slice(-60);
+    const W = 520, H = 240, izq = 40, abajo = 30, n = cub.length, col = (W - izq - 10) / n, bw = Math.max(2, Math.min(14, col * 0.38));
+    const vp = cub.map(c => (por[c.iso] || { p: 0 }).p), vc = cub.map(c => (por[c.iso] || { c: 0 }).c);
+    const tope = mtTope(Math.max(1, ...vp), true);
+    let g = mtEjes(W, H, izq, abajo, tope, v => String(Math.round(v)));
+    cub.forEach((c, i) => {
+      [[vp[i], '#2E7D9A', 'Personas', -bw - 0.5], [vc[i], '#1F7A4D', 'Completas', 0.5]].forEach(([v, color, nombre, dx]) => {
+        const h = (H - abajo - 10) * v / tope;
+        g += '<rect x="' + (izq + col * i + col / 2 + dx).toFixed(1) + '" y="' + (H - abajo - h).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(h, v > 0 ? 2 : 0).toFixed(1) + '" rx="1.5" fill="' + color + '"><title>' + esc(c.iso + ' · ' + nombre + ': ' + v) + '</title></rect>';
+      });
+    });
+    const paso = n <= 10 ? 1 : Math.ceil(n / 5);
+    g += cub.map((c, i) => i % paso === 0 ? '<text x="' + (izq + col * i + col / 2).toFixed(1) + '" y="226" text-anchor="middle">' + esc(c.iso) + '</text>' : '').join('');
+    const mx = Math.max(...vp), im = vp.indexOf(mx), total = filas.length, comp = filas.filter(f => f.terminada).length;
+    host.innerHTML = '<div class="en-pie" style="margin:0 0 6px;"><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2E7D9A;margin-right:5px"></i>Personas</span><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1F7A4D;margin-right:5px"></i>Completas</span></div>' +
+      '<svg class="mt-svg" viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img">' + g + '</svg>' +
+      '<p class="en-pie"><span><b>' + mtNum(total) + '</b> personas</span><span><b>' + mtNum(comp) + '</b> completas</span>' + (mx > 0 ? '<span>Más alto: <b>' + mtNum(mx) + '</b> (' + esc(cub[im].iso) + ')</span>' : '') + '</p>' +
+      enLeer(mx > 0 ? 'El día con más respuestas fue el ' + esc(cub[im].iso) + ': ' + enPers(mx) + ' (' + mtNum(vc[im]) + ' completas). Una respuesta por persona, según su registro más reciente.' : 'Todavía no hay respuestas.');
+  }
+
+  function enRetosPintar(filas) {
+    const perfiles = Object.keys(EN_RETOS).map(p => ({ p, f: filas.filter(f => f.perfil === p && f.reto) })).filter(x => x.f.length).sort((a, b) => b.f.length - a.f.length);
+    const host = document.getElementById('enRetos');
+    if (!perfiles.length) { host.innerHTML = '<div class="sb-vacio">Todavía no hay respuestas.</div>'; return; }
+    host.innerHTML = perfiles.map(x => {
+      const partes = EN_RETOS[x.p].map((op, i) => ({ op, n: x.f.filter(f => f.reto === op).length, color: EN_COL[i % EN_COL.length] }));
+      return '<div class="en-perfil"><div class="en-perfil-cab"><b>' + esc(x.p) + '</b><span>' + enPers(x.f.length) + '</span></div><div class="en-apilada">' +
+        partes.filter(p => p.n > 0).map(p => '<i style="width:' + (p.n / x.f.length * 100).toFixed(2) + '%;background:' + p.color + '" title="' + esc(p.op + ': ' + p.n) + '"></i>').join('') + '</div>' + enLeyenda(partes, x.f.length).replace('class="en-leyenda"', 'class="en-leyenda" style="gap:4px"') + '</div>';
+    }).join('') + enLeer((() => {
+      const g = perfiles[0], partes = EN_RETOS[g.p].map(op => ({ op, n: g.f.filter(f => f.reto === op).length })).sort((a, b) => b.n - a.n);
+      return 'Cada barra es un perfil y se reparte entre los retos que ese perfil puede elegir. Entre «' + esc(g.p) + '» (el perfil con más respuestas, ' + enPers(g.f.length) + '), el reto más elegido es «' + esc(partes[0].op) + '» con ' + partes[0].n + ' de ' + g.f.length + '.';
+    })());
+  }
+
+  function enAbandonoPintar(filas) {
+    const host = document.getElementById('enAbandono'), parciales = filas.filter(f => !f.terminada), comp = filas.length - parciales.length;
+    if (!filas.length) { host.innerHTML = '<div class="sb-vacio">Todavía no hay respuestas.</div>'; return; }
+    const por = {}; parciales.forEach(f => { if (f.ultima) por[f.ultima] = (por[f.ultima] || 0) + 1; });
+    const filasK = EN_ORDEN.filter(k => por[k]).map(k => ({ k, n: por[k], de: filas.filter(f => f[k]).length })), max = Math.max(1, ...filasK.map(x => x.n));
+    host.innerHTML = '<p style="margin:0 0 12px;font-size:14px;"><b>' + mtNum(comp) + ' de ' + mtNum(filas.length) + '</b> terminaron la encuesta (' + mtPct(comp, filas.length) + ' %).' + (parciales.length ? ' Las otras ' + mtNum(parciales.length) + ' se fueron en estos pasos, en el orden de la encuesta:' : ' Nadie ha abandonado.') + '</p>' +
+      filasK.map(x => '<div class="mt-barra-h"><span>' + esc(EN_NOMBRE[x.k]) + '<small style="display:block;color:var(--stone-500);font-size:12px;">Se fueron aquí: ' + mtNum(x.n) + ' de ' + mtNum(x.de) + ' que la contestaron (' + mtPct(x.n, x.de) + ' %)</small></span><b>' + mtNum(x.n) + '</b><div class="cr-barra"><i style="width:' + Math.max(3, Math.round(x.n / max * 100)) + '%;background:#C24D3C"></i></div></div>').join('') +
+      (filasK.length ? enLeer('La encuesta se pierde más en «' + esc(EN_NOMBRE[filasK.slice().sort((a, b) => b.n - a.n)[0].k]) + '»: ' + enPers(filasK.slice().sort((a, b) => b.n - a.n)[0].n) + ' se fueron ahí (' + mtPct(filasK.slice().sort((a, b) => b.n - a.n)[0].n, filasK.slice().sort((a, b) => b.n - a.n)[0].de) + ' % de quienes llegaron a esa pregunta). El porcentaje de cada fila es sobre quienes contestaron ese paso.') : '');
+  }
+
+  function enRamaPintar(filas) {
+    const host = document.getElementById('enRama');
+    if (!filas.length) { host.innerHTML = '<div class="sb-vacio">Todavía no hay respuestas.</div>'; return; }
+    const grupos = {}; filas.forEach(f => { const k = f.perfil || 'Sin perfil'; (grupos[k] || (grupos[k] = [])).push(f); });
+    const lista = Object.keys(grupos).map(k => ({ k, f: grupos[k] })).sort((a, b) => b.f.length - a.f.length), max = Math.max(1, ...lista.map(x => x.f.length));
+    const top = (arr, clave) => { const c = {}; arr.forEach(f => { if (f[clave]) c[f[clave]] = (c[f[clave]] || 0) + 1; }); const o = Object.keys(c).sort((a, b) => c[b] - c[a]); return o.length ? [o[0], c[o[0]]] : null; };
+    host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Perfil</th><th>Empezaron</th><th>Terminaron</th><th class="n">Calientes</th><th class="n">Hablaron por WhatsApp</th><th>Reto más frecuente</th><th>Dónde se quedan</th></tr></thead><tbody>' + lista.map(x => {
+      const term = x.f.filter(f => f.terminada).length, cal = x.f.filter(f => f.urge === 'Lo antes posible').length, wa = x.f.filter(f => f.hablo).length, reto = top(x.f, 'reto'), donde = top(x.f.filter(f => !f.terminada && f.ultima).map(f => ({ u: f.ultima })), 'u');
+      return '<tr><td><b>' + esc(x.k) + '</b></td><td><div class="mt-barra-h" style="padding:0;"><span></span><b>' + mtNum(x.f.length) + '</b><div class="cr-barra"><i style="width:' + Math.max(4, Math.round(x.f.length / max * 100)) + '%;background:#1F7A4D"></i></div></div></td><td>' + mtNum(term) + ' (' + mtPct(term, x.f.length) + ' %)</td><td class="n">' + mtNum(cal) + '</td><td class="n">' + mtNum(wa) + '</td><td>' + (reto ? esc(reto[0]) + ' (' + reto[1] + ')' : '—') + '</td><td>' + (donde ? esc(EN_NOMBRE[donde[0]]) + ' (' + donde[1] + ')' : '<span style="color:var(--stone-500)">Nadie abandona</span>') + '</td></tr>';
+    }).join('') + '</tbody></table></div>' + enLeer('El perfil es lo que la persona elige al principio. «' + esc(lista[0].k) + '» es el que más empieza (' + enPers(lista[0].f.length) + ') y ' + mtPct(lista[0].f.filter(f => f.terminada).length, lista[0].f.length) + ' % lo termina.');
+  }
+
+  function enListaPintar(filas) {
+    const host = document.getElementById('enLista'), term = filas.filter(f => f.terminada).length, wa = filas.filter(f => f.hablo).length;
+    const filtros = [['todas', 'Todas', filas.length], ['terminaron', 'Terminaron', term], ['no', 'No terminaron', filas.length - term], ['whatsapp', 'Hablaron por WhatsApp', wa]];
+    document.getElementById('enFiltros').innerHTML = filtros.map(f => '<button type="button" class="chip' + (EN.filtro === f[0] ? ' active' : '') + '" data-en-filtro="' + f[0] + '">' + f[1] + ' · ' + f[2] + '</button>').join('');
+    const ver = filas.filter(f => EN.filtro === 'terminaron' ? f.terminada : EN.filtro === 'no' ? !f.terminada : EN.filtro === 'whatsapp' ? f.hablo : true);
+    if (!ver.length) { host.innerHTML = '<div class="sb-vacio">No hay respuestas con este filtro.</div>'; return; }
+    const parte = ver.slice(0, EN.visibles);
+    host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Perfil</th><th>Fecha</th><th>Reto</th><th>Cuándo quiere empezar</th><th>Estado</th><th>WhatsApp</th></tr></thead><tbody>' + parte.map(f => {
+      const abierta = EN.abierta === f.id;
+      return '<tr class="en-tabla-fila" data-en-fila="' + esc(f.id) + '"><td><b>' + esc(f.perfil || 'Sin perfil') + '</b>' + (f.area ? '<small>' + esc(f.area) + '</small>' : '') + '</td><td>' + (f.ms ? esc(mtFechaLarga(f.ms)) : esc(f.dia)) + '</td><td>' + (f.reto ? esc(f.reto) : '—') + '</td><td>' + (f.urge ? esc(f.urge) : '—') + '</td><td><span class="en-pill ' + (f.terminada ? 'ok' : 'no') + '">' + (f.terminada ? 'Terminó' : 'No terminó') + '</span></td><td>' + (f.hablo ? '<span class="en-pill pend">Pidió hablar</span>' : '<span style="color:var(--stone-500)">—</span>') + '</td></tr>' +
+        (abierta ? '<tr class="en-detalle"><td colspan="6"><dl>' + EN_ORDEN.map(k => '<div><dt>' + esc(EN_NOMBRE[k]) + '</dt><dd>' + (f[k] ? esc(f[k]) : '—') + '</dd></div>').join('') + '</dl></td></tr>' : '');
+    }).join('') + '</tbody></table></div><p class="en-pie">Mostrando ' + mtNum(parte.length) + ' de ' + mtNum(ver.length) + (ver.length > parte.length ? ' <button type="button" class="btn-secondary" data-en-accion="mas">Mostrar ' + Math.min(25, ver.length - parte.length) + ' más</button>' : '') + '</p>';
+  }
+
+  function enPreguntasSaviaPintar() {
+    const host = document.getElementById('enPreguntasSavia'), todas = (EN.datos && EN.datos.preguntas) || [], ver = todas.filter(p => !EN.ocultarAtendidas || p.estado !== 'atendida');
+    document.getElementById('enOcultar').textContent = EN.ocultarAtendidas ? 'Mostrar las atendidas' : 'Ocultar las atendidas';
+    if (!ver.length) { host.innerHTML = '<div class="sb-vacio">' + (todas.length ? 'No hay preguntas por atender.' : 'Todavía no hay preguntas. Aparecen cuando alguien le pregunta a Savia algo que no supo contestar y aceptó «Estadísticas» en el aviso de cookies.') + '</div>'; return; }
+    host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Pregunta</th><th class="n">Veces</th><th>Última vez</th><th>Estado</th><th></th></tr></thead><tbody>' + ver.map(p =>
+      '<tr><td><b>' + esc(p.texto) + '</b></td><td class="n">' + mtNum(p.veces) + '</td><td>' + (p.ms ? esc(mtFechaLarga(p.ms)) : '—') + '</td><td><span class="en-pill ' + (p.estado === 'atendida' ? 'ok' : 'pend') + '">' + (p.estado === 'atendida' ? 'Atendida' : 'Por atender') + '</span></td><td class="n"><button type="button" class="btn-secondary" data-en-pregunta="' + esc(p.id) + '" data-en-estado="' + (p.estado === 'atendida' ? 'por-atender' : 'atendida') + '">' + (p.estado === 'atendida' ? 'Volver a por atender' : 'Marcar atendida') + '</button></td></tr>').join('') + '</tbody></table></div>';
+  }
+
+  function enRender() {
+    if (!document.getElementById('enKpis')) return;
+    const filas = enFilas(), term = filas.filter(f => f.terminada).length, cal = filas.filter(f => f.urge === 'Lo antes posible').length, wa = filas.filter(f => f.hablo).length;
+    const kpi = (ico, titulo, valor, sub) => '<div class="stat-card mt-kpi"><div class="stat-label" style="display:flex;gap:8px;align-items:center;">' + dbIco(ico) + '<span>' + titulo + '</span></div><div class="stat-value">' + valor + '</div><div class="sb-sub">' + sub + '</div></div>';
+    const listo = !!EN.datos;
+    document.getElementById('enKpis').innerHTML =
+      kpi('users', 'Personas que respondieron', listo ? mtNum(filas.length) : '…', 'Una por visitante, incluye completas y a medias') +
+      kpi('check', 'Terminaron la encuesta', listo ? mtNum(term) : '…', listo ? mtPct(term, filas.length) + ' % de quienes empezaron' : '') +
+      kpi('clock', 'Leads calientes', listo ? mtNum(cal) : '…', 'Quieren empezar lo antes posible') +
+      kpi('user', 'Pidieron hablar por WhatsApp', listo ? mtNum(wa) : '…', 'Tocaron «Hablar por WhatsApp» al terminar su ruta');
+    const nav = document.getElementById('navEncCount'); if (nav) nav.textContent = listo ? mtNum(filas.length) : '·';
+    const vacio = document.getElementById('enVacio'), cuerpo = document.getElementById('enCuerpo');
+    if (EN.error && !listo) { vacio.innerHTML = '<div class="widget-box"><div class="sb-vacio">No se pudo leer la encuesta: ' + esc(EN.error) + '</div></div>'; cuerpo.style.display = 'none'; enPreguntasSaviaPintar(); return; }
+    if (!listo) { vacio.innerHTML = '<div class="widget-box"><div class="sb-vacio">Leyendo datos…</div></div>'; cuerpo.style.display = 'none'; return; }
+    if (!filas.length) { vacio.innerHTML = '<div class="widget-box"><div class="sb-vacio">Todavía no hay respuestas. Se guardan cuando alguien usa la ruta de aprendizaje de la portada y aceptó «Estadísticas» en el aviso de cookies.</div></div>'; cuerpo.style.display = 'none'; enPreguntasSaviaPintar(); return; }
+    vacio.innerHTML = ''; cuerpo.style.display = '';
+
+    document.getElementById('enCompletas').innerHTML = '<div class="en-dona">' + mtDona([{ valor: term, color: '#1F7A4D' }, { valor: filas.length - term, color: '#C24D3C' }], filas.length, String(filas.length), filas.length === 1 ? 'persona' : 'personas') +
+      enLeyenda([{ op: 'Completas', n: term, color: '#1F7A4D' }, { op: 'Parciales', n: filas.length - term, color: '#C24D3C' }], filas.length) + '</div>' +
+      enLeer(mtNum(term) + ' ' + (term === 1 ? 'persona' : 'personas') + ' de ' + mtNum(filas.length) + ' terminaron la encuesta (' + mtPct(term, filas.length) + ' %); las otras ' + mtNum(filas.length - term) + ' la dejaron a medias.' + (EN.datos.recortado ? ' Solo se leen las respuestas más recientes.' : ''));
+    enFechaPintar(filas);
+    document.getElementById('enPreguntas').innerHTML =
+      enDonaCaja('Perfil de quién responde', 'Qué tipo de persona es.', 'perfil', filas, (p, b) => 'De cada 10 personas que contestaron, ' + Math.round(Math.max(...p.map(x => x.n)) / b * 10) + ' son «' + esc(p.slice().sort((a, c) => c.n - a.n)[0].op) + '».' + (p.filter(x => x.n > 0).length > 1 ? ' Después sigue «' + esc(p.slice().sort((a, c) => c.n - a.n)[1].op) + '» (' + mtPct(p.slice().sort((a, c) => c.n - a.n)[1].n, b) + ' %).' : '')) +
+      enBarrasHCaja('Cómo nos conocieron', 'De la más a la menos frecuente.', 'origen', filas, (p, b) => enTop(p, b, 'La mayoría nos conoció por')) +
+      enBarrasVCaja('Qué quieren lograr este año', 'Cada columna es una meta.', 'meta', filas, (p, b) => enTop(p, b, 'Lo que más quieren lograr')) +
+      enBarrasHCaja('Área que les interesa', 'Del área que más interesa a la que menos.', 'area', filas, (p, b) => enTop(p, b, 'Lo que más les interesa')) +
+      enBarrasVCaja('Cuándo quieren empezar', 'Del más urgente al más tranquilo.', 'urge', filas, (p, b) => enTop(p, b, 'Lo más común') + (p[0].n ? ' Quienes quieren empezar lo antes posible (' + enPers(p[0].n) + ') son los contactos más calientes.' : '')) +
+      enBarrasHCaja('Qué los detiene hoy', 'Lo que frena a la persona para empezar.', 'freno', filas, (p, b) => enTop(p, b, 'Lo que más los detiene')) +
+      enDonaCaja('Experiencia con cursos en línea', 'Si ya estudió en línea.', 'exper', filas, (p, b) => enTop(p, b, 'Lo más común'));
+    enRetosPintar(filas); enAbandonoPintar(filas); enRamaPintar(filas); enListaPintar(filas); enPreguntasSaviaPintar();
+  }
+
+  window.enCargar = async function() {
+    if (EN.cargando) return;
+    EN.cargando = true; EN.error = '';
+    try { EN.datos = await callAdminEndpoint('/admin/encuesta/datos', {}); }
+    catch (err) { EN.error = (err && err.message) || 'error'; showToast('No se pudo leer la encuesta: ' + EN.error, 'error'); }
+    EN.cargando = false;
+    enRender();
+  };
+
+  document.addEventListener('click', async (e) => {
+    const t = e.target.closest && e.target.closest('[data-en-accion],[data-en-filtro],[data-en-fila],[data-en-pregunta]');
+    if (!t) return;
+    if (t.dataset.enFiltro) { EN.filtro = t.dataset.enFiltro; EN.visibles = 25; enListaPintar(enFilas()); }
+    else if (t.dataset.enFila) { EN.abierta = EN.abierta === t.dataset.enFila ? '' : t.dataset.enFila; enListaPintar(enFilas()); }
+    else if (t.dataset.enPregunta) {
+      const id = t.dataset.enPregunta, estado = t.dataset.enEstado;
+      t.disabled = true;
+      try {
+        await callAdminEndpoint('/admin/encuesta/pregunta', { id, estado });
+        const p = ((EN.datos && EN.datos.preguntas) || []).find(x => x.id === id); if (p) p.estado = estado;
+        showToast(estado === 'atendida' ? 'Pregunta marcada como atendida' : 'Pregunta de vuelta en por atender');
+      } catch (err) { showToast('No se pudo guardar: ' + ((err && err.message) || 'error'), 'error'); }
+      enPreguntasSaviaPintar();
+    }
+    else if (t.dataset.enAccion === 'actualizar') enCargar();
+    else if (t.dataset.enAccion === 'mas') { EN.visibles += 25; enListaPintar(enFilas()); }
+    else if (t.dataset.enAccion === 'ocultar') { EN.ocultarAtendidas = !EN.ocultarAtendidas; enPreguntasSaviaPintar(); }
+    else if (t.dataset.enAccion === 'csv') {
+      mtCsv('encuesta-portada-' + mtISO(Date.now()) + '.csv', [['Fecha', 'Perfil', 'Qué quiere lograr', 'Área de interés', 'Reto', 'Cursos en línea', 'Cuándo quiere empezar', 'Qué lo detiene', 'Cómo nos conoció', 'Terminó', 'Pidió hablar por WhatsApp']].concat(enFilas().map(f => [f.dia || '', f.perfil || '', f.meta || '', f.area || '', f.reto || '', f.exper || '', f.urge || '', f.freno || '', f.origen || '', f.terminada ? 'Sí' : 'No', f.hablo ? 'Sí' : 'No'])));
+    }
+    else if (t.dataset.enAccion === 'csvPreguntas') {
+      mtCsv('preguntas-savia-' + mtISO(Date.now()) + '.csv', [['Pregunta', 'Veces', 'Última vez', 'Estado']].concat((((EN.datos && EN.datos.preguntas) || [])).map(p => [p.texto, p.veces, p.ms ? mtISO(p.ms) : '', p.estado === 'atendida' ? 'Atendida' : 'Por atender'])));
+    }
+  });
 
   /* FASE3P-METRICAS */
   // ═══════════════════════════════════════════════════
@@ -7464,6 +7795,7 @@ let _bibLibrosCargados = false;
     if (tabName === 'retos') setTimeout(() => cargarRetosAdmin(true), 0);
     if (tabName === 'freecourses') setTimeout(() => cargarAvanceGratis(true), 0);
     if (tabName === 'metricas') setTimeout(() => mtCargar(false), 0);
+    if (tabName === 'encuesta') setTimeout(() => enCargar(), 0);
     if (tabName === 'valores') setTimeout(cargarValoresAdmin, 0);
   };
   document.addEventListener('click', (e) => {

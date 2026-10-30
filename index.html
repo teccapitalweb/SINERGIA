@@ -1409,7 +1409,7 @@
 })();
 </script>
 
-<!-- Ruta de aprendizaje: preguntas, perfil y cursos recomendados. Todo se queda en el navegador (no se envía nada). -->
+<!-- Ruta de aprendizaje: preguntas, perfil y cursos recomendados. Se queda en el navegador; solo si aceptas «Estadísticas» en el aviso de cookies se envían tus respuestas, de forma anónima (encuesta-envio.js). -->
 <script>
 (function () {
   var body = document.getElementById('qBody');
@@ -1605,6 +1605,7 @@
     setTimeout(function () {
       paso++;
       guardar();
+      if (window.sinergiaEncuesta) window.sinergiaEncuesta.respuesta(r);
       ocupado = false;
       if (paso >= pasos(r).length) { hecho = true; guardar(); verResultado(true, true); } else verPregunta(true);
     }, reduce ? 0 : 420);
@@ -1646,7 +1647,9 @@
         '<a class="btn btn-line-dark" href="' + resumenWhatsApp(top) + '" target="_blank" rel="noopener">Hablar por WhatsApp</a>' +
         '<button type="button" class="r-reset" id="rReset">Empezar de nuevo</button>' +
       '</div>' +
-      '<p class="r-fine">Tus respuestas se quedan en este navegador; no se envían a ningún lado.</p>';
+      '<p class="r-fine">' + (window.sinergiaEncuesta && window.sinergiaEncuesta.activa()
+        ? 'Con tu permiso de estadísticas, guardamos tus respuestas de forma anónima (sin tu nombre ni tu contacto) para mejorar los cursos.'
+        : 'Tus respuestas se quedan en este navegador; no se envían a ningún lado.') + '</p>';
     entra();
     if (enfocar) { var t = el('qTitulo'); if (t) t.focus({ preventScroll: true }); }
   }
@@ -1654,6 +1657,7 @@
   /* ───────── Eventos ───────── */
   body.addEventListener('click', function (e) {
     var o = e.target.closest('.q-opt'); if (o) { responder(o.dataset.v); return; }
+    if (e.target.closest('a[href^="https://wa.me/"]') && window.sinergiaEncuesta) window.sinergiaEncuesta.hablo();
     if (e.target.closest('#rReset')) {
       r = {}; paso = 0; hecho = false; limpiar();
       try { localStorage.removeItem('sinergia_ruta_resultado'); } catch (e) { /* sin almacenamiento */ }
@@ -1710,7 +1714,7 @@
 })();
 </script>
 
-<!-- Chat con Savia: guía automática con respuestas escritas. No usa inteligencia artificial ni envía nada a ningún servidor. -->
+<!-- Chat con Savia: guía automática con respuestas escritas. No usa inteligencia artificial. Solo si aceptas «Estadísticas» en el aviso de cookies, anota de forma anónima las preguntas que no supo contestar (encuesta-envio.js). -->
 <script>
 (function () {
   var launch = document.getElementById('svLaunch'), panel = document.getElementById('svPanel');
@@ -1922,9 +1926,9 @@
       }
       if (/(^| )(curso|cursos|clase|clases|capacitacion|taller|talleres)/.test(txt)) {
         var tm = temaDe(texto);
-        return { p: ['Por ahora no tenemos un curso sobre ' + (tm ? '<b>«' + esc(tm) + '»</b>' : 'ese tema') + '. Si más adelante hay uno relacionado, lo encontrarás en el catálogo y te lo podré recomendar.', 'Si quieres, pregúntanos por WhatsApp si habrá algo parecido.'], a: ['wa', 'cursos'], c: ['Quiero mi ruta', '¿Qué cursos hay?', '¿Cuánto cuesta?'], im: 'pista' };
+        return { p: ['Por ahora no tenemos un curso sobre ' + (tm ? '<b>«' + esc(tm) + '»</b>' : 'ese tema') + '. Si más adelante hay uno relacionado, lo encontrarás en el catálogo y te lo podré recomendar.', 'Si quieres, pregúntanos por WhatsApp si habrá algo parecido.'], a: ['wa', 'cursos'], c: ['Quiero mi ruta', '¿Qué cursos hay?', '¿Cuánto cuesta?'], im: 'pista', sr: true };
       }
-      return { p: ['No tengo esa respuesta en la información de la página. Puedes escribirnos por WhatsApp y alguien del equipo te ayuda.'], a: ['wa'], c: SEGUIR, im: 'pista' };
+      return { p: ['No tengo esa respuesta en la información de la página. Puedes escribirnos por WhatsApp y alguien del equipo te ayuda.'], a: ['wa'], c: SEGUIR, im: 'pista', sr: true };
     }
     if (g && sg === mayor) return respuestaGlosario(g);
     if (cu && sc === mayor) return respuestaCurso(cu.curso);
@@ -1968,7 +1972,8 @@
     texto = String(texto || '').trim(); if (!texto || ocupado) return;
     burbujaUsuario(texto); limpiarChips();
     var r = responder(texto);
-    if (!r) r = { p: ['No te entendí bien. ¿Quieres ver alguno de estos temas?'], c: INICIAL, im: 'pista' };
+    if (!r) r = { p: ['No te entendí bien. ¿Quieres ver alguno de estos temas?'], c: INICIAL, im: 'pista', sr: true };
+    if (r.sr && window.sinergiaEncuesta) window.sinergiaEncuesta.sinRespuesta(texto);
     decir(r);
   }
   function inicio() {
@@ -2040,6 +2045,7 @@
   }
 </script>
 
+<script src="encuesta-envio.js" defer></script>
 <script src="visitas.js" data-pagina="portada" defer></script>
 <script src="cookies.js?v=1" defer></script>
 

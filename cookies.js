@@ -86,7 +86,7 @@
       '<div class="ck-prefs" id="ck-prefs" hidden>' +
         '<div class="ck-op"><div><b>Necesarias</b><span>Mantienen tu sesión y hacen funcionar el sitio y los pagos. Siempre activas.</span></div><label class="ck-sw"><input type="checkbox" checked disabled aria-label="Necesarias"><i></i></label></div>' +
         '<div class="ck-op"><div><b>Preferencias</b><span>Recuerdan cosas como tu ruta de cursos sugerida y el tema que elegiste.</span></div><label class="ck-sw"><input type="checkbox" id="ck-pref" aria-label="Preferencias"><i></i></label></div>' +
-        '<div class="ck-op"><div><b>Estadísticas</b><span>Un conteo anónimo de visitas por día y página, para mejorar el sitio. No guarda tu IP ni te identifica.</span></div><label class="ck-sw"><input type="checkbox" id="ck-est" aria-label="Estadísticas"><i></i></label></div>' +
+        '<div class="ck-op"><div><b>Estadísticas</b><span>Un conteo anónimo de visitas y, si usas la ruta o el chat de Savia, tus respuestas y las preguntas que no supo contestar, para mejorar el sitio. Sin tu nombre, contacto ni IP.</span></div><label class="ck-sw"><input type="checkbox" id="ck-est" aria-label="Estadísticas"><i></i></label></div>' +
       '</div>' +
       '<div class="ck-acc">' +
         '<button type="button" class="ck-b main" id="ck-todo">Aceptar todo</button>' +
