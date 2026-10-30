@@ -1380,6 +1380,31 @@
 <style id="sinergia-fase3d">
   /* Fase 3d: Marketing · Cursos gratis */
   .cg-caja { margin-bottom: 16px; }
+  .mt-barra { margin-bottom: 16px; }
+  .mt-kpi .stat-label svg { width: 18px; height: 18px; flex: 0 0 auto; color: var(--teal-600); }
+  .mt-kpi .stat-value { margin-top: 6px; }
+  .mt-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .mt-fechas { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+  .mt-fechas .btn-secondary { height: 42px; }
+  .mt-dos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .mt-dos .cg-caja { margin-bottom: 16px; }
+  .mt-tend { display: inline-block; margin-top: 6px; padding: 3px 10px; border-radius: 100px; font-size: 11.5px; font-weight: 700; background: var(--stone-100); color: var(--stone-600); }
+  .mt-tend.sube { background: #E6F4EA; color: #17603A; }
+  .mt-tend.baja { background: #FFF4DB; color: #8A5A14; }
+  .mt-spark { display: block; margin-top: 8px; }
+  .mt-svg text { font-size: 11px; fill: #78716C; }
+  .mt-svg .mt-eje { stroke: #E7E5E4; stroke-dasharray: 3 4; }
+  .mt-calor { display: grid; grid-template-columns: 34px repeat(24, minmax(0, 1fr)); gap: 3px; align-items: center; }
+  .mt-calor span { font-size: 11px; color: var(--stone-500); }
+  .mt-calor i { display: block; height: 20px; border-radius: 4px; background: var(--stone-100); }
+  .mt-calor i.n1 { background: #D8E6DD; } .mt-calor i.n2 { background: #B9D3C4; } .mt-calor i.n3 { background: #8DB9A1; } .mt-calor i.n4 { background: #4E8B6A; } .mt-calor i.n5 { background: #1F6A47; }
+  .mt-calor-leyenda { display: flex; gap: 4px; align-items: center; justify-content: flex-end; margin-top: 8px; font-size: 11.5px; color: var(--stone-500); }
+  .mt-calor-leyenda i { width: 16px; height: 12px; border-radius: 3px; display: inline-block; }
+  .mt-donas { display: grid; gap: 22px; }
+  .mt-barra-h { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 13.5px; padding: 6px 0; }
+  .mt-barra-h b { font-weight: 700; }
+  .mt-barra-h .cr-barra { grid-column: 1 / -1; margin: 0; height: 12px; }
+  @media (max-width: 1100px) { .mt-dos { grid-template-columns: 1fr; } }
   .pg-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
   .pg-trio .cg-caja { margin-bottom: 16px; }
   .pg-leyenda { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--stone-600); margin-bottom: 8px; }
@@ -2317,6 +2342,10 @@ body::before { display: none; }
     </button>
 
     <div class="nav-label">Marketing</div>
+    <button class="nav-item" data-tab="metricas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span class="nav-item-text">Métricas</span>
+    </button>
     <button class="nav-item" data-tab="creditos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
       <span class="nav-item-text">Créditos</span>
@@ -2615,6 +2644,132 @@ body::before { display: none; }
     <!-- ═══════════════════════════════════════════════════════════
          MARKETING · CURSOS GRATIS (Fase 3d)
          ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="metricas">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Cómo va <em>el Club</em></h2>
+          <p class="panel-sub">Altas, pruebas gratuitas, membresías, cursos y comunidad con los datos que ya guarda el servidor. Elige el periodo y compáralo con el anterior.</p>
+        </div>
+        <div class="panel-head-accion">
+          <button type="button" class="btn-secondary" data-mt-accion="csv">Descargar historial (CSV)</button>
+          <button type="button" class="btn-secondary" data-mt-accion="actualizar">Actualizar</button>
+        </div>
+      </div>
+
+      <div class="widget-box mt-barra">
+        <div class="mt-presets" id="mtPresets"></div>
+        <div class="mt-fechas">
+          <div><label class="form-label" for="mtDesde">Desde</label><input type="date" class="form-input" id="mtDesde"></div>
+          <div><label class="form-label" for="mtHasta">Hasta</label><input type="date" class="form-input" id="mtHasta"></div>
+          <button type="button" class="btn-secondary" data-mt-accion="fechas">Aplicar fechas</button>
+        </div>
+        <p class="cr-ayuda" id="mtRango"></p>
+      </div>
+
+      <div class="stats-grid" id="mtKpis"></div>
+
+      <div class="chip-filter" id="mtGran"></div>
+
+      <div class="widget-box cg-caja">
+        <div class="widget-head"><span class="widget-name">Actividad del Club</span></div>
+        <p class="cr-sub">Las cuatro señales principales juntas. Pasa el cursor sobre la gráfica para ver cada valor.</p>
+        <div class="pg-leyenda" id="mtLeyAct"></div>
+        <div id="mtActividad"></div>
+        <p class="cr-ayuda" id="mtActividadTxt"></p>
+      </div>
+
+      <div class="mt-dos">
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Cuentas nuevas</span></div>
+          <p class="cr-sub">La raya punteada marca el periodo anterior.</p>
+          <div id="mtAltas"></div><p class="cr-ayuda" id="mtAltasTxt"></p>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Ingresos estimados</span></div>
+          <p class="cr-sub" id="mtIngresosSub"></p>
+          <div id="mtIngresos"></div><p class="cr-ayuda" id="mtIngresosTxt"></p>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Pruebas gratuitas elegidas</span></div>
+          <p class="cr-sub">Quienes escogieron su curso de prueba.</p>
+          <div id="mtPruebas"></div><p class="cr-ayuda" id="mtPruebasTxt"></p>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Certificados emitidos</span></div>
+          <p class="cr-sub">Con folio verificable.</p>
+          <div id="mtCerts"></div><p class="cr-ayuda" id="mtCertsTxt"></p>
+        </div>
+      </div>
+
+      <div class="mt-dos">
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">De la cuenta nueva al curso terminado</span></div>
+          <p class="cr-sub">Cuántas de las personas que se registraron llegan a cada paso.</p>
+          <div class="chip-filter" id="mtEmbudoSel"></div>
+          <div id="mtEmbudo"></div>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Cuentas hoy</span></div>
+          <p class="cr-sub" id="mtHoySub"></p>
+          <div id="mtHoy"></div>
+        </div>
+      </div>
+
+      <div class="mt-dos">
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Cuándo se mueve el Club</span></div>
+          <p class="cr-sub">Altas, pruebas, certificados, pagos y retos por día y hora de México. Más oscuro es más actividad.</p>
+          <div id="mtCalor"></div>
+          <p class="cr-ayuda">Cuenta altas, pruebas elegidas, certificados, pagos registrados y los retos que se jugaron. No incluye visitas ni inicios de sesión: el servidor no los guarda.</p>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Qué día se mueve más</span></div>
+          <p class="cr-sub" id="mtDiaSub"></p>
+          <div id="mtDia"></div><p class="cr-ayuda" id="mtDiaTxt"></p>
+        </div>
+      </div>
+
+      <div class="mt-dos">
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">De prueba gratuita a miembro</span></div>
+          <p class="cr-sub">Cuántas personas que eligieron su curso de prueba terminaron con membresía.</p>
+          <div id="mtP2M"></div>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Conversión y retención por mes</span></div>
+          <p class="cr-sub">De cada mes de registro: qué parte tuvo membresía y qué parte sigue con acceso.</p>
+          <div class="pg-leyenda"><span><i style="background:#2E7D9A"></i>Conversión</span><span><i style="background:#1F7A4D"></i>Retención</span></div>
+          <div id="mtConvRet"></div><p class="cr-ayuda" id="mtConvRetTxt"></p>
+        </div>
+      </div>
+
+      <div class="widget-box cg-caja">
+        <div class="widget-head"><span class="widget-name">Cohortes por mes de registro</span></div>
+        <p class="cr-sub">De cada mes: cuántos se registraron, cuántos tuvieron membresía y cuántos tienen acceso hoy.</p>
+        <div id="mtCohortes"></div>
+        <div class="cr-acciones"><button type="button" class="btn-secondary" data-mt-accion="csvCohortes">Descargar cohortes (CSV)</button></div>
+      </div>
+
+      <div class="mt-dos">
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Cursos más elegidos como prueba</span></div>
+          <p class="cr-sub">Toda la historia, no solo el periodo.</p>
+          <div id="mtCursosPrueba"></div>
+        </div>
+        <div class="widget-box cg-caja">
+          <div class="widget-head"><span class="widget-name">Cursos más completados</span></div>
+          <p class="cr-sub">Cursos terminados: todas sus clases vistas.</p>
+          <div id="mtCursosTerm"></div>
+        </div>
+      </div>
+      <div class="widget-box cg-caja">
+        <div class="widget-head"><span class="widget-name">Cursos más empezados</span></div>
+        <p class="cr-sub">Cuántas personas vieron al menos una clase de cada curso.</p>
+        <div id="mtCursosEmp"></div>
+      </div>
+      <p class="cr-ayuda" id="mtPie"></p>
+    </div>
+
     <div class="tab-panel" data-panel="freecourses">
       <div class="panel-head">
         <div class="panel-head-info">
@@ -3348,6 +3503,19 @@ body::before { display: none; }
       </div>
       <div class="stats-grid" id="retosKpis"></div>
 
+      <div class="mt-dos">
+        <div class="widget-box rt-caja">
+          <div class="widget-head"><span class="widget-name">Cuántas personas tiene cada nivel de puntos</span></div>
+          <p class="cr-sub">Miembros con acceso agrupados por los puntos que han sumado.</p>
+          <div id="rtNiveles"></div><p class="cr-ayuda" id="rtNivelesTxt"></p>
+        </div>
+        <div class="widget-box rt-caja">
+          <div class="widget-head"><span class="widget-name">Personas que jugaron por día</span></div>
+          <p class="cr-sub">Cuántas personas distintas sumaron puntos cada día (últimos 30 días).</p>
+          <div id="rtPorDia"></div><p class="cr-ayuda" id="rtPorDiaTxt"></p>
+        </div>
+      </div>
+
       <div class="widget-box rt-caja">
         <div class="widget-head"><span class="widget-name">Historial de retos resueltos</span></div>
         <p class="cr-sub">Cada vez que alguien suma puntos: quién, qué reto, de qué tipo, cuándo (hora de México) y cuántos puntos ganó.</p>
@@ -3936,6 +4104,7 @@ body::before { display: none; }
       'members': 'Gestión de miembros',
       'subscriptions': 'Suscripciones',
       'freecourses': 'Pruebas gratuitas',
+      'metricas': 'Métricas',
       'forum': 'Foro · moderación',
       'directory': 'Directorio · moderación',
       'notifications': 'Notificaciones',
@@ -4426,6 +4595,353 @@ body::before { display: none; }
   window.cgElegirFiltro = function(f) { CG.filtro = f; CG.visibles = 20; renderCursosGratis(); };
   window.cgElegirCurso = function(c) { CG.curso = c; CG.visibles = 20; renderCursosGratis(); };
   window.cgBuscar = function(t) { CG.busca = String(t || '').trim().toLowerCase(); CG.visibles = 20; renderCursosGratis(); };
+
+  /* FASE3P-METRICAS */
+  // ═══════════════════════════════════════════════════
+  // MÉTRICAS DEL CLUB (formato de Zoorigen, datos de SINERGIA)
+  // Altas, pruebas elegidas y membresías salen de los miembros ya cargados; pagos y certificados, de lo que lista el servidor;
+  // quién empezó o terminó un curso y cuándo se jugaron retos, de /admin/metricas/datos. Nada se guarda y no hay datos de ejemplo.
+  // «Ingresos estimados» suma los cobros registrados (o, si aún no hay, el último pago de cada cuenta por su precio): no es contabilidad.
+  // ═══════════════════════════════════════════════════
+  const MT = { srv: null, cargando: false, preset: '30d', desde: null, hasta: null, gran: 'dia', embudo: 'periodo', cursosVer: {} };
+  const MT_PRESETS = [['7d', '7 días'], ['30d', '30 días'], ['90d', '90 días'], ['6m', '6 meses'], ['12m', '12 meses'], ['todo', 'Todo']];
+  const MT_DIAS_SEM = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  const MT_DIAS_LARGO = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+  const MT_DIA_MS = 86400000;
+  const mtNum = (n) => Number(n || 0).toLocaleString('es-MX');
+  const mtMxn = (n) => '$' + Math.round(Number(n || 0)).toLocaleString('es-MX');
+  const mtPct = (n, t) => t ? Math.round(n / t * 100) : 0;
+  const mtIniDia = (ms) => { const d = new Date(ms); d.setHours(0, 0, 0, 0); return d.getTime(); };
+  const mtMas = (ms, dias) => { const d = new Date(ms); d.setDate(d.getDate() + dias); return d.getTime(); };
+  const mtFechaCorta = (ms) => new Date(ms).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }).replace('.', '');
+  const mtFechaLarga = (ms) => new Date(ms).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '');
+  const mtMs = (v) => { const d = toDate(v); return d ? d.getTime() : null; };
+  const mtISO = (ms) => { const d = new Date(ms); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+
+  // Periodo elegido y el anterior (mismo largo)
+  function mtPeriodo() {
+    const hoy = mtIniDia(Date.now());
+    let desde, hasta = hoy;
+    if (MT.preset === 'custom') { desde = MT.desde; hasta = MT.hasta; }
+    else if (MT.preset === 'todo') { const f = mtTodasLasFechas(); desde = f.length ? mtIniDia(Math.min(...f)) : mtMas(hoy, -29); }
+    else if (MT.preset === '6m' || MT.preset === '12m') { const d = new Date(hoy); d.setMonth(d.getMonth() - (MT.preset === '6m' ? 6 : 12)); d.setDate(d.getDate() + 1); desde = d.getTime(); }
+    else desde = mtMas(hoy, -(parseInt(MT.preset, 10) - 1));
+    const dias = Math.round((hasta - desde) / MT_DIA_MS) + 1;
+    const fin = mtMas(hasta, 1);
+    const sinAnterior = MT.preset === 'todo';
+    return { desde, hasta, fin, dias, antDesde: mtMas(desde, -dias), antFin: desde, sinAnterior };
+  }
+  function mtTodasLasFechas() {
+    const o = [];
+    allMembers.filter(conCuenta).forEach(m => { const a = mtMs(fechaAlta(m)); if (a) o.push(a); });
+    return o;
+  }
+
+  // Datos del Club como listas [ms, valor]
+  function mtEventos() {
+    const cuentas = allMembers.filter(conCuenta);
+    const altas = [], pruebas = [], certs = [], pagos = [], ingresos = [];
+    cuentas.forEach(m => { const a = mtMs(fechaAlta(m)); if (a) altas.push([a, 1]); const p = mtMs(m.cursoGratisElegidoEn); if (m.cursoGratisElegido && p) pruebas.push([p, 1]); });
+    (DB.certs || []).forEach(c => { if (c.estado === 'revocado') return; const t = Date.parse(c.creadoEn); if (t) certs.push([t, 1]); });
+    const real = Array.isArray(DB.pagos) && DB.pagos.length > 0;
+    if (real) DB.pagos.filter(p => p.estado === 'pagado').forEach(p => { const t = Date.parse(p.fecha); if (!t) return; pagos.push([t, 1]); if (p.moneda === 'MXN') ingresos.push([t, Number(p.monto) || 0]); });
+    else cuentas.filter(m => infoMembresia(m).origen === 'stripe').forEach(m => {
+      const f = [toDate(m.ultimaRenovacion), toDate(m.activadoEn)].filter(Boolean).sort((a, b) => b - a)[0]; if (!f) return;
+      const precio = Number(m.precio) > 0 ? Number(m.precio) : (m.plan === 'anual' ? PRECIO_ANUAL_MXN : PRECIO_MENSUAL_MXN);
+      pagos.push([f.getTime(), 1]); ingresos.push([f.getTime(), precio]);
+    });
+    const retos = ((MT.srv && MT.srv.retosMs) || []).map(t => [t, 1]);
+    return { altas, pruebas, certs, pagos, ingresos, retos, real };
+  }
+  const mtEnRango = (lista, desde, fin) => lista.filter(x => x[0] >= desde && x[0] < fin);
+  const mtSuma = (lista) => lista.reduce((a, x) => a + x[1], 0);
+
+  // Cubetas (día, semana o mes) para las gráficas
+  function mtCubetas(desde, hasta, gran) {
+    const out = []; let d = new Date(desde); d.setHours(0, 0, 0, 0);
+    if (gran === 'semana') d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); else if (gran === 'mes') d.setDate(1);
+    while (d.getTime() <= hasta && out.length < 800) {
+      const sig = new Date(d);
+      if (gran === 'dia') sig.setDate(sig.getDate() + 1); else if (gran === 'semana') sig.setDate(sig.getDate() + 7); else sig.setMonth(sig.getMonth() + 1);
+      out.push({ t0: d.getTime(), t1: sig.getTime(), etiqueta: gran === 'mes' ? new Date(d).toLocaleDateString('es-MX', { month: 'short', year: '2-digit' }).replace('.', '') : mtFechaCorta(d.getTime()) });
+      d = sig;
+    }
+    return out;
+  }
+  function mtSerie(lista, cub) {
+    const vals = new Array(cub.length).fill(0);
+    lista.forEach(([ms, v]) => {
+      if (!cub.length || ms < cub[0].t0 || ms >= cub[cub.length - 1].t1) return;
+      let lo = 0, hi = cub.length - 1;
+      while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (cub[mid].t0 <= ms) lo = mid; else hi = mid - 1; }
+      vals[lo] += v;
+    });
+    return vals;
+  }
+
+  // ── Gráficas en SVG ──
+  function mtTope(v, entero) {
+    if (v <= 0) return entero ? 3 : 1;
+    const p = Math.pow(10, Math.floor(Math.log10(v))), n = v / p;
+    let t = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p;
+    if (entero && t < 3) t = 3;
+    return t;
+  }
+  function mtEjes(W, H, izq, abajo, tope, fmt) {
+    let s = '';
+    for (let i = 0; i <= 4; i++) { const y = 10 + (H - abajo - 10) * (1 - i / 4); s += '<line class="mt-eje" x1="' + izq + '" x2="' + (W - 6) + '" y1="' + y + '" y2="' + y + '"/><text x="' + (izq - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + fmt(tope * i / 4) + '</text>'; }
+    return s;
+  }
+  function mtEtiquetasX(cub, W, izq) {
+    const n = cub.length, paso = n <= 12 ? 1 : Math.ceil(n / 6), col = (W - izq - 10) / Math.max(n, 1);
+    return cub.map((c, i) => i % paso === 0 ? '<text x="' + (izq + col * i + col / 2).toFixed(1) + '" y="226" text-anchor="middle">' + esc(c.etiqueta) + '</text>' : '').join('');
+  }
+  function mtLineas(series, cub, fmt, ancho) {
+    const W = ancho || 900, H = 240, izq = 46, abajo = 30, n = cub.length;
+    const tope = mtTope(Math.max(1, ...series.flatMap(s => s.vals)), true), col = (W - izq - 10) / Math.max(n, 1);
+    const x = (i) => izq + col * i + col / 2, y = (v) => 10 + (H - abajo - 10) * (1 - v / tope);
+    const f = fmt || mtNum;
+    let g = mtEjes(W, H, izq, abajo, tope, v => f(Math.round(v)));
+    series.forEach(s => {
+      g += '<path d="' + s.vals.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ') + '" fill="none" stroke="' + s.color + '" stroke-width="2.2" stroke-linejoin="round"/>';
+      if (s.area) g += '<path d="M' + x(0).toFixed(1) + ' ' + (H - abajo) + ' ' + s.vals.map((v, i) => 'L' + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ') + ' L' + x(n - 1).toFixed(1) + ' ' + (H - abajo) + ' Z" fill="' + s.color + '" fill-opacity="0.12"/>';
+    });
+    // Zonas invisibles para ver el valor de cada día al pasar el cursor
+    g += cub.map((c, i) => '<rect x="' + (izq + col * i).toFixed(1) + '" y="10" width="' + col.toFixed(1) + '" height="' + (H - abajo - 10) + '" fill="transparent"><title>' + esc(c.etiqueta + ': ' + series.map(s => s.nombre + ' ' + f(s.vals[i])).join(' · ')) + '</title></rect>').join('');
+    return '<svg class="mt-svg" viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img">' + g + mtEtiquetasX(cub, W, izq) + '</svg>';
+  }
+  function mtBarras(vals, cub, color, previos, fmt, unidad, ancho) {
+    const W = ancho || 900, H = 240, izq = 52, abajo = 30, n = cub.length, f = fmt || mtNum;
+    const tope = mtTope(Math.max(1, ...vals, ...(previos || [0])), !fmt), col = (W - izq - 10) / Math.max(n, 1), bw = Math.max(2, col * 0.62);
+    const y = (v) => 10 + (H - abajo - 10) * (1 - v / tope);
+    let g = mtEjes(W, H, izq, abajo, tope, v => f(Math.round(v)));
+    vals.forEach((v, i) => {
+      const bx = izq + col * i + (col - bw) / 2, h = (H - abajo - 10) * v / tope;
+      g += '<rect x="' + bx.toFixed(1) + '" y="' + (H - abajo - h).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(h, v > 0 ? 2 : 0).toFixed(1) + '" rx="2" fill="' + color + '"><title>' + esc(cub[i].etiqueta + ': ' + f(v) + (unidad ? ' ' + unidad : '')) + '</title></rect>';
+      if (previos && previos[i] !== undefined) g += '<line x1="' + bx.toFixed(1) + '" x2="' + (bx + bw).toFixed(1) + '" y1="' + y(previos[i]).toFixed(1) + '" y2="' + y(previos[i]).toFixed(1) + '" stroke="#6B7280" stroke-width="2" stroke-dasharray="3 2"><title>' + esc('Periodo anterior: ' + f(previos[i])) + '</title></line>';
+    });
+    return '<svg class="mt-svg" viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img">' + g + mtEtiquetasX(cub, W, izq) + '</svg>';
+  }
+  function mtDona(partes, total, centro, sub) {
+    const R = 66, C = 2 * Math.PI * R; let acum = 0;
+    const arcos = total ? partes.filter(p => p.valor > 0).map(p => { const l = C * p.valor / total; const s = '<circle cx="84" cy="84" r="' + R + '" fill="none" stroke="' + p.color + '" stroke-width="22" stroke-dasharray="' + l.toFixed(2) + ' ' + (C - l).toFixed(2) + '" stroke-dashoffset="' + (-acum).toFixed(2) + '" transform="rotate(-90 84 84)"><title>' + esc(p.etiqueta + ': ' + mtNum(p.valor)) + '</title></circle>'; acum += l; return s; }).join('') : '';
+    return '<svg viewBox="0 0 168 168" width="168" height="168" role="img"><circle cx="84" cy="84" r="' + R + '" fill="none" stroke="#E7ECEA" stroke-width="22"/>' + arcos + '<text x="84" y="90" text-anchor="middle" font-size="28" font-weight="800" fill="#10261F">' + esc(centro) + '</text><text x="84" y="108" text-anchor="middle" font-size="11.5" fill="#6B7C77">' + esc(sub) + '</text></svg>';
+  }
+  const mtTendencia = (actual, previo, sinAnterior) => {
+    if (sinAnterior) return '';
+    if (previo === 0) return '<span class="mt-tend">' + (actual ? 'Antes eran 0' : 'Sin cambios') + '</span>';
+    const d = Math.round((actual - previo) / previo * 100);
+    return '<span class="mt-tend ' + (d > 0 ? 'sube' : d < 0 ? 'baja' : '') + '">' + (d > 0 ? '+' : '') + d + ' % frente a ' + mtNum(previo) + ' del periodo anterior</span>';
+  };
+  const mtSpark = (vals, color) => '<span class="mt-spark">' + dbSparkSvg(vals, color) + '</span>';
+  const mtRango = (vals, cub, unidad, fmt) => { const f = fmt || mtNum, max = Math.max(0, ...vals), i = vals.indexOf(max); return '<b>' + f(vals.reduce((a, v) => a + v, 0)) + '</b> ' + unidad + (max > 0 ? ' · Más alto: <b>' + f(max) + '</b> (' + esc(mtFechaLarga(cub[i].t0)) + ')' : ''); };
+
+  // ── Carga y pantalla ──
+  window.mtCargar = async function(forzar) {
+    if (MT.cargando) return;
+    MT.cargando = true;
+    try {
+      if (forzar) { try { await dbCargarCerts(); } catch (e) { /* se pinta con lo que haya */ } }
+      else if (DB.certs === null && !DB.certsError) dbCargarCerts();
+      MT.srv = await callAdminEndpoint('/admin/metricas/datos', { forzar: forzar === true });
+    } catch (err) {
+      MT.srvError = (err && err.message) || 'error';
+      showToast('No se pudieron leer algunas métricas: ' + MT.srvError, 'error');
+    }
+    MT.cargando = false;
+    mtRender();
+  };
+
+  function mtRender() {
+    if (!document.getElementById('mtKpis')) return;
+    const per = mtPeriodo(), ev = mtEventos();
+    const cuentas = allMembers.filter(conCuenta), cub = mtCubetas(per.desde, per.hasta, MT.gran), cubAnt = mtCubetas(per.antDesde, mtMas(per.desde, -1), MT.gran);
+    const lista = (k) => mtEnRango(ev[k], per.desde, per.fin), listaAnt = (k) => mtEnRango(ev[k], per.antDesde, per.antFin);
+
+    // Presets y fechas
+    document.getElementById('mtPresets').innerHTML = MT_PRESETS.map(p => '<button type="button" class="chip' + (MT.preset === p[0] ? ' active' : '') + '" data-mt-preset="' + p[0] + '">' + p[1] + '</button>').join('');
+    document.getElementById('mtDesde').value = mtISO(per.desde); document.getElementById('mtHasta').value = mtISO(per.hasta);
+    document.getElementById('mtRango').innerHTML = 'Del <b>' + esc(mtFechaLarga(per.desde)) + '</b> al <b>' + esc(mtFechaLarga(per.hasta)) + '</b> (' + per.dias + ' ' + (per.dias === 1 ? 'día' : 'días') + '). ' + (per.sinAnterior ? 'Con «Todo» no hay periodo anterior para comparar.' : 'Las tendencias comparan con los ' + per.dias + ' días anteriores.');
+    document.getElementById('mtGran').innerHTML = [['dia', 'Día'], ['semana', 'Semana'], ['mes', 'Mes']].map(g => '<button type="button" class="chip' + (MT.gran === g[0] ? ' active' : '') + '" data-mt-gran="' + g[0] + '">' + g[1] + '</button>').join('');
+
+    // Números del periodo
+    const nAltas = mtSuma(lista('altas')), nAltasAnt = mtSuma(listaAnt('altas'));
+    const nPruebas = mtSuma(lista('pruebas')), nPruebasAnt = mtSuma(listaAnt('pruebas'));
+    const nCerts = mtSuma(lista('certs')), nCertsAnt = mtSuma(listaAnt('certs'));
+    const nPagos = mtSuma(lista('pagos')), nPagosAnt = mtSuma(listaAnt('pagos'));
+    const ingreso = mtSuma(lista('ingresos')), ingresoAnt = mtSuma(listaAnt('ingresos'));
+    const tuvo = (m) => claseAcceso(m).grupo !== 'gratis';
+    const eligieronPer = cuentas.filter(m => { const p = mtMs(m.cursoGratisElegidoEn); return m.cursoGratisElegido && p !== null && p >= per.desde && p < per.fin; });
+    const seHicieronPer = eligieronPer.filter(tuvo);
+    const conAcceso = cuentas.filter(tieneAcceso), tuvieron = cuentas.filter(tuvo);
+
+    const spark = (k, color) => mtSpark(mtSerie(lista(k), mtCubetas(per.desde, per.hasta, 'dia')), color);
+    const kpi = (ico, titulo, valor, sub, extra, claseIco) => '<div class="stat-card mt-kpi"><div class="stat-label" style="display:flex;gap:8px;align-items:center;">' + dbIco(ico) + '<span>' + titulo + '</span></div><div class="stat-value">' + valor + '</div><div class="sb-sub">' + sub + '</div>' + (extra || '') + '</div>';
+    document.getElementById('mtKpis').innerHTML =
+      kpi('plus', 'Cuentas nuevas', mtNum(nAltas), 'Se registraron en el periodo', mtTendencia(nAltas, nAltasAnt, per.sinAnterior) + spark('altas', '#1F7A4D')) +
+      kpi('user', 'Pruebas gratuitas elegidas', mtNum(nPruebas), 'Eligieron su curso de prueba', mtTendencia(nPruebas, nPruebasAnt, per.sinAnterior) + spark('pruebas', '#2E7D9A')) +
+      kpi('refresh', 'De prueba a miembro', mtPct(seHicieronPer.length, eligieronPer.length) + ' %', seHicieronPer.length + ' de ' + eligieronPer.length + ' que eligieron en el periodo', '') +
+      kpi('card', 'Ingresos estimados', mtMxn(ingreso), 'MXN · ' + (ev.real ? 'cobros registrados' : 'estimación por precio de lista'), mtTendencia(ingreso, ingresoAnt, per.sinAnterior) + spark('ingresos', '#B7791F')) +
+      kpi('check', 'Con acceso hoy', mtNum(conAcceso.length), 'De ' + mtNum(cuentas.length) + ' cuentas (sin administradores)', '') +
+      kpi('clock', 'Retención', mtPct(conAcceso.length, tuvieron.length) + ' %', conAcceso.length + ' de ' + tuvieron.length + ' que alguna vez tuvieron membresía', '') +
+      kpi('award', 'Certificados emitidos', DB.certs === null ? '…' : mtNum(nCerts), 'Con folio verificable', mtTendencia(nCerts, nCertsAnt, per.sinAnterior) + spark('certs', '#B7791F')) +
+      kpi('card', 'Últimos pagos registrados', mtNum(nPagos), ev.real ? 'Cobros pagados en el periodo' : 'Pagos estimados en el periodo', mtTendencia(nPagos, nPagosAnt, per.sinAnterior) + spark('pagos', '#C24D3C'));
+
+    // Actividad del Club
+    const sA = mtSerie(lista('altas'), cub), sP = mtSerie(lista('pruebas'), cub), sC = mtSerie(lista('certs'), cub), sG = mtSerie(lista('pagos'), cub);
+    document.getElementById('mtLeyAct').innerHTML = [['#1F7A4D', 'Cuentas nuevas'], ['#2E7D9A', 'Pruebas elegidas'], ['#B7791F', 'Certificados'], ['#C24D3C', 'Últimos pagos']].map(l => '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>').join('');
+    document.getElementById('mtActividad').innerHTML = mtLineas([{ nombre: 'Cuentas nuevas', color: '#1F7A4D', vals: sA }, { nombre: 'Pruebas elegidas', color: '#2E7D9A', vals: sP }, { nombre: 'Certificados', color: '#B7791F', vals: sC }, { nombre: 'Últimos pagos', color: '#C24D3C', vals: sG }], cub);
+    const maxAct = Math.max(0, ...sA);
+    document.getElementById('mtActividadTxt').innerHTML = '<b>' + mtNum(nAltas) + '</b> cuentas nuevas · <b>' + mtNum(nPruebas) + '</b> pruebas elegidas · <b>' + mtNum(nCerts) + '</b> certificados · <b>' + mtNum(nPagos) + '</b> últimos pagos' + (maxAct > 0 ? ' · Más alto: <b>' + mtNum(maxAct) + '</b> (' + esc(mtFechaLarga(cub[sA.indexOf(maxAct)].t0)) + ')' : '');
+
+    // Cuentas nuevas e ingresos
+    const prevAltas = per.sinAnterior ? null : mtSerie(mtEnRango(ev.altas, per.antDesde, per.antFin), cubAnt);
+    document.getElementById('mtAltas').innerHTML = mtBarras(sA, cub, '#1F7A4D', prevAltas, null, null, 520);
+    document.getElementById('mtAltasTxt').innerHTML = mtRango(sA, cub, 'cuentas nuevas');
+    const sI = mtSerie(lista('ingresos'), cub);
+    document.getElementById('mtIngresosSub').textContent = ev.real ? 'Cobros registrados en MXN. No es contabilidad.' : 'Estimación: último pago de cada miembro por el precio de lista. No es contabilidad.';
+    document.getElementById('mtIngresos').innerHTML = mtBarras(sI, cub, '#B7791F', null, mtMxn, null, 520);
+    document.getElementById('mtIngresosTxt').innerHTML = mtRango(sI, cub, 'estimados', mtMxn);
+    document.getElementById('mtPruebas').innerHTML = mtLineas([{ nombre: 'Pruebas elegidas', color: '#2E7D9A', vals: sP, area: true }], cub, null, 520);
+    document.getElementById('mtPruebasTxt').innerHTML = mtRango(sP, cub, 'pruebas elegidas');
+    document.getElementById('mtCerts').innerHTML = DB.certs === null ? '<div class="sb-vacio">Cargando certificados…</div>' : mtBarras(sC, cub, '#7A8B1F', null, null, null, 520);
+    document.getElementById('mtCertsTxt').innerHTML = mtRango(sC, cub, 'certificados');
+
+    mtEmbudoPintar(cuentas, per); mtHoyPintar(cuentas);
+    mtCalorPintar(ev, per);
+    mtP2M(cuentas, eligieronPer, seHicieronPer, tuvo);
+    mtCohortes(cuentas, tuvo);
+    mtCursos(cuentas);
+    document.getElementById('mtPie').textContent = MT.srv ? 'Datos del servidor leídos ' + new Date(MT.srv.generado).toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + ' No hay métricas de visitas a la portada: todavía no se registran.' : (MT.srvError ? 'No se pudo leer el avance de cursos ni la actividad de retos: ' + MT.srvError : 'Leyendo datos del servidor…');
+    if (typeof rtPintarRetos === 'function' && RTD.cargado) { /* los niveles de Retos se actualizan solos al abrir esa pantalla */ }
+  }
+
+  function mtEmbudoPintar(cuentas, per) {
+    const esPer = MT.embudo === 'periodo';
+    document.getElementById('mtEmbudoSel').innerHTML = [['periodo', 'Cuentas del periodo'], ['todas', 'Todas las cuentas']].map(o => '<button type="button" class="chip' + (MT.embudo === o[0] ? ' active' : '') + '" data-mt-embudo="' + o[0] + '">' + o[1] + '</button>').join('');
+    const base = esPer ? cuentas.filter(m => { const a = mtMs(fechaAlta(m)); return a !== null && a >= per.desde && a < per.fin; }) : cuentas;
+    const emp = new Set((MT.srv && MT.srv.empezaron) || []), ter = new Set((MT.srv && MT.srv.terminaron) || []), listo = !!MT.srv;
+    const s1 = base, s2 = s1.filter(m => m.cursoGratisElegido), s3 = s2.filter(m => emp.has(m.uid)), s4 = s3.filter(m => ter.has(m.uid));
+    const pagaronSinPrueba = base.filter(m => claseAcceso(m).grupo !== 'gratis' && !m.cursoGratisElegido).length;
+    const pasos = [['Cuenta nueva', s1.length, '#1F7A4D', 'punto de partida'], ['Eligió su prueba gratuita', s2.length, '#2E7D9A'], ['Empezó un curso', s3.length, '#B7791F'], ['Terminó un curso', s4.length, '#C24D3C']];
+    let h = '';
+
+    pasos.forEach((p, i) => {
+      const n = p[1], vacio = i >= 2 && !listo;
+      h += '<div class="pg-fila-av"><div class="l"><span><b style="display:inline-flex;width:22px;height:22px;border-radius:50%;background:' + p[2] + ';color:#fff;align-items:center;justify-content:center;font-size:12px;margin-right:8px;">' + (i + 1) + '</b>' + p[0] + '</span><b>' + (vacio ? '…' : mtNum(n)) + '<span>' + (p[3] || mtPct(n, s1.length) + ' % del total') + '</span></b></div><div class="cr-barra"><i style="width:' + (n ? Math.max(3, mtPct(n, s1.length)) : 0) + '%;background:' + p[2] + '"></i></div></div>';
+      if (i < 3) h += '<div class="pg-paso"><b>' + mtPct(pasos[i + 1][1], n) + ' %</b> pasa al siguiente paso</div>';
+    });
+    h += '<div class="cr-nota"><b>Cómo leerlo:</b> de cada 10 cuentas nuevas, ' + (s1.length ? Math.round(s2.length / s1.length * 10) : 0) + ' eligen su prueba gratuita, ' + (s1.length ? (Math.round(s3.length / s1.length * 100) / 10).toLocaleString('es-MX') : 0) + ' empiezan un curso y ' + (s1.length ? (Math.round(s4.length / s1.length * 100) / 10).toLocaleString('es-MX') : 0) + ' terminan un curso.</div>' +
+      '<p class="cr-ayuda">Cada paso cuenta solo a quien llegó a los anteriores. Quien pagó sin pasar por la prueba gratuita (por ejemplo, cuentas de antes) no entra en el embudo. Empezar un curso es haber visto al menos una clase. Aquí hay ' + pagaronSinPrueba + (pagaronSinPrueba === 1 ? ' que pagó' : ' que pagaron') + ' sin pasar por la prueba.</p>';
+    document.getElementById('mtEmbudo').innerHTML = h;
+  }
+
+  function mtHoyPintar(cuentas) {
+    const g = { activos: 0, cancelados: 0, pendiente: 0, vencidos: 0, sin: 0 };
+    cuentas.forEach(m => { const c = claseAcceso(m).grupo; if (c === 'acceso') { if (m.estado === 'past_due') g.pendiente++; else if (m.cancelacionProgramada === true) g.cancelados++; else g.activos++; } else if (c === 'vencida' || c === 'ex') g.vencidos++; else g.sin++; });
+    const partes = [{ etiqueta: 'Activos', valor: g.activos, color: '#1F7A4D' }, { etiqueta: 'Cancelados con acceso', valor: g.cancelados, color: '#B7791F' }, { etiqueta: 'Pago pendiente', valor: g.pendiente, color: '#C24D3C' }, { etiqueta: 'Vencidos', valor: g.vencidos, color: '#6B7280' }, { etiqueta: 'Sin membresía', valor: g.sin, color: '#2E7D9A' }];
+    const acceso = cuentas.filter(tieneAcceso);
+    const plan = { mensual: 0, anual: 0, otro: 0 }; acceso.forEach(m => { const p = String(m.plan || '').toLowerCase(); if (p === 'mensual') plan.mensual++; else if (p === 'anual') plan.anual++; else plan.otro++; });
+    const partes2 = [{ etiqueta: 'Mensual', valor: plan.mensual, color: '#2E7D9A' }, { etiqueta: 'Anual', valor: plan.anual, color: '#1F7A4D' }, { etiqueta: 'Sin tipo de plan', valor: plan.otro, color: '#6B7280' }];
+    const ley = (ps, t) => '<div class="pg-leyenda-d">' + ps.map(p => '<div><i style="background:' + p.color + '"></i><b>' + p.etiqueta + '</b><b>' + mtNum(p.valor) + '</b><span>' + mtPct(p.valor, t) + ' %</span></div>').join('') + '</div>';
+    document.getElementById('mtHoySub').textContent = 'Cómo se reparten las ' + mtNum(cuentas.length) + ' cuentas.';
+    const tuvieron = cuentas.filter(m => claseAcceso(m).grupo !== 'gratis').length;
+    document.getElementById('mtHoy').innerHTML = '<div class="mt-donas"><div class="pg-donut">' + mtDona(partes, cuentas.length, mtNum(cuentas.length), 'cuentas') + ley(partes, cuentas.length) + '</div><div class="pg-donut">' + mtDona(partes2, acceso.length, mtNum(acceso.length), 'con acceso') + ley(partes2, acceso.length) + '</div></div>' +
+      '<p class="cr-ayuda">Retención: de quienes alguna vez tuvieron plan (' + mtNum(tuvieron) + '), cuántos tienen acceso hoy (' + mtNum(acceso.length) + ').</p>';
+  }
+
+  // Día y hora de México de un momento
+  const MT_FMT = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Mexico_City', weekday: 'short', hour: 'numeric', hourCycle: 'h23' });
+  const MT_SEM = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
+  function mtDiaHora(ms) { const p = MT_FMT.formatToParts(new Date(ms)); const d = p.find(x => x.type === 'weekday').value, h = parseInt(p.find(x => x.type === 'hour').value, 10) % 24; return [MT_SEM[d], h]; }
+  function mtCalorPintar(ev, per) {
+    const celdas = Array.from({ length: 7 }, () => new Array(24).fill(0)), porDia = new Array(7).fill(0), porHora = new Array(24).fill(0);
+    ['altas', 'pruebas', 'certs', 'pagos', 'retos'].forEach(k => mtEnRango(ev[k], per.desde, per.fin).forEach(([ms]) => { const [d, h] = mtDiaHora(ms); celdas[d][h]++; porDia[d]++; porHora[h]++; }));
+    const max = Math.max(1, ...celdas.flat());
+    let h = '<div class="mt-calor">';
+    celdas.forEach((fila, d) => { h += '<span>' + MT_DIAS_SEM[d] + '</span>' + fila.map((v, hh) => '<i class="' + (v ? 'n' + Math.min(5, Math.max(1, Math.ceil(v / max * 5))) : '') + '" title="' + esc(MT_DIAS_LARGO[d] + ' ' + hh + ':00 · ' + v + ' movimientos') + '"></i>').join(''); });
+    h += '<span></span>' + Array.from({ length: 24 }, (_, hh) => '<span style="text-align:center;">' + (hh % 3 === 0 ? hh + 'h' : '') + '</span>').join('') + '</div>' +
+      '<div class="mt-calor-leyenda">Menos <i style="background:#F5F5F4"></i><i style="background:#D8E6DD"></i><i style="background:#B9D3C4"></i><i style="background:#8DB9A1"></i><i style="background:#4E8B6A"></i><i style="background:#1F6A47"></i> Más</div>';
+    document.getElementById('mtCalor').innerHTML = h;
+    // Promedio por cada día de la semana dentro del periodo
+    const veces = new Array(7).fill(0); for (let t = per.desde; t < per.fin; t = mtMas(t, 1)) veces[(new Date(t).getDay() + 6) % 7]++;
+    const prom = porDia.map((v, d) => veces[d] ? Math.round(v / veces[d] * 10) / 10 : 0), total = porDia.reduce((a, b) => a + b, 0), mejorHora = porHora.indexOf(Math.max(...porHora)), mejorDia = prom.indexOf(Math.max(...prom));
+    document.getElementById('mtDiaSub').textContent = total ? 'La hora con más movimiento es ' + mejorHora + ':00.' : 'Todavía no hay movimientos en este periodo.';
+    document.getElementById('mtDia').innerHTML = mtBarras(prom, MT_DIAS_LARGO.map(d => ({ etiqueta: d })), '#1F7A4D', null, (v) => String(Math.round(v * 10) / 10).replace('.', ','), 'movimientos por día', 520);
+    document.getElementById('mtDiaTxt').innerHTML = total ? '<b>' + (Math.round(total / Math.max(1, per.dias) * 10) / 10).toLocaleString('es-MX') + '</b> movimientos por día en promedio · Más alto: <b>' + prom[mejorDia].toLocaleString('es-MX') + '</b> (' + MT_DIAS_LARGO[mejorDia] + ')' : '';
+  }
+
+  function mtP2M(cuentas, eligieronPer, seHicieronPer, tuvo) {
+    const todas = cuentas.filter(m => m.cursoGratisElegido), todasM = todas.filter(tuvo);
+    const fila = (t, n, color, sub) => '<div class="mt-barra-h"><span>' + t + (sub ? '<small style="display:block;color:var(--stone-500);font-size:12px;">' + sub + '</small>' : '') + '</span><b>' + mtNum(n) + '</b><div class="cr-barra"><i style="width:' + (n ? Math.max(3, mtPct(n, Math.max(1, todas.length))) : 0) + '%;background:' + color + '"></i></div></div>';
+    document.getElementById('mtP2M').innerHTML = fila('Eligieron su prueba (en el periodo)', eligieronPer.length, '#2E7D9A') + fila('De ellos, ya son miembros', seHicieronPer.length, '#1F7A4D') +
+      fila('Eligieron su prueba (todo el tiempo)', todas.length, '#2E7D9A', mtPct(todasM.length, todas.length) + ' % de conversión') + fila('De ellos, ya son miembros', todasM.length, '#1F7A4D') +
+      '<p class="cr-ayuda">«Ya son miembros» incluye a quien tuvo cualquier plan después de elegir, también los regalos.</p>';
+  }
+
+  function mtCohortesDatos(cuentas, tuvo) {
+    const por = {};
+    cuentas.forEach(m => { const a = mtMs(fechaAlta(m)); if (a === null) return; const k = dbMesClave(new Date(a)); const c = por[k] || (por[k] = { clave: k, registro: 0, tuvieron: 0, acceso: 0 }); c.registro++; if (tuvo(m)) c.tuvieron++; if (tieneAcceso(m)) c.acceso++; });
+    return Object.values(por).sort((a, b) => a.clave.localeCompare(b.clave)).slice(-12);
+  }
+  function mtCohortes(cuentas, tuvo) {
+    const co = mtCohortesDatos(cuentas, tuvo);
+    document.getElementById('mtCohortes').innerHTML = co.length ? '<div style="overflow-x:auto"><table class="pg-tabla"><thead><tr><th>Mes de registro</th><th>Se registraron</th><th>Tuvieron membresía</th><th>Conversión</th><th>Con acceso hoy</th><th>Retención</th></tr></thead><tbody>' +
+      co.map(c => '<tr><td>' + esc(dbMesTxt(c.clave) + ' ' + c.clave.slice(0, 4)) + '</td><td>' + mtNum(c.registro) + '</td><td>' + mtNum(c.tuvieron) + '</td><td>' + mtPct(c.tuvieron, c.registro) + ' %</td><td>' + mtNum(c.acceso) + '</td><td>' + mtPct(c.acceso, c.tuvieron) + ' %</td></tr>').join('') + '</tbody></table></div>' : '<div class="sb-vacio">Todavía no hay cuentas.</div>';
+    // Conversión y retención por mes
+    const cub = co.map(c => ({ etiqueta: dbMesTxt(c.clave) })), W = 520, H = 240, izq = 46, abajo = 30, n = co.length || 1, colw = (W - izq - 10) / n, bw = Math.max(4, colw * 0.3);
+    let g = mtEjes(W, H, izq, abajo, 100, v => Math.round(v) + ' %');
+    co.forEach((c, i) => { const conv = mtPct(c.tuvieron, c.registro), ret = mtPct(c.acceso, c.tuvieron), x0 = izq + colw * i + colw / 2 - bw - 1; [[conv, '#2E7D9A', 0, 'Conversión'], [ret, '#1F7A4D', bw + 2, 'Retención']].forEach(([v, col, dx, nombre]) => { const hh = (H - abajo - 10) * v / 100; g += '<rect x="' + (x0 + dx).toFixed(1) + '" y="' + (H - abajo - hh).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(hh, v ? 2 : 0).toFixed(1) + '" rx="2" fill="' + col + '"><title>' + esc(dbMesLargo(c.clave) + ': ' + nombre + ' ' + v + ' %') + '</title></rect>'; }); g += '<text x="' + (izq + colw * i + colw / 2).toFixed(1) + '" y="226" text-anchor="middle">' + esc(cub[i].etiqueta) + '</text>'; });
+    document.getElementById('mtConvRet').innerHTML = co.length ? '<svg class="mt-svg" viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img">' + g + '</svg>' : '<div class="sb-vacio">Todavía no hay cuentas.</div>';
+    const tReg = co.reduce((a, c) => a + c.registro, 0), tTuv = co.reduce((a, c) => a + c.tuvieron, 0), tAcc = co.reduce((a, c) => a + c.acceso, 0);
+    document.getElementById('mtConvRetTxt').innerHTML = '<b>' + mtPct(tTuv, tReg) + ' %</b> conversión · <b>' + mtPct(tAcc, tTuv) + ' %</b> retención (últimos ' + co.length + ' meses)';
+  }
+
+  function mtCursos(cuentas) {
+    const srv = (MT.srv && MT.srv.cursos) || [], titulo = (id) => { const c = srv.find(x => x.id === id); return (c && c.titulo) || tituloCursoGratis(id); };
+    const pr = {}; cuentas.forEach(m => { if (m.cursoGratisElegido) pr[m.cursoGratisElegido] = (pr[m.cursoGratisElegido] || 0) + 1; });
+    const lista = (host, filas, color, pie) => {
+      const f = filas.filter(x => x.n > 0).sort((a, b) => b.n - a.n), total = f.reduce((a, x) => a + x.n, 0), ver = MT.cursosVer[host] ? f : f.slice(0, 8), max = f.length ? f[0].n : 1;
+      document.getElementById(host).innerHTML = !f.length ? '<div class="sb-vacio">' + (MT.srv || host === 'mtCursosPrueba' ? 'Todavía no hay datos.' : 'Leyendo datos…') + '</div>' :
+        ver.map((x, i) => '<div class="pg-rank' + (i === 0 ? ' top' : '') + '"><b>' + (i + 1) + '</b><div><div class="t">' + esc(titulo(x.id)) + '</div><div class="cr-barra"><i style="width:' + Math.max(3, Math.round(x.n / max * 100)) + '%;background:' + color + '"></i></div></div><em>' + mtNum(x.n) + '<span>' + mtPct(x.n, total) + ' %</span></em></div>').join('') +
+        (f.length > 8 ? '<div class="cr-acciones"><button type="button" class="btn-secondary" data-mt-ver="' + host + '">' + (MT.cursosVer[host] ? 'Ver menos' : 'Ver todos (' + f.length + ')') + '</button></div>' : '') + '<p class="cr-ayuda">Cada barra se compara con el primer lugar; el porcentaje es la parte del total (' + mtNum(total) + ' ' + pie + ').</p>';
+    };
+    lista('mtCursosPrueba', Object.keys(pr).map(id => ({ id, n: pr[id] })), '#2E7D9A', 'pruebas elegidas');
+    lista('mtCursosTerm', srv.map(c => ({ id: c.id, n: c.terminaron })), '#1F7A4D', 'cursos terminados');
+    lista('mtCursosEmp', srv.map(c => ({ id: c.id, n: c.empezaron })), '#B7791F', 'cursos empezados');
+  }
+
+  // ── CSV (se baja solo al pulsar el botón; sin nombres ni correos) ──
+  function mtCsv(nombre, filas) {
+    const txt = '\uFEFF' + filas.map(f => f.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt], { type: 'text/csv;charset=utf-8' })); a.download = nombre; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest && e.target.closest('[data-mt-preset],[data-mt-gran],[data-mt-embudo],[data-mt-accion],[data-mt-ver]');
+    if (!t) return;
+    if (t.dataset.mtPreset) { MT.preset = t.dataset.mtPreset; mtRender(); }
+    else if (t.dataset.mtGran) { MT.gran = t.dataset.mtGran; mtRender(); }
+    else if (t.dataset.mtEmbudo) { MT.embudo = t.dataset.mtEmbudo; mtRender(); }
+    else if (t.dataset.mtVer) { MT.cursosVer[t.dataset.mtVer] = !MT.cursosVer[t.dataset.mtVer]; mtRender(); }
+    else if (t.dataset.mtAccion === 'actualizar') { try { loadMembers(); } catch (err) { /* sigue con lo cargado */ } mtCargar(true); }
+    else if (t.dataset.mtAccion === 'fechas') {
+      const d = document.getElementById('mtDesde').value, h = document.getElementById('mtHasta').value;
+      if (!d || !h) { showToast('Elige las dos fechas', 'error'); return; }
+      const a = new Date(d + 'T00:00:00').getTime(), b = new Date(h + 'T00:00:00').getTime();
+      if (!(a <= b)) { showToast('La fecha de inicio debe ser antes que la final', 'error'); return; }
+      MT.preset = 'custom'; MT.desde = a; MT.hasta = Math.min(b, mtIniDia(Date.now())); mtRender();
+    }
+    else if (t.dataset.mtAccion === 'csv') {
+      const per = mtPeriodo(), ev = mtEventos(), cub = mtCubetas(per.desde, per.hasta, 'dia');
+      const col = ['altas', 'pruebas', 'certs', 'pagos', 'ingresos'].map(k => mtSerie(mtEnRango(ev[k], per.desde, per.fin), cub));
+      mtCsv('metricas-' + mtISO(per.desde) + '-a-' + mtISO(per.hasta) + '.csv', [['Fecha', 'Cuentas nuevas', 'Pruebas elegidas', 'Certificados', 'Pagos registrados', 'Ingresos estimados MXN']].concat(cub.map((c, i) => [mtISO(c.t0), col[0][i], col[1][i], col[2][i], col[3][i], col[4][i]])));
+    }
+    else if (t.dataset.mtAccion === 'csvCohortes') {
+      const cuentas = allMembers.filter(conCuenta), tuvo = (m) => claseAcceso(m).grupo !== 'gratis';
+      mtCsv('cohortes.csv', [['Mes de registro', 'Se registraron', 'Tuvieron membresía', 'Conversión %', 'Con acceso hoy', 'Retención %']].concat(mtCohortesDatos(cuentas, tuvo).map(c => [c.clave, c.registro, c.tuvieron, mtPct(c.tuvieron, c.registro), c.acceso, mtPct(c.acceso, c.tuvieron)])));
+    }
+  });
 
   /* FASE3O-ANUNCIOS */
   // ═══════════════════════════════════════════════════
@@ -6908,6 +7424,7 @@ let _bibLibrosCargados = false;
     if (tabName === 'creditos') setTimeout(() => cargarCreditosAdmin(false), 0);
     if (tabName === 'retos') setTimeout(() => cargarRetosAdmin(true), 0);
     if (tabName === 'freecourses') setTimeout(() => cargarAvanceGratis(true), 0);
+    if (tabName === 'metricas') setTimeout(() => mtCargar(false), 0);
     if (tabName === 'valores') setTimeout(cargarValoresAdmin, 0);
   };
   document.addEventListener('click', (e) => {
@@ -8317,6 +8834,7 @@ let _bibLibrosCargados = false;
     try {
       const [r, d] = await Promise.all([callAdminEndpoint('/admin/retos/resumen', {}), callAdminEndpoint('/admin/retos/detalle', {})]);
       RT.semana = r.semana || '';
+      RTD.porDia = d.porDia || {};
       RTD.eventos = d.eventos || []; RTD.personas = d.personas || []; RTD.totales = d.totales; RTD.recortado = d.recortado; RTD.resumen = r; RTD.cargado = true;
       RTD.visibles = 20; RTD.visiblesPers = 20;
       rtPintarRetos();
@@ -8335,7 +8853,21 @@ let _bibLibrosCargados = false;
     document.getElementById('retosTop').innerHTML = (r.top && r.top.length)
       ? r.top.map(f => '<div class="rt-fila' + (f.puesto <= 3 ? ' top' : '') + '"><b>' + f.puesto + '</b><span>' + esc(f.nombre) + '</span><em>' + f.puntos + ' pts</em></div>').join('')
       : '<div class="sb-vacio">Todavía nadie suma puntos esta semana.</div>';
+    rtGraficasRetos();
     rtFiltrarHist(true); rtFiltrarPers(true);
+  }
+
+  // Niveles de puntos y personas que jugaron por día (solo lectura)
+  function rtGraficasRetos() {
+    const conAcceso = allMembers.filter(conCuenta).filter(tieneAcceso).length, pers = RTD.personas || [];
+    const niveles = [['0 puntos', Math.max(0, conAcceso - pers.length)], ['1 a 99', pers.filter(p => p.puntos >= 1 && p.puntos < 100).length], ['100 a 499', pers.filter(p => p.puntos >= 100 && p.puntos < 500).length], ['500 o más', pers.filter(p => p.puntos >= 500).length]];
+    document.getElementById('rtNiveles').innerHTML = mtBarras(niveles.map(n => n[1]), niveles.map(n => ({ etiqueta: n[0] })), '#7A8B1F', null, null, 'personas', 520);
+    const mayor = niveles.reduce((a, n) => n[1] > a[1] ? n : a, niveles[0]);
+    document.getElementById('rtNivelesTxt').innerHTML = '<b>' + mtNum(pers.length) + '</b> ' + (pers.length === 1 ? 'persona' : 'personas') + ' con puntos de ' + mtNum(conAcceso) + ' miembros con acceso' + (mayor[1] > 0 ? ' · Más alto: <b>' + mtNum(mayor[1]) + '</b> (' + esc(mayor[0]) + ')' : '');
+    const hoy = mtIniDia(Date.now()), cub = mtCubetas(mtMas(hoy, -29), hoy, 'dia'), vals = cub.map(c => (RTD.porDia || {})[mtISO(c.t0)] || 0);
+    document.getElementById('rtPorDia').innerHTML = mtLineas([{ nombre: 'Personas', color: '#7A8B1F', vals, area: true }], cub, null, 520);
+    const diasJuego = vals.filter(v => v > 0).length, maxJ = Math.max(0, ...vals);
+    document.getElementById('rtPorDiaTxt').innerHTML = '<b>' + diasJuego + '</b> ' + (diasJuego === 1 ? 'día' : 'días') + ' con juego' + (maxJ > 0 ? ' · Más alto: <b>' + maxJ + '</b> (' + esc(mtFechaLarga(cub[vals.indexOf(maxJ)].t0)) + ')' : '');
   }
 
   window.rtLimpiarHist = function() {
