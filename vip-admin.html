@@ -2729,6 +2729,13 @@ body::before { display: none; }
         </div>
       </div>
 
+      <div class="widget-box cg-caja">
+        <div class="widget-head"><span class="widget-name">Visitas a la portada</span></div>
+        <p class="cr-sub">Conteo agregado por día y página. No guarda IP, cookies ni identificadores.</p>
+        <div id="mtVisitas"></div><p class="cr-ayuda" id="mtVisitasTxt"></p>
+        <div id="mtPaginas"></div>
+      </div>
+
       <div class="mt-dos">
         <div class="widget-box cg-caja">
           <div class="widget-head"><span class="widget-name">De prueba gratuita a miembro</span></div>
@@ -4656,7 +4663,14 @@ body::before { display: none; }
       pagos.push([f.getTime(), 1]); ingresos.push([f.getTime(), precio]);
     });
     const retos = ((MT.srv && MT.srv.retosMs) || []).map(t => [t, 1]);
-    return { altas, pruebas, certs, pagos, ingresos, retos, real };
+    const visitas = [], paginas = [];
+    Object.keys((MT.srv && MT.srv.visitas) || {}).forEach(dia => {
+      const t = new Date(dia + 'T12:00:00').getTime(), fila = MT.srv.visitas[dia];
+      if (!t) return;
+      if (fila.portada) visitas.push([t, fila.portada]);
+      Object.keys(fila).forEach(p => paginas.push([t, fila[p], p]));
+    });
+    return { altas, pruebas, certs, pagos, ingresos, retos, visitas, paginas, real };
   }
   const mtEnRango = (lista, desde, fin) => lista.filter(x => x[0] >= desde && x[0] < fin);
   const mtSuma = (lista) => lista.reduce((a, x) => a + x[1], 0);
@@ -4775,6 +4789,7 @@ body::before { display: none; }
     const nCerts = mtSuma(lista('certs')), nCertsAnt = mtSuma(listaAnt('certs'));
     const nPagos = mtSuma(lista('pagos')), nPagosAnt = mtSuma(listaAnt('pagos'));
     const ingreso = mtSuma(lista('ingresos')), ingresoAnt = mtSuma(listaAnt('ingresos'));
+    const nVisitas = mtSuma(lista('visitas')), nVisitasAnt = mtSuma(listaAnt('visitas'));
     const tuvo = (m) => claseAcceso(m).grupo !== 'gratis';
     const eligieronPer = cuentas.filter(m => { const p = mtMs(m.cursoGratisElegidoEn); return m.cursoGratisElegido && p !== null && p >= per.desde && p < per.fin; });
     const seHicieronPer = eligieronPer.filter(tuvo);
@@ -4790,7 +4805,8 @@ body::before { display: none; }
       kpi('check', 'Con acceso hoy', mtNum(conAcceso.length), 'De ' + mtNum(cuentas.length) + ' cuentas (sin administradores)', '') +
       kpi('clock', 'Retención', mtPct(conAcceso.length, tuvieron.length) + ' %', conAcceso.length + ' de ' + tuvieron.length + ' que alguna vez tuvieron membresía', '') +
       kpi('award', 'Certificados emitidos', DB.certs === null ? '…' : mtNum(nCerts), 'Con folio verificable', mtTendencia(nCerts, nCertsAnt, per.sinAnterior) + spark('certs', '#B7791F')) +
-      kpi('card', 'Últimos pagos registrados', mtNum(nPagos), ev.real ? 'Cobros pagados en el periodo' : 'Pagos estimados en el periodo', mtTendencia(nPagos, nPagosAnt, per.sinAnterior) + spark('pagos', '#C24D3C'));
+      kpi('card', 'Últimos pagos registrados', mtNum(nPagos), ev.real ? 'Cobros pagados en el periodo' : 'Pagos estimados en el periodo', mtTendencia(nPagos, nPagosAnt, per.sinAnterior) + spark('pagos', '#C24D3C')) +
+      kpi('users', 'Visitas a la portada', MT.srv ? mtNum(nVisitas) : '…', 'Conteo anónimo, sin cookies', MT.srv ? mtTendencia(nVisitas, nVisitasAnt, per.sinAnterior) + spark('visitas', '#2E7D9A') : '');
 
     // Actividad del Club
     const sA = mtSerie(lista('altas'), cub), sP = mtSerie(lista('pruebas'), cub), sC = mtSerie(lista('certs'), cub), sG = mtSerie(lista('pagos'), cub);
@@ -4812,13 +4828,29 @@ body::before { display: none; }
     document.getElementById('mtCerts').innerHTML = DB.certs === null ? '<div class="sb-vacio">Cargando certificados…</div>' : mtBarras(sC, cub, '#7A8B1F', null, null, null, 520);
     document.getElementById('mtCertsTxt').innerHTML = mtRango(sC, cub, 'certificados');
 
+    mtVisitasPintar(ev, per, cub);
     mtEmbudoPintar(cuentas, per); mtHoyPintar(cuentas);
     mtCalorPintar(ev, per);
     mtP2M(cuentas, eligieronPer, seHicieronPer, tuvo);
     mtCohortes(cuentas, tuvo);
     mtCursos(cuentas);
-    document.getElementById('mtPie').textContent = MT.srv ? 'Datos del servidor leídos ' + new Date(MT.srv.generado).toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + ' No hay métricas de visitas a la portada: todavía no se registran.' : (MT.srvError ? 'No se pudo leer el avance de cursos ni la actividad de retos: ' + MT.srvError : 'Leyendo datos del servidor…');
+    document.getElementById('mtPie').textContent = MT.srv ? 'Datos del servidor leídos ' + new Date(MT.srv.generado).toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + '' : (MT.srvError ? 'No se pudo leer el avance de cursos ni la actividad de retos: ' + MT.srvError : 'Leyendo datos del servidor…');
     if (typeof rtPintarRetos === 'function' && RTD.cargado) { /* los niveles de Retos se actualizan solos al abrir esa pantalla */ }
+  }
+
+  // Visitas: el conteo empezó el día que se publicó el contador; antes no hay datos
+  function mtVisitasPintar(ev, per, cub) {
+    const host = document.getElementById('mtVisitas');
+    if (!MT.srv) { host.innerHTML = '<div class="sb-vacio">Leyendo datos…</div>'; document.getElementById('mtVisitasTxt').textContent = ''; document.getElementById('mtPaginas').innerHTML = ''; return; }
+    const hay = Object.keys(MT.srv.visitas || {}).length > 0;
+    if (!hay) { host.innerHTML = '<div class="sb-vacio">Todavía no hay visitas contadas. El conteo empieza el día que se publica el contador de la portada.</div>'; document.getElementById('mtVisitasTxt').textContent = ''; document.getElementById('mtPaginas').innerHTML = ''; return; }
+    const vals = mtSerie(mtEnRango(ev.visitas, per.desde, per.fin), cub);
+    host.innerHTML = mtLineas([{ nombre: 'Visitas', color: '#2E7D9A', vals, area: true }], cub);
+    document.getElementById('mtVisitasTxt').innerHTML = mtRango(vals, cub, 'visitas');
+    const por = {}; mtEnRango(ev.paginas, per.desde, per.fin).forEach(([, n, p]) => { por[p] = (por[p] || 0) + n; });
+    const NOMBRES = { portada: 'Portada', planes: 'Planes', acceso: 'Acceso (iniciar sesión o crear cuenta)' };
+    const filas = Object.keys(por).map(p => ({ p, n: por[p] })).sort((a, b) => b.n - a.n), total = filas.reduce((a, f) => a + f.n, 0), max = filas.length ? filas[0].n : 1;
+    document.getElementById('mtPaginas').innerHTML = filas.length ? '<div class="cr-pregunta" style="margin-top:14px;">PÁGINAS MÁS VISTAS</div>' + filas.map(f => '<div class="mt-barra-h"><span>' + esc(NOMBRES[f.p] || f.p) + '</span><b>' + mtNum(f.n) + ' <span style="font-weight:400;color:var(--stone-500);font-size:12px;">' + mtPct(f.n, total) + ' %</span></b><div class="cr-barra"><i style="width:' + Math.max(3, Math.round(f.n / max * 100)) + '%;background:#2E7D9A"></i></div></div>').join('') : '';
   }
 
   function mtEmbudoPintar(cuentas, per) {
