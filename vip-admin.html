@@ -1532,7 +1532,12 @@
   .ct-ex { max-width: 520px; max-height: 92vh; overflow-y: auto; }
   .ct-ex-elegida { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--teal-500); background: var(--teal-50); border-radius: 12px; font-size: 13px; }
   .ct-ex-elegida .btn-secondary { padding: 5px 12px; font-size: 12px; border-radius: 100px; }
-  .ct-ex-resultados { display: flex; flex-direction: column; margin-top: 6px; }
+  .ct-ex-resultados { display: flex; flex-direction: column; margin-top: 6px; max-height: 260px; overflow-y: auto; border-radius: 12px; }
+  .ct-ex-resultados:not(:empty) { border: 1px solid var(--border-subtle); padding: 4px; background: #fff; }
+  .ct-ex-pie { font-size: 11.5px; color: var(--stone-500); padding: 6px 12px 4px; }
+  .ct-ex-opc { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ct-ex-opc .form-group { margin: 0; }
+  @media (max-width: 520px) { .ct-ex-opc { grid-template-columns: 1fr; } }
   .ct-ex-op { all: unset; cursor: pointer; display: flex; flex-direction: column; gap: 1px; padding: 8px 12px; border-radius: 10px; font-size: 13px; color: var(--stone-800); }
   .ct-ex-op:hover { background: var(--stone-100); }
   .ct-ex-op span { font-size: 12px; color: var(--stone-500); }
@@ -3305,10 +3310,20 @@ body::before { display: none; }
           <p class="ct-modal-sub">Solo para casos graves en que el curso no se pudo cerrar solo. El servidor pone el folio, el nombre y los datos del curso; tú eliges a la persona y el curso y explicas el porqué.</p>
           <label class="form-label" for="ctExBuscar">Persona</label>
           <div id="ctExElegida" class="ct-ex-elegida" hidden></div>
-          <input type="text" class="form-input" id="ctExBuscar" placeholder="Escribe un nombre o correo (mínimo 2 letras)..." autocomplete="off" oninput="ctExBuscar(this.value)">
+          <input type="text" class="form-input" id="ctExBuscar" placeholder="Elige de la lista o escribe un nombre o correo..." autocomplete="off" oninput="ctExBuscar(this.value)" onfocus="ctExBuscar(this.value)" onclick="ctExBuscar(this.value)">
           <div id="ctExResultados" class="ct-ex-resultados"></div>
           <label class="form-label" for="ctExCurso" style="margin-top:12px;">Curso</label>
           <select class="form-select" id="ctExCurso" onchange="ctExCambio()"></select>
+          <details class="ct-ex-ajustes" style="margin-top:12px;">
+            <summary style="cursor:pointer;font-size:12.5px;font-weight:600;color:var(--stone-700);">Ajustar nombre, horas o clases (opcional)</summary>
+            <p class="ct-ayuda" style="margin:6px 0 8px;"><span>Déjalos vacíos para usar el nombre de la cuenta y los datos del curso. Si cambias algo, queda anotado en el certificado.</span></p>
+            <label class="form-label" for="ctExNombre">Nombre en el certificado</label>
+            <input type="text" class="form-input" id="ctExNombre" maxlength="120" placeholder="Si lo dejas vacío se usa el nombre de la cuenta" autocomplete="off">
+            <div class="ct-ex-opc" style="margin-top:10px;">
+              <div class="form-group"><label class="form-label" for="ctExHoras">Horas</label><input type="number" class="form-input" id="ctExHoras" min="0.5" max="200" step="0.5" placeholder="Las del curso"></div>
+              <div class="form-group"><label class="form-label" for="ctExClases">Clases</label><input type="number" class="form-input" id="ctExClases" min="1" max="60" step="1" placeholder="Las del curso"></div>
+            </div>
+          </details>
           <label class="form-label" for="ctExMotivo" style="margin-top:12px;">Motivo de la excepción</label>
           <textarea class="form-input" id="ctExMotivo" rows="3" maxlength="300" placeholder="Por ejemplo: la actividad de la clase 3 falló por un error de la plataforma y la persona sí la hizo." oninput="ctExCambio()"></textarea>
           <div class="ct-ayuda"><span>Mínimo 10 letras. Queda guardado con tu correo y la fecha.</span><span id="ctExCuenta">0 / 300</span></div>
@@ -8614,7 +8629,7 @@ let _bibLibrosCargados = false;
         return '<tr>' +
           '<td data-label="Folio"><span class="ct-folio">' + f + '</span></td>' +
           '<td data-label="Persona"><div class="m-info"><div class="m-name">' + esc(c.userName || '(sin nombre)') + '</div><div class="m-email">' + esc(c.userEmail || '—') + '</div></div></td>' +
-          '<td data-label="Curso">' + esc(c.courseName || '—') + '<div class="m-sub">' + esc([c.hours ? c.hours + ' clases' : '', c.courseArea].filter(Boolean).join(' · ')) + '</div></td>' +
+          '<td data-label="Curso">' + esc(c.courseName || '—') + '<div class="m-sub">' + esc([c.hours ? c.hours + ' h' : '', c.courseArea].filter(Boolean).join(' · ')) + '</div></td>' +
           '<td data-label="Emitido" class="ct-fecha">' + esc(ctFechaTxt(c.creadoEn) || c.issueDate || '—') + '<div class="m-sub">' + esc(CT_ORIGEN[c.origen] || 'Anterior') + '</div></td>' +
           '<td data-label="Estado"><span class="sb-v ' + (rev ? 'mal' : 'ok') + '">' + (rev ? 'Revocado' : 'Vigente') + '</span>' + (exc ? ' <span class="ct-tag">Excepción</span>' : '') + detalle + '</td>' +
           '<td data-label="Acciones"><div class="ct-acc">' +
@@ -8709,6 +8724,8 @@ let _bibLibrosCargados = false;
     document.getElementById('ctExBuscar').value = ''; document.getElementById('ctExBuscar').hidden = false;
     document.getElementById('ctExResultados').innerHTML = ''; document.getElementById('ctExElegida').hidden = true;
     document.getElementById('ctExMotivo').value = ''; document.getElementById('ctExError').innerHTML = '';
+    ['ctExNombre', 'ctExHoras', 'ctExClases'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+    const aj = document.querySelector('.ct-ex-ajustes'); if (aj) aj.open = false;
     const cursos = (typeof _adminCursosCache !== 'undefined' && Array.isArray(_adminCursosCache)) ? _adminCursosCache : [];
     document.getElementById('ctExCurso').innerHTML = '<option value="">Elige el curso…</option>' + cursos.map(c => '<option value="' + esc(c.id) + '">' + esc(c.titulo || c.title || c.id) + '</option>').join('');
     ctExCambio();
@@ -8716,12 +8733,18 @@ let _bibLibrosCargados = false;
     setTimeout(() => document.getElementById('ctExBuscar').focus(), 50);
   };
   window.ctCerrarExcepcion = function() { document.getElementById('ctExOverlay').classList.remove('show'); };
+  // La lista de personas se despliega al tocar el campo (por orden alfabético) y se filtra al escribir nombre o correo
   window.ctExBuscar = function(q) {
     const t = String(q || '').trim().toLowerCase();
     const host = document.getElementById('ctExResultados');
-    if (t.length < 2) { host.innerHTML = ''; return; }
-    const hallados = allMembers.filter(m => conCuenta(m) && ((m.nombre || '').toLowerCase().includes(t) || (m.email || '').toLowerCase().includes(t))).slice(0, 8);
-    host.innerHTML = hallados.length ? hallados.map(m => '<button type="button" class="ct-ex-op" data-ct-ex="' + esc(m.uid) + '"><b>' + esc(m.nombre || '(sin nombre)') + '</b><span>' + esc(m.email || '') + '</span></button>').join('') : '<div class="db-vacio">Nadie coincide.</div>';
+    const todos = allMembers.filter(m => conCuenta(m))
+      .filter(m => !t || (m.nombre || '').toLowerCase().includes(t) || (m.email || '').toLowerCase().includes(t))
+      .sort((a, b) => String(a.nombre || a.email || '').localeCompare(String(b.nombre || b.email || ''), 'es'));
+    const hallados = todos.slice(0, 40);
+    host.innerHTML = hallados.length
+      ? hallados.map(m => '<button type="button" class="ct-ex-op" data-ct-ex="' + esc(m.uid) + '"><b>' + esc(m.nombre || '(sin nombre)') + '</b><span>' + esc(m.email || '') + '</span></button>').join('') +
+        (todos.length > hallados.length ? '<div class="ct-ex-pie">Mostrando ' + hallados.length + ' de ' + todos.length + ': escribe para acotar la búsqueda.</div>' : '')
+      : '<div class="db-vacio">Nadie coincide.</div>';
   };
   document.addEventListener('click', (e) => {
     const b = e.target.closest && e.target.closest('[data-ct-ex]');
@@ -8744,7 +8767,8 @@ let _bibLibrosCargados = false;
     const btn = document.getElementById('ctExBtn');
     btn.disabled = true;
     try {
-      const r = await callAdminEndpoint('/admin/certificados/excepcion', { uid: CT.exSel, courseId: document.getElementById('ctExCurso').value, motivo: document.getElementById('ctExMotivo').value.trim() });
+      const r = await callAdminEndpoint('/admin/certificados/excepcion', { uid: CT.exSel, courseId: document.getElementById('ctExCurso').value, motivo: document.getElementById('ctExMotivo').value.trim(),
+        nombre: document.getElementById('ctExNombre').value.trim(), horas: document.getElementById('ctExHoras').value.trim(), clases: document.getElementById('ctExClases').value.trim() });
       ctCerrarExcepcion();
       showToast('Certificado ' + r.folio + ' emitido por excepción' + (r.cumplia ? ' (la persona sí cumplía los requisitos)' : ''));
       await ctCargar(); dbCargarCerts();
@@ -8756,7 +8780,7 @@ let _bibLibrosCargados = false;
     const v = ctVisibles();
     if (!v.length) { showToast('No hay certificados en esta vista', 'error'); return; }
     const texto = (x) => { let s = String(x == null ? '' : x); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
-    const cab = ['Folio', 'Nombre', 'Correo', 'Curso', 'Área', 'Clases', 'Emitido', 'Origen', 'Estado', 'Revocado el', 'Revocado por', 'Motivo de revocación', 'Motivo de excepción', 'Verificación'];
+    const cab = ['Folio', 'Nombre', 'Correo', 'Curso', 'Área', 'Horas', 'Emitido', 'Origen', 'Estado', 'Revocado el', 'Revocado por', 'Motivo de revocación', 'Motivo de excepción', 'Verificación'];
     const filas = v.map(c => [c.folio, c.userName, c.userEmail, c.courseName, c.courseArea, c.hours, c.issueDate, CT_ORIGEN[c.origen] || 'Anterior', c.estado === 'revocado' ? 'Revocado' : 'Vigente',
       ctFechaTxt(c.revocadoEn), c.revocadoPor, c.motivoRevocacion, c.motivoExcepcion, ctUrlVerificar(c.folio)].map(texto).join(','));
     const csv = '﻿' + [cab.map(texto).join(','), ...filas].join('\r\n');
