@@ -17826,7 +17826,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return cols;
   }
 
-  // Estantes: "De tus cursos" (todos los materiales de curso juntos) + una fila por colección de libros.
+  // Estantes: primero una fila por colección de libros y después "De tus cursos" (todos los materiales de curso juntos).
   // Dentro de cada fila los disponibles van primero y los bloqueados al final.
   function matOrdenar(items) {
     return items.filter(function (x) { return !x.locked; }).concat(items.filter(function (x) { return x.locked; }));
@@ -17839,8 +17839,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       return mios.length ? [{ clave: 'g', origen: 'guardados', etiqueta: 'Tu lista', nombre: 'Guardados', desc: 'Lo que guardaste para leer después', items: matOrdenar(mios) }] : [];
     }
     cols.forEach(function (c) { if (c.origen === 'curso') delCurso = delCurso.concat(c.items); });
-    if (delCurso.length && filtro !== 'libros') lista.push({ clave: 'c:*', origen: 'curso', etiqueta: 'Tus cursos', nombre: 'De tus cursos', desc: 'Los materiales de todos tus cursos, cada uno con el nombre de su curso', items: matOrdenar(delCurso) });
     if (filtro !== 'cursos') cols.forEach(function (c) { if (c.origen === 'biblioteca') lista.push({ clave: c.clave, origen: c.origen, etiqueta: c.etiqueta, nombre: c.nombre, desc: c.desc, items: matOrdenar(c.items) }); });
+    if (delCurso.length && filtro !== 'libros') lista.push({ clave: 'c:*', origen: 'curso', etiqueta: 'Tus cursos', nombre: 'De tus cursos', desc: 'Los materiales de todos tus cursos, cada uno con el nombre de su curso', items: matOrdenar(delCurso) });
     return lista;
   }
 
@@ -18107,7 +18107,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         return '<section class="mat-bloque"><h3 class="mat-bloque-titulo">' + titulo + '</h3><div class="mat-colgrid">' +
           lista.map(function (c) { return matTarjetaColeccion(c, cols.indexOf(c)); }).join('') + '</div></section>';
       };
-      grid.innerHTML = bloque('De tus cursos', delCurso) + bloque('Libros y guías', delBib);
+      grid.innerHTML = bloque('Libros y guías', delBib) + bloque('De tus cursos', delCurso);
       grid.querySelectorAll('.mat-col[data-col]').forEach(function (el) {
         el.addEventListener('click', function () { matVista = { clave: cols[Number(el.getAttribute('data-col'))].clave }; renderMaterial(); matIrArriba(); });
       });
