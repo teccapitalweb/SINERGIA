@@ -14540,7 +14540,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     });
   }
   function dirImgEstado() { return dir.img || (dir.img = { avatar: { data: null, quitar: false }, portada: { data: null, quitar: false } }); }
-  window.dirElegirFoto = function () { var i = document.getElementById('dirFotoIn'); i.value = ''; i.click(); };
+  window.dirElegirFoto = function () { if (window.isVIP !== true) return; var i = document.getElementById('dirFotoIn'); i.value = ''; i.click(); };
   window.dirElegirPortada = function () { if (window.isVIP !== true) return; var i = document.getElementById('dirPortadaIn'); i.value = ''; i.click(); };
   window.dirFotoCambio = async function (input) {
     var err = document.getElementById('dirError'); err.textContent = '';
@@ -14690,7 +14690,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   window.dirPrevActualizar = function () {
     var est = dirImgEstado(), vipUser = window.isVIP === true, uid = (window.currentUser && window.currentUser.uid) || '';
     var av = document.getElementById('dirAvatarPrev'), nom = document.getElementById('dirNombre').value;
-    var foto = est.avatar.data || (!est.avatar.quitar && dir.miaFoto ? dcImgUrl(uid, 'avatar', dir.miaFoto) : '');
+    var foto = !vipUser ? '' : (est.avatar.data || (!est.avatar.quitar && dir.miaFoto ? dcImgUrl(uid, 'avatar', dir.miaFoto) : ''));
     if (av) {
       if (foto) { av.style.background = 'url("' + foto + '") center/cover'; av.textContent = ''; }
       else { var c = dcTono(uid || nom); av.style.background = 'linear-gradient(135deg,' + c[0] + ',' + c[1] + ')'; av.textContent = dirIniciales(nom); }
@@ -14702,6 +14702,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       else { p.className = 'dm-prev-portada dc-p-' + (dir.portadaSel || 'menta'); p.style.background = ''; }
     }
     document.getElementById('dirFotoQuitar').hidden = !foto;
+    document.getElementById('dirFotoBtn').disabled = !vipUser;
     var tienePortada = !!propia;
     var sub = document.getElementById('dirPortadaSubir');
     sub.disabled = !vipUser;
@@ -14764,7 +14765,6 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       premio.hidden = !(window.isVIP !== true && monto > 0);
       premio.textContent = monto > 0 ? 'Al completar tu cultivo, estado, zona agrícola y WhatsApp ganas +' + monto + ' créditos.' : '';
     }
-    document.getElementById('dirQuitar').hidden = !mia;
     var modal = document.getElementById('dirModal');
     if (modal.parentElement !== document.body) document.body.appendChild(modal);
     modal.classList.add('active'); modal.setAttribute('aria-hidden', 'false');
@@ -25300,12 +25300,13 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     </div>
     <form class="dir-form dm-cuerpo" id="dirForm" onsubmit="guardarTarjetaDirectorio(event)" novalidate>
       <div class="dir-ancho dm-prev"><div class="dm-prev-portada dc-p-menta" id="dirPortadaPrev"></div><div class="dm-avatar" id="dirAvatarPrev" aria-hidden="true">?</div></div>
+      <div class="dir-ancho"><span class="dir-et">Foto de tu tarjeta <b class="dm-solo">SOLO VIP</b></span></div>
       <div class="dir-ancho dm-fotoacc dm-fotoacc--foto"><button type="button" class="dm-btn" id="dirFotoBtn" onclick="dirElegirFoto()">Subir foto</button><button type="button" class="dm-btn dm-btn--q" id="dirFotoQuitar" onclick="dirQuitarFoto()" hidden>Quitar foto</button><input type="file" id="dirFotoIn" accept="image/jpeg,image/png,image/webp" hidden onchange="dirFotoCambio(this)"></div>
       <div class="dir-ancho">
         <span class="dir-et">Portada de tu tarjeta <b class="dm-solo">SOLO VIP</b></span>
         <div class="dm-sws" id="dirPortadas"></div>
         <div class="dm-fotoacc"><button type="button" class="dm-btn" id="dirPortadaSubir" onclick="dirElegirPortada()">Subir portada propia</button><button type="button" class="dm-btn dm-btn--q" id="dirPortadaQuitar" onclick="dirQuitarPortada()" hidden>Quitar portada propia</button><input type="file" id="dirPortadaIn" accept="image/jpeg,image/png,image/webp" hidden onchange="dirPortadaCambio(this)"></div>
-        <small id="dirPortadaHint" class="dm-hint">Hazte miembro para personalizar la portada de tu tarjeta.</small>
+        <small id="dirPortadaHint" class="dm-hint">Hazte miembro para subir tu foto y personalizar la portada de tu tarjeta.</small>
       </div>
       <h4 class="dir-ancho dm-sec">Identificación</h4>
       <div class="dir-ancho"><label class="dir-et" for="dirNombre">Nombre completo <span class="dir-req" aria-hidden="true">*</span></label><input class="dir-input" id="dirNombre" maxlength="80" autocomplete="name" required aria-required="true" oninput="dirPrevActualizar()"></div>
@@ -25334,7 +25335,6 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     <div class="dm-pie">
       <p class="dir-error" id="dirError" role="alert"></p>
       <div class="dm-botones">
-        <button type="button" class="dm-quitar" id="dirQuitar" onclick="quitarTarjetaDirectorio()" hidden>Quitar mi tarjeta</button>
         <button type="button" class="cred-btn cred-btn--sec" id="dirCancelar" onclick="cerrarTarjetaDirectorio()">Cancelar</button>
         <button type="submit" form="dirForm" class="cred-btn" id="dirGuardar">Guardar tarjeta</button>
       </div>
