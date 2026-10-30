@@ -1,8 +1,18 @@
 // Mini juegos sugeridos para las clases (borradores para revisar en el admin: Videoteca → Editar curso → «Sugerir juegos»).
 // Se escribieron con el MATERIAL de cada curso (los PDF y presentaciones del curso); solo hay juego donde el material cubre esa clase.
-// Viveros no tiene material escrito, por eso no trae juegos. Hay que confirmar que cada juego corresponda a lo que se ve en el video de esa clase.
+// Viveros solo trae un juego (clase 5): el material que hay es un manual de buenas prácticas agrícolas y de empaque. Hay que confirmar que cada juego corresponda a lo que se ve en el video de esa clase.
 // Un juego sugerido no se guarda solo: se carga en el formulario y se publica al pulsar «Guardar cambios».
 window.SINERGIA_JUEGOS_SUGERIDOS = [
+  {
+    titulo: "Administración y Operación de Viveros",
+    juegos: [
+      null,
+      null,
+      null,
+      null,
+      {"tipo":"conecta","titulo":"Del empaque al embarque","pares":[{"izq":"Etiqueta de la estiba","der":"Dice productor, producto, variedad y fecha de empaque"},{"izq":"Identificación de origen","der":"Permite rastrear dónde se contaminó el producto"},{"izq":"Cortinas de plástico","der":"Evitan perder frío al cargar el trailer"},{"izq":"Trampas de laberinto","der":"Controlan plagas sin rodenticidas químicos en el empaque"}]}
+    ]
+  },
   {
     titulo: "Certificación Orgánica",
     juegos: [
