@@ -5413,6 +5413,27 @@ body::before { display: none; }
     const b = document.getElementById('miBtn1'); if (b) b.disabled = !ok;
   };
 
+  // ── Borrar definitivamente ahora (sin esperar los 30 días) ──
+  function miAbrirBorrarYa(uid, nombre, correo) {
+    const esperado = String(correo || '').trim().toLowerCase();
+    const cuerpo = '<p class="ct-modal-sub">Vas a borrar <b>definitivamente</b> a <b>' + esc(nombre) + '</b>, sin esperar el plazo.</p>' +
+      '<ul class="mi-lista-aviso"><li>Se borran su avance, actividades, créditos, notas, calificaciones y el respaldo.</li>' +
+      '<li><b>Ya no se podrá restaurar.</b> No se puede deshacer.</li>' +
+      '<li>Se conservan sus certificados (el folio sigue verificándose).</li></ul>' +
+      '<label class="form-label" for="miConfirma">Para confirmar, escribe su correo: <b>' + esc(esperado) + '</b></label><input type="text" id="miConfirma" class="form-input" autocomplete="off" data-esperado="' + esc(esperado) + '" oninput="miConfirmaCambio()"><div id="miElimError"></div>';
+    miModal('Borrar definitivamente', cuerpo, [
+      { texto: 'Cancelar', alClic: () => { miCerrar(); miAbrirEliminados(); } },
+      { texto: 'Borrar definitivamente', clase: 'btn-danger', deshabilitado: true, alClic: async (btn) => {
+        btn.disabled = true;
+        try {
+          await callAdminEndpoint('/admin/eliminados/' + encodeURIComponent(uid) + '/borrar-ya', { confirmarCorreo: document.getElementById('miConfirma').value });
+          showToast('Borrado definitivamente.');
+          miCerrar(); miAbrirEliminados();
+        } catch (e) { document.getElementById('miElimError').innerHTML = miError(e.message || 'No se pudo borrar'); btn.disabled = false; }
+      } }
+    ]);
+  }
+
   // ── Eliminados y restaurar ──
   window.miAbrirEliminados = async function() {
     miModal('Eliminados', '<div class="sb-vacio">Cargando…</div>', [{ texto: 'Cerrar', alClic: miCerrar }], true);
@@ -5422,8 +5443,10 @@ body::before { display: none; }
     const estado = { restaurable: 'Se puede restaurar hasta el ', vencido: 'Pasaron los ' + r.diasParaRestaurar + ' días (se borrará definitivamente en breve)', restaurado: 'Ya fue restaurada', purgado: 'Borrada definitivamente' };
     const cuerpo = '<p class="ct-modal-sub">Quien se elimina queda respaldado ' + esc(r.diasParaRestaurar) + ' días y después se borra definitivamente, solo. Al restaurar vuelve con el mismo identificador; su contraseña no se guarda, así que entra con «Olvidé mi contraseña» o con Google.</p>' +
       (r.eliminados.length ? '<ul class="mi-prog mi-elim">' + r.eliminados.map(e => '<li><span>' + esc(e.nombre || '(sin nombre)') + '<small>' + esc(e.correo) + ' · eliminada el ' + esc(miFecha(e.eliminadoEn)) + (e.por ? ' por ' + esc(e.por) : '') + '</small></span>' +
-        (e.estado === 'restaurable' ? '<button type="button" class="btn-secondary" data-restaurar="' + esc(e.uid) + '">Restaurar</button>' : '<em>' + esc(estado[e.estado] || '') + '</em>') + '</li>').join('') + '</ul>' : '<p class="mi-nada">Nadie se ha eliminado.</p>');
+        (e.estado === 'restaurable' ? '<button type="button" class="btn-secondary" data-restaurar="' + esc(e.uid) + '">Restaurar</button>' : '<em>' + esc(estado[e.estado] || '') + '</em>') +
+        (e.estado === 'restaurable' || e.estado === 'vencido' ? ' <button type="button" class="btn-secondary mi-borrar-ya" data-borrar="' + esc(e.uid) + '" data-nombre="' + esc(e.nombre || e.correo || 'esta persona') + '" data-correo="' + esc(e.correo) + '" title="Borra todo ahora, sin esperar los ' + esc(r.diasParaRestaurar) + ' días. No se puede deshacer.">Borrar ya</button>' : '') + '</li>').join('') + '</ul>' : '<p class="mi-nada">Nadie se ha eliminado.</p>');
     miModal('Eliminados', cuerpo, [{ texto: 'Cerrar', alClic: miCerrar }], true);
+    document.getElementById('miModalCuerpo').querySelectorAll('[data-borrar]').forEach(b => b.addEventListener('click', () => miAbrirBorrarYa(b.dataset.borrar, b.dataset.nombre, b.dataset.correo)));
     document.getElementById('miModalCuerpo').querySelectorAll('[data-restaurar]').forEach(b => b.addEventListener('click', async () => {
       b.disabled = true;
       try {
