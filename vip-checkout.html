@@ -475,6 +475,17 @@
     margin-bottom: 20px;
   }
 
+  .oferta-bienvenida {
+    margin-bottom: 14px;
+    padding: 13px 16px;
+    border: 2px dashed var(--teal-500);
+    border-radius: 14px;
+    background: var(--teal-50);
+    color: var(--teal-900);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .oferta-bienvenida[hidden] { display: none; }
   .pay-total {
     display: flex;
     justify-content: space-between;
@@ -844,6 +855,7 @@
 
     <!-- Box de pago -->
     <div class="pay-box">
+      <div id="ofertaBienvenida" class="oferta-bienvenida" role="status" hidden></div>
       <div class="pay-total">
         <span class="pay-total-label">Total a pagar</span>
         <span id="payTotal" class="pay-total-amount">$350 MXN</span>
@@ -1291,6 +1303,28 @@
   capturarRefCode();
 
   // ─── Gatekeeper: solo usuarios autenticados ────
+  // Descuento de bienvenida (serie de recordatorios de pago): el servidor decide si esta cuenta tiene uno vigente y lo aplica al pagar
+  async function cargarOferta(user) {
+    try {
+      const token = await user.getIdToken();
+      const r = await fetch(WEBHOOK_BASE + '/api/oferta/estado', { headers: { Authorization: 'Bearer ' + token } });
+      if (!r.ok) return;
+      const { oferta } = await r.json();
+      if (!oferta || !(Date.parse(oferta.venceEn) > Date.now())) return;
+      const base = Number(String(plan.amount).replace(/[^0-9]/g, ''));
+      const con = Math.max(0, base - Number(oferta.monto));
+      const vence = new Date(oferta.venceEn).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit', hour12: true });
+      const caja = document.getElementById('ofertaBienvenida');
+      const fuerte = document.createElement('b');
+      fuerte.textContent = 'Beneficio de bienvenida: $' + oferta.monto + ' MXN de descuento en tu primer pago.';
+      caja.textContent = '';
+      caja.appendChild(fuerte);
+      caja.appendChild(document.createTextNode(' Disponible hasta el ' + vence + ' (hora de la Ciudad de México). Después, tu plan se renueva a $' + base.toLocaleString('es-MX') + ' MXN.'));
+      caja.hidden = false;
+      document.getElementById('payTotal').textContent = '$' + con.toLocaleString('es-MX') + ' MXN';
+    } catch (e) { /* sin oferta: el pago sigue igual */ }
+  }
+
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       // No autenticado → mandar a login (preservando refCode si existe)
@@ -1336,6 +1370,7 @@
     renderPlan();
     renderUser(user, userMemberData);
     mostrarBannerReferido();
+    cargarOferta(user);
     document.getElementById('initialLoading').style.display = 'none';
     document.getElementById('checkoutContent').style.display = 'block';
 

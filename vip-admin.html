@@ -1404,6 +1404,38 @@
   .mt-barra-h { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 13.5px; padding: 6px 0; }
   .mt-barra-h b { font-weight: 700; }
   .mt-barra-h .cr-barra { grid-column: 1 / -1; margin: 0; height: 12px; }
+  /* Recordatorios de pago */
+  .rc-estado { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; justify-content: space-between; margin-bottom: 10px; }
+  .rc-estado-info { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
+  .rc-estado-info b { font-size: 15px; }
+  .rc-estado-info span.t { color: var(--stone-500); font-size: 13px; }
+  .rc-botones { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rc-chip { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 100px; font-size: 11.5px; font-weight: 800; letter-spacing: .05em; }
+  .rc-chip.on { background: #E3F4EA; color: #14633C; }
+  .rc-chip.off { background: #F1EEE8; color: #6B6258; }
+  .rc-chip.falta { background: #FDF3DA; color: #8A5A0B; }
+  .rc-proximo { font-size: 13px; color: var(--stone-600); margin: 4px 0 12px; }
+  .rc-limites { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; padding: 14px 16px; border: 1px solid var(--stone-200); border-radius: 14px; margin: 8px 0; }
+  .rc-limites label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
+  .rc-limites input { width: 120px; }
+  .rc-aviso { padding: 12px 14px; border-radius: 12px; background: #FDF3DA; color: #6E4608; font-size: 13px; line-height: 1.5; margin: 10px 0; }
+  .rc-ayuda { border: 1px solid var(--stone-200); border-radius: 14px; margin-top: 12px; }
+  .rc-ayuda summary { cursor: pointer; padding: 14px 16px; font-weight: 700; font-size: 15px; }
+  .rc-ayuda div { padding: 0 16px 14px; font-size: 13.5px; line-height: 1.6; color: var(--stone-700); }
+  .rc-ayuda p { margin: 0 0 8px; }
+  .rc-puntos { display: inline-flex; gap: 5px; }
+  .rc-punto { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid #B9C4BE; display: inline-block; }
+  .rc-punto.on { background: #1F7A4D; border-color: #1F7A4D; }
+  .rc-barra-filtros { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 4px 0 12px; }
+  .rc-barra-filtros .chip-filter { margin: 0; }
+  .rc-barra-filtros select, .rc-barra-filtros input { min-width: 180px; }
+  .rc-barra-filtros .rc-buscar { flex: 1 1 220px; }
+  .rc-reciente { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--stone-200); border-radius: 12px; margin-bottom: 8px; }
+  .rc-reciente b { display: block; font-size: 14.5px; }
+  .rc-reciente small { color: var(--stone-500); font-size: 12.5px; }
+  .rc-reciente .der { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 12.5px; color: var(--stone-500); }
+  .rc-prueba { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-top: 10px; }
+  .rc-prueba label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
   /* Encuesta de la portada */
   .en-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; align-items: start; margin-bottom: 16px; }
   .en-rejilla .cg-caja { margin-bottom: 0; }
@@ -2390,6 +2422,10 @@ body::before { display: none; }
       <span class="nav-item-text">Pruebas gratuitas</span>
       <span id="navGratisCount" class="nav-item-count" title="Cuentas sin membresía que aún no eligen curso gratis">0</span>
     </button>
+    <button class="nav-item" data-tab="recordatorios">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span class="nav-item-text">Recordatorios de pago</span>
+    </button>
     <button class="nav-item" data-tab="encuesta">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       <span class="nav-item-text">Encuesta</span>
@@ -2815,6 +2851,83 @@ body::before { display: none; }
         <div id="mtCursosEmp"></div>
       </div>
       <p class="cr-ayuda" id="mtPie"></p>
+    </div>
+
+    <div class="tab-panel" data-panel="recordatorios">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Recordatorios <em>de pago</em></h2>
+          <p class="panel-sub">Correos con descuento de $50 y $100 para quien creó su cuenta y todavía no paga. Nace apagado: tú decides cuándo empezar. Solo entran las cuentas que se registren después de encenderlo; quien ya paga no recibe nada.</p>
+        </div>
+        <div class="panel-head-accion">
+          <button type="button" class="btn-secondary" data-rc-accion="actualizar">Actualizar</button>
+        </div>
+      </div>
+
+      <div class="stats-grid" id="rcKpis"></div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:16px;">
+        <div class="widget-head"><span class="widget-name">Estado y control</span></div>
+        <div id="rcControl"></div>
+        <details class="rc-ayuda">
+          <summary>¿Cómo funciona la serie?</summary>
+          <div>
+            <p><b>Quién entra:</b> cuentas con el correo verificado que se registraron después de encender los recordatorios y que no han pagado nunca. Las cuentas que ya existían no reciben nada.</p>
+            <p><b>Los 3 correos</b> (las horas cuentan desde el registro): a las 12 horas, los beneficios de la membresía; a las 24 horas, $50 de descuento hasta la hora 48; a las 48 horas, $100 de descuento hasta la hora 72 (es la última oferta).</p>
+            <p><b>El descuento</b> se aplica solo al pagar, sin código, y vale solo para el primer pago (el primer mes o el primer año). Cada cuenta tiene una sola oferta en la vida. Los descuentos no se suman.</p>
+            <p><b>Cuidados:</b> nunca se manda de noche (solo entre las 8:00 a. m. y las 10:00 p. m., hora de México), entre un correo y el siguiente pasan al menos 6 horas, y el tope por día protege la reputación del correo. Cada correo trae su enlace para darse de baja.</p>
+            <p><b>Si lo apagas:</b> se detienen los correos y también deja de aplicarse el descuento en el pago.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:16px;">
+        <div class="widget-head"><span class="widget-name">Resultados de los cupones</span></div>
+        <p class="en-sub">Cuántos correos salieron y cuántos terminaron en pago.</p>
+        <div class="stats-grid" id="rcResultados"></div>
+        <div id="rcGrafica"></div>
+      </div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:16px;">
+        <div class="widget-head"><span class="widget-name">Pagos con cupón por correo</span></div>
+        <p class="en-sub">En qué correo de la serie decide pagar la gente.</p>
+        <div id="rcPorCorreo"></div>
+      </div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:16px;">
+        <div class="widget-head"><span class="widget-name">Quién pagó y qué había recibido</span></div>
+        <p class="en-sub">El último correo que tenía cada persona que pagó.</p>
+        <div id="rcQuienPago"></div>
+      </div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:16px;">
+        <div class="widget-head"><span class="widget-name">Seguimiento de cuentas</span></div>
+        <p class="en-sub">Cada cuenta con su avance en la serie y cuándo le toca el siguiente correo.</p>
+        <div class="rc-barra-filtros">
+          <div class="chip-filter" id="rcFiltros"></div>
+          <select class="form-input" id="rcEtapa" aria-label="Filtrar por etapa"></select>
+          <input type="search" class="form-input rc-buscar" id="rcBuscar" placeholder="Buscar por nombre o correo" aria-label="Buscar por nombre o correo">
+        </div>
+        <div id="rcCuentas"></div>
+      </div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:16px;">
+        <div class="widget-head"><span class="widget-name">Últimos correos enviados</span></div>
+        <p class="en-sub">Los 10 envíos más recientes.</p>
+        <div id="rcRecientes"></div>
+      </div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:16px;">
+        <div class="widget-head"><span class="widget-name">Probar los correos</span></div>
+        <p class="en-sub">Revisa cómo se ve cada correo antes de encender.</p>
+        <p style="font-size:13.5px;margin:0 0 4px;">Se manda <b>solo a tu correo</b> (<span id="rcMiCorreo">el de tu sesión</span>), nunca a otra persona. Los correos de prueba no cuentan en ninguna estadística y no cambian a ninguna cuenta.</p>
+        <div class="rc-prueba">
+          <div><label for="rcPruebaEtapa">Correo</label>
+            <select class="form-input" id="rcPruebaEtapa"><option value="1">Correo 1 · beneficios, sin descuento</option><option value="2">Correo 2 · descuento de $50</option><option value="3">Correo 3 · descuento de $100</option></select></div>
+          <button type="button" class="btn-primary" data-rc-accion="prueba-uno">Enviarme una prueba</button>
+          <button type="button" class="btn-secondary" data-rc-accion="prueba-todos">Enviarme los 3</button>
+        </div>
+      </div>
     </div>
 
     <div class="tab-panel" data-panel="encuesta">
@@ -4720,6 +4833,160 @@ body::before { display: none; }
   window.cgElegirFiltro = function(f) { CG.filtro = f; CG.visibles = 20; renderCursosGratis(); };
   window.cgElegirCurso = function(c) { CG.curso = c; CG.visibles = 20; renderCursosGratis(); };
   window.cgBuscar = function(t) { CG.busca = String(t || '').trim().toLowerCase(); CG.visibles = 20; renderCursosGratis(); };
+
+  /* FASE3P-RECORDATORIOS */
+  // ═══════════════════════════════════════════════════
+  // RECORDATORIOS DE PAGO (formato de Zoorigen, datos de SINERGIA)
+  // Lee /admin/recordatorios/datos. Encender, apagar, límites, ensayo y pruebas pasan por /admin/recordatorios/*. El servidor es quien decide
+  // a quién le toca cada correo y quien aplica el descuento; aquí solo se controla y se mide. No hay datos de ejemplo.
+  // ═══════════════════════════════════════════════════
+  const RC = { datos: null, cargando: false, error: '', filtro: 'todas', etapa: 'todas', busca: '', visibles: 25 };
+  const RC_ESTADOS = {
+    'espera-primero': ['En espera de su primer correo', 'pend'], 'espera-siguiente': ['Esperando su siguiente correo', 'pend'],
+    termino: ['Terminó la serie', 'no'], pago: ['Pagó o ya es miembro', 'ok'], baja: ['Se dio de baja', 'no']
+  };
+  const RC_FALTANTES = {
+    RESEND_API_KEY: 'la llave de Resend', RESEND_FROM_RECORDATORIOS: 'el remitente (el correo desde el que se mandan)', EMAIL_BAJA_SECRET: 'la clave de los enlaces de baja'
+  };
+  const rcFecha = (ms) => new Date(ms).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '') + ', ' + new Date(ms).toLocaleTimeString('es-MX', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s+/g, ' ').replace(/([ap])\.\s?m\./i, '$1. m.');
+  const rcCorreoNombre = (n, monto) => 'Correo ' + n + (monto ? ' · cupón de $' + monto : ' · beneficios');
+
+  function rcKpisPintar() {
+    const d = RC.datos, kpi = (ico, titulo, valor, sub) => '<div class="stat-card mt-kpi"><div class="stat-label" style="display:flex;gap:8px;align-items:center;">' + dbIco(ico) + '<span>' + titulo + '</span></div><div class="stat-value">' + valor + '</div><div class="sb-sub">' + sub + '</div></div>';
+    document.getElementById('rcKpis').innerHTML = !d ? kpi('users', 'Enviados hoy', '…', '') :
+      kpi('card', 'Enviados hoy', mtNum(d.hoy.enviados), 'Correos de la serie mandados hoy') +
+      kpi('clock', 'Faltan hoy (tope)', mtNum(d.hoy.faltan), 'De ' + mtNum(d.hoy.tope) + ' permitidos por día') +
+      kpi('users', 'Personas en la serie', mtNum(d.enSerie), 'Esperando su siguiente correo') +
+      kpi('check', 'Pagaron con cupón', mtNum(d.totales.pagaronConCupon), 'Con el descuento de la serie');
+  }
+
+  function rcControlPintar() {
+    const host = document.getElementById('rcControl'), d = RC.datos;
+    if (!d) { host.innerHTML = '<div class="sb-vacio">' + (RC.error ? 'No se pudo leer: ' + esc(RC.error) : 'Leyendo datos…') + '</div>'; return; }
+    const c = d.config, e = d.entorno, activo = c.activo && e.listo;
+    const chip = !e.listo ? '<span class="rc-chip falta">FALTA CONFIGURAR</span>' : activo ? '<span class="rc-chip on">ACTIVO</span>' : '<span class="rc-chip off">APAGADO</span>';
+    const titulo = !e.listo ? 'Todavía no se puede encender' : !c.activo ? 'Apagado' : d.hoy.faltan === 0 ? 'Activo, tope de hoy alcanzado' : 'Activo';
+    const detalle = !e.listo ? 'Falta que el servidor tenga la configuración de los correos.' : !c.activo ? 'No se manda ningún correo y no se aplica ningún descuento.' : d.hoy.faltan === 0 ? 'Ya se enviaron los ' + mtNum(d.hoy.tope) + ' correos permitidos hoy. Mañana sigue.' : 'Revisa cada 10 minutos y manda hasta ' + mtNum(d.hoy.tope) + ' correos al día.';
+    const proximo = activo && d.proximoEnvioMs ? 'Próximo envío: <b>' + esc(rcFecha(d.proximoEnvioMs)) + '</b> · ' + mtNum(d.enSerie) + (d.enSerie === 1 ? ' persona en la serie' : ' personas en la serie') : (activo ? 'Por ahora no hay cuentas esperando un correo. Se agregan cuando alguien se registre.' : '');
+    host.innerHTML = '<div class="rc-estado"><div class="rc-estado-info">' + chip + '<div><b>' + titulo + '</b><br><span class="t">' + detalle + '</span></div></div>' +
+      '<div class="rc-botones">' + (c.activo ? '<button type="button" class="btn-secondary" data-rc-accion="apagar">Apagar</button>' : '<button type="button" class="btn-primary"' + (e.listo ? '' : ' disabled') + ' data-rc-accion="encender">Encender</button>') +
+      '<button type="button" class="btn-secondary" data-rc-accion="ensayo">Ensayo</button><button type="button" class="btn-secondary" data-rc-accion="actualizar">Actualizar</button></div></div>' +
+      (!e.listo ? '<div class="rc-aviso"><b>Falta configurar en el servidor:</b> ' + e.faltantes.map(f => esc(RC_FALTANTES[f] || f)).join(', ') + '. Cuando el dominio de correo esté listo, se agregan en Railway (variables ' + e.faltantes.map(f => '<code>' + esc(f) + '</code>').join(', ') + ') y se vuelve aquí a encender.</div>' : '') +
+      (proximo ? '<p class="rc-proximo">' + proximo + '</p>' : '') +
+      '<div class="rc-limites"><div><label for="rcTope">Tope por día</label><input type="number" min="1" max="500" class="form-input" id="rcTope" value="' + c.topeDia + '"></div>' +
+      '<div><label for="rcMax">Máximo por revisión</label><input type="number" min="1" max="100" class="form-input" id="rcMax" value="' + c.maxRevision + '"></div>' +
+      '<button type="button" class="btn-secondary" data-rc-accion="limites">Guardar límites</button></div>' +
+      '<p class="cr-ayuda">Hoy van ' + mtNum(d.hoy.enviados) + ' de ' + mtNum(d.hoy.tope) + ' envíos permitidos. El tope protege la reputación del correo: las cuentas nuevas conviene subirlas poco a poco.' + (c.activo && c.desdeMs ? ' Entran solo las cuentas registradas a partir del ' + esc(rcFecha(c.desdeMs)) + ' en adelante.' : '') + '</p>';
+  }
+
+  function rcResultadosPintar() {
+    const d = RC.datos, kpi = (ico, titulo, valor) => '<div class="stat-card mt-kpi"><div class="stat-label" style="display:flex;gap:8px;align-items:center;">' + dbIco(ico) + '<span>' + titulo + '</span></div><div class="stat-value">' + valor + '</div></div>';
+    const t = d && d.totales;
+    document.getElementById('rcResultados').innerHTML =
+      kpi('card', 'Correos enviados', t ? mtNum(t.correosEnviados) : '…') + kpi('plus', 'Cupones creados', t ? mtNum(t.cuponesCreados) : '…') +
+      kpi('check', 'Pagaron con cupón', t ? mtNum(t.pagaronConCupon) : '…') + kpi('user', 'Pagaron sin cupón', t ? mtNum(t.pagaronSinCupon) : '…') + kpi('alert', 'Se dieron de baja', t ? mtNum(t.bajas) : '…');
+    const host = document.getElementById('rcGrafica');
+    if (!d) { host.innerHTML = ''; return; }
+    const cats = [[50, 'Cupón de $50'], [100, 'Cupón de $100']], W = 900, H = 240, izq = 46, abajo = 30, n = cats.length, col = (W - izq - 10) / n, bw = 34;
+    const tope = mtTope(Math.max(1, ...cats.map(([m]) => d.porCupon[m].enviados)), true);
+    let g = mtEjes(W, H, izq, abajo, tope, v => String(Math.round(v)));
+    cats.forEach(([m, nombre], i) => [[d.porCupon[m].enviados, '#1F7A4D', 'Correos enviados', -bw - 2], [d.porCupon[m].pagaron, '#B7791F', 'Pagaron con el cupón', 2]].forEach(([v, color, leyenda, dx]) => {
+      const h = (H - abajo - 10) * v / tope;
+      g += '<rect x="' + (izq + col * i + col / 2 + dx).toFixed(1) + '" y="' + (H - abajo - h).toFixed(1) + '" width="' + bw + '" height="' + Math.max(h, v > 0 ? 2 : 0).toFixed(1) + '" rx="2" fill="' + color + '"><title>' + esc(nombre + ' · ' + leyenda + ': ' + v) + '</title></rect>';
+    }));
+    g += cats.map(([m, nombre], i) => '<text x="' + (izq + col * i + col / 2).toFixed(1) + '" y="226" text-anchor="middle">' + esc(nombre) + '</text>').join('');
+    const txt = cats.map(([m]) => 'con el cupón de $' + m + ' pagaron ' + mtNum(d.porCupon[m].pagaron) + ' de ' + mtNum(d.porCupon[m].enviados) + ' correos (' + String(Math.round(d.porCupon[m].enviados ? d.porCupon[m].pagaron / d.porCupon[m].enviados * 1000 : 0) / 10).replace('.', ',') + ' %)').join('; ');
+    host.innerHTML = '<div class="en-pie" style="margin:8px 0 4px;"><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1F7A4D;margin-right:5px"></i>Correos enviados</span><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#B7791F;margin-right:5px"></i>Pagaron con el cupón</span></div>' +
+      '<svg class="mt-svg" viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img">' + g + '</svg>' +
+      '<p class="en-pie"><span><b>' + mtNum(t.cuponesCreados) + '</b> correos con cupón</span><span><b>' + mtNum(t.pagaronConCupon) + '</b> pagaron con el cupón</span></p>' +
+      enLeer(t.cuponesCreados ? 'En total pagaron ' + enPers(t.pagaronConCupon) + ' con un cupón: ' + txt + '. Una persona puede recibir varios correos, por eso hay más correos que pagos.' : 'Todavía no ha salido ningún correo con cupón.');
+  }
+
+  function rcBarrasLista(hostId, filas, color, leer) {
+    const host = document.getElementById(hostId), total = filas.reduce((a, f) => a + f.n, 0), max = Math.max(1, ...filas.map(f => f.n));
+    host.innerHTML = filas.map(f => '<div class="mt-barra-h"><span>' + esc(f.t) + '</span><b>' + mtNum(f.n) + ' <span style="font-weight:400;color:var(--stone-500);font-size:12px;">' + mtPct(f.n, total) + ' %</span></b><div class="cr-barra"><i style="width:' + (f.n ? Math.max(3, Math.round(f.n / max * 100)) : 0) + '%;background:' + color + '"></i></div></div>').join('') + enLeer(total ? leer(filas.slice().sort((a, b) => b.n - a.n)[0], total) : 'Todavía no hay pagos.');
+  }
+
+  function rcCuentasPintar() {
+    const d = RC.datos, host = document.getElementById('rcCuentas');
+    const cuentas = d ? d.cuentas : [], cuenta = (f) => cuentas.filter(f).length;
+    document.getElementById('rcFiltros').innerHTML = [['todas', 'Todas', cuentas.length], ['listas', 'Listas ahora', cuenta(x => x.lista && (x.estado === 'espera-primero' || x.estado === 'espera-siguiente'))], ['programadas', 'Programadas', cuenta(x => x.proximoMs !== null && !x.lista)]].map(f => '<button type="button" class="chip' + (RC.filtro === f[0] ? ' active' : '') + '" data-rc-filtro="' + f[0] + '">' + f[1] + (f[0] === 'todas' ? '' : ' · ' + f[2]) + '</button>').join('');
+    const sel = document.getElementById('rcEtapa');
+    if (sel && sel.options.length === 0) sel.innerHTML = '<option value="todas">Todas las etapas</option>' + Object.keys(RC_ESTADOS).map(k => '<option value="' + k + '">' + esc(RC_ESTADOS[k][0]) + '</option>').join('');
+    if (sel) sel.value = RC.etapa;
+    if (!d) { host.innerHTML = '<div class="sb-vacio">Leyendo datos…</div>'; return; }
+    const q = RC.busca.trim().toLowerCase();
+    const ver = cuentas.filter(x => (RC.filtro === 'listas' ? x.lista && (x.estado === 'espera-primero' || x.estado === 'espera-siguiente') : RC.filtro === 'programadas' ? x.proximoMs !== null && !x.lista : true) && (RC.etapa === 'todas' || x.estado === RC.etapa) && (!q || (x.nombre + ' ' + x.email).toLowerCase().includes(q)));
+    if (!ver.length) { host.innerHTML = '<div class="sb-vacio">' + (cuentas.length ? 'No hay cuentas con este filtro.' : 'Todavía no hay cuentas en la serie. Entran las que se registren después de encender los recordatorios.') + '</div>'; return; }
+    const parte = ver.slice(0, RC.visibles);
+    host.innerHTML = '<div class="en-tabla-ancha"><table class="pg-tabla"><thead><tr><th>Cuenta</th><th>Etapa</th><th>Avance</th><th>Cuándo sale</th></tr></thead><tbody>' + parte.map(x => {
+      const [txt, clase] = RC_ESTADOS[x.estado] || ['', 'no'];
+      const sale = x.proximoMs === null ? '—' : (x.lista ? 'En la próxima revisión' : esc(rcFecha(x.proximoMs))) + '<small>Correo ' + x.etapa + '</small>';
+      return '<tr><td><b>' + esc(x.nombre || 'Sin nombre') + '</b><small>' + esc(x.email) + '</small></td><td><span class="en-pill ' + clase + '">' + esc(txt) + '</span></td><td><span class="rc-puntos" title="Correos enviados">' + x.avance.map(a => '<i class="rc-punto' + (a ? ' on' : '') + '"></i>').join('') + '</span></td><td>' + sale + '</td></tr>';
+    }).join('') + '</tbody></table></div><p class="en-pie">Mostrando ' + mtNum(parte.length) + ' de ' + mtNum(ver.length) + (ver.length > parte.length ? ' <button type="button" class="btn-secondary" data-rc-accion="mas">Mostrar ' + Math.min(25, ver.length - parte.length) + ' más</button>' : '') + '</p>';
+  }
+
+  function rcRender() {
+    if (!document.getElementById('rcKpis')) return;
+    const d = RC.datos;
+    rcKpisPintar(); rcControlPintar(); rcResultadosPintar();
+    if (d) {
+      rcBarrasLista('rcPorCorreo', [[2, 50], [3, 100]].map(([n, m]) => ({ t: rcCorreoNombre(n, m), n: d.pagosPorCorreo[n] || 0 })), '#1F7A4D', (top, total) => 'El correo que más pagos trae es «' + esc(top.t) + '»: ' + mtNum(top.n) + (top.n === 1 ? ' pago' : ' pagos') + ' de ' + mtNum(total) + ' con cupón.');
+      rcBarrasLista('rcQuienPago', ['Antes de recibir un correo', 'Después del correo 1', 'Después del correo 2', 'Después del correo 3'].map((t, i) => ({ t, n: d.quienPago[i] || 0 })), '#2E7D9A', (top, total) => 'La mayoría pagó «' + esc(top.t.toLowerCase()) + '»: ' + mtNum(top.n) + ' de ' + mtNum(total) + ' (' + mtPct(top.n, total) + ' %).');
+      document.getElementById('rcRecientes').innerHTML = d.recientes.length ? d.recientes.map(r => '<div class="rc-reciente"><div><b>' + esc(r.nombre || 'Sin nombre') + '</b><small>' + esc(r.email) + '</small></div><div class="der"><span class="en-pill ' + (r.monto ? 'ok' : 'no') + '">Correo ' + r.etapa + '</span>' + (r.monto ? '<span class="en-pill ok">Cupón de $' + r.monto + '</span>' : '') + '<span>' + esc(rcFecha(r.en)) + '</span></div></div>').join('') : '<div class="sb-vacio">Todavía no ha salido ningún correo.</div>';
+    } else {
+      ['rcPorCorreo', 'rcQuienPago', 'rcRecientes'].forEach(id => { document.getElementById(id).innerHTML = '<div class="sb-vacio">' + (RC.error ? 'No se pudo leer' : 'Leyendo datos…') + '</div>'; });
+    }
+    rcCuentasPintar();
+    const mi = document.getElementById('rcMiCorreo'); if (mi && typeof auth !== 'undefined' && auth.currentUser) mi.textContent = auth.currentUser.email;
+  }
+
+  window.rcCargar = async function() {
+    if (RC.cargando) return;
+    RC.cargando = true; RC.error = '';
+    try { RC.datos = await callAdminEndpoint('/admin/recordatorios/datos', {}); }
+    catch (err) { RC.error = (err && err.message) || 'error'; showToast('No se pudieron leer los recordatorios: ' + RC.error, 'error'); }
+    RC.cargando = false;
+    rcRender();
+  };
+
+  document.addEventListener('input', (e) => {
+    if (e.target && e.target.id === 'rcBuscar') { RC.busca = e.target.value; RC.visibles = 25; rcCuentasPintar(); document.getElementById('rcBuscar').focus(); }
+  });
+  document.addEventListener('change', (e) => {
+    if (e.target && e.target.id === 'rcEtapa') { RC.etapa = e.target.value; RC.visibles = 25; rcCuentasPintar(); }
+  });
+  document.addEventListener('click', async (e) => {
+    const t = e.target.closest && e.target.closest('[data-rc-accion],[data-rc-filtro]');
+    if (!t) return;
+    if (t.dataset.rcFiltro) { RC.filtro = t.dataset.rcFiltro; RC.visibles = 25; rcCuentasPintar(); return; }
+    const a = t.dataset.rcAccion, llamar = async (ruta, cuerpo, ok) => {
+      t.disabled = true;
+      try { const r = await callAdminEndpoint(ruta, cuerpo); if (ok) showToast(ok(r)); return r; }
+      catch (err) { showToast((err && err.message) || 'No se pudo completar', 'error'); }
+      finally { t.disabled = false; }
+    };
+    if (a === 'actualizar') rcCargar();
+    else if (a === 'mas') { RC.visibles += 25; rcCuentasPintar(); }
+    else if (a === 'encender') {
+      if (!confirm('¿Encender los recordatorios de pago? Empezarán a recibir correos las cuentas que se registren desde ahora. Puedes apagarlos cuando quieras.')) return;
+      if (await llamar('/admin/recordatorios/config', { accion: 'encender' }, () => 'Recordatorios encendidos')) rcCargar();
+    }
+    else if (a === 'apagar') {
+      if (!confirm('¿Apagar los recordatorios? Se detienen los correos y también deja de aplicarse el descuento en el pago.')) return;
+      if (await llamar('/admin/recordatorios/config', { accion: 'apagar' }, () => 'Recordatorios apagados')) rcCargar();
+    }
+    else if (a === 'limites') {
+      if (await llamar('/admin/recordatorios/config', { accion: 'limites', topeDia: document.getElementById('rcTope').value, maxRevision: document.getElementById('rcMax').value }, () => 'Límites guardados')) rcCargar();
+    }
+    else if (a === 'ensayo') {
+      await llamar('/admin/recordatorios/ensayo', {}, (r) => r.estado === 'apagada' ? 'Ensayo: está apagado, no saldría ningún correo.' : r.estado === 'sin-configurar' ? 'Ensayo: falta configurar el servidor.' : 'Ensayo: en la próxima revisión saldrían ' + mtNum(r.llegarian || 0) + ' correos. No se envió nada.');
+    }
+    else if (a === 'prueba-uno' || a === 'prueba-todos') {
+      const etapa = a === 'prueba-todos' ? 'todos' : document.getElementById('rcPruebaEtapa').value;
+      await llamar('/admin/recordatorios/prueba', { etapa }, (r) => (r.enviados.length === 1 ? 'Prueba enviada a ' : 'Pruebas enviadas a ') + r.para);
+    }
+  });
 
   /* FASE3P-ENCUESTA */
   // ═══════════════════════════════════════════════════
@@ -7830,6 +8097,7 @@ let _bibLibrosCargados = false;
     if (tabName === 'freecourses') setTimeout(() => cargarAvanceGratis(true), 0);
     if (tabName === 'metricas') setTimeout(() => mtCargar(false), 0);
     if (tabName === 'encuesta') setTimeout(() => enCargar(), 0);
+    if (tabName === 'recordatorios') setTimeout(() => rcCargar(), 0);
     if (tabName === 'valores') setTimeout(cargarValoresAdmin, 0);
   };
   document.addEventListener('click', (e) => {
