@@ -1404,6 +1404,31 @@
   .mt-barra-h { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 13.5px; padding: 6px 0; }
   .mt-barra-h b { font-weight: 700; }
   .mt-barra-h .cr-barra { grid-column: 1 / -1; margin: 0; height: 12px; }
+  /* Salud del servidor */
+  .sl-resumen { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 4px 0 8px; font-size: 13.5px; color: var(--stone-600); }
+  .sl-fila { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 2px; border-top: 1px solid var(--stone-100, #EEF1EF); }
+  .sl-fila b { display: block; font-size: 14.5px; }
+  .sl-fila small { display: block; color: var(--stone-500); font-size: 12.5px; line-height: 1.45; margin-top: 2px; }
+  .sl-punto { width: 11px; height: 11px; border-radius: 50%; display: block; }
+  .sl-punto.ok { background: #1F7A4D; } .sl-punto.aviso { background: #D69E2E; } .sl-punto.error { background: #C24D3C; }
+  .en-pill.mal { background: #FBE5E1; color: #9B2C1F; }
+  .sl-barra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin: 6px 0 12px; }
+  .sl-barra select { min-width: 150px; }
+  .sl-sub { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--stone-500); font-weight: 700; margin: 16px 0 6px; }
+  .sl-reinicio { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: center; padding: 9px 0; }
+  .sl-reinicio .ico { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #FBE5E1; color: #9B2C1F; }
+  .sl-reinicio .ico.n { background: var(--stone-100, #EEF1EF); color: var(--stone-500); }
+  .sl-reinicio .ico svg { width: 15px; height: 15px; }
+  .sl-reinicio b { font-size: 14px; } .sl-reinicio small { display: block; color: var(--stone-500); font-size: 12.5px; }
+  .sl-marcar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 8px 0 4px; font-size: 13px; color: var(--stone-600); }
+  .sl-error { border: 1px solid var(--stone-200); border-left: 4px solid #D69E2E; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  .sl-error h4 { margin: 0 0 4px; font-size: 15px; }
+  .sl-error .meta { font-size: 12.5px; color: var(--stone-500); margin-bottom: 8px; }
+  .sl-error p { margin: 0 0 8px; font-size: 13.5px; line-height: 1.5; color: var(--stone-700); }
+  .sl-error p b { display: block; font-size: 10.5px; letter-spacing: .08em; color: var(--stone-500); margin-bottom: 2px; }
+  .sl-error code { display: block; background: var(--stone-50); border-radius: 8px; padding: 8px 10px; font-size: 12px; word-break: break-word; }
+  .sl-nota { background: #E8F1FB; border: 1px solid #CFE0F4; border-radius: 12px; padding: 12px 16px; font-size: 13px; line-height: 1.55; color: #1F3A5F; margin-top: 12px; }
+  .sl-nota b { color: #102A4C; }
   /* Recordatorios de pago */
   .rc-estado { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; justify-content: space-between; margin-bottom: 10px; }
   .rc-estado-info { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
@@ -3964,6 +3989,22 @@ body::before { display: none; }
         </div>
       </div>
 
+      <div class="stats-grid" id="slKpis"></div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:18px;">
+        <div class="widget-head"><span class="widget-name">Estado de servicios</span>
+          <span style="display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="btn-secondary" data-sl-accion="revisar">Revisar ahora</button><button type="button" class="btn-secondary" data-sl-accion="copiar">Copiar reporte</button></span></div>
+        <p class="en-sub">Un semáforo con lo que revisa el servidor. Revisar no cobra ni envía nada.</p>
+        <div id="slEstado"></div>
+      </div>
+
+      <div class="widget-box cg-caja" style="margin-bottom:18px;">
+        <div class="widget-head"><span class="widget-name">Historial del servidor</span>
+          <span style="display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="btn-secondary" data-sl-accion="actualizar">Actualizar</button><button type="button" class="btn-secondary" data-sl-accion="copiar">Copiar reporte</button></span></div>
+        <p class="en-sub">Caídas, reinicios y errores guardados (se conservan 90 días).</p>
+        <div id="slHistorial"></div>
+      </div>
+
       <!-- Mantenimiento: limpiar expirados -->
       <div class="widget-box" style="margin-bottom:18px;">
         <div class="widget-head">
@@ -4833,6 +4874,100 @@ body::before { display: none; }
   window.cgElegirFiltro = function(f) { CG.filtro = f; CG.visibles = 20; renderCursosGratis(); };
   window.cgElegirCurso = function(c) { CG.curso = c; CG.visibles = 20; renderCursosGratis(); };
   window.cgBuscar = function(t) { CG.busca = String(t || '').trim().toLowerCase(); CG.visibles = 20; renderCursosGratis(); };
+
+  /* FASE3P-SALUD */
+  // ═══════════════════════════════════════════════════
+  // SALUD DEL SERVIDOR (formato de Zoorigen, datos de SINERGIA)
+  // Lee /admin/salud/estado (semáforo) y /admin/salud/historial (arranques, caídas, errores). Solo mira; lo único que escribe es
+  // «marcar como publicaciones normales». El servidor calcula las caídas al volver a encender (ver salud.js).
+  // ═══════════════════════════════════════════════════
+  const SL = { estado: null, hist: null, cargando: false, dias: 30, todo: false, error: '' };
+  const slHace = (ms) => { const m = Math.round((Date.now() - ms) / 60000); if (m < 60) return m < 1 ? 'hace un momento' : 'hace ' + m + ' min'; const h = Math.floor(m / 60); return h < 48 ? 'hace ' + h + ' h' : 'hace ' + Math.floor(h / 24) + ' días'; };
+  const slDur = (ms) => { const s = Math.round(ms / 1000); if (s < 60) return s + ' s'; const m = Math.round(s / 60); if (m < 60) return m + ' min'; const h = Math.floor(m / 60); return h + ' h' + (m % 60 ? ' ' + (m % 60) + ' min' : ''); };
+  const slLargo = (ms) => { const d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), m = Math.floor(ms % 3600000 / 60000); return d ? d + ' d ' + h + ' h' : h ? h + ' h ' + m + ' min' : m ? m + ' min' : 'menos de 1 min'; };
+  const SL_PILL = { ok: ['En orden', 'ok'], aviso: ['Revisar', 'pend'], error: ['Falla', 'mal'] };
+
+  function slPintar() {
+    if (!document.getElementById('slKpis')) return;
+    const e = SL.estado, h = SL.hist, r = h && h.resumen;
+    const kpi = (ico, titulo, valor, sub) => '<div class="stat-card mt-kpi"><div class="stat-label" style="display:flex;gap:8px;align-items:center;">' + dbIco(ico) + '<span>' + titulo + '</span></div><div class="stat-value">' + valor + '</div><div class="sb-sub">' + sub + '</div></div>';
+    document.getElementById('slKpis').innerHTML =
+      kpi('check', 'Servicios en orden', e ? e.enOrden + ' de ' + e.total : '…', e ? (e.enOrden === e.total ? 'Todo en orden' : (e.total - e.enOrden) + ' por revisar') : 'Leyendo…') +
+      kpi('alert', 'Caídas en ' + SL.dias + ' días', r ? mtNum(r.caidas) : '…', r ? (r.caidas ? 'Tardó 10 min o más en volver' : 'Sin caídas') : '') +
+      kpi('refresh', 'Reinicios inesperados', r ? mtNum(r.inesperados) : '…', r ? mtNum(r.arranques) + ' arranques en total' : '') +
+      kpi('clock', 'Encendido ininterrumpido', r && r.encendidoMs !== null ? slLargo(r.encendidoMs) : '…', r && r.enCursoDesdeMs ? 'Desde ' + esc(rcFecha(r.enCursoDesdeMs)) : '');
+
+    const host = document.getElementById('slEstado');
+    if (!e) { host.innerHTML = '<div class="sb-vacio">' + (SL.error ? 'No se pudo leer el estado: ' + esc(SL.error) : 'Leyendo datos…') + '</div>'; }
+    else {
+      const fallas = e.servicios.filter(s => s.estado === 'error').length, avisos = e.servicios.filter(s => s.estado === 'aviso').length;
+      host.innerHTML = '<div class="sl-resumen"><span class="en-pill ' + (fallas ? 'mal' : avisos ? 'pend' : 'ok') + '">' + (fallas ? 'Hay fallas' : avisos ? 'Hay avisos' : 'Todo en orden') + '</span><span>' + e.enOrden + ' de ' + e.total + ' en orden · revisado ' + esc(slHace(e.revisadoMs)) + '</span></div>' +
+        e.servicios.map(s => '<div class="sl-fila"><i class="sl-punto ' + s.estado + '"></i><div><b>' + esc(s.nombre) + '</b><small>' + esc(s.detalle) + '</small></div><span class="en-pill ' + SL_PILL[s.estado][1] + '">' + SL_PILL[s.estado][0] + '</span></div>').join('');
+    }
+
+    const hh = document.getElementById('slHistorial');
+    if (!h) { hh.innerHTML = '<div class="sb-vacio">' + (SL.error ? 'No se pudo leer el historial: ' + esc(SL.error) : 'Leyendo datos…') + '</div>'; return; }
+    const iconoMal = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    const iconoOk = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+    const filaReinicio = (a) => {
+      const normal = a.tipo !== 'inesperado' && a.tipo !== 'primero';
+      const titulo = a.tipo === 'inesperado' ? (a.caida ? 'Caída' : 'Reinicio inesperado') + ' · Tardó ' + slDur(a.tardoMs) + ' en volver' : a.tipo === 'primero' ? 'Primer arranque registrado' : a.tipo === 'publicacion-marcada' ? 'Reinicio marcado como publicación normal' : 'Publicación · se apagó y volvió en ' + slDur(a.tardoMs);
+      return '<div class="sl-reinicio"><span class="ico' + (normal || a.tipo === 'primero' ? ' n' : '') + '">' + (normal || a.tipo === 'primero' ? iconoOk : iconoMal) + '</span><div><b>' + esc(titulo) + '</b><small>' + esc(rcFecha(a.inicioMs)) + ' · ' + esc(slHace(a.inicioMs)) + (a.version ? ' · versión ' + esc(a.version) : '') + '</small></div></div>';
+    };
+    hh.innerHTML = '<div class="sl-barra"><div class="chip-filter"><button type="button" class="chip' + (SL.todo ? '' : ' active') + '" data-sl-filtro="problemas">Solo problemas</button><button type="button" class="chip' + (SL.todo ? ' active' : '') + '" data-sl-filtro="todo">Todo</button></div>' +
+      '<select class="form-input" data-sl-periodo aria-label="Periodo">' + [7, 30, 90].map(d => '<option value="' + d + '"' + (SL.dias === d ? ' selected' : '') + '>Últimos ' + d + ' días</option>').join('') + '</select></div>' +
+      '<div class="sl-sub">Reinicios del servidor</div>' +
+      (h.arranques.length ? h.arranques.slice(0, 40).map(filaReinicio).join('') : '<div class="sb-vacio">' + (SL.todo ? 'No hay arranques registrados en este periodo.' : 'Sin reinicios inesperados en este periodo.') + '</div>') +
+      (h.resumen.inesperados ? '<div class="sl-marcar"><button type="button" class="btn-secondary" data-sl-accion="marcar">Marcarlos como publicaciones normales</button><span>Úsalo cuando ya sabes que esos reinicios fueron por publicar cambios. Quedan registrados, pero dejan de contar como problema.</span></div>' : '') +
+      '<div class="sl-sub">Errores del servidor, agrupados</div>' +
+      (h.errores.length ? h.errores.slice(0, 30).map(x => '<div class="sl-error"><h4>' + esc(x.nombre) + '</h4><div class="meta">' + mtNum(x.veces) + (x.veces === 1 ? ' vez' : ' veces') + ' · la última ' + esc(rcFecha(x.ultimaMs)) + ' · ' + esc(slHace(x.ultimaMs)) + '</div><p><b>QUÉ SIGNIFICA</b>' + esc(x.significa) + '</p><p><b>QUÉ HACER</b>' + esc(x.hacer) + '</p><p style="margin:0"><b>MENSAJE DEL SERVIDOR</b></p><code>' + esc(x.mensaje) + '</code></div>').join('') : '<div class="sb-vacio">Sin errores registrados en este periodo.</div>') +
+      '<div class="sl-nota"><b>Cómo leer esto.</b> Cada vez que se publican cambios el servidor se apaga y vuelve a encender en unos segundos: eso es una <b>publicación</b> y no es un problema (aparece en «Todo»). Un <b>reinicio inesperado</b> es cuando se detuvo sin avisar. Una <b>caída</b> es un reinicio inesperado que tardó 10 minutos o más en volver. El tiempo «tardó en volver» se calcula al encender de nuevo y tiene un margen de 2 minutos.</div>';
+  }
+
+  window.slCargar = async function(forzar) {
+    if (SL.cargando) return;
+    SL.cargando = true; SL.error = '';
+    try {
+      const [estado, hist] = await Promise.all([callAdminEndpoint('/admin/salud/estado', {}), callAdminEndpoint('/admin/salud/historial', { dias: SL.dias, todo: SL.todo })]);
+      SL.estado = estado; SL.hist = hist;
+    } catch (err) { SL.error = (err && err.message) || 'error'; if (forzar) showToast('No se pudo leer la salud del servidor: ' + SL.error, 'error'); }
+    SL.cargando = false;
+    slPintar();
+  };
+  async function slHistorial() {
+    try { SL.hist = await callAdminEndpoint('/admin/salud/historial', { dias: SL.dias, todo: SL.todo }); } catch (err) { showToast('No se pudo leer el historial: ' + ((err && err.message) || 'error'), 'error'); }
+    slPintar();
+  }
+  function slReporte() {
+    const e = SL.estado, h = SL.hist, L = ['Reporte del servidor de SINERGIA · ' + new Date().toLocaleString('es-MX')];
+    if (e) { L.push('', 'Servicios: ' + e.enOrden + ' de ' + e.total + ' en orden'); e.servicios.forEach(s => L.push('- ' + s.nombre + ': ' + SL_PILL[s.estado][0] + ' · ' + s.detalle)); }
+    if (h) {
+      L.push('', 'Historial de los últimos ' + h.dias + ' días: ' + h.resumen.caidas + ' caídas, ' + h.resumen.inesperados + ' reinicios inesperados, ' + h.resumen.arranques + ' arranques');
+      h.arranques.filter(a => a.tipo === 'inesperado').forEach(a => L.push('- ' + (a.caida ? 'Caída' : 'Reinicio inesperado') + ' · ' + rcFecha(a.inicioMs) + ' · tardó ' + slDur(a.tardoMs) + ' en volver · versión ' + a.version));
+      if (h.errores.length) { L.push('', 'Errores agrupados:'); h.errores.forEach(x => L.push('- ' + x.nombre + ' · ' + x.veces + ' veces · la última ' + rcFecha(x.ultimaMs) + ' · ' + x.mensaje)); }
+    }
+    return L.join('\n');
+  }
+  document.addEventListener('change', (ev) => { if (ev.target && ev.target.dataset && ev.target.dataset.slPeriodo !== undefined) { SL.dias = Number(ev.target.value) || 30; slHistorial(); } });
+  document.addEventListener('click', async (ev) => {
+    const t = ev.target.closest && ev.target.closest('[data-sl-accion],[data-sl-filtro]');
+    if (!t) return;
+    if (t.dataset.slFiltro) { SL.todo = t.dataset.slFiltro === 'todo'; slHistorial(); return; }
+    const a = t.dataset.slAccion;
+    if (a === 'revisar' || a === 'actualizar') { await slCargar(true); showToast(a === 'revisar' ? 'Servicios revisados' : 'Historial actualizado'); }
+    else if (a === 'copiar') {
+      const texto = slReporte();
+      try { await navigator.clipboard.writeText(texto); showToast('Reporte copiado: pégalo en un mensaje al equipo técnico'); }
+      catch (err) { const ta = document.createElement('textarea'); ta.value = texto; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); showToast('Reporte copiado: pégalo en un mensaje al equipo técnico'); } catch (e2) { showToast('No se pudo copiar el reporte', 'error'); } ta.remove(); }
+    }
+    else if (a === 'marcar') {
+      if (!confirm('¿Marcar estos reinicios inesperados como publicaciones normales? Quedan registrados, pero dejan de contar como problema.')) return;
+      t.disabled = true;
+      try { const r = await callAdminEndpoint('/admin/salud/marcar-normales', { dias: SL.dias }); showToast(r.marcados + (r.marcados === 1 ? ' reinicio marcado' : ' reinicios marcados') + ' como publicación normal'); await slHistorial(); }
+      catch (err) { showToast('No se pudo completar: ' + ((err && err.message) || 'error'), 'error'); }
+      t.disabled = false;
+    }
+  });
 
   /* FASE3P-RECORDATORIOS */
   // ═══════════════════════════════════════════════════
@@ -8098,6 +8233,7 @@ let _bibLibrosCargados = false;
     if (tabName === 'metricas') setTimeout(() => mtCargar(false), 0);
     if (tabName === 'encuesta') setTimeout(() => enCargar(), 0);
     if (tabName === 'recordatorios') setTimeout(() => rcCargar(), 0);
+    if (tabName === 'config') setTimeout(() => slCargar(), 0);
     if (tabName === 'valores') setTimeout(cargarValoresAdmin, 0);
   };
   document.addEventListener('click', (e) => {
