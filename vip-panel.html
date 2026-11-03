@@ -10818,6 +10818,8 @@ html .inicio-curso .inicio-chip--lock, html .inicio-curso .inicio-chip--lock * {
 .sidebar-user-avatar, .topbar-avatar { position: relative; }
 .av-cap { position: absolute; inset: 0; z-index: 2; border-radius: 50%; overflow: hidden; display: block; pointer-events: none; }
 .av-cap svg { display: block; width: 100%; height: 100%; }
+.topbar-avatar .av-cap svg, .sidebar-user-avatar .av-cap svg { width: 100% !important; height: 100% !important; }
+.topbar-avatar:has(.av-cap) #topbarAvatarText { visibility: hidden; }
 .pp-avbtn, .pd-avlink { width: fit-content; margin: 4px 0 0 8px; padding: 7px 14px; border: 1px solid rgba(255, 255, 255, .45); border-radius: 100px; background: rgba(255, 255, 255, .12); color: #fff; font: 700 12.5px 'Plus Jakarta Sans', sans-serif; cursor: pointer; }
 .pp-avbtn:hover, .pd-avlink:hover { background: rgba(255, 255, 255, .22); }
 .pd-avlink { margin: 4px 0 0; padding: 5px 12px; font-size: 11.5px; }
