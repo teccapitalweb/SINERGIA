@@ -1255,6 +1255,20 @@
   burger.addEventListener('click', function () { setMenu(!header.classList.contains('menu-open')); });
   document.querySelectorAll('#mobileMenu a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
 
+  /* Semana del canal (antes del revelado: sus tarjetas tambien se revelan) */
+  var week = document.getElementById('week');
+  var delay = 0;
+  week.innerHTML = SEMANA.map(function (s, i) {
+    if (!(s.t && s.t.trim())) return '';
+    var d = (delay++ * .08).toFixed(2);
+    return '<div class="day' + (i === hoy ? ' today' : '') + '" role="listitem" data-tilt data-reveal style="--d:' + d + 's">' +
+      '<span class="badge">Hoy</span>' +
+      '<div class="abbr">' + esc(s.a) + '</div>' +
+      '<div class="name">' + esc(s.d) + '</div>' +
+      '<div class="what"><strong>' + esc(s.n || '') + '</strong><span>' + esc(s.t) + '</span></div>' +
+      '</div>';
+  }).join('');
+
   /* Revelado */
   var items = document.querySelectorAll('[data-reveal]');
   if ('IntersectionObserver' in window && !reduce) {
@@ -1269,20 +1283,6 @@
   /* Día de hoy en el hero */
   var dots = document.querySelectorAll('[data-week-dots] span');
   if (dots[hoy]) dots[hoy].classList.add('today');
-
-  /* Semana del canal */
-  var week = document.getElementById('week');
-  var delay = 0;
-  week.innerHTML = SEMANA.map(function (s, i) {
-    if (!(s.t && s.t.trim())) return '';
-    var d = (delay++ * .08).toFixed(2);
-    return '<div class="day' + (i === hoy ? ' today' : '') + '" role="listitem" data-tilt data-reveal style="--d:' + d + 's">' +
-      '<span class="badge">Hoy</span>' +
-      '<div class="abbr">' + esc(s.a) + '</div>' +
-      '<div class="name">' + esc(s.d) + '</div>' +
-      '<div class="what"><strong>' + esc(s.n || '') + '</strong><span>' + esc(s.t) + '</span></div>' +
-      '</div>';
-  }).join('');
 
   /* Logos de aliados: duplicar para el ciclo continuo */
   var track = document.getElementById('marqTrack');
