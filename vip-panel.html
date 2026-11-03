@@ -10811,6 +10811,16 @@ html .inicio-curso .inicio-chip--lock, html .inicio-curso .inicio-chip--lock * {
 .inicio-curso--locked .inicio-curso-title { color: var(--text-secondary); }
 .pp-av--img { overflow: hidden; background: var(--bg-subtle); }
 .pp-av img, .perfil-drawer__avatar img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+/* Avatar de campo (lo arma la persona; solo miembros) */
+.pp-av--av, .dc-av--av, .dd-av--av { overflow: hidden; background: var(--bg-subtle); }
+.pp-av svg, .dc-av svg, .dd-av svg, .perfil-drawer__avatar svg, .dm-avatar svg { display: block; width: 100%; height: 100%; border-radius: 50%; }
+.dm-avatar { overflow: hidden; }
+.sidebar-user-avatar, .topbar-avatar { position: relative; }
+.av-cap { position: absolute; inset: 0; z-index: 2; border-radius: 50%; overflow: hidden; display: block; pointer-events: none; }
+.av-cap svg { display: block; width: 100%; height: 100%; }
+.pp-avbtn, .pd-avlink { width: fit-content; margin: 4px 0 0 8px; padding: 7px 14px; border: 1px solid rgba(255, 255, 255, .45); border-radius: 100px; background: rgba(255, 255, 255, .12); color: #fff; font: 700 12.5px 'Plus Jakarta Sans', sans-serif; cursor: pointer; }
+.pp-avbtn:hover, .pd-avlink:hover { background: rgba(255, 255, 255, .22); }
+.pd-avlink { margin: 4px 0 0; padding: 5px 12px; font-size: 11.5px; }
 .perfil-drawer__editar { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 50px; margin: 14px 0; border: 0; border-radius: 14px; background: #113D35; color: #fff; font: 700 14.5px 'Plus Jakarta Sans', sans-serif; cursor: pointer; }
 .perfil-drawer__editar:hover { background: #1F5B4D; }
 .perfil-drawer__editar svg { width: 18px; height: 18px; }
@@ -13039,6 +13049,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
      FIREBASE + LÓGICA DEL PANEL
      ═══════════════════════════════════════════════════════════ -->
 <script src="assets/sinergia-bunny-catalog-v2.js"></script>
+<script src="avatares.js?v=1"></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -13551,6 +13562,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       const e = await r.json();
       window.estadoServidor = e;
       window.__cursoGratisElegido = e.cursoGratisElegido || '';
+      try { window.sinAvatar.definir(e.avatar || ''); } catch (err) {}
       try { renderCourses(currentFilter); renderMaterial(); } catch (err) {}
       await cargarProgresoServidor();
       await reclamarReferidoPendiente();
@@ -14483,6 +14495,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   }
   function dcAvatar(t) {
     if (t.foto) return '<div class="dc-av dc-av--img" aria-hidden="true"><img src="' + escapeHtml(dcImgUrl(t.uid, 'avatar', t.foto)) + '" alt="" loading="lazy"></div>';
+    if (avValido(t.avatar)) return '<div class="dc-av dc-av--av" aria-hidden="true">' + avSvg(t.avatar) + '</div>';
     var c = dcTono(t.uid || t.nombre);
     return '<div class="dc-av" style="background:linear-gradient(135deg,' + c[0] + ',' + c[1] + ')" aria-hidden="true">' + escapeHtml(dirIniciales(t.nombre)) + '</div>';
   }
@@ -14532,6 +14545,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   function dcAvatarGrande(t) {
     var c = dcTono(t.uid || t.nombre);
     if (t.foto) return '<div class="dd-av dd-av--img" aria-hidden="true"><img src="' + escapeHtml(dcImgUrl(t.uid, 'avatar', t.foto)) + '" alt=""></div>';
+    if (avValido(t.avatar)) return '<div class="dd-av dd-av--av" aria-hidden="true">' + avSvg(t.avatar) + '</div>';
     return '<div class="dd-av" style="background:linear-gradient(135deg,' + c[0] + ',' + c[1] + ')" aria-hidden="true">' + escapeHtml(dirIniciales(t.nombre)) + '</div>';
   }
   function dcRedimensionar(archivo, ancho, alto, tope) {
@@ -14710,6 +14724,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var foto = !vipUser ? '' : (est.avatar.data || (!est.avatar.quitar && dir.miaFoto ? dcImgUrl(uid, 'avatar', dir.miaFoto) : ''));
     if (av) {
       if (foto) { av.style.background = 'url("' + foto + '") center/cover'; av.textContent = ''; }
+      else if (avMio()) { av.style.background = 'transparent'; av.innerHTML = avSvg(avMio()); }
       else { var c = dcTono(uid || nom); av.style.background = 'linear-gradient(135deg,' + c[0] + ',' + c[1] + ')'; av.textContent = dirIniciales(nom); }
     }
     var propia = est.portada.data || (!est.portada.quitar && vipUser && dir.miaPortadaImg ? dcImgUrl(uid, 'portada', dir.miaPortadaImg) : '');
@@ -14720,6 +14735,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     }
     document.getElementById('dirFotoQuitar').hidden = !foto;
     document.getElementById('dirFotoBtn').disabled = !vipUser;
+    var avBtn = document.getElementById('dirAvatarBtn'); if (avBtn) { avBtn.disabled = !vipUser; avBtn.textContent = avMio() ? 'Cambiar avatar' : 'Elegir avatar'; }
     var tienePortada = !!propia;
     var sub = document.getElementById('dirPortadaSubir');
     sub.disabled = !vipUser;
@@ -14858,6 +14874,60 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     llama: PP_SVG('<path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/>'),
     flecha: PP_SVG('<path d="m9 18 6-6-6-6"/>')
   };
+  // ─── Avatar de campo: lo arma la persona (solo miembros) y se ve en la barra, el perfil y la tarjeta del Directorio ───
+  // Orden de lo que se muestra: foto subida a su tarjeta > avatar > foto de su cuenta de Google > iniciales
+  var avatarMio = '';
+  function avValido(c) { return !!(c && window.SIN_AVATARES && window.SIN_AVATARES.valido(c)); }
+  function avSvg(c) { return avValido(c) ? window.SIN_AVATARES.svg(c) : ''; }
+  function avMio() { return window.isVIP === true && avValido(avatarMio) ? avatarMio : ''; }
+  function avEtiqueta() { return window.isVIP !== true ? 'Elegir avatar · solo miembros' : (avMio() ? 'Cambiar avatar' : 'Elegir avatar'); }
+  function avBotonPerfil() { return '<button type="button" class="pp-avbtn" data-pp="avatar">' + escapeHtml(avEtiqueta()) + '</button>'; }
+  function avPintarBarra() {
+    var svg = avSvg(avMio());
+    ['sidebarAvatar', 'topbarAvatar'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var cap = el.querySelector('.av-cap');
+      if (cap) cap.remove();
+      if (svg) el.insertAdjacentHTML('beforeend', '<span class="av-cap" aria-hidden="true">' + svg + '</span>');
+    });
+    var l = document.getElementById('pdAvLink');
+    if (l) l.textContent = avEtiqueta();
+  }
+  function avRefrescar() {
+    avPintarBarra();
+    try { if (document.querySelector('[data-panel="perfil"].active')) ppPintar(); } catch (e) {}
+    try { var d = document.getElementById('perfilDrawer'); if (d && !d.hidden) pdPintar(); } catch (e) {}
+    try { var m = document.getElementById('dirModal'); if (m && m.classList.contains('active')) window.dirPrevActualizar(); } catch (e) {}
+    try { if (dir.tarjetas) cargarDirectorio(); } catch (e) {}
+  }
+  // Los errores del servidor ya vienen redactados para la persona; los de red se cambian por un mensaje claro
+  function avPedir(cuerpo) {
+    return pedirAlServidor('/api/directorio/avatar', cuerpo, 'PUT').catch(function (e) {
+      throw new Error(e && e.estado ? e.message : 'No pudimos guardar tu avatar. Revisa tu conexión e intenta de nuevo.');
+    });
+  }
+  window.sinAvatar = {
+    codigo: function () { return avMio(); },
+    definir: function (c) { avatarMio = avValido(c) ? c : ''; avRefrescar(); },
+    elegir: function () {
+      if (window.isVIP !== true) { try { window.__irASuscripcion(); } catch (e) {} return; }
+      if (!window.SIN_AVATARES) { showToast('No pudimos abrir el editor de avatar', 'error'); return; }
+      window.SIN_AVATARES.abrirEditor({
+        codigo: avatarMio || undefined,
+        guardar: async function (codigo) {
+          await avPedir({ codigo: codigo });
+          avatarMio = codigo; avRefrescar();
+          showToast('Tu avatar quedó guardado', 'success');
+        },
+        alQuitar: avMio() ? async function () {
+          await avPedir({ quitar: true });
+          avatarMio = ''; avRefrescar();
+          showToast('Quitaste tu avatar');
+        } : undefined
+      });
+    }
+  };
   // Foto del perfil: la de su tarjeta del Directorio y, si no hay, la de su cuenta de Google; si no, sus iniciales
   function miFotoUrl() {
     var u = window.currentUser || {};
@@ -14872,11 +14942,13 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     }
     var mia = (dir.tarjetas || []).filter(function (t) { return t.propia; })[0];
     if (mia && mia.foto) return dcImgUrl(u.uid || mia.uid, 'avatar', mia.foto);
+    if (avMio()) return '';
     return /^https:\/\//i.test(u.photoURL || '') ? u.photoURL : '';
   }
   function dcAvatarPerfil(nombre, correo) {
     var f = miFotoUrl();
     if (f) return '<span class="pp-av pp-av--img" aria-hidden="true"><img src="' + escapeHtml(f) + '" alt="" referrerpolicy="no-referrer"></span>';
+    if (avMio()) return '<span class="pp-av pp-av--av" aria-hidden="true">' + avSvg(avMio()) + '</span>';
     return '<span class="pp-av" aria-hidden="true">' + escapeHtml(getInitials(nombre, correo)) + '</span>';
   }
   function ppPintar() {
@@ -14902,7 +14974,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     w.innerHTML =
       '<section class="pp-hero"><div class="pp-id">' + dcAvatarPerfil(nombre, correo) +
       '<div class="pp-quien"><span class="pp-eyebrow">TU ESPACIO SINERGIA</span><h1>' + escapeHtml(nombre || (correo ? correo.split('@')[0] : 'Tu perfil')) + '</h1><p>' + escapeHtml(correo) + '</p>' +
-      '<span class="pp-plan">' + (vip ? PP_IC.corona : '') + escapeHtml(pdPlanTexto(m)) + '</span></div></div>' +
+      '<span class="pp-plan">' + (vip ? PP_IC.corona : '') + escapeHtml(pdPlanTexto(m)) + '</span>' + avBotonPerfil() + '</div></div>' +
       '<div class="pp-stats" role="group" aria-label="Tu actividad">' +
       '<button type="button" data-ir="achievements"><strong>' + credNum(m.xpTotal) + '</strong><span>PUNTOS</span></button>' +
       '<button type="button" data-ir="courses"><strong>' + credNum(clases) + '</strong><span>CLASES</span></button>' +
@@ -14933,6 +15005,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         if (a === 'nombre') window.openEditarNombreModal();
         else if (a === 'ubicacion') window.abrirModalEditarUbicacion();
         else if (a === 'wa') window.ppEditarWa();
+        else if (a === 'avatar') window.sinAvatar.elegir();
         else if (a === 'clave') window.pdCambiarClave();
         else if (a === 'tema') window.toggleTheme();
         else if (a === 'instalar') window.sinergiaInstallApp();
@@ -14983,7 +15056,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var m = window.currentMember || {}, u = window.currentUser || {};
     var nombre = String(m.nombre || u.displayName || '').trim(), correo = u.email || m.email || '';
     var fotoPd = miFotoUrl(), avPd = pdEl('pdAvatar');
-    if (avPd) { if (fotoPd) avPd.innerHTML = '<img src="' + escapeHtml(fotoPd) + '" alt="" referrerpolicy="no-referrer">'; else avPd.textContent = getInitials(nombre, correo); }
+    if (avPd) { if (fotoPd) avPd.innerHTML = '<img src="' + escapeHtml(fotoPd) + '" alt="" referrerpolicy="no-referrer">'; else if (avMio()) avPd.innerHTML = avSvg(avMio()); else avPd.textContent = getInitials(nombre, correo); }
+    var avLink = pdEl('pdAvLink'); if (avLink) avLink.textContent = avEtiqueta();
     pdTexto('pdNombre', nombre || (correo ? correo.split('@')[0] : '') || 'Tu perfil');
     pdTexto('pdCorreo', correo);
     var plan = pdEl('pdPlan');
@@ -18193,6 +18267,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     const initials = getInitials(name, email);
 
     document.getElementById('sidebarAvatar').textContent = initials;
+    try { avPintarBarra(); } catch (e) {}
     document.getElementById('topbarName').textContent = firstName.charAt(0).toUpperCase() + firstName.slice(1);
     document.getElementById('welcomeName').textContent = firstName;
     document.getElementById('certMockupName').textContent = name || 'Tu nombre aparecerá aquí';
@@ -25295,7 +25370,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       <button class="perfil-drawer__close" type="button" onclick="cerrarPerfilDrawer()" aria-label="Cerrar panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
       <div class="perfil-drawer__identity">
         <span class="perfil-drawer__avatar" id="pdAvatar" aria-hidden="true">?</span>
-        <span class="perfil-drawer__person"><strong id="pdNombre">Tu perfil</strong><small id="pdCorreo"></small><span class="perfil-drawer__plan" id="pdPlan"></span></span>
+        <span class="perfil-drawer__person"><strong id="pdNombre">Tu perfil</strong><small id="pdCorreo"></small><span class="perfil-drawer__plan" id="pdPlan"></span><button type="button" class="pd-avlink" id="pdAvLink" onclick="sinAvatar.elegir()">Elegir avatar</button></span>
       </div>
     </header>
     <div class="perfil-drawer__content">
@@ -25332,7 +25407,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     <form class="dir-form dm-cuerpo" id="dirForm" onsubmit="guardarTarjetaDirectorio(event)" novalidate>
       <div class="dir-ancho dm-prev"><div class="dm-prev-portada dc-p-menta" id="dirPortadaPrev"></div><div class="dm-avatar" id="dirAvatarPrev" aria-hidden="true">?</div></div>
       <div class="dir-ancho"><span class="dir-et">Foto de tu tarjeta <b class="dm-solo">SOLO VIP</b></span></div>
-      <div class="dir-ancho dm-fotoacc dm-fotoacc--foto"><button type="button" class="dm-btn" id="dirFotoBtn" onclick="dirElegirFoto()">Subir foto</button><button type="button" class="dm-btn dm-btn--q" id="dirFotoQuitar" onclick="dirQuitarFoto()" hidden>Quitar foto</button><input type="file" id="dirFotoIn" accept="image/jpeg,image/png,image/webp" hidden onchange="dirFotoCambio(this)"></div>
+      <div class="dir-ancho dm-fotoacc dm-fotoacc--foto"><button type="button" class="dm-btn" id="dirFotoBtn" onclick="dirElegirFoto()">Subir foto</button><button type="button" class="dm-btn dm-btn--q" id="dirFotoQuitar" onclick="dirQuitarFoto()" hidden>Quitar foto</button><button type="button" class="dm-btn" id="dirAvatarBtn" onclick="sinAvatar.elegir()">Elegir avatar</button><input type="file" id="dirFotoIn" accept="image/jpeg,image/png,image/webp" hidden onchange="dirFotoCambio(this)"></div>
       <div class="dir-ancho">
         <span class="dir-et">Portada de tu tarjeta <b class="dm-solo">SOLO VIP</b></span>
         <div class="dm-sws" id="dirPortadas"></div>
