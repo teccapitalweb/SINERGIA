@@ -11700,7 +11700,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           <h2 class="panel-title cur-title">Tu camino en <em class="headline-accent">SINERGIA</em></h2>
           <div class="log-nivel" id="lvlTagText">NIVEL 1 · SEMILLA</div>
           <div class="log-xp"><b id="lvlXpCurrent">0</b><span>XP</span></div>
-          <div class="log-xp-sub" id="lvlXpRemaining">150 XP para el siguiente nivel</div>
+          <div class="log-xp-sub" id="lvlXpRemaining">300 XP para el siguiente nivel</div>
           <div class="log-barra" role="progressbar" aria-label="Avance al siguiente nivel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="log-barra-fill xp-fill" id="lvlXpFill" style="width:0%;"></div></div>
           <div class="cur-stats log-stats">
             <div><b id="statRachaDias">0</b><span>días de racha</span></div>
@@ -21664,11 +21664,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   // Niveles (5 rangos) - de semilla a maestro del campo
   // Rangos: umbrales ajustados al total real de XP de los logros que se pueden ganar (2,480).
   const NIVELES = [
-    { nombre: 'Semilla',           icono: 'sprout',   xpMin: 0,    xpMax: 150,   orden: 1 },
-    { nombre: 'Brote',             icono: 'leaf',     xpMin: 150,  xpMax: 450,   orden: 2 },
-    { nombre: 'Planta',            icono: 'wheat',    xpMin: 450,  xpMax: 900,   orden: 3 },
-    { nombre: 'Cosecha',           icono: 'flower-2', xpMin: 900,  xpMax: 1500,  orden: 4 },
-    { nombre: 'Maestro del Campo', icono: 'trophy',   xpMin: 1500, xpMax: Infinity, orden: 5 }
+    { nombre: 'Semilla',           icono: 'sprout',   xpMin: 0,    xpMax: 300,   orden: 1 },
+    { nombre: 'Brote',             icono: 'leaf',     xpMin: 300,  xpMax: 900,   orden: 2 },
+    { nombre: 'Planta',            icono: 'wheat',    xpMin: 900,  xpMax: 1800,  orden: 3 },
+    { nombre: 'Cosecha',           icono: 'flower-2', xpMin: 1800, xpMax: 3000,  orden: 4 },
+    { nombre: 'Maestro del Campo', icono: 'trophy',   xpMin: 3000, xpMax: Infinity, orden: 5 }
   ];
 
   // Catálogo de 22 logros: todos se pueden ganar hoy. Los que se quitaron (con la razón) están en la nota de memoria
