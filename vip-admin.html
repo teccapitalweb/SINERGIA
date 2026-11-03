@@ -1404,6 +1404,8 @@
   .mt-barra-h { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 13.5px; padding: 6px 0; }
   .mt-barra-h b { font-weight: 700; }
   .mt-barra-h .cr-barra { grid-column: 1 / -1; margin: 0; height: 12px; }
+  .ct-fila-ver { cursor: pointer; }
+  .ct-fila-ver:hover td { background: var(--stone-50); }
   /* Salud del servidor */
   .sl-resumen { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 4px 0 8px; font-size: 13.5px; color: var(--stone-600); }
   .sl-fila { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 2px; border-top: 1px solid var(--stone-100, #EEF1EF); }
@@ -10423,6 +10425,14 @@ let _bibLibrosCargados = false;
   const CT = { lista: null, filtro: 'todos', curso: '', busca: '', orden: 'recientes', cargando: false, error: '', recortado: false, revocando: null, pend: null, pendError: '', exSel: null };
   const ctFechaTxt = (iso) => { if (!iso) return ''; const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }); };
   const ctUrlVerificar = (folio) => new URL('validar-certificado.html?folio=' + encodeURIComponent(folio), location.href).href;
+  // El certificado completo (el mismo que ve la persona y que se imprime). Si fue revocado, la página dice que ya no es válido.
+  const ctUrlVer = (folio) => new URL('ver-certificado.html?folio=' + encodeURIComponent(folio), location.href).href;
+  // Tocar la fila abre el certificado; los botones de la fila siguen haciendo lo suyo
+  document.addEventListener('click', (e) => {
+    const fila = e.target.closest && e.target.closest('tr[data-ct-ver]');
+    if (!fila || e.target.closest('a, button')) return;
+    window.open(fila.getAttribute('data-ct-ver'), '_blank', 'noopener');
+  });
   const CT_ORIGEN = { automatico: 'Automático', excepcion: 'Excepción', anterior: 'Anterior' };
 
   async function ctCargar() {
@@ -10513,13 +10523,14 @@ let _bibLibrosCargados = false;
           (c.reactivadoEn ? '<div class="m-sub">Reactivado ' + esc(ctFechaTxt(c.reactivadoEn)) + (c.reactivadoPor ? ' · ' + esc(c.reactivadoPor) : '') + '</div>' : '');
         if (exc) detalle += '<div class="m-sub ct-motivo"><b>Excepción:</b> ' + esc(c.motivoExcepcion || '—') + '</div><div class="m-sub">' + esc(faltaba) + (c.emitidoPor ? ' · por ' + esc(c.emitidoPor) : '') + '</div>';
         const f = esc(c.folio);
-        return '<tr>' +
+        return '<tr class="ct-fila-ver" data-ct-ver="' + esc(ctUrlVer(c.folio)) + '" title="Tocar para ver el certificado">' +
           '<td data-label="Folio"><span class="ct-folio">' + f + '</span></td>' +
           '<td data-label="Persona"><div class="m-info"><div class="m-name">' + esc(c.userName || '(sin nombre)') + '</div><div class="m-email">' + esc(c.userEmail || '—') + '</div></div></td>' +
           '<td data-label="Curso">' + esc(c.courseName || '—') + '<div class="m-sub">' + esc([c.hours ? c.hours + ' h' : '', c.courseArea].filter(Boolean).join(' · ')) + '</div></td>' +
           '<td data-label="Emitido" class="ct-fecha">' + esc(ctFechaTxt(c.creadoEn) || c.issueDate || '—') + '<div class="m-sub">' + esc(CT_ORIGEN[c.origen] || 'Anterior') + '</div></td>' +
           '<td data-label="Estado"><span class="sb-v ' + (rev ? 'mal' : 'ok') + '">' + (rev ? 'Revocado' : 'Vigente') + '</span>' + (exc ? ' <span class="ct-tag">Excepción</span>' : '') + detalle + '</td>' +
           '<td data-label="Acciones"><div class="ct-acc">' +
+            '<a class="btn-primary" href="' + esc(ctUrlVer(c.folio)) + '" target="_blank" rel="noopener">Ver certificado</a>' +
             '<a class="btn-secondary" href="' + esc(ctUrlVerificar(c.folio)) + '" target="_blank" rel="noopener">Verificar</a>' +
             '<button type="button" class="btn-secondary" onclick="ctCopiar(\'' + f + '\')">Copiar enlace</button>' +
             (rev ? '<button type="button" class="btn-secondary" onclick="ctReactivar(\'' + f + '\')">Reactivar</button>' : '<button type="button" class="btn-secondary fo-del" onclick="ctAbrirRevocar(\'' + f + '\')">Revocar</button>') +
