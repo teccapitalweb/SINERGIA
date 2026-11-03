@@ -13609,6 +13609,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         .map(function (id) { return LOGROS.find(function (x) { return x.id === id; }); }).filter(Boolean);
       if (nuevosLogros.length) mostrarLogrosNuevos(nuevosLogros);
     } catch (e) {}
+    try { if (d.nivelesPagados && d.nivelesPagados.length && typeof window.avisoNivelCreditos === 'function') window.avisoNivelCreditos(d.nivelesPagados); } catch (e) {}
     try { actualizarStatsReales(); } catch (e) {}
     try { renderCourses(currentFilter); } catch (e) {}
     try { renderHeroContinua(); } catch (e) {}
@@ -13701,6 +13702,21 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       return window.__creditos;
     } catch (err) { console.warn('[créditos]', err.message); return null; }
   }
+  // Créditos por subir de nivel: el servidor los paga una sola vez por nivel y avisa en la misma respuesta
+  var NIVEL_NOMBRE = { brote: 'Brote', planta: 'Planta', cosecha: 'Cosecha', maestro: 'Maestro del Campo' };
+  var nivelAvisoEnCurso = false;
+  window.avisoNivelCreditos = async function (lista) {
+    var suma = (lista || []).reduce(function (t, n) { return t + (Number(n.creditos) || 0); }, 0);
+    if (!(suma > 0) || nivelAvisoEnCurso) return;
+    nivelAvisoEnCurso = true;
+    var nombre = NIVEL_NOMBRE[lista[lista.length - 1].nivel] || 'un nivel nuevo';
+    try {
+      await bvEsperarLibre();
+      await window.cofrePremio({ etiqueta: 'Nuevo nivel', titulo: '¡Llegaste a ' + nombre + '!', creditos: suma, texto: 'Es tu regalo por subir de nivel. Canjéalo por herramientas, materiales y libros.' });
+    } catch (e) {}
+    nivelAvisoEnCurso = false;
+    try { cargarCreditos(); } catch (e) {}
+  };
   // Créditos por invitaciones: llegan cuando el amigo actúa, así que se anuncian la próxima vez que se abre el panel
   var PREMIO_INV = {
     'referido-perfil': 'Un amigo que invitaste completó su perfil.',
@@ -13769,7 +13785,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     'invitado-perfil': 'Completaste tu perfil con invitación', 'invitado-miembro': 'Te hiciste miembro con invitación',
     'canje': 'Canje', 'admin-regalo': 'Regalo del equipo', 'cupon': 'Código canjeado',
     'tarjeta-directorio': 'Creaste tu tarjeta del Directorio', 'clase-gratis': 'Viste una clase gratis',
-    'racha-7': '7 días seguidos en el panel', 'reto-diario': 'Reto del día', 'curso-completo': 'Terminaste un curso'
+    'racha-7': '7 días seguidos en el panel', 'reto-diario': 'Reto del día', 'curso-completo': 'Terminaste un curso',
+    'nivel-brote': 'Subiste a Brote', 'nivel-planta': 'Subiste a Planta', 'nivel-cosecha': 'Subiste a Cosecha', 'nivel-maestro': 'Llegaste a Maestro del Campo'
   };
   function renderCreditos() {
     var panel = document.querySelector('[data-panel="subscription"]');

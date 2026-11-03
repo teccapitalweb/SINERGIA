@@ -9547,6 +9547,10 @@ let _bibLibrosCargados = false;
     invitadoPerfil: ['Invitado: completa su perfil', ''],
     invitadoMiembro: ['Invitado: se hace miembro', ''],
     xpAmigoUnido: ['Puntos (XP) para quien invita cuando su amigo se registra con su enlace', 'Puntos de avance, no créditos. Una sola vez por amigo'],
+    nivelBrote: ['Al llegar a Brote (300 XP)', 'Regalo de créditos, una sola vez'],
+    nivelPlanta: ['Al llegar a Planta (900 XP)', 'Regalo de créditos, una sola vez'],
+    nivelCosecha: ['Al llegar a Cosecha (1,800 XP)', 'Regalo de créditos, una sola vez'],
+    nivelMaestro: ['Al llegar a Maestro del Campo (3,000 XP)', 'Regalo de créditos, una sola vez'],
     costoHerramienta: ['Costo de una herramienta de campo', 'Créditos para canjearla'],
     costoMaterial: ['Costo del material de un curso', 'Créditos para canjearlo'],
     costoLibro: ['Costo de un libro de la biblioteca', 'Créditos para canjearlo']
@@ -9558,6 +9562,7 @@ let _bibLibrosCargados = false;
       ['Podio semanal', ['puntosPorClase', 'puntosPorActividad']]] },
     { clave: 'creditos', titulo: 'Créditos', bloques: [
       ['Regalos por acciones', ['bienvenida', 'tarjetaDirectorio', 'claseGratis', 'racha7', 'cursoCompleto']],
+      ['Al subir de nivel', ['nivelBrote', 'nivelPlanta', 'nivelCosecha', 'nivelMaestro']],
       ['Invitaciones', ['invitadorPerfil', 'invitadorMiembro', 'invitadoPerfil', 'invitadoMiembro', 'xpAmigoUnido']],
       ['Costos de canje', ['costoHerramienta', 'costoMaterial', 'costoLibro']]] }
   ];
