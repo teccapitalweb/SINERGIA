@@ -1887,6 +1887,34 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 .m2-col-lista { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
 .m2-col-lista li { padding: 10px 12px; border: 2px solid var(--h-accent); border-radius: 12px; background: var(--h-ok-bg); font: 700 14.5px/1.4 var(--font-body, 'Inter', sans-serif); }
 .m2-col-vacia { margin-top: 10px; font-size: 14px; color: var(--h-subtle); }
+.m2-fig { overflow: visible; border: 0; background: none; box-shadow: none; display: grid; gap: 8px; }
+.m2-fig-t { font: 800 16px var(--font-display, 'Plus Jakarta Sans', sans-serif); letter-spacing: -.01em; color: var(--h-text); }
+.m2-fig-img { overflow: hidden; border-radius: 18px; border: 1.5px solid var(--h-border); box-shadow: var(--h-shadow); background: #0F3B33; line-height: 0; }
+.m2-fig-img img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+.m2-fig figcaption { display: none; }
+.m2-lista { margin: 4px 0 12px; padding: 16px 18px; border: 1.5px solid var(--h-accent); border-radius: 18px; background: var(--h-ok-bg); }
+.m2-lista h3 { font: 800 15px var(--font-display, 'Plus Jakarta Sans', sans-serif); margin-bottom: 8px; }
+.m2-lista ol { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; counter-reset: li; }
+.m2-lista li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; background: var(--h-card); counter-increment: li; }
+.m2-lista li::before { content: counter(li); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--h-soft); font: 800 13px var(--font-display, 'Plus Jakarta Sans', sans-serif); color: var(--h-subtle); }
+.m2-lista li.es-rev::before { background: var(--h-accent); color: #fff; }
+.m2-li-t { font: 600 14.5px/1.45 var(--font-body, 'Inter', sans-serif); }
+.m2-li-ok { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--h-accent); color: #fff; }
+.m2-li-ok svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+#historia .m2-rev { min-height: 40px; padding: 0 14px; border: 1.5px solid var(--h-border); border-radius: 12px; background: var(--h-bg); font: 700 13.5px var(--font-display, 'Plus Jakarta Sans', sans-serif); }
+#historia .m2-rev:hover { border-color: var(--h-accent); background: var(--h-soft); }
+#historia .m2-lista li.es-rev .m2-rev { border-color: var(--h-accent); background: var(--h-accent); color: #fff; }
+.m2-lista.es-fija { padding: 12px 16px; }
+.m2-lista.es-fija .m2-li-t { font-size: 13.5px; }
+.m2-asig { display: grid; gap: 10px; padding: 14px 16px; border: 2px solid var(--h-border); border-radius: 16px; background: var(--h-bg); }
+.m2-asig.es-ok { border-color: var(--h-accent); background: var(--h-ok-bg); }
+.m2-asig-t { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 12px; font: 700 15px/1.4 var(--font-body, 'Inter', sans-serif); }
+.m2-asig-op { display: flex; flex-wrap: wrap; gap: 8px; }
+#historia .m2-asig-b { min-height: 42px; padding: 0 18px; border: 1.5px solid var(--h-border); border-radius: 100px; background: var(--h-card); font: 800 13.5px var(--font-display, 'Plus Jakarta Sans', sans-serif); }
+#historia .m2-asig-b:hover:not(:disabled) { border-color: var(--h-accent); background: var(--h-soft); }
+#historia .m2-asig-b.es-ok { border-color: var(--h-accent); background: var(--h-accent); color: #fff; }
+#historia .m2-asig-b.es-no { border-color: #D6A21F; background: var(--h-no-bg); opacity: 1; }
+#historia .m2-asig-b:disabled { cursor: default; opacity: .55; }
 .m2-orden { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .m2-op { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border: 2px solid var(--h-border); border-radius: 16px; background: var(--h-card); cursor: grab; }
 .m2-op.es-ok { border-color: var(--h-accent); background: var(--h-ok-bg); cursor: default; }
@@ -2389,6 +2417,13 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 
 
 
+  // Guía de comparación (lista numerada). fija: ya revisada y sin botones
+  function listaHtml(l, fija) {
+    return '<section class="m2-lista' + (fija ? ' es-fija' : '') + '" aria-label="Guía para comparar"><h3>' + esc(l.titulo) + '</h3><ol>' + l.items.map(function (it, k) {
+      return '<li' + (fija ? ' class="es-rev"' : '') + ' data-li="' + k + '"><span class="m2-li-t"><b>' + esc(it[0]) + ':</b> ' + esc(it[1]) + '</span>' +
+        (fija ? '<span class="m2-li-ok" aria-hidden="true">' + IC.check + '</span>' : '<button type="button" class="m2-rev" aria-pressed="false">Revisado</button>') + '</li>';
+    }).join('') + '</ol>' + (fija ? '' : '<p class="hs-contexto-t m2-li-cont" aria-live="polite"></p>') + '</section>';
+  }
   function iconoTarjeta(t) { return '<span class="hs-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + t.ico + '</svg></span>'; }
   function diagramaHtml() { return ''; }
 
@@ -2469,36 +2504,37 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
             { id: 'k4', t: 'El sistema está causando un problema de riego.', col: 'confirmar', fMal: 'Esa frase propone una explicación. Para confirmarla harían falta más datos y observaciones.' }],
           cierre: [{ q: 'ines', t: 'Una buena bitácora empieza con hechos visibles. Las explicaciones vienen después.' }], botonFinal: 'Continuar al nivel 2.4 →' }] },
 
-    { id: '2.4', titulo: 'Dos árboles, dos contextos', objetivo: 'Comparar sin sacar conclusiones apresuradas.', duracion: '4 minutos', escena: 'doble', puntos: 5,
+    { id: '2.4', titulo: 'Dos árboles, dos contextos', subtitulo: 'Compara con una guía antes de interpretar.', objetivo: 'Comparar dos árboles saludables de la misma parcela y aprender qué revisar antes de concluir que una diferencia se debe al riego.', duracion: '4 minutos', escena: 'doble', puntos: 5,
+      siguienteTxt: 'Continuar al nivel 2.5 →',
       imagenes: [
-        { src: IMG + 'nivel-4-arbol-a.svg', w: 1200, h: 900, etq: 'Árbol A', alt: 'Árbol A: un árbol en terreno casi plano, con el suelo oscuro y húmedo a su alrededor y una línea de riego que pasa cerca del tronco.' },
-        { src: IMG + 'nivel-4-arbol-b.svg', w: 1200, h: 900, etq: 'Árbol B', alt: 'Árbol B: un árbol en una ladera inclinada, con el suelo claro y seco y una línea de riego que pasa lejos del tronco.' }],
-      aprendizaje: 'Comparar es registrar diferencias una por una, sin decidir todavía cuál está «bien» o «mal».',
+        { src: IMG + 'nivel-2-4-zona-a.jpg', w: 1000, h: 563, etq: 'Zona A', alt: 'Zona A: un naranjo joven y sano en una ladera suave. Una línea negra de riego pasa a cierta distancia del tronco; el suelo es café, con hojas secas, y hay pasto en la pendiente.' },
+        { src: IMG + 'nivel-2-4-zona-b.jpg', w: 1000, h: 563, etq: 'Zona B', alt: 'Zona B: un árbol sano con la línea de riego pasando junto a la base del tronco. El suelo se ve más oscuro en una parte baja, a la izquierda, y hay hojas secas alrededor.' }],
+      lista: { titulo: 'Para comparar, revisa cada imagen:', items: [
+        ['Suelo', '¿qué color y textura se observan?'],
+        ['Humedad', '¿hay zonas visualmente más oscuras?'],
+        ['Terreno', '¿se aprecia pendiente o una parte baja?'],
+        ['Línea de riego', '¿qué tan cerca pasa del árbol?']] },
+      aprendizaje: 'Cuando comparas con el mismo orden, las diferencias se vuelven más claras y las conclusiones más cuidadosas.',
+      tituloExito: 'Nivel superado · 80% o más', textoRefuerzo: 'Miremos otra vez las dos zonas. Repite el nivel con calma, siguiendo la guía en el mismo orden.',
       momentos: [
-        { tipo: 'dialogo', boton: 'Revisar con la lista', mensajes: [
-          { q: 'nico', t: 'Estos dos árboles son de la misma variedad y edad, pero están en zonas distintas de la parcela.' },
-          { q: 'ines', t: 'No vamos a preguntar cuál está mal. Revisaremos cada imagen con una lista y decidiremos qué diferencias conviene registrar.' }],
-          tarjeta: { titulo: 'Lista para revisar', items: ['1. Suelo', '2. Humedad visible', '3. Pendiente', '4. Cercanía a la línea de riego'] } },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: '1. Suelo: ¿qué diferencia conviene registrar?', opciones: [
-          { t: 'El suelo del árbol A se ve más oscuro; el del B, más claro.', ok: true, f: okF(0) },
-          { t: 'El suelo de A es mejor que el de B.', ok: false, f: noF(0, 'Eso es un juicio, no una observación.') },
-          { t: 'El suelo de B está dañado.', ok: false, f: noF(1) }] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: '2. Humedad visible: ¿qué diferencia conviene registrar?', opciones: [
-          { t: 'Alrededor del árbol A se ve una zona húmeda; alrededor del B, el suelo se ve seco.', ok: true, f: okF(1) },
-          { t: 'A recibe demasiada agua.', ok: false, f: noF(1) },
-          { t: 'B no está recibiendo riego.', ok: false, f: noF(2) }] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: '3. Pendiente: ¿qué diferencia conviene registrar?', opciones: [
-          { t: 'El árbol A está en terreno casi plano; el B, en una ladera inclinada.', ok: true, f: okF(0) },
-          { t: 'B está plantado donde no debía.', ok: false, f: noF(0) },
-          { t: 'La pendiente explica por sí sola por qué B se ve distinto.', ok: false, f: noF(1) }] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: '4. Cercanía a la línea de riego: ¿qué diferencia conviene registrar?', opciones: [
-          { t: 'La línea de riego pasa cerca del tronco de A y más lejos del de B.', ok: true, f: okF(0) },
-          { t: 'La línea de B está mal colocada.', ok: false, f: noF(2) },
-          { t: 'A tiene la línea correcta.', ok: false, f: noF(0) }] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: 'Ya tienes cuatro diferencias. ¿Qué conviene hacer con ellas?', opciones: [
-          { t: 'Registrarlas por separado y compararlas antes de sacar una conclusión.', ok: true, f: okF(2) },
-          { t: 'Elegir la que más llama la atención y explicar todo con ella.', ok: false, f: noF(1) },
-          { t: 'Decidir hoy mismo cuál árbol necesita más agua.', ok: false, f: noF(2) }] }] },
+        { tipo: 'dialogo', boton: 'Revisar las dos zonas', mensajes: [
+          { q: 'nico', t: 'Los dos árboles están bien, pero alrededor de cada uno el terreno se ve diferente.' },
+          { q: 'ines', t: 'No buscamos cuál está mal. Vamos a revisar cada escena con el mismo orden.' }] },
+        { tipo: 'revision', continuar: 'Relacionar las tarjetas' },
+        { tipo: 'asignar', q: 'ines', intro: 'Relaciona cada observación con la zona que corresponde: Zona A, Zona B o Ambas.',
+          opciones: [{ id: 'a', t: 'Zona A' }, { id: 'b', t: 'Zona B' }, { id: 'ambas', t: 'Ambas' }],
+          fbMal: 'Miremos otra vez las dos imágenes: busca el detalle que dice la tarjeta en cada zona.',
+          exito: 'Muy bien. Ya separaste lo que cambia entre las zonas de lo que tienen en común.', continuar: 'Elegir la lectura más responsable',
+          tarjetas: [
+            { t: 'La línea de riego pasa a una distancia moderada del tronco.', ok: 'a' },
+            { t: 'La línea de riego pasa más cerca de la base del árbol.', ok: 'b' },
+            { t: 'Se observa un árbol saludable y suelo con hojas secas alrededor.', ok: 'ambas' },
+            { t: 'Se aprecia una zona de suelo un poco más oscuro en una parte baja.', ok: 'b' }] },
+        { tipo: 'eleccionLibre', gradual: true, q: 'ines', letras: true, pregunta: '¿Cuál es la lectura más responsable?', opciones: [
+          { t: 'Los dos árboles necesitan un contexto distinto de observación antes de atribuir cualquier diferencia a una sola causa.', ok: true, f: 'Exacto. Comparar no sirve para adivinar: sirve para decidir qué datos y observaciones hacen falta.' },
+          { t: 'El árbol de la Zona B tiene un problema confirmado porque el suelo se ve más oscuro.', ok: false, f: 'Hay una diferencia visible, pero una sola imagen no confirma su causa ni permite hacer una recomendación.' },
+          { t: 'El árbol de la Zona A siempre recibirá menos agua porque la línea pasa más lejos.', ok: false, f: 'Hay una diferencia visible, pero una sola imagen no confirma su causa ni permite hacer una recomendación.' }],
+          cierre: [{ q: 'ines', t: 'Cuando comparas con el mismo orden, las diferencias se vuelven más claras y las conclusiones más cuidadosas.' }], botonFinal: 'Continuar al nivel 2.5 →' }] },
 
     { id: '2.5', titulo: 'La bitácora del riego', objetivo: 'Crear un registro de campo útil.', duracion: '4 a 5 minutos', escena: 'ninguna', puntos: 5,
       aprendizaje: 'Una bitácora útil separa lo que se vio de lo que todavía falta confirmar.',
@@ -2649,7 +2685,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     if (nv.escena === 'ninguna') return '';
     if (nv.escena === 'doble') {
       return '<div class="m2-doble" role="group" aria-label="Dos árboles para comparar">' + nv.imagenes.map(function (im) {
-        return '<figure class="m2-fig"><img src="' + esc(im.src) + '" width="' + im.w + '" height="' + im.h + '" alt="' + esc(im.alt) + '"><figcaption>' + esc(im.etq) + '</figcaption></figure>';
+        return '<figure class="m2-fig"><h3 class="m2-fig-t">' + esc(im.etq) + '</h3><div class="m2-fig-img"><img src="' + esc(im.src) + '" width="' + im.w + '" height="' + im.h + '" alt="' + esc(im.alt) + '"></div></figure>';
       }).join('') + '</div>';
     }
     var im = nv.imagen;
@@ -2682,6 +2718,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     pintarMomentos(nv); pintarBarra();
     // La escena del nivel acompaña todos los momentos (salvo los que traen la suya)
     $('nvEscena').innerHTML = m.sinEscena ? '' : escenaHtml(nv);
+    // La guía de comparación queda visible (ya revisada) en los momentos siguientes
+    if (nv.lista && m.tipo !== 'revision' && m.tipo !== 'dialogo') $('nvEscena').insertAdjacentHTML('beforeend', listaHtml(nv.lista, true));
     TIPOS[m.tipo](m, nv);
   }
   function seguir() {
@@ -2997,6 +3035,58 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         try { btns[0].b.focus({ preventScroll: true }); } catch (e) { /* sin foco */ }
       }
       pintar();
+    },
+    // Revisión guiada: el alumno marca «Revisado» en cada punto de la lista (no se califica; asegura que sabe qué observar). Se puede desmarcar y repasar.
+    revision: function (m, nv) {
+      dlg('ines', 'Antes de responder, recorre la lista con las dos imágenes a la vista. Marca cada punto cuando lo hayas revisado; no se califica.');
+      var cont = document.createElement('div'); cont.innerHTML = listaHtml(nv.lista, false); inter.appendChild(cont);
+      var sec = cont.firstChild, items = sec.querySelectorAll('li'), lbl = sec.querySelector('.m2-li-cont'), listo = false;
+      function contar() {
+        var n = sec.querySelectorAll('li.es-rev').length;
+        lbl.textContent = 'Puntos revisados: ' + n + ' de ' + items.length;
+        if (n === items.length && !listo) { listo = true; botonContinuar(m.continuar); }
+      }
+      Array.prototype.forEach.call(items, function (li) {
+        var b = li.querySelector('.m2-rev');
+        b.addEventListener('click', function () {
+          run.avance = true;
+          var on = !li.classList.contains('es-rev');
+          li.classList.toggle('es-rev', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.textContent = on ? 'Revisado ✓' : 'Revisado';
+          contar();
+        });
+      });
+      contar();
+    },
+    // Relacionar observaciones con una de varias etiquetas (p. ej. Zona A / Zona B / Ambas). Cada fallo de una tarjeta resta 20% de su punto; se puede reintentar.
+    asignar: function (m, nv) {
+      dlg(m.q, m.intro);
+      var hechas = 0, total = m.tarjetas.length;
+      var cont = document.createElement('div'); cont.className = 'm2-ficha'; cont.setAttribute('role', 'group'); cont.setAttribute('aria-label', 'Observaciones por relacionar');
+      var fb = document.createElement('div'); fb.className = 'hs-elec-fb'; fb.setAttribute('aria-live', 'polite');
+      m.tarjetas.forEach(function (c, k) {
+        var fila = document.createElement('div'); fila.className = 'm2-asig'; var fallos = 0;
+        fila.innerHTML = '<p class="m2-asig-t"><span class="m2-num" aria-hidden="true">' + (k + 1) + '</span><span>' + esc(c.t) + '</span></p><div class="m2-asig-op" role="group" aria-label="Relacionar con"></div>';
+        var ops = fila.querySelector('.m2-asig-op');
+        m.opciones.forEach(function (o) {
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'm2-asig-b'; b.textContent = o.t;
+          b.addEventListener('click', function () {
+            if (fila.classList.contains('es-ok')) return;
+            run.avance = true;
+            if (o.id === c.ok) {
+              fila.classList.add('es-ok'); b.classList.add('es-ok');
+              Array.prototype.forEach.call(ops.children, function (x) { x.disabled = true; });
+              puntajeDirecto(Math.max(0, 1 - MALA * fallos)); hechas++; fb.innerHTML = '';
+              if (hechas === total) { dlg(m.q, m.exito, 'acierto'); botonContinuar(m.continuar); }
+            } else {
+              fallos++; b.classList.add('es-no'); b.disabled = true;
+              fb.innerHTML = dlgHtml(m.q, m.fbMal, 'ayuda');
+            }
+          });
+          ops.appendChild(b);
+        });
+        cont.appendChild(fila);
+      });
+      inter.appendChild(cont); inter.appendChild(fb);
     },
     // Buscar señales tocando la imagen: las zonas no se muestran de entrada; al hallar una se marca con un contorno suave y abre su tarjeta. Hay botón de pista y alternativa de teclado.
     buscar: function (m, nv) {
