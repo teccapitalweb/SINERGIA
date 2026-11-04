@@ -14,7 +14,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Newsreader:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="onboarding-tour.css?v=3">
 
 <style>
@@ -18125,16 +18125,20 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   }
 
   // Portada: siempre hay una generada (color según el título); si el libro trae imagen, va encima
-  function matPortada(it) {
+  // Los materiales de Sinergia (herramienta-NN.jpg) llevan su título encima de la imagen, como una cubierta de libro
+  function matConTitulo(it) { return /\/assets\/libros\/herramienta-\d+\.jpg/.test(String(it && it.portada || '')); }
+  function matPortada(it, opc) {
+    var conTit = !!(opc && opc.titulo && matConTitulo(it));
     var t = matTono(it.semilla || it.titulo);
     var img = (it.portada && matUrlSegura(it.portada))
       ? '<img class="mat-cover-img" src="' + matEsc(it.portada) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '';
-    return '<div class="mat-cover" style="--t1:' + t[0] + ';--t2:' + t[1] + '">' +
+    return '<div class="mat-cover' + (conTit ? ' mat-cover--tit' : '') + '" style="--t1:' + t[0] + ';--t2:' + t[1] + '">' +
       '<span class="mat-cover-ico">' + (MAT_ICONOS[it.tipo] || MAT_ICONOS.libro) + '</span>' +
       '<span class="mat-cover-tit">' + matEsc(it.coverTit || it.titulo) + '</span>' +
       '<span class="mat-cover-aut">' + matEsc(it.coverAut || it.autor || MAT_TIPOS[it.tipo] || '') + '</span>' +
       img +
-      (it.locked ? '<span class="mat-cover-lock"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></span>' : '') +
+      (conTit ? '<span class="mat-cover-velo"><span class="mat-cover-titulo">' + matEsc(it.titulo) + '</span></span>' : '') +
+      (it.locked && !conTit ? '<span class="mat-cover-lock"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></span>' : '') +
       '</div>';
   }
 
@@ -18289,11 +18293,15 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return Math.max(2, Math.min(7, Math.floor((w + 20) / 170)));
   }
   function matLomo(it, i, f) {
-    return '<article class="mat-lomo' + (it.locked ? ' is-locked' : '') + (it.id === matDestActual ? ' is-sel' : '') + '" tabindex="0" role="button"' + ' data-i="' + i + '"' + (f == null ? '' : ' data-f="' + f + '"') + ' aria-label="' + matEsc(it.titulo) + '">' + matPortada(it) + '</article>';
+    return '<article class="mat-lomo' + (it.locked ? ' is-locked' : '') + (it.id === matDestActual ? ' is-sel' : '') + '" tabindex="0" role="button"' + ' data-i="' + i + '"' + (f == null ? '' : ' data-f="' + f + '"') + ' aria-label="' + matEsc(it.titulo) + '">' + matPortada(it, { titulo: true }) + '</article>';
   }
+  var MAT_CANDADO = '<svg class="mat-est-lock" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg>';
   function matDato(it, i, f) {
-    return '<div class="mat-dato" data-i="' + i + '"' + (f == null ? '' : ' data-f="' + f + '"') + '><div class="mat-libro-tit">' + matEsc(it.titulo) + '</div>' +
-      '<div class="mat-libro-aut">' + matEsc(it.autor || MAT_TIPOS[it.tipo] || '') + '</div>' +
+    var atributos = ' data-i="' + i + '"' + (f == null ? '' : ' data-f="' + f + '"');
+    var autor = '<div class="mat-libro-aut">' + matEsc(it.autor || MAT_TIPOS[it.tipo] || '') + '</div>';
+    // Con el título encima de la portada no se repite abajo: solo el autor y el estado
+    if (matConTitulo(it)) return '<div class="mat-dato mat-dato--solo"' + atributos + '>' + autor + '<div class="mat-libro-est' + (it.locked ? ' is-bloq' : '') + '">' + (it.locked ? MAT_CANDADO : '') + matEsc(it.estado) + '</div></div>';
+    return '<div class="mat-dato"' + atributos + '><div class="mat-libro-tit">' + matEsc(it.titulo) + '</div>' + autor +
       '<div class="mat-libro-est' + (it.locked ? ' is-bloq' : '') + '">' + matEsc(it.estado) + '</div></div>';
   }
   function matDl(pares) {
@@ -26909,6 +26917,19 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .mat-cover-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; background: #1c2a26; }
   .mat-cover-lock { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: rgba(8, 22, 18, 0.5); }
   .mat-cover-lock svg { width: 2.1em; height: 2.1em; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  /* Portada con el título encima: la foto y el dibujo mandan, el título va sobre un degradado verde bosque en la parte baja */
+  .mat-cover--tit { padding: 0; }
+  .mat-cover--tit .mat-cover-ico, .mat-cover--tit .mat-cover-tit, .mat-cover--tit .mat-cover-aut { display: none; }
+  .mat-cover-velo { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; align-items: flex-end; min-height: 36%; padding: 0 5% 8% 10%; pointer-events: none;
+    background: linear-gradient(to top, rgba(10, 38, 31, 0.9) 0%, rgba(10, 38, 31, 0.66) 48%, rgba(10, 38, 31, 0) 100%); }
+  .mat-cover-titulo { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: break-word; text-wrap: balance;
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif; font-weight: 500; font-size: clamp(14px, 1.1em, 18px); line-height: 1.16; letter-spacing: -0.005em; color: #FAF6EC; text-shadow: 0 1px 6px rgba(6, 24, 19, 0.4); }
+  .mat-dato--solo .mat-libro-aut { margin-top: 0; }
+  .mat-est-lock { width: 11px; height: 11px; margin: -2px 5px 0 0; vertical-align: middle; fill: none; stroke: currentColor; }
+  @media (max-width: 640px) {
+    .mat-cover-velo { min-height: 42%; background: linear-gradient(to top, rgba(10, 38, 31, 0.96) 0%, rgba(10, 38, 31, 0.78) 52%, rgba(10, 38, 31, 0) 100%); }
+    .mat-cover-titulo { font-size: 14px; }
+  }
 
   /* Primera pantalla: colecciones con portadas apiladas */
   .mat-bloque { margin-bottom: 36px; }
