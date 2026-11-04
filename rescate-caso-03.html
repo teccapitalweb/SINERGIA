@@ -1091,6 +1091,9 @@ img, video, iframe, canvas { max-width: 100%; }
 body.mobile-drawer-open .vip-cta-floating { display: none !important; }
 .is-bloqueada .nav-item-text::after{content:'';display:inline-block;width:13px;height:13px;margin-left:8px;vertical-align:-2px;background:currentColor;opacity:.55;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='11' x='3' y='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='11' x='3' y='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E") center/contain no-repeat}
 .sidebar-user.is-active { border-color: #1AA888 !important; background: rgba(255, 255, 255, .14) !important; }
+.sidebar-user-avatar, .topbar-avatar { position: relative; }
+.topbar-avatar .av-cap svg, .sidebar-user-avatar .av-cap svg { width: 100% !important; height: 100% !important; }
+.topbar-avatar:has(.av-cap) #topbarAvatarText { visibility: hidden; }
 .sidebar-logo img, .mobile-drawer-logo img { background: transparent !important; padding: 0 !important; box-shadow: none !important; object-fit: contain !important; }
 .sidebar .sidebar-logo img { width: 54px !important; height: 54px !important; }
 .mobile-drawer .mobile-drawer-logo img { width: 48px !important; height: 48px !important; }
@@ -1920,7 +1923,7 @@ html[data-theme="dark"] .dt-libreta h2 { color: var(--d-gold); }
   var CLAVE = 'sinergia_rescate_v1';   // mismo almacén que los otros casos de Rescate, cada caso es un registro aparte; no se mezcla con el Modo Historia ni con Detective Agrícola
   var ID = 'rescate-03';
   var XP = 25;
-  var CASOS_RESCATE = ['rescate-01', 'rescate-02', 'rescate-03'];
+  var CASOS_RESCATE = ['rescate-01', 'rescate-02', 'rescate-03', 'rescate-04'];   // con el caso 04 la colección tiene cuatro: el logro pide todos
 
   var MOMENTOS = ['Separa los tiempos', 'Elige el primer movimiento', 'Cierre responsable'];
 
@@ -1999,7 +2002,7 @@ html[data-theme="dark"] .dt-libreta h2 { color: var(--d-gold); }
       localStorage.setItem(CLAVE, JSON.stringify(o));
     } catch (e) { /* almacenamiento no disponible */ }
   }
-  // Logro "Decidir con calma": los tres casos de Rescate resueltos (en este dispositivo o ya confirmados por el servidor)
+  // Logro "Decidir con calma": todos los casos de Rescate resueltos (en este dispositivo o ya confirmados por el servidor)
   function marcarLogro(desdeServidor) {
     try {
       var o = leerTodo(), todos = CASOS_RESCATE.every(function (id) { return o.casos[id] && o.casos[id].resuelto === true; });
@@ -2226,7 +2229,7 @@ html[data-theme="dark"] .dt-libreta h2 { color: var(--d-gold); }
   function pintarCierre(res) {
     ultimoCierre = res || ultimoCierre;
     var t = textoXp(ultimoCierre);
-    var logro = tieneLogro() ? '<div class="dr-logro"><span class="dr-logro-i" aria-hidden="true">' + IC.brujula + '</span><span><b>' + (logroNuevo ? 'Logro desbloqueado · ' : 'Logro · ') + 'Decidir con calma</b><small>Completaste los 3 casos de Rescate del Cultivo. Lo ves en «Tu práctica de campo» y en tu bitácora.</small></span></div>' : '';
+    var logro = tieneLogro() ? '<div class="dr-logro"><span class="dr-logro-i" aria-hidden="true">' + IC.brujula + '</span><span><b>' + (logroNuevo ? 'Logro desbloqueado · ' : 'Logro · ') + 'Decidir con calma</b><small>Completaste todos los casos de Rescate del Cultivo. Lo ves en Logros, en «Tu práctica de campo» y en tu bitácora.</small></span></div>' : '';
     $('vistaCierre').innerHTML = '<div class="dt-cierre">' +
       '<div class="dr-insignia" aria-hidden="true">' + IC.brujula + '</div>' +
       '<span class="dr-etq-resuelto">Caso resuelto</span>' +
