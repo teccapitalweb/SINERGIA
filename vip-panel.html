@@ -14231,25 +14231,65 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     } catch (e) { /* sin avance guardado */ }
     return 0;
   }
+  // Mundos del Modo Historia. La pantalla principal de Retos solo muestra UNA tarjeta compacta («Modo Historia»); los mundos viven en #retos/modo-historia.
+  // Un mundo nuevo es una entrada más aquí (con pronto: true mientras no exista su página): la pantalla principal no cambia.
+  var RT_MUNDOS = [
+    { id: 'mundo-01', num: '01', titulo: 'La parcela despierta', desc: 'Antes de decidir, aprende a observar el suelo, el agua, las plantas y el recorrido de una parcela.',
+      img: 'assets/historia/hero-la-parcela-despierta.webp', url: 'historia-parcela.html', urlFin: 'historia-parcela.html#bitacora', textoFin: 'Ver mi mapa',
+      clave: 'sinergia_historia_parcela_v1', niveles: 6, insignia: 'Mirada de parcela' },
+    { id: 'mundo-02', num: '02', titulo: 'El agua tiene camino', desc: 'Observa el terreno, sigue el recorrido del agua y aprende a registrar antes de decidir.',
+      img: 'assets/historia/mundo-02/hero-el-agua-tiene-camino.jpg', url: 'historia-agua.html', urlFin: 'historia-agua.html', textoFin: 'Volver a recorrer',
+      clave: 'sinergia_mundo_02_v1', niveles: 6, insignia: 'Lectura del agua' }
+  ];
+  var RT_HISTORIA = { ruta: 'modo-historia', historia: true };
+  function rtMundoAvance(m) {
+    var n = 0, ins = false;
+    try {
+      var o = JSON.parse(localStorage.getItem(m.clave) || 'null');
+      if (o && o.v === 1 && Array.isArray(o.completados)) { n = Math.min(m.niveles, o.completados.length); ins = o.insignia === true && n >= m.niveles; }
+    } catch (e) { /* sin avance guardado */ }
+    return { n: n, ins: ins };
+  }
+  function rtMundoEstado(m, a) { return m.pronto ? 'Próximamente' : (a.n >= m.niveles ? 'Completado' : (a.n > 0 ? 'En curso' : 'Disponible')); }
+  // Progreso global y mundo actual: el primero que no está completo (o el último si ya están todos)
+  function rtHistoriaResumen() {
+    var vivos = RT_MUNDOS.filter(function (m) { return !m.pronto; }), total = 0, hechos = 0, actual = null;
+    vivos.forEach(function (m) { var a = rtMundoAvance(m); total += m.niveles; hechos += a.n; if (!actual && a.n < m.niveles) actual = m; });
+    if (!actual) actual = vivos[vivos.length - 1];
+    return { total: total, hechos: hechos, pct: total ? Math.round(hechos * 100 / total) : 0, actual: actual, av: actual ? rtMundoAvance(actual) : { n: 0 } };
+  }
   function rtHistoriaHtml() {
-    var n = rtHistoriaNiveles();
-    return rtHistoriaTarjeta1(n) + rtHistoriaTarjeta2(rtHistoriaNiveles2());
+    var r = rtHistoriaResumen(), m = r.actual;
+    return '<article class="rtk-card rtk-card--historia">' +
+      '<a class="rtk-portada" href="#retos/modo-historia" data-rt-col="modo-historia" tabindex="-1" aria-hidden="true"><img src="' + escapeHtml(m.img) + '" alt="" loading="lazy" decoding="async"><span class="rtk-etq">Modo Historia</span></a>' +
+      '<div class="rtk-cu"><h4>Aprende en recorridos de campo</h4>' +
+      '<p>Explora mundos narrativos con niveles secuenciales. Observa, compara y construye criterio paso a paso.</p>' +
+      '<div class="rtk-res"><p><b>' + r.hechos + ' de ' + r.total + '</b> niveles completados</p>' +
+      '<i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + r.pct + '" aria-label="Niveles completados del Modo Historia"><span style="width:' + r.pct + '%"></span></i></div>' +
+      '<p class="rtk-actual"><b>Mundo ' + m.num + ' · ' + escapeHtml(m.titulo) + '</b><small>' + r.av.n + ' de ' + m.niveles + ' niveles</small></p>' +
+      '<div class="rtk-pie"><a class="rtx-btn" href="#retos/modo-historia" data-rt-col="modo-historia">Explorar mundos →</a></div></div></article>';
   }
-  function rtHistoriaTarjeta2(n) {
-    return '<a class="rtx-historia rtx-historia--agua" href="historia-agua.html" aria-label="Modo Historia, Mundo 02: El agua tiene camino">' +
-      '<div class="rtx-historia-in"><span class="rtx-pill">Modo Historia · Mundo 02</span>' +
-      '<h3>El agua tiene camino</h3>' +
-      '<p>Observa el terreno, sigue el recorrido del agua y aprende a registrar antes de decidir.</p>' +
-      '<span class="rtx-historia-pie"><b>' + n + ' de 6 niveles</b>' +
-      '<span class="rtx-historia-go">' + (n === 0 ? 'Comenzar recorrido' : (n >= 6 ? 'Volver a recorrer' : 'Continuar recorrido')) + ' →</span></span></div></a>';
+  function rtMundoTarjeta(m) {
+    var a = rtMundoAvance(m), est = rtMundoEstado(m, a), pct = Math.round(a.n * 100 / m.niveles), fin = a.n >= m.niveles;
+    var clase = est === 'En curso' ? 'en-curso' : (est === 'Completado' ? 'completado' : (est === 'Próximamente' ? 'proximamente' : 'disponible'));
+    var accion = m.pronto ? '<span class="rtx-btn rtx-btn--sec rtm-pronto" aria-disabled="true">Próximamente</span>'
+      : '<a class="rtx-btn" href="' + (fin ? m.urlFin : m.url) + '">' + (fin ? m.textoFin : (a.n > 0 ? 'Continuar recorrido' : 'Comenzar recorrido')) + ' →</a>';
+    return '<article class="rtk-card rtm-card' + (fin ? ' es-lograda' : '') + '">' +
+      '<a class="rtk-portada"' + (m.pronto ? '' : ' href="' + m.url + '"') + ' tabindex="-1" aria-hidden="true"><img src="' + escapeHtml(m.img) + '" alt="" loading="lazy" decoding="async">' +
+      '<span class="rtk-etq">Modo Historia · Mundo ' + m.num + '</span><span class="rtm-estado rtm-estado--' + clase + '">' + est + '</span></a>' +
+      '<div class="rtk-cu"><h4>' + escapeHtml(m.titulo) + '</h4><p>' + escapeHtml(m.desc) + '</p>' +
+      '<div class="rtk-res"><p><b>' + a.n + ' de ' + m.niveles + '</b> niveles</p><i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '" aria-label="Niveles completados"><span style="width:' + pct + '%"></span></i></div>' +
+      '<span class="rtk-ins' + (a.ins ? ' es-lista' : '') + '"><span class="rtk-ins-ico" aria-hidden="true">' + rtIcono('<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>') + '</span><span><b>' + escapeHtml(m.insignia) + '</b><small>' + (a.ins ? 'Insignia lograda' : 'Insignia final') + '</small></span></span>' +
+      '<div class="rtk-pie">' + accion + '</div></div></article>';
   }
-  function rtHistoriaTarjeta1(n) {
-    return '<a class="rtx-historia" href="historia-parcela.html' + (n >= 6 ? '#bitacora' : '') + '" aria-label="Modo Historia, Mundo 01: La parcela despierta">' +
-      '<div class="rtx-historia-in"><span class="rtx-pill">Modo Historia · Mundo 01</span>' +
-      '<h3>La parcela despierta</h3>' +
-      '<p>Antes de decidir, aprende a observar el suelo, el agua, las plantas y el recorrido de una parcela.</p>' +
-      '<span class="rtx-historia-pie"><b>' + n + ' de 6 niveles</b>' +
-      '<span class="rtx-historia-go">' + (n === 0 ? 'Comenzar recorrido' : (n >= 6 ? 'Ver mi mapa' : 'Continuar recorrido')) + ' →</span></span></div></a>';
+  function rtHistoriaVistaHtml() {
+    var r = rtHistoriaResumen();
+    return '<section class="rt-bloque rtk-vista" aria-labelledby="rtkTit">' +
+      '<div><button type="button" class="rtx-btn rtx-btn--sec" data-rt-volver>← Volver a Retos</button></div>' +
+      '<header class="rtm-cab"><span class="cred-eyebrow">Modo Historia</span><h3 id="rtkTit" tabindex="-1">Aprende en recorridos de campo</h3>' +
+      '<p>Explora mundos narrativos con niveles secuenciales. Observa, compara y construye criterio paso a paso.</p>' +
+      '<div class="rtk-res rtm-global"><p><b>' + r.hechos + ' de ' + r.total + '</b> niveles completados</p><i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + r.pct + '" aria-label="Niveles completados del Modo Historia"><span style="width:' + r.pct + '%"></span></i></div></header>' +
+      '<div class="rtk-grid rtm-grid">' + RT_MUNDOS.map(rtMundoTarjeta).join('') + '</div></section>';
   }
   // ─── Retos de campo: catálogo, progreso por caso ('sinergia_detective_v1' en este dispositivo + /api/retos/casos del servidor) ───
   // Ningún reto se bloquea por no haber hecho otro: todos están disponibles desde el inicio (salvo los que aún no existen: "Próximamente").
@@ -14404,7 +14444,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return '<aside class="rt-bloque rtc-practica rtc-practica--lado" aria-labelledby="rtcPracTit"><h3 id="rtcPracTit">Tu práctica de campo</h3>' +
       '<dl class="rtc-datos">' +
       '<div><dt>Retos completados</dt><dd>' + hechos + ' / ' + casos.length + '</dd><i class="rtc-barra" aria-hidden="true"><span style="width:' + Math.round(hechos * 100 / casos.length) + '%"></span></i></div>' +
-      '<div><dt>Modo Historia</dt><dd>Mundo 01 · ' + hist.niveles + ' / 6 niveles</dd></div>' +
+      '<div><dt>Modo Historia</dt><dd>' + rtHistoriaResumen().hechos + ' / ' + rtHistoriaResumen().total + ' niveles</dd></div>' +
       '<div><dt>XP de esta semana</dt><dd>' + (xp === null ? '—' : '+' + credNum(xp) + ' XP') + '</dd></div></dl>' +
       '<h4 class="rtc-sub">Logros</h4>' +
       '<ul class="rtc-logros" aria-label="Logros de campo">' + RT_LOGROS.filter(function (l) { return l.panel; }).map(function (l) { return rtLogroLi(l, lg[l.id]); }).join('') + '</ul>' +
@@ -14419,7 +14459,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<p>Un resumen de tu práctica: lo que completaste, tu mejor resultado y lo que has logrado.</p></div>' +
       '<button type="button" class="rtx-btn rtx-btn--sec" data-rt-volver>← Volver a Retos</button></div>' +
       '<dl class="rtb-resumen"><div><dt>Retos completados</dt><dd>' + hechos + ' / ' + casos.length + '</dd></div>' +
-      '<div><dt>Modo Historia</dt><dd>Mundo 01 · ' + hist.niveles + ' / 6</dd></div>' +
+      '<div><dt>Modo Historia</dt><dd>' + rtHistoriaResumen().hechos + ' / ' + rtHistoriaResumen().total + ' niveles</dd></div>' +
       '<div><dt>XP de esta semana</dt><dd>' + (xp === null ? '—' : '+' + credNum(xp)) + '</dd></div></dl>';
     RT_CAMPO.forEach(function (b) {
       var lista = b.items.filter(function (i) { return i.tipo === 'caso'; });
@@ -14436,8 +14476,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     h += '<h4 class="rtb-sub">Logros conseguidos</h4>' + (logrados.length
       ? '<ul class="rtc-logros rtb-logros">' + logrados.map(function (l) { return rtLogroLi(l, lg[l.id]); }).join('') + '</ul>'
       : '<p class="rtb-vacio">Aún no tienes logros. Aparecerán aquí cuando los consigas.</p>');
-    h += '<h4 class="rtb-sub">Modo Historia</h4><div class="rtb-historia"><div><b>Mundo 01 · La parcela despierta</b><small>' + hist.niveles + ' de 6 niveles completados' + (hist.niveles >= 6 && hist.fecha ? ' · ' + escapeHtml(rtFechaCorta(hist.fecha)) : '') + '</small></div>' +
-      '<a class="rtx-btn rtx-btn--sec" href="historia-parcela.html' + (hist.niveles >= 6 ? '#bitacora' : '') + '">' + (hist.niveles >= 6 ? 'Ver mi mapa' : (hist.niveles ? 'Continuar recorrido' : 'Comenzar recorrido')) + '</a></div>';
+    h += '<h4 class="rtb-sub">Modo Historia</h4>' + RT_MUNDOS.filter(function (m) { return !m.pronto; }).map(function (m) {
+      var a = rtMundoAvance(m), fin = a.n >= m.niveles;
+      return '<div class="rtb-historia"><div><b>Mundo ' + m.num + ' · ' + escapeHtml(m.titulo) + '</b><small>' + a.n + ' de ' + m.niveles + ' niveles completados</small></div>' +
+        '<a class="rtx-btn rtx-btn--sec" href="' + (fin ? m.urlFin : m.url) + '">' + (fin ? m.textoFin : (a.n ? 'Continuar recorrido' : 'Comenzar recorrido')) + '</a></div>';
+    }).join('');
     return h + '</section>';
   }
 
@@ -14467,7 +14510,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   // ─── Colecciones de Retos de campo ───
   // La pantalla principal solo muestra una tarjeta por colección (RT_CAMPO); los casos viven dentro de cada una, en su propia vista
   // (#retos/<ruta>). Una colección nueva es un bloque más en RT_CAMPO con su ruta, portada, texto, botón e insignia: no crece la pantalla principal.
-  function rtColeccion(ruta) { return RT_CAMPO.filter(function (b) { return b.ruta === ruta; })[0] || null; }
+  function rtColeccion(ruta) { if (ruta === 'modo-historia') return RT_HISTORIA; return RT_CAMPO.filter(function (b) { return b.ruta === ruta; })[0] || null; }
   function rtColeccionDato(b, lg) {
     var casos = b.items.filter(function (i) { return i.tipo === 'caso' && !i.pronto; }).map(rtCasoDato);
     var hechos = casos.filter(function (x) { return x.resuelto; }).length, xp = 0;
@@ -14607,7 +14650,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (String(RT.vista || '').indexOf('col:') === 0 && !colecc) RT.vista = '';
     if (panelRetos) panelRetos.classList.toggle('rt-en-bitacora', RT.vista === 'bitacora' || !!colecc);
     if (RT.vista === 'bitacora') { cuerpo.innerHTML = rtBitacoraHtml(d); rtHeroPintar(); return; }
-    if (colecc) { cuerpo.innerHTML = rtColeccionVistaHtml(colecc); rtHeroPintar(); return; }
+    if (colecc) { cuerpo.innerHTML = colecc.historia ? rtHistoriaVistaHtml() : rtColeccionVistaHtml(colecc); rtHeroPintar(); return; }
     // Orden: Modo Historia arriba; luego tu práctica y los Retos de campo; después lo demás
     var html = '<div class="rtc-top"><div class="rtc-top-main">' + rtHistoriaHtml() + '</div>' + rtPracticaHtml(d) + '</div>' + rtColeccionesHtml(d);
 
@@ -27794,6 +27837,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .rtc-top { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: stretch; }
   .rtc-top-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
   .rtc-top-main > .rtx-historia { flex: 1; min-width: 0; }
+  .rtc-top-main > .rtk-card--historia { flex: 1; min-width: 0; }
   .rtc-practica--lado { align-content: start; gap: 12px; margin: 0; padding: 18px 18px 20px; }
   .rtc-practica--lado h3 { margin: 0; font-size: 17px; }
   .rtc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
@@ -28062,6 +28106,25 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     .rtx-historia { align-items: flex-start; padding-bottom: 150px; background-size: auto 170px; background-position: 80% bottom; }
     .rtx-historia::before { background: linear-gradient(180deg, rgba(8, 32, 27, 0.96) 0%, rgba(8, 32, 27, 0.9) 62%, rgba(8, 32, 27, 0.1) 100%); }
   }
+  /* Modo Historia en Retos: una sola tarjeta compacta; en escritorio con la portada a un lado, en móvil como las demás colecciones */
+  .rtk-actual { display: grid; gap: 2px; margin: 0; }
+  .rtk-actual b { font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--text-primary); }
+  .rtk-actual small { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); }
+  @media (min-width: 900px) {
+    .rtk-card--historia { flex-direction: row; }
+    .rtk-card--historia .rtk-portada { flex: 0 0 42%; aspect-ratio: auto; min-height: 100%; }
+    .rtk-card--historia .rtk-cu { justify-content: center; }
+    .rtk-card--historia .rtk-pie .rtx-btn { width: auto; }
+  }
+  .rtm-cab { display: grid; gap: 8px; max-width: 760px; }
+  .rtm-cab h3 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(22px, 3vw, 28px); letter-spacing: -0.02em; color: var(--text-primary); }
+  .rtm-cab p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--text-secondary); }
+  .rtm-global { max-width: 420px; }
+  .rtm-estado { position: absolute; top: 12px; right: 12px; padding: 5px 12px; border-radius: 100px; background: #fff; color: #113D35; font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .rtm-estado--en-curso { background: #E7C873; color: #3B2D07; }
+  .rtm-estado--completado { background: #1AA888; color: #fff; }
+  .rtm-estado--proximamente { background: rgba(8, 32, 27, 0.82); color: #fff; }
+  .rtm-pronto { opacity: .6; cursor: default; text-align: center; }
   .rtx-historia--agua { background-image: url(assets/historia/mundo-02/hero-el-agua-tiene-camino.jpg); background-position: 62% center; }
   .rtx-historia--detective { background-image: url(assets/detective/caso-01-el-rastro-que-no-cuadra.webp); }
   @media (prefers-reduced-motion: reduce) { .rtx-historia { transition: none; } }
