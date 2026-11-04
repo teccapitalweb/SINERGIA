@@ -1915,6 +1915,14 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 #historia .m2-asig-b.es-ok { border-color: var(--h-accent); background: var(--h-accent); color: #fff; }
 #historia .m2-asig-b.es-no { border-color: #D6A21F; background: var(--h-no-bg); opacity: 1; }
 #historia .m2-asig-b:disabled { cursor: default; opacity: .55; }
+.m2-lectura { padding: 18px 20px; border: 1.5px solid var(--h-accent); border-radius: 18px; background: linear-gradient(180deg, var(--h-card), var(--h-ok-bg)); }
+.m2-lect-et { display: inline-block; padding: 4px 12px; border-radius: 100px; background: var(--h-accent); color: #fff; font: 800 11px var(--font-display, 'Plus Jakarta Sans', sans-serif); letter-spacing: .1em; text-transform: uppercase; }
+.m2-lectura h4 { margin: 8px 0 10px; font: 800 18px var(--font-display, 'Plus Jakarta Sans', sans-serif); }
+.m2-lectura dl { display: grid; gap: 10px; margin: 0; }
+.m2-lectura dt { font: 800 11.5px var(--font-display, 'Plus Jakarta Sans', sans-serif); letter-spacing: .1em; text-transform: uppercase; color: var(--h-subtle); }
+.m2-lectura dd { margin: 2px 0 0; padding-bottom: 8px; border-bottom: 1px dashed var(--h-border); font: 600 15px/1.45 var(--font-body, 'Inter', sans-serif); }
+.m2-lectura dl > div:last-child dd { border-bottom: 0; padding-bottom: 0; }
+.m2-reiniciar-act { justify-self: start; min-height: 40px; font-size: 13.5px; }
 .m2-orden { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .m2-op { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border: 2px solid var(--h-border); border-radius: 16px; background: var(--h-card); cursor: grab; }
 .m2-op.es-ok { border-color: var(--h-accent); background: var(--h-ok-bg); cursor: default; }
@@ -2536,28 +2544,33 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           { t: 'El árbol de la Zona A siempre recibirá menos agua porque la línea pasa más lejos.', ok: false, f: 'Hay una diferencia visible, pero una sola imagen no confirma su causa ni permite hacer una recomendación.' }],
           cierre: [{ q: 'ines', t: 'Cuando comparas con el mismo orden, las diferencias se vuelven más claras y las conclusiones más cuidadosas.' }], botonFinal: 'Continuar al nivel 2.5 →' }] },
 
-    { id: '2.5', titulo: 'La bitácora del riego', objetivo: 'Crear un registro de campo útil.', duracion: '4 a 5 minutos', escena: 'ninguna', puntos: 5,
-      aprendizaje: 'Una bitácora útil separa lo que se vio de lo que todavía falta confirmar.',
+    { id: '2.5', titulo: 'La bitácora del riego', subtitulo: 'Un buen registro dice qué viste y qué falta confirmar.', objetivo: 'Convertir observaciones de campo en un registro útil, separando hechos visibles, datos pendientes y conclusiones no confirmadas.', duracion: '4 a 5 minutos', escena: 'panoramica', puntos: 5,
+      siguienteTxt: 'Continuar al nivel final →',
+      imagen: { src: IMG + 'nivel-2-5-la-bitacora-del-riego.jpg', w: 1400, h: 788, alt: 'Una libreta de cuadrícula abierta y en blanco sobre una mesa de madera, con un lápiz, tres hojas verdes, un frasco de vidrio con capas de suelo y un emisor de riego. Al fondo se ven la tierra de un huerto y una línea negra de riego junto al tronco de un árbol.' },
+      aprendizaje: 'Una bitácora clara conecta lo que observaste hoy con lo que podrás comparar después.',
+      tituloExito: 'Nivel superado · 80% o más', textoRefuerzo: 'Miremos otra vez la bitácora. Repite el nivel con calma: cada campo guarda un tipo distinto de información.',
       momentos: [
         { tipo: 'dialogo', boton: 'Abrir la bitácora', mensajes: [
-          { q: 'ines', t: 'Una bitácora sencilla hace que lo observado no se pierda. Completa los cuatro espacios con la tarjeta que corresponde.' },
-          { q: 'nico', t: 'Yo solía anotar todo de memoria… y luego no recordaba ni la hora.' }] },
-        { tipo: 'ficha', q: 'ines', titulo: 'Bitácora del riego', continuar: 'Revisar la bitácora',
-          intro: 'Toca una tarjeta y luego el espacio donde va, o arrástrala hasta él. Hay tarjetas que no encajan en ningún espacio.',
-          exito: 'Muy bien. Tu bitácora dice cuándo, dónde, qué se vio y qué falta confirmar.',
-          ranuras: [{ id: 'fecha', t: 'Fecha' }, { id: 'zona', t: 'Zona observada' }, { id: 'condicion', t: 'Condición visible' }, { id: 'falta', t: 'Dato que falta confirmar' }],
+          { q: 'nico', t: 'Ya observamos varias diferencias, pero si no las registramos bien, mañana será difícil compararlas.' },
+          { q: 'ines', t: 'La bitácora no necesita resolver todo. Solo debe conservar información clara y útil.' }] },
+        { tipo: 'ficha', sinEscena: true, lectura: true, reiniciable: true, q: 'ines', titulo: 'Bitácora del riego', continuar: 'Ir a la pregunta final',
+          intro: 'Completa la bitácora: toca una tarjeta y luego el campo donde va, o arrástrala hasta él. Hay tarjetas que no deben colocarse en ningún campo.',
+          exito: 'Muy bien. Tu bitácora separa el momento, el lugar, lo que se ve y lo que falta confirmar.',
+          ranuras: [{ id: 'fecha', t: 'Fecha y momento' }, { id: 'zona', t: 'Zona observada' }, { id: 'condicion', t: 'Condición visible' }, { id: 'falta', t: 'Dato pendiente por confirmar' }],
           tarjetas: [
-            { id: 'c1', t: 'El riego es la causa del problema.', slot: null, f: noF(1, 'Una conclusión absoluta no es un dato que se pueda anotar.') },
-            { id: 'c2', t: 'Suelo más oscuro y con agua acumulada.', slot: 'condicion' },
-            { id: 'c3', t: 'Hoy, 7:30 a. m., antes de abrir la llave.', slot: 'fecha' },
-            { id: 'c4', t: 'El suelo tiene una enfermedad.', slot: null, f: noF(2, 'Eso es un diagnóstico, y no tenemos evidencia para hacerlo.') },
-            { id: 'c5', t: 'Cuánta lluvia cayó anoche.', slot: 'falta' },
-            { id: 'c6', t: 'Parte baja, junto a la segunda línea de riego.', slot: 'zona' }],
-          fbMal: AYUDA[2] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: '¿Qué hace útil a esta bitácora?', opciones: [
-          { t: 'Separa lo que se vio de lo que falta confirmar.', ok: true, f: okF(2) },
-          { t: 'Explica la causa en una sola frase.', ok: false, f: noF(1) },
-          { t: 'Dice qué hay que hacer mañana.', ok: false, f: noF(2) }] }] },
+            { id: 'c1', t: 'El sistema tiene una falla segura.', slot: null, f: 'Esa frase no registra un hecho visible ni un dato pendiente. Una bitácora útil evita conclusiones apresuradas.' },
+            { id: 'c2', t: 'Suelo más oscuro y hojas acumuladas en una parte baja.', slot: 'condicion' },
+            { id: 'c3', t: 'Mañana posterior a un riego ligero.', slot: 'fecha' },
+            { id: 'c4', t: 'Regar más mañana.', slot: null, f: 'Esa frase no registra un hecho visible ni un dato pendiente. Una bitácora útil evita conclusiones apresuradas.' },
+            { id: 'c5', t: 'Confirmar cuánto tiempo estuvo abierto el riego y revisar si esta condición se repite.', slot: 'falta' },
+            { id: 'c6', t: 'El árbol está mal.', slot: null, f: 'Esa frase no registra un hecho visible ni un dato pendiente. Una bitácora útil evita conclusiones apresuradas.' },
+            { id: 'c7', t: 'Zona baja, junto a la línea que cruza la pendiente.', slot: 'zona' }],
+          fbMal: 'Miremos otra vez la bitácora: cada campo guarda un tipo distinto de información.' },
+        { tipo: 'eleccionLibre', gradual: true, sinEscena: true, q: 'ines', letras: true, pregunta: '¿Para qué sirve anotar lo que falta confirmar?', opciones: [
+          { t: 'Para saber qué información buscar antes de explicar una causa.', ok: true, f: 'Exacto. Registrar lo pendiente mantiene abierta la investigación y evita decidir con información incompleta.' },
+          { t: 'Para decidir de inmediato qué cambiar en la parcela.', ok: false, f: 'Anotar lo pendiente no decide por sí solo qué cambiar: primero hace falta confirmar más datos.' },
+          { t: 'Para reemplazar la observación directa.', ok: false, f: 'La bitácora complementa la observación directa; no la reemplaza.' }],
+          cierre: [{ q: 'ines', t: 'Una bitácora clara conecta lo que observaste hoy con lo que podrás comparar después.' }], botonFinal: 'Continuar al nivel final →' }] },
 
     { id: '2.6', titulo: 'El mapa del agua', objetivo: 'Integrar observación, comparación y registro.', duracion: '5 a 6 minutos', escena: 'panoramica', puntos: 5, final: true,
       imagen: { src: IMG + 'nivel-2-rutas.svg', w: 1600, h: 900, alt: 'Mapa de la parcela vista desde arriba: líneas de riego horizontales y dos recorridos del agua, uno azul y uno naranja, que bajan desde el mismo punto y terminan en lugares distintos.' },
@@ -3290,11 +3303,24 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     ficha: function (m, nv) {
       dlg(m.q, m.intro);
       var colocadas = {}, tomada = null, fallos = {}, listo = false, aciertos = 0;
-      var n = m.ranuras.length;
+      var n = m.ranuras.length, inicio = run.scores.length;   // inicio: para poder reiniciar solo esta actividad
       var cont = document.createElement('div'); cont.className = 'm2-ficha'; cont.setAttribute('role', 'group'); cont.setAttribute('aria-label', m.titulo);
-      cont.innerHTML = '<h3 class="m2-ficha-tit">' + esc(m.titulo) + '</h3><div class="m2-ranuras" id="m2Ranuras"></div><p class="m2-aviso" id="m2Aviso" aria-live="polite"></p><ul class="m2-cartas" id="m2Cartas" aria-label="Tarjetas disponibles"></ul><div class="hs-elec-fb" id="m2Fb" aria-live="polite"></div>';
+      cont.innerHTML = '<h3 class="m2-ficha-tit">' + esc(m.titulo) + '</h3><div class="m2-ranuras" id="m2Ranuras"></div><p class="m2-aviso" id="m2Aviso" aria-live="polite"></p><ul class="m2-cartas" id="m2Cartas" aria-label="Tarjetas disponibles"></ul><div class="m2-lectura" id="m2Lectura" hidden></div><div class="hs-elec-fb" id="m2Fb" aria-live="polite"></div>';
       inter.appendChild(cont);
       var fb = cont.querySelector('#m2Fb');
+      function lectura() {
+        var el = cont.querySelector('#m2Lectura');
+        el.innerHTML = '<span class="m2-lect-et">Modo lectura</span><h4>' + esc(m.titulo) + '</h4><dl>' + m.ranuras.map(function (r) { var c = tarjeta(colocadas[r.id]); return '<div><dt>' + esc(r.t) + '</dt><dd>' + esc(c ? c.t : '') + '</dd></div>'; }).join('') + '</dl>';
+        el.hidden = false;
+        ['#m2Ranuras', '#m2Aviso', '#m2Cartas'].forEach(function (s) { cont.querySelector(s).hidden = true; });
+      }
+      function reiniciar() {
+        colocadas = {}; tomada = null; fallos = {}; listo = false; aciertos = 0; run.scores.length = inicio; pintarBarra();
+        acc.innerHTML = ''; fb.innerHTML = ''; cont.querySelector('#m2Lectura').hidden = true;
+        ['#m2Ranuras', '#m2Aviso', '#m2Cartas'].forEach(function (s) { cont.querySelector(s).hidden = false; });
+        pintar();
+      }
+      if (m.reiniciable) { var rb = boton('Reiniciar actividad', 'hs-btn--sec m2-reiniciar-act', reiniciar); rb.title = 'Vacía solo esta bitácora; el avance del mundo no cambia'; cont.appendChild(rb); }
       function tarjeta(id) { return m.tarjetas.filter(function (q) { return q.id === id; })[0]; }
       function puesta(id) { return Object.keys(colocadas).some(function (k) { return colocadas[k] === id; }); }
       function pintar() {
@@ -3316,14 +3342,14 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         run.avance = true;
         if (q.slot === slotId) {
           colocadas[slotId] = cartaId; tomada = null; aciertos++;
-          puntajeDirecto(fallos[cartaId] ? 0 : 1);
+          puntajeDirecto(Math.max(0, 1 - MALA * (fallos[cartaId] || 0)));   // un intento fallido de una tarjeta resta 20% de su punto
           if (aciertos >= n) {
-            listo = true; fb.innerHTML = dlgHtml(m.q, m.exito, 'acierto'); pintar(); botonContinuar(m.continuar);
+            listo = true; fb.innerHTML = dlgHtml(m.q, m.exito, 'acierto'); pintar(); if (m.lectura) lectura(); botonContinuar(m.continuar);
             fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return;
           }
           fb.innerHTML = '';
         } else {
-          fallos[cartaId] = true; tomada = null;
+          if (q.slot) fallos[cartaId] = (fallos[cartaId] || 0) + 1; tomada = null;   // las tarjetas que no van en ningún campo solo explican, no restan
           fb.innerHTML = dlgHtml(m.q, q.f || m.fbMal, 'ayuda');
           pintar();
           var el = cont.querySelector('[data-carta="' + cartaId + '"]');
