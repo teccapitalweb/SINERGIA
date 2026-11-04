@@ -13174,6 +13174,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   document.addEventListener('click', function (e) {
     var t = e.target && e.target.closest ? e.target.closest('.nav-group-toggle') : null;
     if (!t) return;
+    // Con la barra lateral a la vista (computadora y tablet) el grupo se despliega como siempre; la hoja es para el celular
+    var bl = document.querySelector('.sidebar');
+    if (bl && getComputedStyle(bl).display !== 'none') return;
     e.preventDefault(); e.stopImmediatePropagation();
     window.abrirHerramientas();
   }, true);
@@ -18138,7 +18141,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<span class="mat-cover-aut">' + matEsc(it.coverAut || it.autor || MAT_TIPOS[it.tipo] || '') + '</span>' +
       img +
       (conTit ? '<span class="mat-cover-velo"><span class="mat-cover-titulo">' + matEsc(it.titulo) + '</span></span>' : '') +
-      (it.locked && !conTit ? '<span class="mat-cover-lock"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></span>' : '') +
+      (it.locked ? '<span class="mat-cover-lock"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></span>' : '') +
       '</div>';
   }
 
@@ -18295,12 +18298,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   function matLomo(it, i, f) {
     return '<article class="mat-lomo' + (it.locked ? ' is-locked' : '') + (it.id === matDestActual ? ' is-sel' : '') + '" tabindex="0" role="button"' + ' data-i="' + i + '"' + (f == null ? '' : ' data-f="' + f + '"') + ' aria-label="' + matEsc(it.titulo) + '">' + matPortada(it, { titulo: true }) + '</article>';
   }
-  var MAT_CANDADO = '<svg class="mat-est-lock" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg>';
   function matDato(it, i, f) {
     var atributos = ' data-i="' + i + '"' + (f == null ? '' : ' data-f="' + f + '"');
     var autor = '<div class="mat-libro-aut">' + matEsc(it.autor || MAT_TIPOS[it.tipo] || '') + '</div>';
     // Con el título encima de la portada no se repite abajo: solo el autor y el estado
-    if (matConTitulo(it)) return '<div class="mat-dato mat-dato--solo"' + atributos + '>' + autor + '<div class="mat-libro-est' + (it.locked ? ' is-bloq' : '') + '">' + (it.locked ? MAT_CANDADO : '') + matEsc(it.estado) + '</div></div>';
+    if (matConTitulo(it)) return '<div class="mat-dato mat-dato--solo"' + atributos + '>' + autor + '<div class="mat-libro-est' + (it.locked ? ' is-bloq' : '') + '">' + matEsc(it.estado) + '</div></div>';
     return '<div class="mat-dato"' + atributos + '><div class="mat-libro-tit">' + matEsc(it.titulo) + '</div>' + autor +
       '<div class="mat-libro-est' + (it.locked ? ' is-bloq' : '') + '">' + matEsc(it.estado) + '</div></div>';
   }
@@ -26920,12 +26922,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   /* Portada con el título encima: la foto y el dibujo mandan, el título va sobre un degradado verde bosque en la parte baja */
   .mat-cover--tit { padding: 0; }
   .mat-cover--tit .mat-cover-ico, .mat-cover--tit .mat-cover-tit, .mat-cover--tit .mat-cover-aut { display: none; }
-  .mat-cover-velo { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; align-items: flex-end; min-height: 36%; padding: 0 5% 8% 10%; pointer-events: none;
+  .mat-cover-velo { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; align-items: flex-end; min-height: 36%; padding: 0 5% 8% 10%; pointer-events: none;
     background: linear-gradient(to top, rgba(10, 38, 31, 0.9) 0%, rgba(10, 38, 31, 0.66) 48%, rgba(10, 38, 31, 0) 100%); }
   .mat-cover-titulo { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: break-word; text-wrap: balance;
     font-family: 'Newsreader', Georgia, 'Times New Roman', serif; font-weight: 500; font-size: clamp(14px, 1.1em, 18px); line-height: 1.16; letter-spacing: -0.005em; color: #FAF6EC; text-shadow: 0 1px 6px rgba(6, 24, 19, 0.4); }
   .mat-dato--solo .mat-libro-aut { margin-top: 0; }
-  .mat-est-lock { width: 11px; height: 11px; margin: -2px 5px 0 0; vertical-align: middle; fill: none; stroke: currentColor; }
   @media (max-width: 640px) {
     .mat-cover-velo { min-height: 42%; background: linear-gradient(to top, rgba(10, 38, 31, 0.96) 0%, rgba(10, 38, 31, 0.78) 52%, rgba(10, 38, 31, 0) 100%); }
     .mat-cover-titulo { font-size: 14px; }
@@ -28153,7 +28154,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (activo) {
       var g = activo.closest('.nav-group');
       var tg = g && g.querySelector('.nav-group-toggle');
-      if (tg) tg.classList.add('is-active');   // el grupo ya no se despliega: se abre la hoja de herramientas
+      if (tg) tg.classList.add('is-active');
+      // Con la barra lateral a la vista el grupo se despliega al entrar a una herramienta, como antes
+      var bl2 = document.querySelector('.sidebar');
+      if (g && !g.classList.contains('open') && bl2 && getComputedStyle(bl2).display !== 'none') { g.classList.add('open'); if (tg) tg.setAttribute('aria-expanded', 'true'); }
     }
   }
   if (window.MutationObserver) {
