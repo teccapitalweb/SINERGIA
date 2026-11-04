@@ -6429,6 +6429,18 @@
     overflow: hidden;
   }
   [data-theme="dark"] .apoyo-row-desc { color: #EDF7F1 !important; }
+  /* Buscador de producto (Precios de mercado y Costos de exportación) */
+  .prod-buscador { margin: 0 0 10px; }
+  .prod-buscar { width: 100%; padding: 11px 14px; border: 1px solid var(--border-card, #D9E5DF); border-radius: 12px; background: var(--bg-card, #fff); color: var(--text-primary, #183A33); font: 500 14px 'Inter', sans-serif; }
+  .prod-buscar:focus { outline: 2px solid #1AA888; outline-offset: 1px; }
+  .prod-sug { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .prod-op { padding: 8px 14px; border: 1px solid var(--border-card, #D9E5DF); border-radius: 100px; background: var(--bg-subtle, #EDF4F0); color: var(--text-primary, #183A33); font: 700 13px 'Plus Jakarta Sans', sans-serif; cursor: pointer; }
+  .prod-op:hover { border-color: #1AA888; }
+  .prod-msg { margin: 8px 0 0; padding: 9px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+  .prod-msg a { color: #087F70; font-weight: 700; }
+  .prod-msg--ok { background: rgba(26, 168, 136, 0.12); color: var(--text-primary, #183A33); }
+  .prod-msg--no { background: rgba(245, 158, 11, 0.14); color: var(--text-primary, #183A33); }
+  .prod-nota { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: var(--text-secondary, #5A7168); }
   .apoyo-row-desc--completa { display: block; -webkit-line-clamp: unset; overflow: visible; }
   .apoyo-row-dato { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--stone-600); }
   .apoyo-row-dato b { color: var(--stone-800, #1c1917); font-weight: 700; }
@@ -13220,6 +13232,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
 
 <script src="assets/sinergia-bunny-catalog-v2.js"></script>
 <script src="avatares.js?v=3"></script>
+<script src="encuesta-envio.js?v=2" defer></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -24112,6 +24125,94 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     brocoli: 'Brócoli', calabacita: 'Calabacita', nopal: 'Nopal verdura',
     espinaca: 'Espinaca', elote: 'Elote'
   };
+
+  // ─── Buscador de producto: se puede escribir. Si el producto no está en la lista se dice claro y se anota la búsqueda (anónima) ───
+  const SINONIMOS_PRODUCTO = {
+    tomate: ['jitomate', 'tomate rojo', 'saladette'], platano: ['banano', 'banana'], elote: ['maiz tierno', 'mazorca'],
+    berries: ['frambuesa', 'arandano', 'zarzamora', 'moras'], papa: ['papas', 'patata'], nopal: ['nopales'],
+    calabacita: ['calabacin', 'zucchini'], cafe: ['cafe verde'], cacao: ['cacao en grano']
+  };
+  function normalizarBusqueda(s) {
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9ñ ]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function iniciarBuscadorProducto(selectId, opc) {
+    const sel = document.getElementById(selectId);
+    if (!sel || sel.dataset.buscador) return;
+    sel.dataset.buscador = '1';
+    const campo = sel.closest('.calc-field') || sel.parentElement;
+    const opciones = Array.prototype.filter.call(sel.options, o => o.value).map(o => {
+      const palabras = normalizarBusqueda(o.textContent + ' ' + o.value + ' ' + (SINONIMOS_PRODUCTO[o.value] || []).join(' ')).split(' ');
+      return { valor: o.value, texto: o.textContent.trim(), palabras };
+    });
+    const caja = document.createElement('div');
+    caja.className = 'prod-buscador';
+    caja.innerHTML = '<input type="search" class="prod-buscar" autocomplete="off" placeholder="Escribe tu producto (por ejemplo: jitomate)" aria-label="Buscar producto">' +
+      '<div class="prod-sug" role="listbox" hidden></div><p class="prod-msg" role="status" hidden></p><p class="prod-nota">' + opc.nota + '</p>';
+    campo.insertBefore(caja, sel);
+    const input = caja.querySelector('.prod-buscar'), sug = caja.querySelector('.prod-sug'), msg = caja.querySelector('.prod-msg');
+    let temporizador = null;
+
+    function coincidencias(q) {
+      const ps = q.split(' ').filter(p => p.length >= 2);
+      if (!ps.length) return [];
+      return opciones.filter(o => ps.every(p => o.palabras.some(w => w.indexOf(p) === 0)));
+    }
+    function anotar(texto) {
+      // Solo se anota si el navegador lo permite (respeta «No rastrear»); el servidor le quita correos, enlaces y números largos
+      try {
+        const clave = 'sinergia_prod_anotados';
+        const ya = JSON.parse(sessionStorage.getItem(clave) || '[]');
+        const n = normalizarBusqueda(texto);
+        if (ya.indexOf(n) >= 0) return true;
+        if (!(window.sinergiaEncuesta && window.sinergiaEncuesta.activa())) return false;
+        window.sinergiaEncuesta.sinRespuesta(opc.etiqueta + ': ' + texto);
+        ya.push(n); sessionStorage.setItem(clave, JSON.stringify(ya.slice(-30)));
+        return true;
+      } catch (e) { return false; }
+    }
+    function elegir(o) {
+      sel.value = o.valor;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      input.value = '';
+      sug.hidden = true; sug.innerHTML = '';
+      msg.hidden = false; msg.className = 'prod-msg prod-msg--ok'; msg.textContent = 'Elegiste: ' + o.texto;
+    }
+    function pintar() {
+      const texto = input.value.trim(), q = normalizarBusqueda(texto);
+      clearTimeout(temporizador);
+      sug.innerHTML = ''; sug.hidden = true; msg.hidden = true;
+      if (q.length < 2) return;
+      const hallados = coincidencias(q).slice(0, 6);
+      if (hallados.length) {
+        hallados.forEach(o => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'prod-op'; b.setAttribute('role', 'option'); b.textContent = o.texto;
+          b.addEventListener('click', () => elegir(o));
+          sug.appendChild(b);
+        });
+        sug.hidden = false;
+        return;
+      }
+      if (q.length < 3) return;
+      msg.hidden = false; msg.className = 'prod-msg prod-msg--no';
+      msg.innerHTML = 'Todavía no tenemos ' + opc.que + ' de «<b></b>». ' + (opc.enlace ? '<a href="' + opc.enlace + '" target="_blank" rel="noopener noreferrer">Búscalo en el SNIIM</a>. ' : '') + '<span class="prod-anotada"></span>';
+      msg.querySelector('b').textContent = texto;
+      temporizador = setTimeout(() => {
+        if (normalizarBusqueda(input.value) === q && anotar(texto)) {
+          const s = msg.querySelector('.prod-anotada'); if (s) s.textContent = 'Anotamos tu búsqueda para considerar agregarlo.';
+        }
+      }, 1500);
+    }
+    input.addEventListener('input', pintar);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); const h = coincidencias(normalizarBusqueda(input.value))[0]; if (h) elegir(h); }
+      else if (e.key === 'Escape') { input.value = ''; pintar(); }
+    });
+    sel.addEventListener('change', () => { if (sel.value && !input.value) { const o = opciones.filter(x => x.valor === sel.value)[0]; if (o) { msg.hidden = false; msg.className = 'prod-msg prod-msg--ok'; msg.textContent = 'Elegiste: ' + o.texto; } } });
+  }
+  iniciarBuscadorProducto('mercProducto', { etiqueta: 'Precios de mercado', que: 'precios', enlace: 'https://www.economia-sniim.gob.mx/nuevo/', nota: 'Los precios son de referencia (abril de 2026) y no se actualizan en vivo. Confírmalos en el SNIIM antes de cerrar una venta.' });
+  iniciarBuscadorProducto('expProducto', { etiqueta: 'Costos de exportación', que: 'una estimación', enlace: '', nota: 'Son estimaciones con tarifas típicas y un tipo de cambio de referencia; no son cotizaciones.' });
+
 
   // Cálculo de distancia Haversine
   function distanciaKm(lat1, lng1, lat2, lng2) {
