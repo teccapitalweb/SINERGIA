@@ -13938,7 +13938,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   async function retosCargar() {
     var cuerpo = document.getElementById('retosCuerpo');
     if (!cuerpo) return;
-    RT.vista = '';
+    RT.vista = RT.pendiente && rtColeccion(RT.pendiente) ? 'col:' + RT.pendiente : '';   // un enlace #retos/<ruta> abre directo esa colección
+    RT.pendiente = '';
     try { rtHeroPintar(); } catch (e) { console.warn('[retos]', e); }
     if (!RT.datos) cuerpo.innerHTML = '<div class="rt-vacio">Cargando los retos…</div>';
     try {
@@ -14055,19 +14056,19 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     reloj: rtIcono('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>')
   };
   var RT_CAMPO = [
-    { id: 'observa', prog: 'Detective Agrícola', nombre: 'Observa', tiempo: '2–4 min', sub: 'Encuentra señales y reúne evidencia.', items: [
+    { id: 'observa', prog: 'Detective Agrícola', nombre: 'Observa', tiempo: '2–4 min', sub: 'Encuentra señales y reúne evidencia.', ruta: 'detective-agricola', portada: 'assets/retos/portada-detective-agricola.jpg', desc: 'Encuentra señales, compara escenas y reúne evidencia antes de interpretar.', boton: 'Explorar retos', logro: 'ojo', items: [
       { id: 'detective-01', tipo: 'caso', num: 'Caso 01', nivel: 'Básico', titulo: 'El rastro que no cuadra', desc: 'Encuentra tres pistas visibles en una escena de riego.', xp: 15, img: 'assets/detective/caso-01-el-rastro-que-no-cuadra.webp', url: 'detective-caso-01.html' },
       { id: 'detective-02', tipo: 'caso', num: 'Caso 02', nivel: 'Intermedio', titulo: 'La planta fuera de contexto', desc: 'Compara plantas y zonas antes de sacar conclusiones.', xp: 15, img: 'assets/detective/caso-02-zona-b.webp', url: 'detective-caso-02.html', min: '3–4 min' },
-      { id: 'detective-03', tipo: 'caso', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La libreta incompleta', desc: 'Detecta qué información falta para que una observación de campo sea útil.', xp: 15, img: 'retos-detective-agricola/caso-03-la-libreta-incompleta.png', respaldo: true, url: 'detective-caso-03.html', min: '3–4 min', cta: 'Abrir libreta', recompensa: '+15 XP semanal' },
+      { id: 'detective-03', tipo: 'caso', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La libreta incompleta', desc: 'Detecta qué información falta para que una observación de campo sea útil.', xp: 15, img: 'assets/retos/detective-03.jpg', respaldo: true, url: 'detective-caso-03.html', min: '3–4 min', cta: 'Abrir libreta', recompensa: '+15 XP semanal' },
       { id: 'detective-04', tipo: 'caso', num: 'Caso 04', nivel: 'Básico', titulo: '¿Qué cambió aquí?', desc: 'Compara dos momentos de la misma parcela y registra lo que sí cambió.', xp: 15, img: 'assets/detective/caso-04-que-cambio-a.jpg', url: 'detective-caso-04.html', min: '2–3 min', cta: 'Comparar', recompensa: '+15 XP semanal' }] },
-    { id: 'decide', prog: 'Rescate del Cultivo', nombre: 'Decide', tiempo: '3–5 min', sub: 'Prioriza antes de actuar.', items: [
-      { id: 'rescate-01', tipo: 'caso', almacen: 'sinergia_rescate_v1', num: 'Caso 01', nivel: 'Intermedio', titulo: 'La mañana del riego', desc: 'Recibe tres avisos de la parcela y decide qué información revisar primero.', xp: 20, img: 'retos-rescate-del-cultivo/caso-01-la-manana-del-riego.png', respaldo: true, url: 'rescate-caso-01.html', min: '3–5 min', cta: 'Revisar situación', recompensa: '+20 XP semanal' },
-      { id: 'rescate-02', tipo: 'caso', almacen: 'sinergia_rescate_v1', num: 'Caso 02', nivel: 'Intermedio', titulo: 'Tres avisos, una prioridad', desc: 'Distingue evidencia, opiniones y datos que todavía necesitan confirmarse.', xp: 20, img: 'retos-rescate-del-cultivo/caso-02-tres-avisos-una-prioridad.png', respaldo: true, url: 'rescate-caso-02.html', min: '3–5 min', cta: 'Revisar avisos', recompensa: '+20 XP semanal' },
-      { id: 'rescate-03', tipo: 'caso', almacen: 'sinergia_rescate_v1', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La decisión que espera', desc: 'Organiza qué registrar, qué preguntar y qué conclusión debe esperar.', xp: 25, img: 'retos-rescate-del-cultivo/caso-03-la-decision-que-espera.png', respaldo: true, url: 'rescate-caso-03.html', min: '4–5 min', cta: 'Organizar prioridades', recompensa: '+25 XP semanal' }] },
-    { id: 'integra', prog: 'Desafío SINERGIA', nombre: 'Integra', tiempo: '5–8 min', sub: 'Combina lo aprendido en una misión completa.', items: [
-      { id: 'desafio-01', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 01', nivel: 'Experto', titulo: 'La ruta de las tres pistas', desc: 'Une observación, comparación y registro para entender una parcela con criterio.', xp: 30, img: 'retos-desafio-sinergia/caso-01-la-ruta-de-las-tres-pistas.png', respaldo: true, url: 'desafio-caso-01.html', min: '5–7 min', cta: 'Iniciar misión', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
-      { id: 'desafio-02', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 02', nivel: 'Experto', titulo: 'El dato que cambia la lectura', desc: 'Compara dos recorridos y descubre qué contexto cambia una observación.', xp: 30, img: 'retos-desafio-sinergia/caso-02-el-dato-que-cambia-la-lectura.png', respaldo: true, url: 'desafio-caso-02.html', min: '5–7 min', cta: 'Comparar recorridos', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
-      { id: 'desafio-03', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 03', nivel: 'Experto', titulo: 'El expediente de la parcela', desc: 'Selecciona evidencia útil y construye un registro de campo completo.', xp: 40, img: 'retos-desafio-sinergia/caso-03-el-expediente-de-la-parcela.png', respaldo: true, url: 'desafio-caso-03.html', min: '6–8 min', cta: 'Abrir expediente', hechoTxt: 'Misión completada', recompensa: '+40 XP semanal' }] }
+    { id: 'decide', prog: 'Rescate del Cultivo', nombre: 'Decide', tiempo: '3–5 min', sub: 'Prioriza antes de actuar.', ruta: 'rescate-del-cultivo', portada: 'assets/retos/portada-rescate-del-cultivo.jpg', desc: 'Revisa información, ordena prioridades y elige el siguiente paso responsable.', boton: 'Resolver casos', logro: 'calma', items: [
+      { id: 'rescate-01', tipo: 'caso', almacen: 'sinergia_rescate_v1', num: 'Caso 01', nivel: 'Intermedio', titulo: 'La mañana del riego', desc: 'Recibe tres avisos de la parcela y decide qué información revisar primero.', xp: 20, img: 'assets/retos/rescate-01.jpg', respaldo: true, url: 'rescate-caso-01.html', min: '3–5 min', cta: 'Revisar situación', recompensa: '+20 XP semanal' },
+      { id: 'rescate-02', tipo: 'caso', almacen: 'sinergia_rescate_v1', num: 'Caso 02', nivel: 'Intermedio', titulo: 'Tres avisos, una prioridad', desc: 'Distingue evidencia, opiniones y datos que todavía necesitan confirmarse.', xp: 20, img: 'assets/retos/rescate-02.jpg', respaldo: true, url: 'rescate-caso-02.html', min: '3–5 min', cta: 'Revisar avisos', recompensa: '+20 XP semanal' },
+      { id: 'rescate-03', tipo: 'caso', almacen: 'sinergia_rescate_v1', num: 'Caso 03', nivel: 'Avanzado', titulo: 'La decisión que espera', desc: 'Organiza qué registrar, qué preguntar y qué conclusión debe esperar.', xp: 25, img: 'assets/retos/rescate-03.jpg', respaldo: true, url: 'rescate-caso-03.html', min: '4–5 min', cta: 'Organizar prioridades', recompensa: '+25 XP semanal' }] },
+    { id: 'integra', prog: 'Desafío SINERGIA', nombre: 'Integra', tiempo: '5–8 min', sub: 'Combina lo aprendido en una misión completa.', ruta: 'desafio-sinergia', portada: 'assets/retos/portada-desafio-sinergia.jpg', desc: 'Une observación, contexto y registro para construir un criterio de campo.', boton: 'Iniciar desafíos', logro: 'campo', items: [
+      { id: 'desafio-01', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 01', nivel: 'Experto', titulo: 'La ruta de las tres pistas', desc: 'Une observación, comparación y registro para entender una parcela con criterio.', xp: 30, img: 'assets/retos/desafio-01.jpg', respaldo: true, url: 'desafio-caso-01.html', min: '5–7 min', cta: 'Iniciar misión', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
+      { id: 'desafio-02', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 02', nivel: 'Experto', titulo: 'El dato que cambia la lectura', desc: 'Compara dos recorridos y descubre qué contexto cambia una observación.', xp: 30, img: 'assets/retos/desafio-02.jpg', respaldo: true, url: 'desafio-caso-02.html', min: '5–7 min', cta: 'Comparar recorridos', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
+      { id: 'desafio-03', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 03', nivel: 'Experto', titulo: 'El expediente de la parcela', desc: 'Selecciona evidencia útil y construye un registro de campo completo.', xp: 40, img: 'assets/retos/desafio-03.jpg', respaldo: true, url: 'desafio-caso-03.html', min: '6–8 min', cta: 'Abrir expediente', hechoTxt: 'Misión completada', recompensa: '+40 XP semanal' }] }
   ];
   var RT_LOGROS = [
     { id: 'ojo', panel: true, nombre: 'Ojo de campo', regla: 'Completa los 4 casos de Detective Agrícola', ico: RT_ICO.observa },
@@ -14215,6 +14216,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     return h + '</section>';
   }
 
+  // Lo que se conserva de cada caso resuelto: su mejor resultado y los XP que ya pagó esta semana
+  function rtCasoDetalleHtml(it) {
+    var x = rtCasoDato(it);
+    return '<dl class="rtc-det"><div><dt>Mejor resultado</dt><dd>' + escapeHtml(rtMejorTxt(x.mejor)) + '</dd></div><div><dt>XP de esta semana</dt><dd>' + (x.pagado ? '+' + x.xp + ' XP' : '—') + '</dd></div></dl>';
+  }
   function rtCampoCard(it) {
     var miembro = window.isVIP === true, L = window.SinergiaLiga, caso = it.tipo === 'caso';
     var j = !caso && L && L.JUEGOS ? L.JUEGOS[it.id] : null;
@@ -14230,7 +14236,59 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<div class="rtc-img' + (caso ? '' : ' rtc-img--arte') + '"><img src="' + escapeHtml(img) + '" alt="" loading="lazy" decoding="async"' + (it.respaldo ? ' onerror="this.parentNode.classList.add(\'rtc-img--respaldo\');this.remove()"' : '') + '><span class="rtc-nivel">' + escapeHtml(it.nivel) + '</span>' + (estado ? '<span class="rtc-estado">' + estado + '</span>' : '') + '</div>' +
       '<div class="rtc-cu"><div class="rtc-meta"><span class="rtc-tipo" aria-hidden="true">' + RT_ICO[it.bloque] + '</span><span>' + escapeHtml(it.num) + ' · ' + escapeHtml(it.tiempo) + '</span></div>' +
       '<h5>' + escapeHtml(titulo) + '</h5><p class="rtc-desc">' + escapeHtml(desc) + '</p>' + (it.recompensa ? '<p class="rtc-xp">' + escapeHtml(it.recompensa) + '</p>' : '') +
+      (caso && hecho ? rtCasoDetalleHtml(it) : '') +
       '<div class="rtc-pie">' + boton + '</div></div></article>';
+  }
+  // ─── Colecciones de Retos de campo ───
+  // La pantalla principal solo muestra una tarjeta por colección (RT_CAMPO); los casos viven dentro de cada una, en su propia vista
+  // (#retos/<ruta>). Una colección nueva es un bloque más en RT_CAMPO con su ruta, portada, texto, botón e insignia: no crece la pantalla principal.
+  function rtColeccion(ruta) { return RT_CAMPO.filter(function (b) { return b.ruta === ruta; })[0] || null; }
+  function rtColeccionDato(b, lg) {
+    var casos = b.items.filter(function (i) { return i.tipo === 'caso' && !i.pronto; }).map(rtCasoDato);
+    var hechos = casos.filter(function (x) { return x.resuelto; }).length, xp = 0;
+    casos.forEach(function (x) { xp += x.xp; });
+    return { total: casos.length, hechos: hechos, pct: casos.length ? Math.round(hechos * 100 / casos.length) : 0, xp: xp,
+      logro: RT_LOGROS.filter(function (l) { return l.id === b.logro; })[0] || null, estado: b.logro && lg ? lg[b.logro] : null };
+  }
+  function rtResumenHtml(x) {
+    return '<div class="rtk-res"><p><b>' + x.hechos + ' de ' + x.total + '</b> casos completados</p>' +
+      '<i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + x.pct + '" aria-label="Casos completados"><span style="width:' + x.pct + '%"></span></i></div>';
+  }
+  function rtInsigniaHtml(x) {
+    if (!x.logro || !x.estado) return '';
+    var f = x.estado.ok && x.estado.fecha ? rtFechaCorta(x.estado.fecha) : '';
+    return '<span class="rtk-ins' + (x.estado.ok ? ' es-lista' : '') + '" title="' + escapeHtml(x.logro.regla) + '"><span class="rtk-ins-ico" aria-hidden="true">' + x.logro.ico + '</span>' +
+      '<span><b>' + escapeHtml(x.logro.nombre) + '</b><small>' + (x.estado.ok ? (f ? 'Lograda el ' + escapeHtml(f) : 'Lograda') : escapeHtml(x.estado.prog)) + '</small></span></span>';
+  }
+  function rtColeccionTarjeta(b, lg) {
+    var x = rtColeccionDato(b, lg);
+    return '<article class="rtk-card' + (x.estado && x.estado.ok ? ' es-lograda' : '') + '">' +
+      '<a class="rtk-portada" href="#retos/' + b.ruta + '" data-rt-col="' + b.ruta + '" tabindex="-1" aria-hidden="true"><img src="' + escapeHtml(b.portada) + '" alt="" loading="lazy" decoding="async">' +
+      '<span class="rtk-etq">' + escapeHtml(b.nombre) + ' · ' + escapeHtml(b.tiempo) + '</span></a>' +
+      '<div class="rtk-cu"><h4>' + escapeHtml(b.prog) + '</h4><p>' + escapeHtml(b.desc) + '</p>' + rtResumenHtml(x) + rtInsigniaHtml(x) +
+      '<div class="rtk-pie"><a class="rtx-btn" href="#retos/' + b.ruta + '" data-rt-col="' + b.ruta + '">' + escapeHtml(b.boton) + '</a></div></div></article>';
+  }
+  function rtColeccionesHtml(d) {
+    var lg = rtLogrosDatos();
+    var h = '<section class="rt-bloque rtc-seccion" aria-labelledby="rtcTit"><div><span class="cred-eyebrow">Retos de campo</span><h3 id="rtcTit">Elige una colección</h3>' +
+      '<p>Cada colección entrena una forma de mirar el campo. Todos sus casos están abiertos: escoge el que quieras, en el orden que quieras.</p></div>' +
+      '<div class="rtk-grid">' + RT_CAMPO.filter(function (b) { return b.ruta; }).map(function (b) { return rtColeccionTarjeta(b, lg); }).join('') + '</div>';
+    if (window.isVIP !== true) h += '<p class="rt-yo">Puedes probar un ejemplo de cada reto. Con membresía los terminas, sumas XP y desbloqueas insignias.</p>';
+    return h + '</section>';
+  }
+  function rtColeccionVistaHtml(b) {
+    var x = rtColeccionDato(b, rtLogrosDatos());
+    var tarjetas = b.items.map(function (it) { it.bloque = b.id; it.tiempo = it.min || b.tiempo; return rtCampoCard(it); }).join('');
+    var h = '<section class="rt-bloque rtk-vista" aria-labelledby="rtkTit">' +
+      '<div><button type="button" class="rtx-btn rtx-btn--sec" data-rt-volver>← Volver a Retos</button></div>' +
+      '<header class="rtk-hero"><img class="rtk-hero-img" src="' + escapeHtml(b.portada) + '" alt="" decoding="async"><div class="rtk-hero-in">' +
+      '<span class="rtk-etq">' + escapeHtml(b.nombre) + ' · ' + escapeHtml(b.tiempo) + '</span>' +
+      '<h3 id="rtkTit" tabindex="-1">' + escapeHtml(b.prog) + '</h3><p>' + escapeHtml(b.desc) + '</p>' + rtResumenHtml(x) +
+      '<div class="rtk-hero-datos">' + rtInsigniaHtml(x) + '<span class="rtk-xpsem">XP de esta semana · <b>' + (rtXpSemana() === null || window.isVIP !== true ? '—' : '+' + x.xp) + '</b></span></div>' +
+      '</div></header>' +
+      '<div class="rtc-grid">' + tarjetas + '</div>';
+    if (window.isVIP !== true) h += '<p class="rt-yo">Puedes probar un ejemplo de cada reto. Con membresía los terminas, sumas XP y desbloqueas insignias.</p>';
+    return h + '</section>';
   }
   function rtCamposHtml(d) {
     var h = '<section class="rt-bloque rtc-seccion" aria-labelledby="rtcTit"><div><span class="cred-eyebrow">Retos de campo</span><h3 id="rtcTit">Elige cómo quieres entrenar</h3>' +
@@ -14256,6 +14314,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         if (i) { i.value = h.slice(7); i.focus(); i.dispatchEvent(new Event('input', { bubbles: true })); }
       } else if (h === 'cerrar-sesion') {
         if (typeof window.handleLogout === 'function') window.handleLogout();
+      } else if (/^retos\/[a-z0-9-]+$/.test(h)) {
+        RT.pendiente = h.slice(6);
+        window.switchTab('retos');
       } else if (document.querySelector('.nav-item[data-tab="' + h.replace(/[^a-z-]/gi, '') + '"]')) {
         window.switchTab(h);
       }
@@ -14283,22 +14344,42 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     window.SinergiaLiga.jugar(b.getAttribute('data-rt-jugar'), { miembro: window.isVIP === true, onFin: rtRefrescar });
   });
 
-  document.addEventListener('click', function (e) {
-    var b = e.target && e.target.closest ? e.target.closest('[data-rt-bit],[data-rt-volver]') : null;
-    if (!b) return;
-    RT.vista = b.hasAttribute('data-rt-bit') ? 'bitacora' : '';
+  // Cambia de vista dentro de Retos: '' (principal), 'bitacora' o 'col:<ruta>' (una colección, con su propia ruta #retos/<ruta>)
+  function rtIrA(vista, empujar) {
+    RT.vista = vista;
+    if (empujar) { try { var h = vista.indexOf('col:') === 0 ? '#retos/' + vista.slice(4) : '#retos'; if (location.hash !== h) history.pushState(null, '', h); } catch (e) { /* sin historial */ } }
     retosPintar();
     var p = document.querySelector('[data-panel="retos"]'); if (p) p.scrollIntoView({ block: 'start' });
+    var t = document.getElementById('rtkTit'); if (t) { try { t.focus({ preventScroll: true }); } catch (e) { /* sin foco */ } }
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('[data-rt-bit],[data-rt-volver],[data-rt-col]') : null;
+    if (!b) return;
+    if (b.tagName === 'A') e.preventDefault();
+    if (b.hasAttribute('data-rt-bit')) rtIrA('bitacora', false);
+    else if (b.hasAttribute('data-rt-col') && rtColeccion(b.getAttribute('data-rt-col'))) rtIrA('col:' + b.getAttribute('data-rt-col'), true);
+    else rtIrA('', true);
+  });
+  // Atrás y adelante del navegador entre la pantalla principal y cada colección
+  window.addEventListener('popstate', function () {
+    var m = /^#retos\/([a-z0-9-]+)$/.exec(location.hash || ''), c = m ? rtColeccion(m[1]) : null;
+    var activo = document.querySelector('[data-panel="retos"].active');
+    if (!activo) { if (c) { RT.pendiente = c.ruta; window.switchTab('retos'); } return; }
+    if (c) RT.vista = 'col:' + c.ruta; else if (location.hash === '#retos') RT.vista = '';
+    retosPintar();
   });
 
   function retosPintar() {
     var d = RT.datos, cuerpo = document.getElementById('retosCuerpo');
     if (!d || !cuerpo) return;
     var panelRetos = document.querySelector('[data-panel="retos"]');
-    if (panelRetos) panelRetos.classList.toggle('rt-en-bitacora', RT.vista === 'bitacora');
+    var colecc = String(RT.vista || '').indexOf('col:') === 0 ? rtColeccion(RT.vista.slice(4)) : null;
+    if (String(RT.vista || '').indexOf('col:') === 0 && !colecc) RT.vista = '';
+    if (panelRetos) panelRetos.classList.toggle('rt-en-bitacora', RT.vista === 'bitacora' || !!colecc);
     if (RT.vista === 'bitacora') { cuerpo.innerHTML = rtBitacoraHtml(d); rtHeroPintar(); return; }
+    if (colecc) { cuerpo.innerHTML = rtColeccionVistaHtml(colecc); rtHeroPintar(); return; }
     // Orden: Modo Historia arriba; luego tu práctica y los Retos de campo; después lo demás
-    var html = '<div class="rtc-top"><div class="rtc-top-main">' + rtHistoriaHtml() + '</div>' + rtPracticaHtml(d) + '</div>' + rtCamposHtml(d);
+    var html = '<div class="rtc-top"><div class="rtc-top-main">' + rtHistoriaHtml() + '</div>' + rtPracticaHtml(d) + '</div>' + rtColeccionesHtml(d);
 
     // Podio de constancia (los datos siguen viniendo del servidor)
     html += rtPodioHtml(d);
@@ -27136,6 +27217,57 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     .rtb-lista li { grid-template-columns: 1fr auto; }
     .rtb-lista li .rtb-dato { grid-column: 1 / -1; grid-template-columns: 1fr auto; align-items: baseline; }
     .rtb-logros { grid-template-columns: 1fr; }
+  }
+  /* Colecciones de Retos de campo: tarjeta de la pantalla principal y vista interna */
+  .rtk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
+  .rtk-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-card); border-radius: 22px; background: var(--bg-card); transition: transform .2s, box-shadow .2s; }
+  .rtk-card:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -22px rgba(17, 61, 53, 0.5); }
+  .rtk-card.es-lograda { border-color: #1AA888; }
+  .rtk-portada { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #0F3B33; cursor: pointer; }
+  .rtk-portada img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+  .rtk-card:hover .rtk-portada img { transform: scale(1.04); }
+  .rtk-etq { position: absolute; top: 12px; left: 12px; padding: 5px 12px; border-radius: 100px; background: rgba(8, 32, 27, 0.88); color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .rtk-cu { display: flex; flex: 1; flex-direction: column; gap: 12px; padding: 18px 20px 20px; }
+  .rtk-cu h4 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1.2; color: var(--text-primary); }
+  .rtk-cu p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-secondary); }
+  .rtk-res { display: grid; gap: 7px; }
+  .rtk-res p b { font-family: var(--font-display); font-weight: 800; color: var(--text-primary); }
+  .rtk-prog { display: block; height: 6px; border-radius: 4px; background: var(--border-card); overflow: hidden; }
+  .rtk-prog span { display: block; height: 100%; border-radius: 4px; background: #1AA888; transition: width .4s ease; }
+  .rtk-ins { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; padding: 6px 14px 6px 6px; border: 1.5px dashed var(--border-card); border-radius: 100px; color: var(--text-secondary); }
+  .rtk-ins-ico { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--bg-subtle); }
+  .rtk-ins-ico svg { width: 15px; height: 15px; }
+  .rtk-ins b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 13px; color: var(--text-primary); }
+  .rtk-ins small { display: block; font-size: 11.5px; font-weight: 600; }
+  .rtk-ins.es-lista { border: 1.5px solid #E7C873; background: rgba(231, 200, 115, 0.18); }
+  .rtk-ins.es-lista .rtk-ins-ico { background: #E7C873; color: #3B2D07; }
+  .rtk-pie { margin-top: auto; padding-top: 4px; }
+  .rtk-pie .rtx-btn { width: 100%; text-decoration: none; }
+  .rtk-vista { display: grid; gap: 20px; }
+  .rtk-hero { position: relative; display: flex; align-items: flex-end; min-height: 270px; overflow: hidden; border-radius: 24px; background: #0F3B33; color: #fff; isolation: isolate; }
+  .rtk-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+  .rtk-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(8, 32, 27, 0.95) 0%, rgba(8, 32, 27, 0.8) 55%, rgba(8, 32, 27, 0.35) 100%); }
+  .rtk-hero-in { display: grid; gap: 12px; width: min(100%, 640px); padding: 28px; }
+  .rtk-hero .rtk-etq { position: static; justify-self: start; background: rgba(255, 255, 255, 0.16); }
+  .rtk-hero h3 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(25px, 3.4vw, 34px); line-height: 1.1; color: #fff; }
+  .rtk-hero h3:focus { outline: none; }
+  .rtk-hero p { margin: 0; color: rgba(255, 255, 255, 0.9); line-height: 1.5; }
+  .rtk-hero .rtk-res p b { color: #fff; }
+  .rtk-hero .rtk-prog { background: rgba(255, 255, 255, 0.25); }
+  .rtk-hero .rtk-prog span { background: #7ED3C3; }
+  .rtk-hero-datos { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+  .rtk-hero .rtk-ins { border-color: rgba(255, 255, 255, 0.45); color: rgba(255, 255, 255, 0.85); }
+  .rtk-hero .rtk-ins b { color: #fff; }
+  .rtk-hero .rtk-ins-ico { background: rgba(255, 255, 255, 0.16); color: #fff; }
+  .rtk-hero .rtk-ins.es-lista { border-color: #E7C873; background: rgba(231, 200, 115, 0.22); }
+  .rtk-hero .rtk-ins.es-lista small { color: #F4E3B0; }
+  .rtk-hero .rtk-ins.es-lista .rtk-ins-ico { background: #E7C873; color: #3B2D07; }
+  .rtk-xpsem { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.85); }
+  .rtk-xpsem b { font-family: var(--font-display); font-weight: 800; color: #fff; }
+  @media (max-width: 720px) {
+    .rtk-grid { grid-template-columns: 1fr; }
+    .rtk-hero { min-height: 0; }
+    .rtk-hero-in { padding: 22px 18px; }
   }
   .rtc-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.9em; }
   .rtc-pie .rtx-btn { width: 100%; }
