@@ -1923,6 +1923,16 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 .m2-lectura dd { margin: 2px 0 0; padding-bottom: 8px; border-bottom: 1px dashed var(--h-border); font: 600 15px/1.45 var(--font-body, 'Inter', sans-serif); }
 .m2-lectura dl > div:last-child dd { border-bottom: 0; padding-bottom: 0; }
 .m2-reiniciar-act { justify-self: start; min-height: 40px; font-size: 13.5px; }
+.m2-insig-desc { display: inline-block; margin-top: 4px; font-weight: 600; font-size: 14px; opacity: .92; }
+.m2-parejas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.m2-pcol { display: grid; gap: 10px; }
+#historia .m2-par { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; width: 100%; min-height: 64px; padding: 10px 14px; border: 2px solid var(--h-border); border-radius: 16px; background: var(--h-card); color: var(--h-text); text-align: left; font: 600 14.5px/1.4 var(--font-body, 'Inter', sans-serif); transition: border-color .15s ease, background .15s ease, transform .15s ease; }
+#historia .m2-par:hover:not(:disabled) { border-color: var(--h-accent); background: var(--h-soft); }
+#historia .m2-par.es-tomada { border-color: var(--h-accent); background: var(--h-ok-bg); box-shadow: inset 0 0 0 1px var(--h-accent); transform: translateY(-2px); }
+#historia .m2-par.es-ok { border-color: var(--h-accent); background: var(--h-ok-bg); opacity: 1; cursor: default; }
+.m2-par-l { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--h-soft); font: 800 13px var(--font-display, 'Plus Jakarta Sans', sans-serif); color: var(--h-subtle); }
+#historia .m2-par.es-ok .m2-par-l { background: var(--h-accent); color: #fff; }
+.m2-par-v { display: grid; place-items: center; min-width: 26px; height: 26px; border-radius: 100px; background: var(--h-accent); color: #fff; font: 800 12.5px var(--font-display, 'Plus Jakarta Sans', sans-serif); font-style: normal; }
 .m2-orden { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .m2-op { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border: 2px solid var(--h-border); border-radius: 16px; background: var(--h-card); cursor: grab; }
 .m2-op.es-ok { border-color: var(--h-accent); background: var(--h-ok-bg); cursor: default; }
@@ -1937,6 +1947,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 .m2-reiniciar { margin-top: 12px; }
 .m2-reiniciar small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--h-subtle); }
 @media (max-width: 760px) {
+  .m2-parejas { grid-template-columns: 1fr; }
   .m2-cols { grid-template-columns: 1fr; }
   .m2-doble { grid-template-columns: 1fr; }
   .m2-cartas { grid-template-columns: 1fr; }
@@ -2208,13 +2219,14 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           <div class="hs-cierre">
             <div class="hs-insig-wrap" id="cierreInsignia"></div>
             <span class="hs-eyebrow">Mundo 02 completado</span>
-            <h2 id="cierreTit" tabindex="-1">Completaste El agua tiene camino</h2>
-            <p>Aprendiste a seguir el recorrido del agua antes de sacar conclusiones.</p>
-            <p class="hs-cierre-insignia"><b>Insignia desbloqueada: Lectura del agua</b></p>
+            <h2 id="cierreTit" tabindex="-1">Ahora lees el agua con más contexto.</h2>
+            <p>Aprendiste a observar el terreno, seguir el recorrido del riego y registrar señales antes de interpretar una causa.</p>
+            <p class="hs-cierre-insignia"><b>Insignia desbloqueada: Lectura del agua</b><br><span class="m2-insig-desc">Conectaste terreno, riego y observación para construir una lectura de campo responsable.</span></p>
             <div class="hs-xps" id="cierreXp"></div>
             <div class="hs-cierre-dlg" id="cierreDialogos"></div>
             <p id="cierreCuenta" aria-live="polite"></p>
-            <div class="hs-acciones hs-cierre-acc"><a class="hs-btn hs-btn--claro" href="vip-panel.html#retos">Volver al Centro de Retos</a><a class="hs-btn hs-btn--sec" href="vip-panel.html#logros-retos" style="color:#fff;border-color:rgba(255,255,255,.5)">Ver mis logros</a></div>
+            <section class="hs-proximo" aria-label="Próximo mundo"><span class="hs-eyebrow">Próximo mundo</span><h3>Próximamente</h3><p>Un nuevo recorrido del Modo Historia se está preparando. Tu avance queda guardado.</p><button type="button" class="hs-btn" disabled aria-disabled="true">Próximamente</button></section>
+            <div class="hs-acciones hs-cierre-acc"><a class="hs-btn hs-btn--claro" href="vip-panel.html#retos">Volver a Modo Historia</a><a class="hs-btn hs-btn--sec" href="vip-panel.html#logros-retos" style="color:#fff;border-color:rgba(255,255,255,.5)">Ver mis logros</a></div>
             <button type="button" class="hs-btn-discreto" id="btnRepetir" title="Practica de nuevo sin perder tu insignia, tu XP ni tu registro">Repetir Mundo 02</button>
             <div class="hs-despedida" id="cierreMora"></div>
           </div>
@@ -2572,35 +2584,42 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           { t: 'Para reemplazar la observación directa.', ok: false, f: 'La bitácora complementa la observación directa; no la reemplaza.' }],
           cierre: [{ q: 'ines', t: 'Una bitácora clara conecta lo que observaste hoy con lo que podrás comparar después.' }], botonFinal: 'Continuar al nivel final →' }] },
 
-    { id: '2.6', titulo: 'El mapa del agua', objetivo: 'Integrar observación, comparación y registro.', duracion: '5 a 6 minutos', escena: 'panoramica', puntos: 5, final: true,
-      imagen: { src: IMG + 'nivel-2-rutas.svg', w: 1600, h: 900, alt: 'Mapa de la parcela vista desde arriba: líneas de riego horizontales y dos recorridos del agua, uno azul y uno naranja, que bajan desde el mismo punto y terminan en lugares distintos.' },
-      tituloExito: 'Mundo 02 completado', aprendizaje: 'Pendiente, riego, zonas húmedas y registro se leen juntos: así se arma una lectura responsable.',
-      textoRefuerzo: 'Ya viste las explicaciones. Repite este nivel y relaciona con calma cada elemento.',
+    { id: '2.6', etiqueta: 'Nivel 2.6 · Inspección final', titulo: 'El mapa del agua', subtitulo: 'Conecta las pistas antes de sacar una conclusión.', objetivo: 'Integrar pendiente, recorrido de riego, condición visible del suelo y registro de campo para construir una lectura responsable de una parcela.', duracion: '5 a 6 minutos', escena: 'panoramica', puntos: 5, final: true,
+      imagen: { src: IMG + 'nivel-2-6-el-mapa-del-agua.jpg', w: 1400, h: 788, alt: 'Un huerto de cítricos en una ladera al atardecer. Arriba a la izquierda el terreno sube con piedras y pasto; una línea negra de riego atraviesa la parcela de arriba hacia abajo a la derecha; abajo a la izquierda el suelo se ve más oscuro; en el centro, junto a un camino de tierra, hay una estaca de madera con piedras al pie.' },
+      tituloExito: 'Mundo 02 completado', aprendizaje: 'Pendiente, recorrido del riego, condición del suelo y registro se leen juntos: así se arma una lectura responsable.',
+      textoRefuerzo: 'Miremos otra vez el mapa. Repite este nivel con calma y conecta cada observación con lo que aporta.',
       cierreMundo: [
         { q: 'ines', t: 'Leíste la parcela como un sistema: terreno, riego, señales y registro. Eso es lo que cambia una decisión apresurada por una informada.' },
         { q: 'nico', t: 'Ahora sé por dónde empezar la próxima vez que quiera abrir la llave: mirando primero.' },
         { q: 'mora', t: 'Mora recorre el camino del agua con la nariz pegada al suelo y vuelve moviendo la cola: la parcela está en calma.' }],
       momentos: [
-        { tipo: 'dialogo', boton: 'Armar el mapa', mensajes: [
-          { q: 'ines', t: 'Reunamos todo en un mapa del agua: el terreno, las líneas, las zonas húmedas y lo que anotaste.' },
-          { q: 'nico', t: 'Quiero entender cómo se conectan entre sí.' }] },
-        { tipo: 'ficha', q: 'ines', titulo: 'Mapa del agua', continuar: 'Armar la lectura',
-          intro: 'Relaciona cada elemento de la parcela con lo que aporta. Toca una tarjeta y luego el elemento, o arrástrala hasta él.',
-          exito: 'Muy bien. Cada elemento aporta una parte distinta de la lectura: ninguno la explica solo.',
-          ranuras: [{ id: 'pendiente', t: 'Pendiente' }, { id: 'linea', t: 'Línea de riego' }, { id: 'humeda', t: 'Zona húmeda' }, { id: 'registro', t: 'Observación registrada' }],
-          tarjetas: [
-            { id: 'm1', t: 'Confirma por sí sola la causa del problema.', slot: null, f: noF(1, 'Ningún elemento confirma la causa por sí solo.') },
-            { id: 'm2', t: 'Muestra hacia dónde puede bajar el agua.', slot: 'pendiente' },
-            { id: 'm3', t: 'Reparte el agua por la parcela y se revisa junto con el terreno.', slot: 'linea' },
-            { id: 'm4', t: 'Hace innecesario seguir observando.', slot: null, f: noF(2, 'Observar y registrar sigue siendo el camino.') },
-            { id: 'm5', t: 'Es una señal visible que conviene ubicar y comparar.', slot: 'humeda' },
-            { id: 'm6', t: 'Convierte lo visto en información que se puede comparar después.', slot: 'registro' }],
-          fbMal: AYUDA[0] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: 'Arma una lectura responsable de la parcela. ¿Cuál frase la resume mejor?', opciones: [
-          { t: 'Hay señales que conviene registrar y comparar antes de decidir una causa.', ok: true, f: okF(2) },
-          { t: 'El agua siempre explica lo que se ve en la parcela.', ok: false, f: noF(1) },
-          { t: 'Con una sola señal ya se puede decidir qué hacer.', ok: false, f: noF(2) }],
-          cierre: [{ q: 'ines', t: 'Esa es la lectura del agua: primero observar y registrar; después, con evidencia, decidir.' }], botonFinal: 'Ver mi resultado' }] }
+        { tipo: 'dialogo', boton: 'Explorar el mapa', mensajes: [
+          { q: 'nico', t: 'Ahora ya no vemos elementos aislados. Tenemos que entender cómo se relacionan dentro de la misma parcela.' },
+          { q: 'ines', t: 'Haz un mapa de lo que observas: terreno, línea de riego, zona baja y registro. No buscamos una respuesta rápida, buscamos una lectura clara.' }] },
+        { tipo: 'fichas', q: 'ines', instruccion: 'Toca los cuatro puntos del mapa para abrir su ficha. Puedes volver a abrirlas cuando quieras.', contador: 'Fichas abiertas', continuar: 'Conectar las pistas',
+          final: 'Ya exploraste el mapa. Ahora conecta cada observación con lo que aporta a la lectura.', puntos: [
+          { n: 1, etq: 'Parte alta', x: 11, y: 15, titulo: 'Pendiente', t: 'Desde esta parte elevada, el terreno desciende hacia las zonas bajas.' },
+          { n: 2, etq: 'Línea de riego', x: 68, y: 61, titulo: 'Recorrido de riego', t: 'La línea atraviesa distintos niveles del terreno.' },
+          { n: 3, etq: 'Suelo oscuro', x: 13, y: 81, titulo: 'Condición visible', t: 'Aquí el suelo se observa más oscuro que en otras áreas cercanas.' },
+          { n: 4, etq: 'Estaca', x: 53, y: 74, titulo: 'Punto de registro', t: 'Esta ubicación ayuda a señalar dónde conviene anotar una observación.' }] },
+        { tipo: 'parejas', q: 'ines', intro: 'Forma las cuatro parejas: toca una observación de la izquierda y luego la tarjeta de la derecha que le corresponde.',
+          izquierda: [
+            { id: 'A', t: 'El terreno baja desde una zona elevada.', par: 1 },
+            { id: 'B', t: 'La línea de riego recorre distintas partes de la parcela.', par: 2 },
+            { id: 'C', t: 'En una zona baja el suelo se aprecia más oscuro.', par: 3 },
+            { id: 'D', t: 'Hay una ubicación concreta donde se puede registrar la observación.', par: 4 }],
+          derecha: [
+            { n: 1, t: 'Conviene comparar las condiciones según la posición dentro de la parcela.' },
+            { n: 2, t: 'Vale la pena seguir su recorrido antes de atribuir efectos.' },
+            { n: 3, t: 'Es una evidencia que debe anotarse y revisarse con el tiempo.' },
+            { n: 4, t: 'Permite ubicar la información para volver a observarla después.' }],
+          fbMal: 'Miremos otra vez el mapa: busca qué aporta cada observación a la lectura de la parcela.',
+          exito: 'Muy bien. Cada observación aporta una parte distinta a la lectura; ninguna la explica sola.', continuar: 'Elegir la conclusión' },
+        { tipo: 'eleccionLibre', gradual: true, q: 'ines', letras: true, pregunta: '¿Cuál conclusión representa mejor una lectura responsable de esta parcela?', opciones: [
+          { t: 'La pendiente, el recorrido de la línea y las diferencias visibles del suelo son pistas que conviene registrar y comparar antes de decidir una causa.', ok: true, f: 'Exacto. Conectaste las evidencias sin convertirlas en una conclusión apresurada.' },
+          { t: 'El suelo oscuro demuestra que el sistema de riego está fallando.', ok: false, f: 'Esa afirmación va más allá de lo que la escena demuestra. Primero registra, compara y confirma.' },
+          { t: 'La solución es abrir menos la llave sin revisar nada más.', ok: false, f: 'Esa afirmación va más allá de lo que la escena demuestra. Primero registra, compara y confirma.' }],
+          botonFinal: 'Ver mi resultado' }] }
   ];
 
   /* ───────── Progreso (localStorage, clave independiente del Mundo 01 y de los retos) ───────── */
@@ -2614,6 +2633,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         o.insignia = o.insignia === true && o.completados.length === NIVELES.length;
         o.xp = o.completados.length * XP_NIVEL + (o.insignia ? XP_MUNDO : 0);
         o.reinicio = typeof o.reinicio === 'string' ? o.reinicio : null;
+        if (!o.insignia) delete o.siguiente;
         return o;
       }
     } catch (e) { /* sin datos */ }
@@ -2712,7 +2732,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     var nv = NIVELES[i];
     if (!disponible(i)) return;
     run = { i: i, m: 0, scores: [], avance: false, terminado: false };
-    $('nvEtq').textContent = 'Nivel ' + nv.id;
+    $('nvEtq').textContent = nv.etiqueta || ('Nivel ' + nv.id);
     $('nvTit').textContent = nv.titulo; $('nvObj').textContent = nv.subtitulo || nv.objetivo;
     var dur = $('nvDur'); dur.hidden = !nv.duracion; dur.textContent = nv.duracion ? 'Duración: ' + nv.duracion : '';
     mostrar('vistaNivel');
@@ -2776,7 +2796,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     var xpNuevo = false, insigniaNueva = false;
     if (supera && !yaHecho) {
       estado.completados.push(i); estado.completados.sort(function (a, b) { return a - b; });
-      if (estado.completados.length === NIVELES.length) { estado.insignia = true; insigniaNueva = true; }
+      if (estado.completados.length === NIVELES.length) { estado.insignia = true; insigniaNueva = true; estado.siguiente = { id: 'mundo-03', estado: 'proximamente' }; }   // el próximo mundo queda preparado como «Próximamente»
       estado.xp = estado.completados.length * XP_NIVEL + (estado.insignia ? XP_MUNDO : 0);
       xpNuevo = true;
     }
@@ -2819,8 +2839,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     info = info || {};
     run = null;
     var chips = '';
-    if (info.insignia) chips += '<span class="hs-xp-chip">+' + XP_MUNDO + ' XP · Lectura del agua</span>';
-    if (info.xpNivel) chips += '<span class="hs-xp-chip">+' + XP_NIVEL + ' XP · nivel 2.6</span>';
+    if (info.xpNivel) chips += '<span class="hs-xp-chip">+' + XP_NIVEL + ' XP por completar el nivel</span>';
+    if (info.insignia) chips += '<span class="hs-xp-chip">+' + XP_MUNDO + ' XP por completar Mundo 02</span>';
     $('cierreXp').innerHTML = chips || '<span class="hs-xp-chip">Recompensas ya ganadas: repetir no suma XP de nuevo</span>';
     $('cierreDialogos').innerHTML = (NIVELES[NIVELES.length - 1].cierreMundo || []).map(function (x) { return dlgHtml(x.q, x.t); }).join('');
     var ins = $('cierreInsignia'); ins.className = 'hs-insig-wrap'; ins.innerHTML = insigniaSvg(true);
@@ -3047,6 +3067,44 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         });
         try { btns[0].b.focus({ preventScroll: true }); } catch (e) { /* sin foco */ }
       }
+      pintar();
+    },
+    // Parejas: observaciones a la izquierda y tarjetas de relación a la derecha (en otro orden). Tocar una de cada lado; cada fallo de una observación resta 20% de su punto.
+    parejas: function (m, nv) {
+      dlg(m.q, m.intro);
+      var hechas = {}, n = 0, tomada = null, fallos = {};
+      var derecha = barajarDistinto(m.derecha);
+      var cont = document.createElement('div'); cont.className = 'm2-ficha';
+      cont.innerHTML = '<div class="m2-parejas"><div class="m2-pcol" id="m2PIzq" role="group" aria-label="Observaciones"></div><div class="m2-pcol" id="m2PDer" role="group" aria-label="Lo que aporta"></div></div><div class="hs-elec-fb" id="m2PFb" aria-live="polite"></div>';
+      inter.appendChild(cont);
+      var fb = cont.querySelector('#m2PFb');
+      function pintar() {
+        cont.querySelector('#m2PIzq').innerHTML = m.izquierda.map(function (a) {
+          var h = hechas[a.id];
+          return '<button type="button" class="m2-par m2-par--izq' + (h ? ' es-ok' : '') + (tomada === a.id ? ' es-tomada' : '') + '" data-izq="' + a.id + '"' + (h ? ' disabled' : '') + ' aria-pressed="' + (tomada === a.id ? 'true' : 'false') + '"><b class="m2-par-l">' + a.id + '</b><span>' + esc(a.t) + '</span>' + (h ? '<i class="m2-par-v">' + a.par + '</i>' : '') + '</button>';
+        }).join('');
+        cont.querySelector('#m2PDer').innerHTML = derecha.map(function (d) {
+          var usada = m.izquierda.some(function (a) { return hechas[a.id] && a.par === d.n; });
+          return '<button type="button" class="m2-par m2-par--der' + (usada ? ' es-ok' : '') + '" data-der="' + d.n + '"' + (usada ? ' disabled' : '') + '><b class="m2-par-l">' + d.n + '</b><span>' + esc(d.t) + '</span></button>';
+        }).join('');
+      }
+      cont.addEventListener('click', function (e) {
+        var a = e.target.closest('[data-izq]'), d = e.target.closest('[data-der]');
+        if (a) { if (hechas[a.getAttribute('data-izq')]) return; tomada = tomada === a.getAttribute('data-izq') ? null : a.getAttribute('data-izq'); pintar(); return; }
+        if (!d) return;
+        run.avance = true;
+        if (!tomada) { fb.innerHTML = dlgHtml(m.q, 'Primero toca una observación de la izquierda y luego la tarjeta que le corresponde.', 'ayuda'); return; }
+        var obs = m.izquierda.filter(function (x) { return x.id === tomada; })[0];
+        if (obs.par === Number(d.getAttribute('data-der'))) {
+          hechas[obs.id] = true; n++; tomada = null; fb.innerHTML = '';
+          puntajeDirecto(Math.max(0, 1 - MALA * (fallos[obs.id] || 0)));
+          pintar();
+          if (n === m.izquierda.length) { dlg(m.q, m.exito, 'acierto'); botonContinuar(m.continuar); }
+        } else {
+          fallos[obs.id] = (fallos[obs.id] || 0) + 1; tomada = null;
+          fb.innerHTML = dlgHtml(m.q, m.fbMal, 'ayuda'); pintar();
+        }
+      });
       pintar();
     },
     // Revisión guiada: el alumno marca «Revisado» en cada punto de la lista (no se califica; asegura que sabe qué observar). Se puede desmarcar y repasar.
