@@ -3691,8 +3691,8 @@ body::before { display: none; }
 
           <div class="form-group">
             <label class="form-label" for="cursoSiguiente">Curso que continúa <span class="cf-ayuda-in">(opcional)</span></label>
-            <select id="cursoSiguiente" class="form-select"><option value="">Ninguno</option></select>
-            <div class="cf-ayuda">Quien tenga este como su curso gratis podrá desbloquear el que elijas aquí con créditos (todas sus clases menos la última, que siempre es de membresía). Así se arma la ruta: Suelos → Riego → …</div>
+            <select id="cursoSiguiente" class="form-select"><option value="">Automático (el siguiente del catálogo)</option><option value="ninguno">Ninguno (este curso no continúa)</option></select>
+            <div class="cf-ayuda">Quien tenga este como su curso gratis podrá desbloquear con créditos el curso que continúa (todas sus clases menos la última, que siempre es de membresía). En <strong>Automático</strong> es el siguiente del catálogo, en el mismo orden en que se abren para los miembros: no tienes que hacer nada. Elige otro solo si quieres una ruta distinta, o «Ninguno» para que no continúe.</div>
           </div>
 
           <div class="form-group" style="margin-bottom:14px;">
@@ -10227,7 +10227,7 @@ let _bibLibrosCargados = false;
   function cursoSiguientePintar(propioId, valor) {
     const sel = document.getElementById('cursoSiguiente');
     if (!sel) return;
-    sel.innerHTML = '<option value="">Ninguno</option>' + (_adminCursosCache || []).filter(c => c.id !== propioId)
+    sel.innerHTML = '<option value="">Automático (el siguiente del catálogo)</option><option value="ninguno">Ninguno (este curso no continúa)</option>' + (_adminCursosCache || []).filter(c => c.id !== propioId)
       .map(c => '<option value="' + String(c.id).replace(/"/g, '&quot;') + '">' + esc(c.titulo || c.id) + '</option>').join('');
     sel.value = valor || '';
     if (sel.value !== (valor || '')) sel.value = '';
