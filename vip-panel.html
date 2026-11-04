@@ -6384,6 +6384,14 @@
     background: rgba(245, 158, 11, 0.2) !important;
     color: #FCD34D !important;
   }
+  .apoyo-row-estado.consulta {
+    background: rgba(14, 116, 144, 0.14);
+    color: #0E7490;
+  }
+  [data-theme="dark"] .apoyo-row-estado.consulta {
+    background: rgba(34, 211, 238, 0.16) !important;
+    color: #67E8F9 !important;
+  }
   .apoyo-row-estado.cerrado {
     background: rgba(100, 116, 139, 0.15);
     color: var(--stone-600);
@@ -6420,6 +6428,10 @@
     overflow: hidden;
   }
   [data-theme="dark"] .apoyo-row-desc { color: #EDF7F1 !important; }
+  .apoyo-row-desc--completa { display: block; -webkit-line-clamp: unset; overflow: visible; }
+  .apoyo-row-dato { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--stone-600); }
+  .apoyo-row-dato b { color: var(--stone-800, #1c1917); font-weight: 700; }
+  [data-theme="dark"] .apoyo-row-dato, [data-theme="dark"] .apoyo-row-dato b { color: #EDF7F1 !important; }
   .apoyo-row-link-cta {
     display: inline-flex;
     align-items: center;
@@ -12325,7 +12337,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       <div class="panel-header">
         <span class="panel-tag">Herramienta VIP</span>
         <h2 class="panel-title">Apoyos <em class="headline-accent">verificados</em>.</h2>
-        <p class="panel-subtitle">Convocatorias y programas con fuente oficial. Revisa requisitos, montos, vigencia y el enlace directo antes de iniciar tu trámite.</p>
+        <p class="panel-subtitle">Convocatorias y programas con fuente oficial. Revisa requisitos, montos, vigencia y el enlace directo antes de iniciar tu trámite. Datos y enlaces revisados el 4 de noviembre de 2026.</p>
       </div>
 
       <div class="tool-start"><span class="tool-start-icon">🔎</span><span><strong>Antes de solicitar:</strong> filtra por institución, abre la fuente oficial y confirma que la convocatoria siga vigente. Nunca compartas documentos o datos personales fuera del sitio oficial.</span></div>
@@ -19604,17 +19616,19 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
 
   // Apoyos curados permanentes (base de confianza, siempre visibles)
   const APOYOS_CURADOS = [
+    // Datos revisados el 4 de noviembre de 2026 contra las Reglas de Operación 2026 (DOF) y los sitios oficiales.
+    // Los apoyos federales cambian cada año: volver a revisar montos, requisitos y enlaces al menos una vez al año.
     {
       id: 'produccion-bienestar',
       categoria: 'sader',
       logo: '🌾',
       titulo: 'Producción para el Bienestar 2026',
       institucion: 'SADER / Bienestar',
-      descripcion: 'Apoyo económico directo anual a pequeños y medianos productores de granos, café, cacao, caña, nopal y miel. Se deposita en tarjeta del Banco del Bienestar.',
+      descripcion: 'Apoyo económico directo anual a productores de maíz, frijol, arroz y otros granos, café, cacao, caña, nopal y miel. Se deposita en tarjeta del Banco del Bienestar.',
       monto: 'De $7,000 a $24,000 MXN',
-      cierre: 'Registro abierto',
-      estado: 'abierto',
-      requisitos: 'Hasta 20 ha de temporal o 5 ha de riego. Padrón de Productores SADER. INE + CURP + comprobante de predio. NO estar en Sembrando Vida.',
+      cierre: 'Según aviso de SADER en tu región',
+      estado: 'consulta',
+      requisitos: 'Mayor de 18 años. Hasta 20 ha de temporal o 5 ha de riego. Registro en el Padrón de Productores de SADER y en el del programa. INE, CURP, comprobante de domicilio y documento de propiedad o posesión del predio, con su georreferencia. NO estar vigente en Sembrando Vida.',
       link: 'https://www.gob.mx/agricultura/acciones-y-programas/produccion-para-el-bienestar-2026',
       esCurado: true
     },
@@ -19623,12 +19637,12 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       categoria: 'bienestar',
       logo: '💊',
       titulo: 'Fertilizantes para el Bienestar 2026',
-      institucion: 'SADER / SEGALMEX',
-      descripcion: 'Entrega gratuita de fertilizantes a productores de granos, café y miel. Cobertura nacional (antes solo estados prioritarios).',
-      monto: 'Gratuito (según hectáreas)',
-      cierre: 'Ciclo PV 2026',
-      estado: 'abierto',
-      requisitos: 'Inscripción en Padrón SADER. Ser productor activo. Consulta en el buscador oficial si eres beneficiario.',
+      institucion: 'SADER',
+      descripcion: 'Entrega gratuita de fertilizante a productores de maíz, frijol y arroz (y otros cultivos que defina la Secretaría). Cobertura en los 32 estados, sujeta a presupuesto.',
+      monto: 'Gratis: hasta 300 kg por ha y 600 kg por productor',
+      cierre: 'Convocatoria de tu estado (30 días)',
+      estado: 'consulta',
+      requisitos: 'Folio del Padrón de Productores de SADER (se obtiene en el DDR o CADER). INE vigente, CURP y documento de propiedad o posesión del predio. Quien recibió fertilizante el año pasado o está en Producción para el Bienestar entra directo cuando se publica el padrón. NO estar vigente en Sembrando Vida.',
       link: 'https://www.gob.mx/agricultura/acciones-y-programas/programa-de-fertilizantes-para-el-bienestar-2026',
       esCurado: true
     },
@@ -19636,41 +19650,41 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       id: 'credito-fira-joven',
       categoria: 'fira',
       logo: '🏦',
-      titulo: 'FIRA Crédito Joven',
+      titulo: 'Crédito FIRA',
       institucion: 'FIRA - Banco de México',
-      descripcion: 'Crédito con condiciones preferenciales para jóvenes de 18 a 35 años que emprenden en el campo. Tasas bajas y acompañamiento técnico incluido.',
-      monto: 'Hasta $3,000,000 MXN',
+      descripcion: 'FIRA trabaja a través de bancos y otros intermediarios financieros. Ofrece crédito y garantías para el sector agroalimentario y el medio rural.',
+      monto: 'Según tu proyecto y el intermediario',
       cierre: 'Todo el año',
       estado: 'abierto',
-      requisitos: 'Edad 18-35 años. Proyecto agrícola, pecuario o forestal viable. Capacidad de pago comprobable.',
-      link: 'https://www.fira.gob.mx/',
+      requisitos: 'Acude a un banco o intermediario financiero que opere con FIRA y pide crédito FIRA. Proyecto viable y capacidad de pago.',
+      link: 'https://www.fira.gob.mx/Nd/index.jsp',
       esCurado: true
     },
     {
       id: 'credito-fira-mujer',
       categoria: 'fira',
-      logo: '👩‍🌾',
-      titulo: 'FIRA Mujeres en el Campo',
+      logo: '📡',
+      titulo: 'Programas de apoyo FIRA',
       institucion: 'FIRA - Banco de México',
-      descripcion: 'Apoyo crediticio preferencial para mujeres productoras rurales que impulsen proyectos agroalimentarios o pecuarios.',
-      monto: 'Hasta $2,000,000 MXN',
-      cierre: 'Todo el año',
-      estado: 'abierto',
-      requisitos: 'Ser mujer productora. Proyecto rural viable. Historial crediticio sano.',
-      link: 'https://www.fira.gob.mx/',
+      descripcion: 'FIRA tiene programas como Apoyos para el Fomento, Eficiencia Energética, Sustenta +, Comercializa + y Desarrollo de Proveedores. Revisa en su sitio cuáles siguen vigentes y qué piden.',
+      monto: 'Varía por programa',
+      cierre: 'Consulta la vigencia',
+      estado: 'consulta',
+      requisitos: 'Cada programa tiene sus propias condiciones; consúltalas en el sitio de FIRA o con tu intermediario financiero.',
+      link: 'https://www.fira.gob.mx/Nd/index.jsp',
       esCurado: true
     },
     {
       id: 'conagua-tecnificacion',
       categoria: 'conagua',
       logo: '💧',
-      titulo: 'Tecnificación del Riego',
+      titulo: 'Tecnificación de distritos de riego',
       institucion: 'CONAGUA',
-      descripcion: 'Apoyo económico para instalar sistemas de riego presurizado (goteo/aspersión) que ahorran hasta 50% del agua.',
-      monto: 'Hasta $35,000 MXN/ha',
-      cierre: 'Consulta reglas 2026',
-      estado: 'abierto',
-      requisitos: 'Mínimo 0.5 ha con sistema gravitacional existente. Padrón SADER. Proyecto técnico del sistema a instalar.',
+      descripcion: 'Programa Nacional de Tecnificación de Riego: CONAGUA tecnifica 18 distritos de riego (más de 200 mil hectáreas entre 2025 y 2030). Si tu parcela está en un distrito de riego, pregunta en tu módulo o en la oficina de CONAGUA.',
+      monto: 'Obras en el distrito (sin monto por productor)',
+      cierre: 'Según tu distrito de riego',
+      estado: 'consulta',
+      requisitos: 'Ser usuario de un distrito de riego. Se gestiona por el distrito o módulo de riego; confirma con CONAGUA si el tuyo está incluido.',
       link: 'https://www.gob.mx/conagua',
       esCurado: true
     },
@@ -19678,14 +19692,14 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       id: 'sader-seguro-agricola',
       categoria: 'sader',
       logo: '🛡️',
-      titulo: 'Seguro Agrícola Catastrófico',
+      titulo: 'Seguro agrícola catastrófico',
       institucion: 'SADER / AGROASEMEX',
-      descripcion: 'Protege tu cosecha ante sequía, helada, granizo, inundación o incendio. Cobertura básica para pequeños productores.',
-      monto: 'Apoyo variable',
-      cierre: 'Antes de siembra',
-      estado: 'abierto',
-      requisitos: 'Pequeños productores. Hasta 20 ha. Contratar antes del ciclo de siembra.',
-      link: 'https://www.agroasemex.gob.mx/',
+      descripcion: 'Protección de cultivos ante sequía, helada, granizo o inundación. Depende del estado y del ciclo: en 2026 algunos estados no lo incluyeron en su presupuesto. Pregunta en tu Distrito de Desarrollo Rural o en la Secretaría de Agricultura de tu estado.',
+      monto: 'Según el estado y el ciclo',
+      cierre: 'Antes de la siembra',
+      estado: 'consulta',
+      requisitos: 'Los requisitos y la cobertura los define cada estado o convocatoria; confirma si tu cultivo está incluido.',
+      link: 'https://www.gob.mx/agroasemex',
       esCurado: true
     },
     {
@@ -19694,26 +19708,12 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       logo: '🌳',
       titulo: 'Sembrando Vida',
       institucion: 'Secretaría de Bienestar',
-      descripcion: 'Apoyo mensual a productores que trabajan 2.5 ha con sistemas agroforestales o milpa intercalada con árboles frutales.',
-      monto: '$6,000 MXN/mes',
-      cierre: 'Padrón cerrado',
+      descripcion: 'Apoyo mensual a campesinas y campesinos que trabajan 2.5 ha con sistemas agroforestales (milpa intercalada con árboles frutales y maderables). Incluye insumos y capacitación.',
+      monto: '$6,450 MXN/mes',
+      cierre: 'Sin registro general abierto',
       estado: 'cerrado',
-      requisitos: 'Padrón cerrado desde 2024. Solo continúan los beneficiarios activos del programa.',
+      requisitos: 'No hay registro abierto para todo el país: se abre solo cuando el programa llega a nuevos territorios. Consulta con la Secretaría de Bienestar. Quien está vigente aquí no puede recibir Producción para el Bienestar ni Fertilizantes.',
       link: 'https://www.gob.mx/bienestar/acciones-y-programas/programa-sembrando-vida',
-      esCurado: true
-    },
-    {
-      id: 'fira-agronegocios',
-      categoria: 'fira',
-      logo: '📡',
-      titulo: 'FIRA Crédito Agronegocios',
-      institucion: 'FIRA - Banco de México',
-      descripcion: 'Financiamiento para infraestructura, maquinaria, equipo de precisión, invernaderos y tecnología agrícola.',
-      monto: 'Hasta $5,000,000 MXN',
-      cierre: 'Todo el año',
-      estado: 'abierto',
-      requisitos: 'Productor activo. Proyecto viable con estudios financieros. Garantía colateral o FONAGA.',
-      link: 'https://www.fira.gob.mx/',
       esCurado: true
     },
     {
@@ -19722,11 +19722,11 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       logo: '🌽',
       titulo: 'Apoyos al Campo Puebla',
       institucion: 'SADR Gobierno de Puebla',
-      descripcion: 'Programas estatales de apoyo al campo poblano: semilla mejorada, fertilizante, asesoría técnica y equipo.',
-      monto: 'Variable',
+      descripcion: 'Programas estatales del campo poblano con reglas de operación 2026, como insumos estratégicos, fomento apícola, cafeticultura y servicios para la competitividad.',
+      monto: 'Varía por programa',
       cierre: 'Por convocatoria',
-      estado: 'pronto',
-      requisitos: 'Ser productor poblano con superficie comprobable. Identificación oficial. Comprobante de propiedad/renta del predio.',
+      estado: 'consulta',
+      requisitos: 'Cada programa publica sus reglas de operación en el sitio de la Secretaría (sección de programas); revisa cuál aplica a tu cultivo.',
       link: 'https://sadr.puebla.gob.mx/',
       esCurado: true
     },
@@ -19734,13 +19734,13 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       id: 'sader-padron',
       categoria: 'sader',
       logo: '📋',
-      titulo: 'Padrón Único de Productores',
+      titulo: 'Padrón de Productores de SADER',
       institucion: 'SADER',
-      descripcion: 'Inscripción gratuita al padrón oficial de productores — es el PRIMER paso requerido para acceder a casi cualquier apoyo federal.',
-      monto: 'Trámite gratuito',
+      descripcion: 'Registro en el Padrón de Productores de la Secretaría de Agricultura. Lo piden Producción para el Bienestar, Fertilizantes para el Bienestar y otros apoyos de SADER.',
+      monto: 'Registro (sin apoyo económico)',
       cierre: 'Todo el año',
       estado: 'abierto',
-      requisitos: 'INE, CURP, comprobante de domicilio, documento que acredite propiedad o posesión del predio, coordenadas geográficas.',
+      requisitos: 'Mayor de 18 años. INE vigente, CURP, comprobante de domicilio (máximo 3 meses), documento de propiedad o posesión del predio y su georreferencia. Se hace en ventanilla (CADER, DDR u OREF).',
       link: 'https://www.gob.mx/agricultura',
       esCurado: true
     },
@@ -19748,14 +19748,14 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       id: 'precios-garantia',
       categoria: 'bienestar',
       logo: '💵',
-      titulo: 'Precios de Garantía SEGALMEX',
-      institucion: 'SEGALMEX',
-      descripcion: 'Compra de maíz, frijol, trigo, arroz y leche a precios de garantía superiores al mercado, directamente a pequeños productores.',
-      monto: 'Precio preferencial',
-      cierre: 'Por temporada',
-      estado: 'abierto',
-      requisitos: 'Pequeños productores de granos básicos. Acreditar cosecha. Registrarse en centro de acopio cercano.',
-      link: 'https://www.gob.mx/segalmex',
+      titulo: 'Acopio y precios de garantía',
+      institucion: 'Alimentación para el Bienestar',
+      descripcion: 'Alimentación para el Bienestar compra maíz y frijol de pequeños productores a precio de acopio (2026: maíz $7,000/t, maíz nativo $8,000/t, frijol $27,000/t). La leche se compra a $11.50 por litro en Leche para el Bienestar.',
+      monto: 'Maíz $7,000/t · Frijol $27,000/t · Leche $11.50/L',
+      cierre: 'Por ciclo y región',
+      estado: 'consulta',
+      requisitos: 'Maíz y frijol: persona física mayor de edad, INE, CURP y comprobante de propiedad o posesión del predio; el registro se hace en el Centro de Acopio. Límites: maíz 35 t (hasta 5 ha); maíz nativo y frijol 15 t. Leche: estar en el Padrón Nacional de Productores de Leche (solicitud e INE); hasta 500 vacas en ordeña.',
+      link: 'https://www.gob.mx/alimentacionparaelbienestar',
       esCurado: true
     },
     {
@@ -19765,10 +19765,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       titulo: 'Concesión de Agua Agrícola',
       institucion: 'CONAGUA',
       descripcion: 'Trámite oficial para obtener concesión de agua con fines agrícolas (pozos, manantiales, ríos). Paso necesario para uso legal del recurso.',
-      monto: 'Solo costo de trámite',
+      monto: 'Pago de derechos federales',
       cierre: 'Todo el año',
       estado: 'abierto',
-      requisitos: 'Título de propiedad o derecho agrario. Estudio técnico. Proyecto de uso del agua.',
+      requisitos: 'Identificación oficial. Documento que acredite la propiedad o posesión del terreno. Personas morales: acta constitutiva y poder del representante. Se tramita en línea en el Buzón del Agua (aguas superficiales: CONAGUA-01-003-A; subterráneas: CONAGUA-01-004-A).',
       link: 'https://www.gob.mx/conagua/acciones-y-programas/tramites-solicitados-por-conagua-en-linea-buzon-del-agua',
       esCurado: true
     }
@@ -19814,6 +19814,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       const estadoMap = {
         abierto: { label: 'Abierto', emoji: '🟢' },
         pronto: { label: 'Próximamente', emoji: '🟡' },
+        consulta: { label: 'Consultar fechas', emoji: '🔵' },
         cerrado: { label: 'Cerrado', emoji: '⚪' }
       };
       const estado = estadoMap[a.estado] || estadoMap.abierto;
@@ -19835,6 +19836,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       const titulo = (a.titulo || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
       const desc = (a.descripcion || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
       const institucion = (a.institucion || 'Gobierno').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+      const esc = (t) => String(t || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+      const datos = (a.esCurado ? [['Monto', a.monto], ['Fecha', a.cierre], ['Requisitos', a.requisitos]] : []).filter(d => d[1]).map(d => `<p class="apoyo-row-dato"><b>${d[0]}:</b> ${esc(d[1])}</p>`).join('');
 
       return `
         <a class="apoyo-row" href="${a.link}" target="_blank" rel="noopener noreferrer">
@@ -19851,7 +19854,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
               <span class="apoyo-row-estado ${a.estado}">${estado.emoji} ${estado.label}</span>
             </div>
             <div class="apoyo-row-titulo">${titulo}</div>
-            ${desc ? `<p class="apoyo-row-desc">${desc}</p>` : ''}
+            ${desc ? `<p class="apoyo-row-desc${a.esCurado ? ' apoyo-row-desc--completa' : ''}">${desc}</p>` : ''}
+            ${datos}
             <div class="apoyo-row-link-cta">
               Ver en sitio oficial
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
