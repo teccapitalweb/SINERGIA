@@ -3689,6 +3689,12 @@ body::before { display: none; }
             </div>
           </div>
 
+          <div class="form-group">
+            <label class="form-label" for="cursoSiguiente">Curso que continúa <span class="cf-ayuda-in">(opcional)</span></label>
+            <select id="cursoSiguiente" class="form-select"><option value="">Ninguno</option></select>
+            <div class="cf-ayuda">Quien tenga este como su curso gratis podrá desbloquear el que elijas aquí con créditos (todas sus clases menos la última, que siempre es de membresía). Así se arma la ruta: Suelos → Riego → …</div>
+          </div>
+
           <div class="form-group" style="margin-bottom:14px;">
             <label class="form-label">Disponibilidad para los miembros</label>
             <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
@@ -9553,7 +9559,8 @@ let _bibLibrosCargados = false;
     nivelMaestro: ['Al llegar a Maestro del Campo (3,000 XP)', 'Regalo de créditos, una sola vez'],
     costoHerramienta: ['Costo de una herramienta de campo', 'Créditos para canjearla'],
     costoMaterial: ['Costo del material de un curso', 'Créditos para canjearlo'],
-    costoLibro: ['Costo de un libro de la biblioteca', 'Créditos para canjearlo']
+    costoLibro: ['Costo de un libro de la biblioteca', 'Créditos para canjearlo'],
+    costoCurso: ['Costo de desbloquear el curso que continúa', 'Para quien no es miembro: el curso que sigue a su curso gratis (todas sus clases menos la última)']
   };
   const RT_GRUPOS = [
     { clave: 'retos', titulo: 'Retos y podio', bloques: [
@@ -9564,7 +9571,7 @@ let _bibLibrosCargados = false;
       ['Regalos por acciones', ['bienvenida', 'tarjetaDirectorio', 'claseGratis', 'racha7', 'cursoCompleto']],
       ['Al subir de nivel', ['nivelBrote', 'nivelPlanta', 'nivelCosecha', 'nivelMaestro']],
       ['Invitaciones', ['invitadorPerfil', 'invitadorMiembro', 'invitadoPerfil', 'invitadoMiembro', 'xpAmigoUnido']],
-      ['Costos de canje', ['costoHerramienta', 'costoMaterial', 'costoLibro']]] }
+      ['Costos de canje', ['costoHerramienta', 'costoMaterial', 'costoLibro', 'costoCurso']]] }
   ];
   const RT = { guardado: null, defectos: null, semana: '', cargando: false };
   const rtClaves = (grupo) => RT_GRUPOS.find(g => g.clave === grupo).bloques.flatMap(b => b[1]);
@@ -10216,6 +10223,16 @@ let _bibLibrosCargados = false;
     } catch (err) { showToast(err.message || 'No se pudieron proteger los enlaces', 'error'); }
   };
 
+  // «Curso que continúa»: lista de los demás cursos y el que ya estaba elegido
+  function cursoSiguientePintar(propioId, valor) {
+    const sel = document.getElementById('cursoSiguiente');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Ninguno</option>' + (_adminCursosCache || []).filter(c => c.id !== propioId)
+      .map(c => '<option value="' + String(c.id).replace(/"/g, '&quot;') + '">' + esc(c.titulo || c.id) + '</option>').join('');
+    sel.value = valor || '';
+    if (sel.value !== (valor || '')) sel.value = '';
+  }
+
   window.abrirCursoModalNuevo = function() {
     document.getElementById('cursoModalTitle').textContent = 'Nuevo curso';
     document.getElementById('cursoModalSubmitText').textContent = 'Crear curso';
@@ -10224,6 +10241,7 @@ let _bibLibrosCargados = false;
     document.getElementById('cursoDesc').value = '';
     document.getElementById('cursoNivel').value = 'Básico';
     document.getElementById('cursoDuracion').value = '';
+    cursoSiguientePintar('', '');
     setCursoDisponibilidad(false);
     _cursoEditandoSesiones = [];
     cursoPortadaIniciar('');
@@ -10246,6 +10264,7 @@ let _bibLibrosCargados = false;
     document.getElementById('cursoNivel').value = curso.nivel || 'Básico';
     // Horas: un curso guardado como automático deja el campo vacío; uno anterior (o a mano) conserva su número
     document.getElementById('cursoDuracion').value = curso.horasManual === false ? '' : (curso.duracion || '');
+    cursoSiguientePintar(cursoId, curso.siguienteCursoId || '');
     setCursoDisponibilidad(curso.disponibleSiempre === true);
     // Clonar sesiones para editar sin tocar la cache
     _cursoEditandoSesiones = (curso.sesiones || []).map(s => ({ ...s, ...(s.actividad ? { actividad: JSON.parse(JSON.stringify(s.actividad)) } : {}), ...(s.juego ? { juego: JSON.parse(JSON.stringify(s.juego)) } : {}) }));
@@ -10394,7 +10413,7 @@ let _bibLibrosCargados = false;
         }
         // Todo lo escribe el servidor: valida, guarda el curso con sus clases, pone los enlaces en privado y lo anota
         const anteriores = cursoId ? (((_adminCursosCache.find(c => c.id === cursoId) || {}).sesiones) || []) : [];
-        const guardado = await callAdminEndpoint('/admin/cursos/guardar', { cursoId, titulo, descripcion, nivel, duracion: horasManual ? duracion : undefined, horasManual, ...cursoPortadaPayload(), disponibleSiempre: getCursoDisponibilidad(), sesiones: sesionesLimpias, materiales });
+        const guardado = await callAdminEndpoint('/admin/cursos/guardar', { cursoId, titulo, descripcion, nivel, duracion: horasManual ? duracion : undefined, horasManual, ...cursoPortadaPayload(), disponibleSiempre: getCursoDisponibilidad(), siguienteCursoId: document.getElementById('cursoSiguiente').value, sesiones: sesionesLimpias, materiales });
         try {
           await actSincronizarClaves(guardado.id, clavesActividad, anteriores);
           showToast(guardado.creado ? 'Curso creado ✓' : 'Curso actualizado ✓');
