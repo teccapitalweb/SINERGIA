@@ -1934,6 +1934,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 .m2-par-l { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--h-soft); font: 800 13px var(--font-display, 'Plus Jakarta Sans', sans-serif); color: var(--h-subtle); }
 #historia .m2-par.es-ok .m2-par-l { background: var(--h-accent); color: #fff; }
 .m2-par-v { display: grid; place-items: center; min-width: 26px; height: 26px; border-radius: 100px; background: var(--h-accent); color: #fff; font: 800 12.5px var(--font-display, 'Plus Jakarta Sans', sans-serif); font-style: normal; }
+.m2-bloqueo { margin: 14px 0 0; padding: 12px 16px; border: 1.5px solid #E7C873; border-radius: 14px; background: var(--h-no-bg); font-size: 14px; color: var(--h-text); }
 .m2-nota { margin-top: 8px; font-size: 13.5px; font-weight: 600; color: var(--h-subtle); }
 .m2-teclado { margin-top: 10px; }
 #historia .m2-tec-b { min-height: 38px; padding: 0 14px; border: 1.5px dashed var(--h-border); border-radius: 100px; background: transparent; font: 700 13px var(--font-display, 'Plus Jakarta Sans', sans-serif); color: var(--h-muted); }
@@ -2189,6 +2190,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
               <p class="hs-aviso">Simulación educativa. No ofrece diagnósticos agrícolas reales ni recomendaciones profesionales.</p>
             </div>
           </div>
+          <p class="m2-bloqueo" id="m2Bloqueo" hidden role="status"><b>Completa La parcela despierta para desbloquear este mundo.</b> Sus seis niveles se abren cuando cierras el Mundo 01.</p>
           <div class="hs-cuerpo">
             <div>
               <div class="hs-cab"><h2>Tu ruta por el agua</h2><p>Seis niveles breves. Cada uno se abre al alcanzar 80% de dominio en el anterior.</p></div>
@@ -2632,7 +2634,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
   ];
 
   /* ───────── Progreso (localStorage, clave independiente del Mundo 01 y de los retos) ───────── */
-  function vacio() { return { v: 1, completados: [], dominio: {}, insignia: false, xp: 0, reinicio: null }; }
+  function vacio() { return { v: 1, completados: [], dominio: {}, insignia: false, xp: 0, reinicio: null, desbloqueado: false }; }
   function leer() {
     try {
       var o = JSON.parse(localStorage.getItem(CLAVE) || 'null');
@@ -2643,6 +2645,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         o.xp = o.completados.length * XP_NIVEL + (o.insignia ? XP_MUNDO : 0);
         o.reinicio = typeof o.reinicio === 'string' ? o.reinicio : null;
         if (!o.insignia) delete o.siguiente;
+        o.desbloqueado = o.desbloqueado === true;
         return o;
       }
     } catch (e) { /* sin datos */ }
@@ -2651,7 +2654,12 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
   function guardar(o) { try { localStorage.setItem(CLAVE, JSON.stringify(o)); } catch (e) { /* almacenamiento no disponible */ } }
   var estado = leer();
   function hecho(i) { return estado.completados.indexOf(i) >= 0; }
-  function disponible(i) { return i === 0 || hecho(i - 1); }
+  // El Mundo 02 se abre al cerrar el Mundo 01 (en este dispositivo o, con sesión, en la cuenta); quien ya avanzó en él lo conserva abierto
+  function mundo01Completo() {
+    try { var o = JSON.parse(localStorage.getItem('sinergia_historia_parcela_v1') || 'null'); return !!(o && o.v === 1 && Array.isArray(o.completados) && o.completados.length >= 6); } catch (e) { return false; }
+  }
+  function bloqueado() { return !(estado.desbloqueado || estado.completados.length > 0 || mundo01Completo()); }
+  function disponible(i) { return !bloqueado() && (i === 0 || hecho(i - 1)); }
   function siguienteIdx() { for (var i = 0; i < NIVELES.length; i++) if (!hecho(i)) return i; return -1; }
   function fechaLarga(iso) { try { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } }
 
@@ -2677,7 +2685,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     var ins = $('heroInsignia');
     ins.className = 'hs-insignia' + (estado.insignia ? ' is-ganada' : '');
     ins.innerHTML = insigniaSvg(estado.insignia) + '<span>' + (estado.insignia ? 'Insignia obtenida: Lectura del agua' : 'Insignia bloqueada: Lectura del agua') + '</span>';
-    $('btnComenzar').textContent = n === 0 ? 'Comenzar recorrido →' : (sig === -1 ? 'Volver a recorrer →' : 'Continuar recorrido →');
+    var bq = bloqueado(); $('m2Bloqueo').hidden = !bq;
+    $('btnComenzar').textContent = bq ? 'Ir a La parcela despierta →' : (n === 0 ? 'Comenzar recorrido →' : (sig === -1 ? 'Volver a recorrer →' : 'Continuar recorrido →'));
     $('xpTotal').textContent = String(estado.xp);
     $('guias').innerHTML = ['ines', 'nico', 'mora'].map(function (q) {
       var g = GUIAS[q]; return '<div class="hs-guia">' + avatar(q, 'lg') + '<div><b>' + esc(g.nombre) + '</b><span class="hs-rol">' + esc(g.rol) + '</span><span class="hs-desc">' + esc(g.desc) + '</span></div></div>';
@@ -2710,13 +2719,13 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       confirmar('¿Volver a Retos?', 'Tus niveles terminados se conservan. Este nivel empezará de nuevo la próxima vez que lo abras.', 'Volver a Retos', function () { location.href = 'vip-panel.html#retos'; });
     }
   });
-  $('btnComenzar').addEventListener('click', function () { var s = siguienteIdx(); abrirNivel(s === -1 ? 0 : s); });
+  $('btnComenzar').addEventListener('click', function () { if (bloqueado()) { location.href = 'historia-parcela.html'; return; } var s = siguienteIdx(); abrirNivel(s === -1 ? 0 : s); });
   $('ruta').addEventListener('click', function (e) { var b = e.target.closest('[data-ir]'); if (b) abrirNivel(Number(b.getAttribute('data-ir'))); });
   $('ruta').addEventListener('keydown', function (e) { var b = e.target.closest('[data-ir]'); if (b && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrirNivel(Number(b.getAttribute('data-ir'))); } });
   // Reiniciar borra SOLO el avance local de este mundo: no toca el XP, los logros ni los retos independientes de la cuenta
   $('btnReiniciar').addEventListener('click', function () {
     confirmar('¿Reiniciar el Mundo 02?', 'Se borra solo el avance de este mundo en este dispositivo. Tu XP, tus logros y tus retos no cambian.', 'Reiniciar mundo', function () {
-      var nuevo = vacio(); nuevo.reinicio = new Date().toISOString();
+      var nuevo = vacio(); nuevo.reinicio = new Date().toISOString(); nuevo.desbloqueado = true;
       estado = nuevo; guardar(estado); run = null; pintarInicio(); mostrar('vistaInicio');
     });
   });
@@ -3489,6 +3498,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     if (r.estado !== 'ok') { cuenta.estado = r.estado; pintarCuenta(); return; }
     if (!r.datos.miembro) { cuenta.estado = 'sin-membresia'; pintarCuenta(); return; }
     var srv = r.datos.mundo02 || { completados: [], dominio: {} };
+    if ((r.datos.mundo01 && r.datos.mundo01.insignia === true) || (srv.completados && srv.completados.length)) estado.desbloqueado = true;   // el Mundo 01 ya está cerrado en la cuenta
     cuenta.xpTotal = r.datos.xpTotal;
     if (!estado.reinicio) {
       srv.completados.forEach(function (n) {
@@ -3534,6 +3544,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
   sincronizarCuenta();
 
   pintarInicio();
+  // vip-panel.html → ruta de Modo Historia: #nivel-N abre directo ese nivel si ya está disponible
+  (function () { var mh = /^#nivel-([1-9])$/.exec(location.hash || ''); if (!mh) return; var ni = Number(mh[1]) - 1; if (ni < NIVELES.length && disponible(ni)) abrirNivel(ni); })();
 })();
 
 </script>

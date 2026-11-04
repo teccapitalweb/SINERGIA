@@ -14231,65 +14231,140 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     } catch (e) { /* sin avance guardado */ }
     return 0;
   }
-  // Mundos del Modo Historia. La pantalla principal de Retos solo muestra UNA tarjeta compacta («Modo Historia»); los mundos viven en #retos/modo-historia.
-  // Un mundo nuevo es una entrada más aquí (con pronto: true mientras no exista su página): la pantalla principal no cambia.
+  // Modo Historia: UNA ruta continua en #retos/modo-historia (portada general y mundos consecutivos con sus niveles en zigzag).
+  // Un mundo nuevo es una entrada más en RT_MUNDOS: se muestra debajo del anterior con la misma estructura y queda bloqueado hasta cerrar el previo.
   var RT_MUNDOS = [
-    { id: 'mundo-01', num: '01', titulo: 'La parcela despierta', desc: 'Antes de decidir, aprende a observar el suelo, el agua, las plantas y el recorrido de una parcela.',
-      img: 'assets/historia/hero-la-parcela-despierta.webp', url: 'historia-parcela.html', urlFin: 'historia-parcela.html#bitacora', textoFin: 'Ver mi mapa',
-      clave: 'sinergia_historia_parcela_v1', niveles: 6, insignia: 'Mirada de parcela' },
-    { id: 'mundo-02', num: '02', titulo: 'El agua tiene camino', desc: 'Observa el terreno, sigue el recorrido del agua y aprende a registrar antes de decidir.',
-      img: 'assets/historia/mundo-02/hero-el-agua-tiene-camino.jpg', url: 'historia-agua.html', urlFin: 'historia-agua.html', textoFin: 'Volver a recorrer',
-      clave: 'sinergia_mundo_02_v1', niveles: 6, insignia: 'Lectura del agua' }
+    { id: 'mundo-01', num: '01', cat: 'Fundamentos', titulo: 'La parcela despierta', desc: 'Antes de decidir, aprende a observar el suelo, el agua, las plantas y el recorrido de una parcela.',
+      url: 'historia-parcela.html', urlFin: 'historia-parcela.html#bitacora', textoFin: 'Ver mi mapa', clave: 'sinergia_historia_parcela_v1', insignia: 'Mirada de parcela', previo: null,
+      niveles: [
+        { id: '1.1', t: 'Antes de pisar', o: 'Aprender a observar antes de entrar.' },
+        { id: '1.2', t: 'El terreno guarda huellas', o: 'Identificar observaciones que vale la pena registrar.' },
+        { id: '1.3', t: 'Por dónde viaja el agua', o: 'Seguir señales visibles sin asumir una causa.' },
+        { id: '1.4', t: 'Una planta no cuenta toda la historia', o: 'Comparar contextos antes de concluir.' },
+        { id: '1.5', t: 'La libreta de campo', o: 'Registrar hechos visibles y datos pendientes.' },
+        { id: '1.6', t: 'El primer mapa de la parcela', o: 'Integrar observación, contexto y registro.' }] },
+    { id: 'mundo-02', num: '02', cat: 'Agua y recorrido', titulo: 'El agua tiene camino', desc: 'Observa el terreno, sigue el recorrido del agua y aprende a registrar antes de decidir.',
+      url: 'historia-agua.html', urlFin: 'historia-agua.html', textoFin: 'Volver a recorrer', clave: 'sinergia_mundo_02_v1', insignia: 'Lectura del agua', previo: 'mundo-01',
+      niveles: [
+        { id: '2.1', t: 'Antes de abrir la llave', o: 'Observar el terreno antes de pensar en el riego.' },
+        { id: '2.2', t: 'El terreno marca el camino', o: 'Comparar dos zonas y describir lo visible.' },
+        { id: '2.3', t: 'Donde el agua se detiene', o: 'Encontrar señales visibles antes de explicarlas.' },
+        { id: '2.4', t: 'Dos árboles, dos contextos', o: 'Comparar con una guía antes de interpretar.' },
+        { id: '2.5', t: 'La bitácora del riego', o: 'Registrar qué viste y qué falta confirmar.' },
+        { id: '2.6', t: 'El mapa del agua', o: 'Conectar las pistas antes de concluir.' }] }
   ];
   var RT_HISTORIA = { ruta: 'modo-historia', historia: true };
+  var RT_HIST_PORTADA = 'assets/historia/hero-la-parcela-despierta.webp';
+  function rtMundo(id) { return RT_MUNDOS.filter(function (m) { return m.id === id; })[0] || null; }
   function rtMundoAvance(m) {
-    var n = 0, ins = false;
+    var n = 0, ins = false, dom = {}, desb = false, total = m.niveles.length;
     try {
       var o = JSON.parse(localStorage.getItem(m.clave) || 'null');
-      if (o && o.v === 1 && Array.isArray(o.completados)) { n = Math.min(m.niveles, o.completados.length); ins = o.insignia === true && n >= m.niveles; }
+      if (o && o.v === 1 && Array.isArray(o.completados)) {
+        n = Math.min(total, o.completados.length); ins = o.insignia === true && n >= total; desb = o.desbloqueado === true;
+        o.completados.forEach(function (k) { if (o.dominio && o.dominio[k] != null) dom[k] = Number(o.dominio[k]) || 0; });
+        dom.hechos = o.completados.slice();
+      }
     } catch (e) { /* sin avance guardado */ }
-    return { n: n, ins: ins };
+    return { n: n, ins: ins, dom: dom, desb: desb, hechos: dom.hechos || [] };
   }
-  function rtMundoEstado(m, a) { return m.pronto ? 'Próximamente' : (a.n >= m.niveles ? 'Completado' : (a.n > 0 ? 'En curso' : 'Disponible')); }
-  // Progreso global y mundo actual: el primero que no está completo (o el último si ya están todos)
+  // Un mundo se abre al cerrar el anterior; quien ya avanzó en él (o lo desbloqueó desde la cuenta) lo conserva abierto
+  function rtMundoAbierto(m) {
+    if (m.pronto) return false;
+    if (!m.previo) return true;
+    var p = rtMundo(m.previo), a = rtMundoAvance(m);
+    return a.n > 0 || a.desb || (p ? rtMundoAvance(p).n >= p.niveles.length : true);
+  }
   function rtHistoriaResumen() {
-    var vivos = RT_MUNDOS.filter(function (m) { return !m.pronto; }), total = 0, hechos = 0, actual = null;
-    vivos.forEach(function (m) { var a = rtMundoAvance(m); total += m.niveles; hechos += a.n; if (!actual && a.n < m.niveles) actual = m; });
-    if (!actual) actual = vivos[vivos.length - 1];
-    return { total: total, hechos: hechos, pct: total ? Math.round(hechos * 100 / total) : 0, actual: actual, av: actual ? rtMundoAvance(actual) : { n: 0 } };
+    var total = 0, hechos = 0, actual = null, ult = null;
+    RT_MUNDOS.forEach(function (m) {
+      if (m.pronto) return;
+      var a = rtMundoAvance(m); total += m.niveles.length; hechos += a.n; ult = m;
+      if (!actual && rtMundoAbierto(m) && a.n < m.niveles.length) actual = m;
+    });
+    actual = actual || ult;
+    var av = actual ? rtMundoAvance(actual) : { n: 0, hechos: [] };
+    return { total: total, hechos: hechos, pct: total ? Math.round(hechos * 100 / total) : 0, actual: actual, av: av };
   }
+  // Enlace del botón principal: el siguiente nivel disponible del mundo actual
+  function rtHistoriaSiguienteUrl(r) {
+    var m = r.actual; if (!m) return '#retos/modo-historia';
+    return r.av.n >= m.niveles.length ? m.urlFin : m.url + '#nivel-' + (r.av.n + 1);
+  }
+  // Entrada en la pantalla principal de Retos: una colección más, igual que las demás
   function rtHistoriaHtml() {
-    var r = rtHistoriaResumen(), m = r.actual;
-    return '<article class="rtk-card rtk-card--historia">' +
-      '<a class="rtk-portada" href="#retos/modo-historia" data-rt-col="modo-historia" tabindex="-1" aria-hidden="true"><img src="' + escapeHtml(m.img) + '" alt="" loading="lazy" decoding="async"><span class="rtk-etq">Modo Historia</span></a>' +
-      '<div class="rtk-cu"><h4>Aprende en recorridos de campo</h4>' +
-      '<p>Explora mundos narrativos con niveles secuenciales. Observa, compara y construye criterio paso a paso.</p>' +
-      '<div class="rtk-res"><p><b>' + r.hechos + ' de ' + r.total + '</b> niveles completados</p>' +
-      '<i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + r.pct + '" aria-label="Niveles completados del Modo Historia"><span style="width:' + r.pct + '%"></span></i></div>' +
-      '<p class="rtk-actual"><b>Mundo ' + m.num + ' · ' + escapeHtml(m.titulo) + '</b><small>' + r.av.n + ' de ' + m.niveles + ' niveles</small></p>' +
-      '<div class="rtk-pie"><a class="rtx-btn" href="#retos/modo-historia" data-rt-col="modo-historia">Explorar mundos →</a></div></div></article>';
+    var r = rtHistoriaResumen();
+    var boton = r.hechos === 0 ? 'Comenzar recorrido' : (r.hechos >= r.total ? 'Volver a la ruta' : 'Continuar recorrido');
+    return '<article class="rtk-card">' +
+      '<a class="rtk-portada" href="#retos/modo-historia" data-rt-col="modo-historia" tabindex="-1" aria-hidden="true"><img src="' + RT_HIST_PORTADA + '" alt="" loading="lazy" decoding="async"><span class="rtk-etq">Modo Historia</span></a>' +
+      '<div class="rtk-cu"><h4>Aprende a leer la parcela</h4><p>Recorre mundos, observa situaciones de campo y construye tu criterio paso a paso.</p>' +
+      '<div class="rtk-res"><p><b>' + r.hechos + ' de ' + r.total + '</b> niveles completados</p><i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + r.pct + '" aria-label="Niveles completados del Modo Historia"><span style="width:' + r.pct + '%"></span></i></div>' +
+      '<div class="rtk-pie"><a class="rtx-btn" href="#retos/modo-historia" data-rt-col="modo-historia">' + boton + ' →</a></div></div></article>';
   }
-  function rtMundoTarjeta(m) {
-    var a = rtMundoAvance(m), est = rtMundoEstado(m, a), pct = Math.round(a.n * 100 / m.niveles), fin = a.n >= m.niveles;
-    var clase = est === 'En curso' ? 'en-curso' : (est === 'Completado' ? 'completado' : (est === 'Próximamente' ? 'proximamente' : 'disponible'));
-    var accion = m.pronto ? '<span class="rtx-btn rtx-btn--sec rtm-pronto" aria-disabled="true">Próximamente</span>'
-      : '<a class="rtx-btn" href="' + (fin ? m.urlFin : m.url) + '">' + (fin ? m.textoFin : (a.n > 0 ? 'Continuar recorrido' : 'Comenzar recorrido')) + ' →</a>';
-    return '<article class="rtk-card rtm-card' + (fin ? ' es-lograda' : '') + '">' +
-      '<a class="rtk-portada"' + (m.pronto ? '' : ' href="' + m.url + '"') + ' tabindex="-1" aria-hidden="true"><img src="' + escapeHtml(m.img) + '" alt="" loading="lazy" decoding="async">' +
-      '<span class="rtk-etq">Modo Historia · Mundo ' + m.num + '</span><span class="rtm-estado rtm-estado--' + clase + '">' + est + '</span></a>' +
-      '<div class="rtk-cu"><h4>' + escapeHtml(m.titulo) + '</h4><p>' + escapeHtml(m.desc) + '</p>' +
-      '<div class="rtk-res"><p><b>' + a.n + ' de ' + m.niveles + '</b> niveles</p><i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '" aria-label="Niveles completados"><span style="width:' + pct + '%"></span></i></div>' +
-      '<span class="rtk-ins' + (a.ins ? ' es-lista' : '') + '"><span class="rtk-ins-ico" aria-hidden="true">' + rtIcono('<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>') + '</span><span><b>' + escapeHtml(m.insignia) + '</b><small>' + (a.ins ? 'Insignia lograda' : 'Insignia final') + '</small></span></span>' +
-      '<div class="rtk-pie">' + accion + '</div></div></article>';
+  var RT_RUTA_CLAVE = 'sinergia_historia_ruta_v1';
+  function rtMundosVistos() {
+    try { var o = JSON.parse(localStorage.getItem(RT_RUTA_CLAVE) || 'null'); if (o && Array.isArray(o.vistos)) return o.vistos; } catch (e) { /* sin datos */ }
+    return [];
+  }
+  function rtMarcarVistos(ids) {
+    if (!ids.length) return;
+    try { localStorage.setItem(RT_RUTA_CLAVE, JSON.stringify({ v: 1, vistos: rtMundosVistos().concat(ids) })); } catch (e) { /* sin almacenamiento */ }
+  }
+  var RT_SVG = { check: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12 5 5 9-10"/></svg>', lock: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>' };
+  // Línea suave que une los nodos en zigzag (x: 25% / 75%, una fila = 100 unidades). La parte ya recorrida va en turquesa.
+  function rtCaminoSvg(n, hechos) {
+    function pt(k) { return [k % 2 === 0 ? 25 : 75, k * 100 + 50]; }
+    function seg(k) { var a = pt(k), b = pt(k + 1); return 'M' + a[0] + ' ' + a[1] + 'C' + a[0] + ' ' + (a[1] + 55) + ' ' + b[0] + ' ' + (b[1] - 55) + ' ' + b[0] + ' ' + b[1]; }
+    var base = '', hecho = '';
+    for (var k = 0; k < n - 1; k++) { base += seg(k); if (hechos.indexOf(k) >= 0) hecho += seg(k); }
+    return '<svg class="rtm-linea" viewBox="0 0 100 ' + (n * 100) + '" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path class="rtm-linea-base" d="' + base + '"/>' + (hecho ? '<path class="rtm-linea-hecha" d="' + hecho + '"/>' : '') + '</svg>';
+  }
+  function rtMundoBloqueHtml(m, aviso) {
+    var a = rtMundoAvance(m), abierto = rtMundoAbierto(m), total = m.niveles.length, pct = Math.round(a.n * 100 / total), fin = a.n >= total;
+    var previo = m.previo ? rtMundo(m.previo) : null;
+    var nodos = m.niveles.map(function (nv, k) {
+      var hecho = a.hechos.indexOf(k) >= 0, disp = abierto && !hecho && (k === 0 || a.hechos.indexOf(k - 1) >= 0);
+      var est = hecho ? 'es-hecho' : (disp ? 'es-disp' : 'es-bloq'), lado = k % 2 === 0 ? 'es-izq' : 'es-der';
+      var dom = hecho && a.dom[k] != null ? a.dom[k] + '%' : '';
+      var circ = hecho ? RT_SVG.check : (disp ? nv.id.split('.')[1] : RT_SVG.lock);
+      var cuerpo = '<span class="rtm-circ" aria-hidden="true">' + circ + (dom ? '<i class="rtm-medalla">' + dom + '</i>' : '') + '</span>' +
+        '<span class="rtm-txt"><small>Nivel ' + nv.id + '</small><b>' + escapeHtml(nv.t) + '</b><span>' + escapeHtml(nv.o) + '</span>' +
+        '<em>' + (hecho ? 'Completado' + (dom ? ' · Dominio ' + dom : '') : (disp ? (a.n === k ? 'Siguiente nivel' : 'Disponible') : 'Bloqueado')) + '</em></span>';
+      var url = m.url + '#nivel-' + (k + 1);
+      return '<li class="rtm-nodo ' + lado + ' ' + est + '">' + ((hecho || disp)
+        ? '<a class="rtm-nodo-in" href="' + url + '" aria-label="' + (hecho ? 'Repetir' : 'Empezar') + ' el nivel ' + nv.id + ': ' + escapeHtml(nv.t) + '">' + cuerpo + '</a>'
+        : '<div class="rtm-nodo-in" aria-label="Nivel ' + nv.id + ' bloqueado">' + cuerpo + '</div>') + '</li>';
+    }).join('');
+    var hechosIdx = a.hechos.filter(function (k) { return k < total - 1; });
+    var insignia = '<div class="rtm-ins' + (a.ins ? ' es-lista' : '') + '"><span class="rtm-ins-ico" aria-hidden="true">' + rtIcono('<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>') + '</span>' +
+      '<span><small>' + (a.ins ? 'Insignia lograda' : 'Insignia final') + '</small><b>' + escapeHtml(m.insignia) + '</b></span>' +
+      (fin ? '<a class="rtx-btn rtx-btn--sec" href="' + m.urlFin + '">' + m.textoFin + '</a>' : '') + '</div>';
+    return '<section class="rtm-mundo' + (abierto ? '' : ' es-bloqueado') + '" aria-labelledby="rtm-' + m.id + '">' +
+      (aviso ? '<p class="rtm-nuevo" role="status"><span aria-hidden="true">✦</span> Nuevo mundo disponible: <b>' + escapeHtml(m.titulo) + '</b></p>' : '') +
+      '<header class="rtm-cab"><span class="rtm-num" aria-hidden="true">' + m.num + '</span>' +
+      '<div class="rtm-cab-t"><span class="rtm-cat">' + escapeHtml(m.cat) + '</span><h3 id="rtm-' + m.id + '">' + escapeHtml(m.titulo) + '</h3><p>' + escapeHtml(m.desc) + '</p>' +
+      '<p class="rtm-prog"><b>' + a.n + ' de ' + total + '</b> niveles completados</p>' +
+      (abierto ? '' : '<p class="rtm-bloq-txt">Completa <b>' + escapeHtml(previo ? previo.titulo : 'el mundo anterior') + '</b> para desbloquear este mundo.</p>') + '</div>' +
+      '<div class="rtm-anillo" role="img" aria-label="' + pct + '% completado" style="--p:' + pct + '"><span>' + pct + '%</span></div></header>' +
+      '<ol class="rtm-camino" style="--filas:' + total + '">' + rtCaminoSvg(total, hechosIdx) + nodos + '</ol>' + insignia + '</section>';
   }
   function rtHistoriaVistaHtml() {
-    var r = rtHistoriaResumen();
-    return '<section class="rt-bloque rtk-vista" aria-labelledby="rtkTit">' +
+    var r = rtHistoriaResumen(), vistos = rtMundosVistos(), nuevos = [];
+    var bloques = RT_MUNDOS.map(function (m) {
+      var aviso = false;
+      if (m.previo && rtMundoAbierto(m) && vistos.indexOf(m.id) < 0) { nuevos.push(m.id); aviso = rtMundoAvance(m).n === 0; }
+      return rtMundoBloqueHtml(m, aviso);
+    }).join('');
+    rtMarcarVistos(nuevos);   // el aviso de «Nuevo mundo disponible» se muestra una sola vez
+    var siguiente = r.hechos === 0 ? 'Comenzar recorrido' : (r.hechos >= r.total ? 'Volver a recorrer' : 'Continuar recorrido');
+    return '<section class="rt-bloque rtm-ruta" aria-labelledby="rtkTit">' +
       '<div><button type="button" class="rtx-btn rtx-btn--sec" data-rt-volver>← Volver a Retos</button></div>' +
-      '<header class="rtm-cab"><span class="cred-eyebrow">Modo Historia</span><h3 id="rtkTit" tabindex="-1">Aprende en recorridos de campo</h3>' +
-      '<p>Explora mundos narrativos con niveles secuenciales. Observa, compara y construye criterio paso a paso.</p>' +
-      '<div class="rtk-res rtm-global"><p><b>' + r.hechos + ' de ' + r.total + '</b> niveles completados</p><i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + r.pct + '" aria-label="Niveles completados del Modo Historia"><span style="width:' + r.pct + '%"></span></i></div></header>' +
-      '<div class="rtk-grid rtm-grid">' + RT_MUNDOS.map(rtMundoTarjeta).join('') + '</div></section>';
+      '<header class="rtm-portada"><img class="rtm-portada-img" src="' + RT_HIST_PORTADA + '" alt="" decoding="async"><div class="rtm-portada-in">' +
+      '<span class="rtm-etq">Modo Historia</span><h3 id="rtkTit" tabindex="-1">Aprende a leer la parcela.</h3>' +
+      '<p>Recorre mundos, observa situaciones de campo y construye tu criterio paso a paso.</p>' +
+      '<div class="rtm-portada-pie"><a class="rtx-btn rtm-boton" href="' + rtHistoriaSiguienteUrl(r) + '">' + siguiente + ' →</a>' +
+      '<span class="rtm-global"><b>' + r.hechos + ' de ' + r.total + '</b> niveles completados<small>Mundo ' + (r.actual ? r.actual.num : '01') + ' · ' + escapeHtml(r.actual ? r.actual.titulo : '') + '</small></span></div></div></header>' +
+      '<div class="rtm-aventura">' + bloques + '</div></section>';
   }
   // ─── Retos de campo: catálogo, progreso por caso ('sinergia_detective_v1' en este dispositivo + /api/retos/casos del servidor) ───
   // Ningún reto se bloquea por no haber hecho otro: todos están disponibles desde el inicio (salvo los que aún no existen: "Próximamente").
@@ -14476,10 +14551,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     h += '<h4 class="rtb-sub">Logros conseguidos</h4>' + (logrados.length
       ? '<ul class="rtc-logros rtb-logros">' + logrados.map(function (l) { return rtLogroLi(l, lg[l.id]); }).join('') + '</ul>'
       : '<p class="rtb-vacio">Aún no tienes logros. Aparecerán aquí cuando los consigas.</p>');
-    h += '<h4 class="rtb-sub">Modo Historia</h4>' + RT_MUNDOS.filter(function (m) { return !m.pronto; }).map(function (m) {
-      var a = rtMundoAvance(m), fin = a.n >= m.niveles;
-      return '<div class="rtb-historia"><div><b>Mundo ' + m.num + ' · ' + escapeHtml(m.titulo) + '</b><small>' + a.n + ' de ' + m.niveles + ' niveles completados</small></div>' +
-        '<a class="rtx-btn rtx-btn--sec" href="' + (fin ? m.urlFin : m.url) + '">' + (fin ? m.textoFin : (a.n ? 'Continuar recorrido' : 'Comenzar recorrido')) + '</a></div>';
+    h += '<h4 class="rtb-sub">Modo Historia</h4>' + RT_MUNDOS.filter(function (m) { return !m.pronto && rtMundoAbierto(m); }).map(function (m) {
+      var a = rtMundoAvance(m), fin = a.n >= m.niveles.length;
+      return '<div class="rtb-historia"><div><b>Mundo ' + m.num + ' · ' + escapeHtml(m.titulo) + '</b><small>' + a.n + ' de ' + m.niveles.length + ' niveles completados</small></div>' +
+        '<a class="rtx-btn rtx-btn--sec" href="' + (fin ? m.urlFin : m.url + (a.n ? '#nivel-' + (a.n + 1) : '')) + '">' + (fin ? m.textoFin : (a.n ? 'Continuar recorrido' : 'Comenzar recorrido')) + '</a></div>';
     }).join('');
     return h + '</section>';
   }
@@ -14543,7 +14618,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var lg = rtLogrosDatos();
     var h = '<section class="rt-bloque rtc-seccion" aria-labelledby="rtcTit"><div><span class="cred-eyebrow">Retos de campo</span><h3 id="rtcTit">Elige una colección</h3>' +
       '<p>Cada colección entrena una forma de mirar el campo. Todos sus casos están abiertos: escoge el que quieras, en el orden que quieras.</p></div>' +
-      '<div class="rtk-grid">' + RT_CAMPO.filter(function (b) { return b.ruta; }).map(function (b) { return rtColeccionTarjeta(b, lg); }).join('') + '</div>';
+      '<div class="rtk-grid">' + rtHistoriaHtml() + RT_CAMPO.filter(function (b) { return b.ruta; }).map(function (b) { return rtColeccionTarjeta(b, lg); }).join('') + '</div>';
     if (window.isVIP !== true) h += '<p class="rt-yo">Puedes probar un ejemplo de cada reto. Con membresía los terminas, sumas XP y desbloqueas insignias.</p>';
     return h + '</section>';
   }
@@ -14652,7 +14727,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (RT.vista === 'bitacora') { cuerpo.innerHTML = rtBitacoraHtml(d); rtHeroPintar(); return; }
     if (colecc) { cuerpo.innerHTML = colecc.historia ? rtHistoriaVistaHtml() : rtColeccionVistaHtml(colecc); rtHeroPintar(); return; }
     // Orden: Modo Historia arriba; luego tu práctica y los Retos de campo; después lo demás
-    var html = '<div class="rtc-top"><div class="rtc-top-main">' + rtHistoriaHtml() + '</div>' + rtPracticaHtml(d) + '</div>' + rtColeccionesHtml(d);
+    var html = '<div class="rtc-top rtc-top--solo">' + rtPracticaHtml(d) + '</div>' + rtColeccionesHtml(d);
 
     // Podio de constancia (los datos siguen viniendo del servidor)
     html += rtPodioHtml(d);
@@ -27837,7 +27912,6 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .rtc-top { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: stretch; }
   .rtc-top-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
   .rtc-top-main > .rtx-historia { flex: 1; min-width: 0; }
-  .rtc-top-main > .rtk-card--historia { flex: 1; min-width: 0; }
   .rtc-practica--lado { align-content: start; gap: 12px; margin: 0; padding: 18px 18px 20px; }
   .rtc-practica--lado h3 { margin: 0; font-size: 17px; }
   .rtc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
@@ -28106,25 +28180,91 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     .rtx-historia { align-items: flex-start; padding-bottom: 150px; background-size: auto 170px; background-position: 80% bottom; }
     .rtx-historia::before { background: linear-gradient(180deg, rgba(8, 32, 27, 0.96) 0%, rgba(8, 32, 27, 0.9) 62%, rgba(8, 32, 27, 0.1) 100%); }
   }
-  /* Modo Historia en Retos: una sola tarjeta compacta; en escritorio con la portada a un lado, en móvil como las demás colecciones */
-  .rtk-actual { display: grid; gap: 2px; margin: 0; }
-  .rtk-actual b { font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--text-primary); }
-  .rtk-actual small { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); }
-  @media (min-width: 900px) {
-    .rtk-card--historia { flex-direction: row; }
-    .rtk-card--historia .rtk-portada { flex: 0 0 42%; aspect-ratio: auto; min-height: 100%; }
-    .rtk-card--historia .rtk-cu { justify-content: center; }
-    .rtk-card--historia .rtk-pie .rtx-btn { width: auto; }
+  /* Modo Historia: ruta continua (portada general + mundos consecutivos con niveles en zigzag) */
+  .rtc-top--solo { grid-template-columns: minmax(0, 1fr); }
+  .rtc-top--solo .rtc-practica--lado { grid-template-columns: minmax(0, 1fr); }
+  .rtm-ruta { display: grid; gap: 22px; }
+  .rtm-portada { position: relative; display: flex; align-items: center; min-height: 340px; padding: clamp(24px, 4vw, 48px); overflow: hidden; border-radius: 26px; isolation: isolate; color: #fff; background: #0F3B33; }
+  .rtm-portada-img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 72% 40%; }
+  .rtm-portada::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(8, 32, 27, 0.95) 0%, rgba(8, 32, 27, 0.84) 34%, rgba(8, 32, 27, 0.25) 62%, rgba(8, 32, 27, 0) 80%); }
+  .rtm-portada-in { display: grid; gap: 12px; justify-items: start; max-width: 520px; }
+  .rtm-etq { padding: 6px 14px; border-radius: 100px; background: rgba(255, 255, 255, 0.16); font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .rtm-portada h3 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 4.4vw, 48px); line-height: 1.04; letter-spacing: -0.035em; color: #fff !important; }
+  .rtm-portada p { margin: 0; font-size: 16px; line-height: 1.5; color: rgba(255, 255, 255, 0.9); max-width: 44ch; }
+  .rtm-portada-pie { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 6px; }
+  .rtm-boton { background: #fff !important; border-color: #fff !important; color: #113D35 !important; text-decoration: none; }
+  .rtm-global { display: grid; gap: 2px; font-family: var(--font-display); font-weight: 700; font-size: 14px; }
+  .rtm-global b { font-weight: 800; }
+  .rtm-global small { font-size: 12.5px; font-weight: 600; opacity: 0.85; }
+  .rtm-aventura { display: grid; gap: 28px; }
+  .rtm-mundo { display: grid; gap: 6px; padding: 0 0 18px; border: 1px solid var(--border-card); border-radius: 26px; background: var(--bg-card); overflow: hidden; }
+  .rtm-cab { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 22px; padding: 26px clamp(20px, 3vw, 34px); background: linear-gradient(120deg, #113D35 0%, #17564A 100%); color: #fff; }
+  .rtm-num { font-family: var(--font-display); font-weight: 800; font-size: clamp(44px, 6vw, 72px); line-height: 1; letter-spacing: -0.04em; color: rgba(255, 255, 255, 0.28); }
+  .rtm-cat { font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7FE0C8; }
+  .rtm-cab h3 { margin: 4px 0 6px; font-family: var(--font-display); font-weight: 800; font-size: clamp(22px, 3vw, 30px); letter-spacing: -0.025em; color: #fff !important; }
+  .rtm-cab p { margin: 0; font-size: 14.5px; line-height: 1.5; color: rgba(255, 255, 255, 0.85); max-width: 60ch; }
+  .rtm-cab .rtm-prog { margin-top: 10px; font-size: 13.5px; color: #fff; }
+  .rtm-bloq-txt { margin-top: 8px !important; padding: 8px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.12); font-weight: 600; }
+  .rtm-anillo { --p: 0; position: relative; display: grid; place-items: center; width: 86px; height: 86px; border-radius: 50%; background: conic-gradient(#7FE0C8 calc(var(--p) * 1%), rgba(255, 255, 255, 0.18) 0); }
+  .rtm-anillo::before { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: #123F37; }
+  .rtm-anillo span { position: relative; font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+  .rtm-mundo.es-bloqueado .rtm-cab { opacity: 0.62; filter: saturate(0.6); }
+  .rtm-mundo.es-bloqueado .rtm-camino { opacity: 0.55; }
+  .rtm-nuevo { margin: 14px clamp(20px, 3vw, 34px) 0; padding: 10px 16px; border: 1.5px solid #E7C873; border-radius: 14px; background: rgba(231, 200, 115, 0.2); font-family: var(--font-display); font-weight: 700; font-size: 14.5px; color: var(--text-primary); animation: rtm-aparece .6s ease both; }
+  @keyframes rtm-aparece { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+  .rtm-camino { --fila: 170px; position: relative; display: block; margin: 12px 0 0; padding: 0; list-style: none; height: calc(var(--filas) * var(--fila)); }
+  .rtm-linea { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .rtm-linea path { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+  .rtm-linea-base { stroke: var(--border-card); stroke-width: 4; stroke-dasharray: 2 12; }
+  .rtm-linea-hecha { stroke: #1AA888; stroke-width: 4; }
+  .rtm-nodo { position: relative; height: var(--fila); display: flex; align-items: center; }
+  .rtm-nodo-in { display: flex; align-items: center; gap: 16px; width: 100%; text-decoration: none; color: inherit; }
+  .rtm-nodo.es-izq .rtm-nodo-in { padding-left: calc(25% - 36px); }
+  .rtm-nodo.es-der .rtm-nodo-in { padding-right: calc(25% - 36px); flex-direction: row-reverse; }
+  .rtm-circ { position: relative; z-index: 1; display: grid; place-items: center; flex: none; width: 72px; height: 72px; border: 3px solid var(--border-card); border-radius: 50%; background: var(--bg-card); color: var(--text-tertiary); font-family: var(--font-display); font-weight: 800; font-size: 24px; box-shadow: 0 8px 18px -10px rgba(17, 61, 53, 0.4); }
+  .rtm-circ svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .rtm-medalla { position: absolute; right: -14px; bottom: -6px; padding: 2px 8px; border-radius: 100px; background: #E7C873; color: #3B2D07; font-family: var(--font-display); font-weight: 800; font-style: normal; font-size: 11px; }
+  .rtm-txt { display: grid; gap: 2px; max-width: 290px; min-width: 0; text-align: left; }
+  .rtm-nodo.es-der .rtm-txt { text-align: right; }
+  .rtm-txt small { font-family: var(--font-display); font-weight: 800; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-tertiary); }
+  .rtm-txt b { font-family: var(--font-display); font-weight: 800; font-size: 16px; line-height: 1.25; color: var(--text-primary); }
+  .rtm-txt span { font-size: 13px; line-height: 1.4; color: var(--text-secondary); }
+  .rtm-txt em { font-style: normal; font-family: var(--font-display); font-weight: 700; font-size: 12px; color: var(--text-tertiary); }
+  .rtm-nodo.es-disp .rtm-circ { border-color: #1AA888; background: #1AA888; color: #fff; box-shadow: 0 0 0 7px rgba(26, 168, 136, 0.2), 0 8px 18px -10px rgba(17, 61, 53, 0.4); }
+  .rtm-nodo.es-disp .rtm-txt em { color: #087F70; }
+  .rtm-nodo.es-hecho .rtm-circ { border-color: #113D35; background: #113D35; color: #fff; }
+  .rtm-nodo.es-hecho .rtm-txt em { color: #0B5A41; }
+  .rtm-nodo.es-bloq { opacity: 0.5; }
+  .rtm-nodo a.rtm-nodo-in:hover .rtm-circ { transform: scale(1.05); }
+  .rtm-nodo a.rtm-nodo-in:focus-visible { outline: 3px solid #1AA888; outline-offset: 4px; border-radius: 16px; }
+  .rtm-ins { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 clamp(20px, 3vw, 34px); padding: 12px 16px; border: 1.5px dashed var(--border-card); border-radius: 18px; }
+  .rtm-ins.es-lista { border: 1.5px solid #E7C873; background: rgba(231, 200, 115, 0.16); }
+  .rtm-ins-ico { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--bg-subtle); }
+  .rtm-ins-ico svg { width: 22px; height: 22px; }
+  .rtm-ins.es-lista .rtm-ins-ico { background: #E7C873; color: #3B2D07; }
+  .rtm-ins > span:nth-child(2) { display: grid; flex: 1; }
+  .rtm-ins small { font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); }
+  .rtm-ins b { font-family: var(--font-display); font-weight: 800; font-size: 16px; color: var(--text-primary); }
+  .rtm-ins .rtx-btn { text-decoration: none; }
+  @media (max-width: 720px) {
+    .rtm-portada { min-height: 300px; align-items: flex-end; }
+    .rtm-portada::before { background: linear-gradient(180deg, rgba(8, 32, 27, 0.35) 0%, rgba(8, 32, 27, 0.92) 70%); }
+    .rtm-cab { grid-template-columns: minmax(0, 1fr) auto; gap: 14px; padding: 20px 18px; }
+    .rtm-num { grid-column: 1 / -1; font-size: 40px; }
+    .rtm-anillo { width: 66px; height: 66px; }
+    .rtm-anillo::before { inset: 7px; }
+    .rtm-anillo span { font-size: 15px; }
+    /* en móvil el zigzag se vuelve una ruta vertical: nodos a la izquierda, texto a la derecha */
+    .rtm-camino { --fila: 132px; margin-top: 10px; }
+    .rtm-linea { display: none; }
+    .rtm-camino::before { content: ""; position: absolute; left: 38px; top: calc(var(--fila) / 2); bottom: calc(var(--fila) / 2); width: 0; border-left: 4px dotted var(--border-card); }
+    .rtm-nodo.es-izq .rtm-nodo-in, .rtm-nodo.es-der .rtm-nodo-in { padding: 0 16px 0 16px; flex-direction: row; }
+    .rtm-nodo.es-der .rtm-txt { text-align: left; }
+    .rtm-circ { width: 60px; height: 60px; font-size: 20px; }
+    .rtm-medalla { right: -10px; bottom: -8px; }
+    .rtm-txt b { font-size: 15px; }
+    .rtm-ins { margin: 0 14px; }
   }
-  .rtm-cab { display: grid; gap: 8px; max-width: 760px; }
-  .rtm-cab h3 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(22px, 3vw, 28px); letter-spacing: -0.02em; color: var(--text-primary); }
-  .rtm-cab p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--text-secondary); }
-  .rtm-global { max-width: 420px; }
-  .rtm-estado { position: absolute; top: 12px; right: 12px; padding: 5px 12px; border-radius: 100px; background: #fff; color: #113D35; font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
-  .rtm-estado--en-curso { background: #E7C873; color: #3B2D07; }
-  .rtm-estado--completado { background: #1AA888; color: #fff; }
-  .rtm-estado--proximamente { background: rgba(8, 32, 27, 0.82); color: #fff; }
-  .rtm-pronto { opacity: .6; cursor: default; text-align: center; }
   .rtx-historia--agua { background-image: url(assets/historia/mundo-02/hero-el-agua-tiene-camino.jpg); background-position: 62% center; }
   .rtx-historia--detective { background-image: url(assets/detective/caso-01-el-rastro-que-no-cuadra.webp); }
   @media (prefers-reduced-motion: reduce) { .rtx-historia { transition: none; } }

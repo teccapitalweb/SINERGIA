@@ -412,24 +412,25 @@ html[data-theme="dark"] .sidebar-user-badge { box-shadow: 0 2px 6px rgba(26, 168
     height: 20px;
     padding: 0 6px;
     border-radius: 10px;
-    background: #EF4444;
-    color: #fff;
+    background: #7FE0C6;
+    color: #113D35;
     font-size: 11px;
     font-weight: 700;
     flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(239,68,68,0.45);
+    box-shadow: 0 2px 8px rgba(127,224,198,0.45);
     animation: liveBadgePulse 2s ease-in-out infinite;
   }
 [data-theme="dark"] .live-nav-badge {
-    background: #F87171;
-    box-shadow: 0 0 12px rgba(248,113,113,0.6);
+    background: #7FE0C6;
+    color: #113D35;
+    box-shadow: 0 0 12px rgba(127,224,198,0.5);
   }
 .nav-item-badge {
     font-family: var(--font-mono);
     font-size: 9px;
     font-weight: 700;
     padding: 3px 7px;
-    background: var(--rose-500);
+    background: #0E7A64;
     color: white;
     border-radius: 100px;
     letter-spacing: 0.05em;
@@ -566,7 +567,7 @@ html[data-theme="dark"] .nav-item-new { box-shadow: 0 2px 8px rgba(26, 168, 136,
     position: absolute;
     top: 6px; right: 6px;
     width: 8px; height: 8px;
-    background: var(--rose-500);
+    background: #14946F;
     border: 2px solid white;
     border-radius: 50%;
   }
@@ -2296,8 +2297,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 
   /* ───────── Contenido: cada nivel tiene 3 o 4 momentos ───────── */
   var NIVELES = [
-    { id: '0.1', titulo: 'Antes de pisar', objetivo: 'Aprender a observar el conjunto de una parcela antes de entrar o sacar conclusiones.', duracion: '4 a 6 minutos', escena: 'panoramica',
-      puntos: 5,   // 4 observaciones útiles + 1 decisión final; con 4 de 5 (80%) se abre el nivel 0.2
+    { id: '1.1', titulo: 'Antes de pisar', objetivo: 'Aprender a observar el conjunto de una parcela antes de entrar o sacar conclusiones.', duracion: '4 a 6 minutos', escena: 'panoramica',
+      puntos: 5,   // 4 observaciones útiles + 1 decisión final; con 4 de 5 (80%) se abre el nivel 1.2
       imagen: { src: 'assets/historia/nivel-01-antes-de-pisar.webp', w: 1672, h: 941, alt: 'Entrada de una parcela hortícola después de la lluvia. Nico señala el terreno e Inés lo observa con su libreta; Mora, la perrita, espera junto a la puerta. Se ven una pendiente suave, suelo húmedo y una huella de escurrimiento entre las camas de cultivo.' },
       aprendizaje: 'Mirar el conjunto antes de acercarte evita conclusiones apresuradas.',
       momentos: [
@@ -2323,8 +2324,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
             { t: 'Entrar rápido para revisar cada planta.', ok: false, f: 'Todavía falta mirar el panorama completo. Antes de decidir por una planta, conviene observar cómo se comporta toda la parcela.' },
             { t: 'Observar desde fuera y ubicar accesos, condiciones y señales generales.', ok: true, f: 'Bien observado. Antes de acercarte, mira el conjunto: accesos, humedad, pendiente y cambios visibles.' },
             { t: 'Elegir una planta y decidir qué necesita.', ok: false, f: 'Todavía falta mirar el panorama completo. Antes de decidir por una planta, conviene observar cómo se comporta toda la parcela.' }] }] },
-    { id: '0.2', titulo: 'El terreno guarda huellas', objetivo: 'Identifica observaciones que vale la pena registrar.', duracion: '4 a 6 minutos', escena: 'panoramica',
-      puntos: 5,   // las 5 frases de la clasificación; con 4 de 5 (80%) se abre el nivel 0.3
+    { id: '1.2', titulo: 'El terreno guarda huellas', objetivo: 'Identifica observaciones que vale la pena registrar.', duracion: '4 a 6 minutos', escena: 'panoramica',
+      puntos: 5,   // las 5 frases de la clasificación; con 4 de 5 (80%) se abre el nivel 1.3
       imagen: { src: 'assets/historia/nivel-02-el-terreno-guarda-huellas.webp', w: 1672, h: 941, alt: 'Parcela hortícola al amanecer, después de la lluvia. Arriba a la izquierda baja un canal delgado de agua por la pendiente; abajo, al centro, hay un charco y tierra oscura; a la derecha, un camino de tierra con huellas de botas y, junto a la cama, tallos secos acumulados.' },
       tituloExito: 'Nivel superado · 80% o más',
       textoRefuerzo: 'Vuelve a intentarlo. Describe primero; interpreta después.',
@@ -2355,8 +2356,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           cierre: [
             { q: 'ines', t: 'Una observación no responde todo por sí sola, pero permite comparar lo que cambia con el tiempo.' },
             { q: 'nico', t: 'Entonces primero anoto lo que veo, dónde lo veo y cuándo lo vi.' }] }] },
-    { id: '0.3', titulo: 'Por dónde viaja el agua', objetivo: 'Sigue el recorrido visible antes de explicar sus causas.', duracion: '4 a 6 minutos', escena: 'panoramica',
-      puntos: 5,   // 3 puntos explorados + la secuencia + la nota final; con 4 de 5 (80%) se abre el nivel 0.4
+    { id: '1.3', titulo: 'Por dónde viaja el agua', objetivo: 'Sigue el recorrido visible antes de explicar sus causas.', duracion: '4 a 6 minutos', escena: 'panoramica',
+      puntos: 5,   // 3 puntos explorados + la secuencia + la nota final; con 4 de 5 (80%) se abre el nivel 1.4
       imagen: { src: 'assets/historia/nivel-03-por-donde-viaja-el-agua.webp', w: 1672, h: 941, alt: 'Parcela hortícola al amanecer después de la lluvia. Desde la parte alta, arriba a la izquierda, baja un hilo de agua por la pendiente, avanza junto a un camino de tierra que cruza el terreno y termina en un charco grande en la parte baja, abajo a la derecha.' },
       tituloExito: 'Nivel superado · 80% o más',
       textoRefuerzo: 'Vuelve a mirar el recorrido: de dónde viene el agua, qué encuentra en el camino y dónde se reúne. Describe antes de explicar.',
@@ -2381,8 +2382,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           cierre: [
             { q: 'nico', t: 'Ahora entiendo que no basta con ver agua abajo. También tengo que mirar de dónde viene y qué encuentra en el camino.' },
             { q: 'ines', t: 'Eso es leer el terreno: conectar señales visibles antes de tomar decisiones.' }] }] },
-    { id: '0.4', titulo: 'Una planta no cuenta toda la historia', objetivo: 'Compara contexto, plantas y señales antes de concluir.', duracion: '4 a 6 minutos', escena: 'ninguna',
-      puntos: 5,   // 3 comparaciones útiles + la conclusión final + completar la exploración de las 3 zonas; con 4 de 5 (80%) se abre el nivel 0.5
+    { id: '1.4', titulo: 'Una planta no cuenta toda la historia', objetivo: 'Compara contexto, plantas y señales antes de concluir.', duracion: '4 a 6 minutos', escena: 'ninguna',
+      puntos: 5,   // 3 comparaciones útiles + la conclusión final + completar la exploración de las 3 zonas; con 4 de 5 (80%) se abre el nivel 1.5
       tituloExito: 'Nivel superado · 80% o más',
       textoRefuerzo: 'Vuelve a comparar con calma: describe las diferencias visibles y evita afirmar una causa a partir de una sola planta.',
       momentos: [
@@ -2413,8 +2414,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           cierre: [
             { q: 'nico', t: 'Ahora veo que no basta con mirar una planta. También importa dónde está y qué ocurre a su alrededor.' },
             { q: 'ines', t: 'Esa es la diferencia entre notar algo y construir una observación útil.' }] }] },
-    { id: '0.5', titulo: 'La libreta de campo', objetivo: 'Convierte lo que observas en un registro que puedas comparar después.', duracion: '4 a 6 minutos', escena: 'panoramica',
-      puntos: 6,   // evidencia + 4 líneas de la libreta + nota final: con 5 de 6 (83%) se supera la meta de 80% y se abre el nivel 0.6
+    { id: '1.5', titulo: 'La libreta de campo', objetivo: 'Convierte lo que observas en un registro que puedas comparar después.', duracion: '4 a 6 minutos', escena: 'panoramica',
+      puntos: 6,   // evidencia + 4 líneas de la libreta + nota final: con 5 de 6 (83%) se supera la meta de 80% y se abre el nivel 1.6
       imagen: { src: 'assets/historia/nivel-05-la-libreta-de-campo.webp', w: 1672, h: 941, alt: 'Una libreta abierta con las páginas en blanco sobre una caja de madera, junto a un lápiz y una fotografía de una parcela. Detrás se ve una parcela con suelo húmedo y agua entre las camas, al amanecer.' },
       tituloExito: 'Nivel superado · 80% o más',
       textoRefuerzo: 'Vuelve a armar el registro con calma: dónde, cuándo, qué viste y con qué evidencia. Describe antes de explicar.',
@@ -2450,7 +2451,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
             { q: 'nico', t: 'Ahora mi libreta no solo dice lo que pensé. Guarda lo que vi y en qué contexto.' },
             { q: 'ines', t: 'Cuando el registro es claro, las decisiones futuras pueden basarse en evidencia y no solo en memoria.' }],
           botonFinal: 'Ver mi resultado' }] },
-    { id: '0.6', titulo: 'El primer mapa de la parcela', objetivo: 'Reúne las señales del recorrido en un mapa claro.', duracion: '5 a 7 minutos', escena: 'panoramica', final: true,
+    { id: '1.6', titulo: 'El primer mapa de la parcela', objetivo: 'Reúne las señales del recorrido en un mapa claro.', duracion: '5 a 7 minutos', escena: 'panoramica', final: true,
       puntos: 5,   // 4 ubicaciones (a la primera) + la pregunta final; con 4 de 5 (80%) se completa el Mundo 01
       imagen: { src: 'assets/historia/nivel-06-el-primer-mapa-de-la-parcela.webp', w: 1672, h: 941, alt: 'Vista elevada de una parcela hortícola al amanecer. Abajo a la izquierda hay un portón de madera; arriba a la izquierda, un hilo de agua baja por la pendiente; un camino de tierra cruza entre las camas y, abajo a la derecha, hay un charco grande de agua reunida.' },
       textoRefuerzo: 'Vuelve a ubicar las señales con calma: usa lo que aprendiste en los niveles anteriores sobre el lugar donde observaste cada una.',
@@ -2796,7 +2797,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       '<div><dt>Completado</dt><dd>' + esc(fechaLarga(l.completadoEn)) + '</dd></div><div><dt>Dominio final</dt><dd>' + (Number(l.dominio) || 0) + '%</dd></div></dl></div>';
   }
   function proximoHtml() {
-    return '<span class="hs-eyebrow">Próximo mundo desbloqueado</span><h3>' + esc(MUNDO2.titulo) + '</h3><p>' + esc(MUNDO2.texto) + '</p>' +
+    return '<span class="hs-eyebrow">Nuevo mundo disponible</span><h3>' + esc(MUNDO2.titulo) + '</h3><p>' + esc(MUNDO2.texto) + '</p>' +
       (MUNDO2.url ? '<a class="hs-btn" href="' + esc(MUNDO2.url) + '">Explorar Mundo 02</a>'
         : '<button type="button" class="hs-btn" disabled aria-disabled="true">Próximamente</button><p class="hs-logro-nota">Tu desbloqueo queda conservado para cuando esté listo.</p>');
   }
@@ -2861,7 +2862,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     run = null;
     var chips = '';
     if (info.insignia) chips += '<span class="hs-xp-chip">+' + XP_MUNDO + ' XP</span>';
-    if (info.xpNivel) chips += '<span class="hs-xp-chip">+' + XP_NIVEL + ' XP · nivel 0.6</span>';
+    if (info.xpNivel) chips += '<span class="hs-xp-chip">+' + XP_NIVEL + ' XP · nivel 1.6</span>';
     $('cierreXp').innerHTML = chips || '<span class="hs-xp-chip">Recompensas ya ganadas: repetir no suma XP de nuevo</span>';
     $('cierreDialogos').innerHTML = (NIVELES[NIVELES.length - 1].cierreMundo || []).map(function (x) { return dlgHtml(x.q, x.t); }).join('');
     var ins = $('cierreInsignia'); ins.className = 'hs-insig-wrap'; ins.innerHTML = insigniaSvg(true);
@@ -3655,6 +3656,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
   sincronizarCuenta();
 
   pintarInicio();
+  // vip-panel.html → ruta de Modo Historia: #nivel-N abre directo ese nivel si ya está disponible
+  (function () { var mh = /^#nivel-([1-9])$/.exec(location.hash || ''); if (!mh) return; var ni = Number(mh[1]) - 1; if (ni < NIVELES.length && disponible(ni)) abrirNivel(ni); })();
   // vip-panel.html#... lleva directo a la bitácora (tarjeta del Modo Historia en Retos cuando el mundo está completo)
   if (location.hash === '#bitacora') setTimeout(function () { var b = $('bitacora'); if (b) b.scrollIntoView({ block: 'start' }); }, 600);
 })();
