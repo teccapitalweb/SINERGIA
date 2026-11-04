@@ -1876,6 +1876,17 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 .m2-zona.es-visto span { background: var(--h-accent); }
 .m2-zona.es-visto span::before { content: '✓ '; }
 .m2-zona:focus-visible { outline: 3px solid #fff; outline-offset: -4px; }
+.m2-buscable { cursor: crosshair; }
+.m2-contorno { position: absolute; z-index: 2; border: 3px solid rgba(26, 168, 136, .9); border-radius: 22px; background: rgba(26, 168, 136, .1); box-shadow: 0 0 0 4px rgba(255, 255, 255, .25); pointer-events: none; }
+.m2-contorno.es-actual { background: rgba(26, 168, 136, .2); box-shadow: 0 0 0 4px rgba(255, 255, 255, .6); }
+.m2-contorno.es-pista { border-style: dashed; border-color: #fff; background: rgba(255, 255, 255, .12); }
+.m2-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+#historia .m2-col { padding: 14px 16px; border: 2px dashed var(--h-border); border-radius: 16px; background: var(--h-bg); cursor: pointer; transition: border-color .15s ease, background .15s ease; }
+#historia .m2-col:hover, #historia .m2-col.es-sobre { border-color: var(--h-accent); background: var(--h-soft); }
+.m2-col h4 { font: 800 12px var(--font-display, 'Plus Jakarta Sans', sans-serif); letter-spacing: .1em; text-transform: uppercase; color: var(--h-subtle); }
+.m2-col-lista { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.m2-col-lista li { padding: 10px 12px; border: 2px solid var(--h-accent); border-radius: 12px; background: var(--h-ok-bg); font: 700 14.5px/1.4 var(--font-body, 'Inter', sans-serif); }
+.m2-col-vacia { margin-top: 10px; font-size: 14px; color: var(--h-subtle); }
 .m2-orden { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .m2-op { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border: 2px solid var(--h-border); border-radius: 16px; background: var(--h-card); cursor: grab; }
 .m2-op.es-ok { border-color: var(--h-accent); background: var(--h-ok-bg); cursor: default; }
@@ -1890,6 +1901,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 .m2-reiniciar { margin-top: 12px; }
 .m2-reiniciar small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--h-subtle); }
 @media (max-width: 760px) {
+  .m2-cols { grid-template-columns: 1fr; }
   .m2-doble { grid-template-columns: 1fr; }
   .m2-cartas { grid-template-columns: 1fr; }
 }
@@ -2431,24 +2443,31 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           fbMal: 'Miremos otra vez: primero se observa, luego se registra y solo después se buscan datos para interpretar.',
           cierre: [{ q: 'ines', t: 'El terreno marca pistas. Nuestra tarea es leerlas con calma, no adivinar lo que significan.' }], botonFinal: 'Continuar al nivel 2.3 →' }] },
 
-    { id: '2.3', titulo: 'Donde el agua se detiene', objetivo: 'Distinguir señales que vale la pena registrar.', duracion: '4 minutos', escena: 'panoramica', puntos: 5,
-      imagen: { src: IMG + 'nivel-3-senales.svg', w: 1600, h: 900, alt: 'Una franja de terreno con una línea de riego. Debajo de la línea hay una zona de suelo muy oscura; a la izquierda, un charco; en el centro, un surco por donde baja agua; a la derecha, un parche de suelo más claro y agrietado. Arriba se ven un pájaro y un poste de cerca.' },
-      aprendizaje: 'Observar una señal no es todavía concluir su causa: primero se registra, luego se compara.',
+    { id: '2.3', titulo: 'Donde el agua se detiene', subtitulo: 'Encuentra señales visibles antes de intentar explicarlas.', objetivo: 'Identificar señales visibles que vale la pena registrar, sin diagnosticar causas.', duracion: '4 minutos', escena: 'panoramica', puntos: 4,
+      siguienteTxt: 'Continuar al nivel 2.4 →',
+      imagen: { src: IMG + 'nivel-2-3-donde-el-agua-se-detiene.jpg', w: 1400, h: 788, alt: 'Una ladera de huerto vista de cerca, después de un riego ligero. En el centro hay un parche de suelo oscuro y húmedo; a la izquierda, un canal bajo con hojas secas y sedimento acumulados; a la derecha, junto al tronco de un árbol, una manguera negra con un emisor de punta roja; abajo a la derecha, el suelo pasa de tono oscuro a tono claro con piedritas.' },
+      aprendizaje: 'Una buena bitácora empieza con hechos visibles; las explicaciones vienen después.',
+      tituloExito: 'Nivel superado · 80% o más', textoRefuerzo: 'Miremos otra vez la escena. Repite el nivel con calma: separa lo que se ve de lo que todavía habría que confirmar.',
       momentos: [
         { tipo: 'dialogo', boton: 'Buscar señales', mensajes: [
-          { q: 'nico', t: 'Aquí el agua parece detenerse en algunos lugares, pero también hay cosas que no tienen nada que ver con ella.' },
-          { q: 'ines', t: 'Toca cada punto. Registramos las señales del agua; no todo lo que se ve es una señal.' }] },
-        { tipo: 'senales', q: 'ines', requeridas: 4, instruccion: 'Toca los puntos de la escena. Busca las cuatro señales del agua que vale la pena registrar.', continuar: 'Registrar lo observado', puntos: [
-          { n: 1, etq: 'Charco', x: 26, y: 78, ok: true, titulo: 'Acumulación de agua', t: 'Aquí el agua se junta. Conviene registrar dónde está y qué tanto espacio cubre.' },
-          { n: 2, etq: 'Zona oscura', x: 52, y: 60, ok: true, titulo: 'Zona más húmeda', t: 'El suelo bajo la línea de riego se ve más oscuro que el de alrededor.' },
-          { n: 3, etq: 'Surco', x: 66, y: 80, ok: true, titulo: 'Escurrimiento', t: 'Hay un surco por donde el agua baja: es una pista de su recorrido.' },
-          { n: 4, etq: 'Pájaro', x: 22, y: 17, ok: false, titulo: 'Un pájaro', t: 'Es parte del paisaje, pero no dice nada sobre el recorrido del agua. Sigue buscando.' },
-          { n: 5, etq: 'Parche claro', x: 84, y: 76, ok: true, titulo: 'Suelo con textura distinta', t: 'Aquí el suelo se ve más claro y agrietado que el resto. Conviene registrarlo.' },
-          { n: 6, etq: 'Poste', x: 87, y: 41, ok: false, titulo: 'Poste de la cerca', t: 'Ayuda a ubicar la parcela, pero no es una señal del agua. Sigue buscando.' }] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: 'Ya reuniste cuatro señales. ¿Qué significa haberlas observado?', opciones: [
-          { t: 'Que conviene registrarlas; todavía no sabemos su causa.', ok: true, f: okF(2, 'Observar no equivale todavía a concluir la causa.') },
-          { t: 'Que ya sabemos qué falló en el riego.', ok: false, f: noF(1) },
-          { t: 'Que basta con una de ellas para explicar toda la parcela.', ok: false, f: noF(2) }] }] },
+          { q: 'nico', t: 'Después de un riego ligero noté que el terreno no se ve igual en todas partes.' },
+          { q: 'ines', t: 'Busquemos lo que cambió a simple vista. Registrar una señal no significa que ya sepamos su causa.' }] },
+        { tipo: 'buscar', q: 'ines', instruccion: 'Toca la imagen y encuentra cuatro señales. Cada una que halles se marca con un contorno suave y abre su tarjeta de observación.', contador: 'Señales encontradas', continuar: 'Separar evidencia y conclusión',
+          final: 'Ya reuniste evidencias. Ahora separa lo que viste de lo que todavía habría que confirmar.', puntos: [
+          { n: 1, titulo: 'Suelo más oscuro', t: 'Hay una zona que conserva más humedad visible que las áreas cercanas.', contorno: { x: 35.5, y: 36, w: 21.5, h: 20 } },
+          { n: 2, titulo: 'Material acumulado', t: 'Hojas y partículas finas se reunieron en una parte baja del terreno.', contorno: { x: 0.5, y: 45, w: 30.5, h: 40 } },
+          { n: 3, titulo: 'Punto de riego', t: 'Aquí hay un emisor visible. Conviene ubicarlo en el registro.', contorno: { x: 75, y: 40, w: 25, h: 13 } },
+          { n: 4, titulo: 'Cambio de condición', t: 'El color y la textura aparente del suelo cambian entre dos zonas cercanas.', contorno: { x: 62, y: 58, w: 34, h: 32 } }] },
+        { tipo: 'columnas', q: 'ines', intro: 'Coloca cada tarjeta en su columna: toca la tarjeta y luego la columna, o arrástrala hasta ella.',
+          columnas: [{ id: 'evidencia', t: 'Evidencia visible' }, { id: 'confirmar', t: 'Necesita confirmarse' }],
+          fbMal: 'Miremos otra vez la escena: eso sí se puede ver en la imagen.',
+          exito: 'Muy bien. Describir lo visible es distinto a asegurar una causa.',
+          tarjetas: [
+            { id: 'k1', t: 'Hay una zona con suelo más oscuro.', col: 'evidencia' },
+            { id: 'k2', t: 'Las hojas se acumularon en una parte baja.', col: 'evidencia' },
+            { id: 'k3', t: 'El emisor está junto a la base de un árbol.', col: 'evidencia' },
+            { id: 'k4', t: 'El sistema está causando un problema de riego.', col: 'confirmar', fMal: 'Esa frase propone una explicación. Para confirmarla harían falta más datos y observaciones.' }],
+          cierre: [{ q: 'ines', t: 'Una buena bitácora empieza con hechos visibles. Las explicaciones vienen después.' }], botonFinal: 'Continuar al nivel 2.4 →' }] },
 
     { id: '2.4', titulo: 'Dos árboles, dos contextos', objetivo: 'Comparar sin sacar conclusiones apresuradas.', duracion: '4 minutos', escena: 'doble', puntos: 5,
       imagenes: [
@@ -2977,6 +2996,93 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         });
         try { btns[0].b.focus({ preventScroll: true }); } catch (e) { /* sin foco */ }
       }
+      pintar();
+    },
+    // Buscar señales tocando la imagen: las zonas no se muestran de entrada; al hallar una se marca con un contorno suave y abre su tarjeta. Hay botón de pista y alternativa de teclado.
+    buscar: function (m, nv) {
+      dlg(m.q, m.instruccion);
+      var esc_ = $('nvEscena').querySelector('.historia-escena'), halladas = {}, n = 0, contornos = {};
+      esc_.classList.add('m2-buscable');
+      var detalle = document.createElement('div'); detalle.className = 'hs-detalle hs-pista historia-pista'; detalle.setAttribute('aria-live', 'polite');
+      detalle.innerHTML = '<p class="hs-detalle-ini">Toca la imagen para observar. Aquí aparecerá cada tarjeta.</p>';
+      var estadoLbl = document.createElement('p'); estadoLbl.className = 'hs-contexto-t'; estadoLbl.setAttribute('aria-live', 'polite'); estadoLbl.textContent = m.contador + ': 0 de ' + m.puntos.length;
+      function contorno(p, clase) { var c = document.createElement('div'); c.className = 'm2-contorno ' + (clase || ''); c.style.left = p.contorno.x + '%'; c.style.top = p.contorno.y + '%'; c.style.width = p.contorno.w + '%'; c.style.height = p.contorno.h + '%'; esc_.appendChild(c); return c; }
+      function abrir(p) {
+        run.avance = true;
+        Object.keys(contornos).forEach(function (k) { contornos[k].classList.remove('es-actual'); });
+        if (!halladas[p.n]) {
+          halladas[p.n] = true; n++; contornos[p.n] = contorno(p, 'es-hallada');
+          estadoLbl.textContent = m.contador + ': ' + n + ' de ' + m.puntos.length;
+        }
+        contornos[p.n].classList.add('es-actual');
+        detalle.innerHTML = '<b>' + esc(p.titulo) + '</b><p>' + esc(p.t) + '</p>';
+        detalle.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        if (n === m.puntos.length && !acc.firstChild) { dlg(m.q, m.final); botonContinuar(m.continuar); }
+      }
+      esc_.addEventListener('click', function (e) {
+        var r = esc_.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * 100, y = (e.clientY - r.top) / r.height * 100;
+        var p = m.puntos.filter(function (z) { return x >= z.contorno.x && x <= z.contorno.x + z.contorno.w && y >= z.contorno.y && y <= z.contorno.y + z.contorno.h; })[0];
+        if (p) abrir(p);
+        else { detalle.innerHTML = '<p class="hs-detalle-ini">Aquí no hay una señal nueva. Sigue observando con calma.</p>'; }
+      });
+      var pista = boton('Necesito una pista', 'hs-btn--sec', function () {
+        var p = m.puntos.filter(function (z) { return !halladas[z.n]; })[0]; if (!p) return;
+        var c = contorno(p, 'es-pista'); setTimeout(function () { if (c.parentNode) c.parentNode.removeChild(c); }, 2200);
+      });
+      var teclado = document.createElement('div'); teclado.className = 'm2-sr'; teclado.setAttribute('role', 'group'); teclado.setAttribute('aria-label', 'Alternativa para teclado: abrir cada señal');
+      m.puntos.forEach(function (p) { var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Abrir señal ' + p.n + ' de ' + m.puntos.length; b.addEventListener('click', function () { abrir(p); }); teclado.appendChild(b); });
+      $('nvDialogo').appendChild(detalle); inter.appendChild(estadoLbl); inter.appendChild(pista); inter.appendChild(teclado);
+    },
+    // Tarjetas a dos columnas (p. ej. evidencia visible / necesita confirmarse): tocar tarjeta y columna, o arrastrar. Cada intento fallido de una tarjeta resta 20% de su punto.
+    columnas: function (m, nv) {
+      dlg(m.q, m.intro);
+      var colocadas = {}, tomada = null, fallos = {}, listo = false, total = m.tarjetas.length, hechas = 0;
+      var orden = barajarDistinto(m.tarjetas);
+      var cont = document.createElement('div'); cont.className = 'm2-ficha';
+      cont.innerHTML = '<div class="m2-cols" id="m2Cols"></div><ul class="m2-cartas" id="m2Cartas" aria-label="Tarjetas por clasificar"></ul><div class="hs-elec-fb" id="m2ColFb" aria-live="polite"></div>';
+      inter.appendChild(cont);
+      var fb = cont.querySelector('#m2ColFb');
+      function tarjeta(id) { return m.tarjetas.filter(function (q) { return q.id === id; })[0]; }
+      function pintar() {
+        cont.querySelector('#m2Cols').innerHTML = m.columnas.map(function (c) {
+          var dentro = m.tarjetas.filter(function (q) { return colocadas[q.id] === c.id; });
+          return '<div class="m2-col" data-col="' + c.id + '" role="button" tabindex="0" aria-label="Colocar en ' + esc(c.t) + '"><h4>' + esc(c.t) + '</h4><ul class="m2-col-lista">' + dentro.map(function (q) { return '<li>' + esc(q.t) + '</li>'; }).join('') + '</ul>' + (dentro.length ? '' : '<p class="m2-col-vacia">Toca aquí para colocar la tarjeta</p>') + '</div>';
+        }).join('');
+        cont.querySelector('#m2Cartas').innerHTML = orden.filter(function (q) { return !colocadas[q.id]; }).map(function (q) {
+          return '<li><button type="button" class="m2-carta' + (tomada === q.id ? ' es-tomada' : '') + '" data-carta="' + q.id + '" aria-pressed="' + (tomada === q.id ? 'true' : 'false') + '"' + (listo ? ' disabled' : ' draggable="true"') + '>' + esc(q.t) + '</button></li>';
+        }).join('');
+      }
+      function poner(colId, cartaId) {
+        if (listo) return;
+        if (!cartaId) { fb.innerHTML = dlgHtml(m.q, 'Primero elige una tarjeta y luego la columna donde va.', 'ayuda'); return; }
+        var q = tarjeta(cartaId); if (!q || colocadas[cartaId]) return;
+        run.avance = true;
+        if (q.col === colId) {
+          colocadas[cartaId] = colId; tomada = null; hechas++;
+          puntajeDirecto(Math.max(0, 1 - MALA * (fallos[cartaId] || 0)));
+          fb.innerHTML = '';
+          if (hechas >= total) { listo = true; pintar(); dlg(m.q, m.exito, 'acierto'); if (m.cierre) m.cierre.forEach(function (x) { dlg(x.q, x.t); }); botonContinuar(m.botonFinal); return; }
+        } else {
+          fallos[cartaId] = (fallos[cartaId] || 0) + 1; tomada = null;
+          fb.innerHTML = dlgHtml(m.q, q.fMal || m.fbMal, 'ayuda');
+        }
+        pintar();
+      }
+      cont.addEventListener('click', function (e) {
+        var c = e.target.closest('[data-carta]'), k = e.target.closest('[data-col]');
+        if (c) { if (listo) return; tomada = tomada === c.getAttribute('data-carta') ? null : c.getAttribute('data-carta'); pintar(); }
+        else if (k) poner(k.getAttribute('data-col'), tomada);
+      });
+      cont.addEventListener('keydown', function (e) { var k = e.target.closest ? e.target.closest('[data-col]') : null; if (k && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); poner(k.getAttribute('data-col'), tomada); } });
+      cont.addEventListener('dragstart', function (e) { var c = e.target.closest ? e.target.closest('[data-carta]') : null; if (!c) return; tomada = c.getAttribute('data-carta'); try { e.dataTransfer.setData('text/plain', tomada); e.dataTransfer.effectAllowed = 'move'; } catch (x) { /* sin dataTransfer */ } });
+      cont.addEventListener('dragover', function (e) { var k = e.target.closest ? e.target.closest('[data-col]') : null; if (k) { e.preventDefault(); k.classList.add('es-sobre'); } });
+      cont.addEventListener('dragleave', function (e) { var k = e.target.closest ? e.target.closest('[data-col]') : null; if (k) k.classList.remove('es-sobre'); });
+      cont.addEventListener('drop', function (e) {
+        var k = e.target.closest ? e.target.closest('[data-col]') : null; if (!k) return;
+        e.preventDefault(); k.classList.remove('es-sobre');
+        var id = null; try { id = e.dataTransfer.getData('text/plain'); } catch (x) { /* sin dataTransfer */ }
+        poner(k.getAttribute('data-col'), id || tomada);
+      });
       pintar();
     },
     // Ordenar tarjetas: flechas ▲▼ (o arrastrar) y «Comprobar orden». Cada comprobación fallida resta 20% del punto; se puede reintentar sin límite.
