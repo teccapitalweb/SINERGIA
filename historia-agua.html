@@ -1933,6 +1933,14 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 .m2-par-l { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--h-soft); font: 800 13px var(--font-display, 'Plus Jakarta Sans', sans-serif); color: var(--h-subtle); }
 #historia .m2-par.es-ok .m2-par-l { background: var(--h-accent); color: #fff; }
 .m2-par-v { display: grid; place-items: center; min-width: 26px; height: 26px; border-radius: 100px; background: var(--h-accent); color: #fff; font: 800 12.5px var(--font-display, 'Plus Jakarta Sans', sans-serif); font-style: normal; }
+.m2-nota { margin-top: 8px; font-size: 13.5px; font-weight: 600; color: var(--h-subtle); }
+.m2-teclado { margin-top: 10px; }
+#historia .m2-tec-b { min-height: 38px; padding: 0 14px; border: 1.5px dashed var(--h-border); border-radius: 100px; background: transparent; font: 700 13px var(--font-display, 'Plus Jakarta Sans', sans-serif); color: var(--h-muted); }
+#historia .m2-tec-b:hover { border-color: var(--h-accent); color: var(--h-text); }
+.m2-tec-lista { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.m2-tec-lista[hidden] { display: none; }
+#historia .m2-tec-s { min-height: 42px; padding: 0 16px; border: 1.5px solid var(--h-border); border-radius: 12px; background: var(--h-card); font: 700 13.5px var(--font-display, 'Plus Jakarta Sans', sans-serif); }
+#historia .m2-tec-s:hover { border-color: var(--h-accent); background: var(--h-soft); }
 .m2-orden { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .m2-op { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border: 2px solid var(--h-border); border-radius: 16px; background: var(--h-card); cursor: grab; }
 .m2-op.es-ok { border-color: var(--h-accent); background: var(--h-ok-bg); cursor: default; }
@@ -2205,7 +2213,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
             <div class="hs-barra-item hs-barra-dom historia-dominio"><span id="nvDomTxt"></span><div class="hs-barra-fila" id="nvDomRol" role="progressbar" aria-label="Dominio del nivel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="nvDomBarra"></i><em style="left:80%" title="Meta 80%"></em></div></div>
           </div>
           <div class="hs-nivel-cab">
-            <div><h2 id="nvTit" tabindex="-1"></h2><p id="nvObj"></p><span class="hs-duracion" id="nvDur" hidden></span></div>
+            <div><h2 id="nvTit" tabindex="-1"></h2><p id="nvObj"></p><span class="hs-duracion" id="nvDur" hidden></span><p class="m2-nota" id="nvNota"></p></div>
           </div>
           <div class="hs-momentos" id="nvMomentos" aria-label="Momentos del nivel"></div>
           <div id="nvEscena"></div>
@@ -2487,7 +2495,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           final: 'Ya revisaste las dos zonas. Ahora elige la frase que describe lo que se puede ver.', puntos: [
           { n: 1, etq: 'Zona A', area: { x: 0, y: 0, w: 49, h: 100 }, titulo: 'Zona A', t: 'La línea avanza siguiendo una curva parecida a la del terreno.' },
           { n: 2, etq: 'Zona B', area: { x: 52, y: 0, w: 48, h: 100 }, titulo: 'Zona B', t: 'La línea cruza una pendiente más directa y el suelo se ve más expuesto.' }] },
-        { tipo: 'eleccionLibre', gradual: true, q: 'ines', letras: true, pregunta: '¿Cuál frase describe una observación visible en la imagen?', opciones: [
+        { tipo: 'eleccionLibre', q: 'ines', letras: true, pregunta: '¿Cuál frase describe una observación visible en la imagen?', opciones: [
           { t: 'En la Zona B la línea de riego cruza el terreno en diagonal y la pendiente se ve más marcada.', ok: true, f: 'Exacto. Describiste lo que se observa sin afirmar todavía una causa o resultado.' },
           { t: 'La Zona B tendrá necesariamente problemas de riego.', ok: false, f: 'Podría ser una posibilidad, pero la imagen por sí sola no permite asegurarlo.' },
           { t: 'La Zona A recibe siempre la cantidad perfecta de agua.', ok: false, f: 'Una escena no basta para asegurar que el riego funciona de forma perfecta. Primero registra y compara.' }],
@@ -2550,7 +2558,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
             { t: 'La línea de riego pasa más cerca de la base del árbol.', ok: 'b' },
             { t: 'Se observa un árbol saludable y suelo con hojas secas alrededor.', ok: 'ambas' },
             { t: 'Se aprecia una zona de suelo un poco más oscuro en una parte baja.', ok: 'b' }] },
-        { tipo: 'eleccionLibre', gradual: true, q: 'ines', letras: true, pregunta: '¿Cuál es la lectura más responsable?', opciones: [
+        { tipo: 'eleccionLibre', q: 'ines', letras: true, pregunta: '¿Cuál es la lectura más responsable?', opciones: [
           { t: 'Los dos árboles necesitan un contexto distinto de observación antes de atribuir cualquier diferencia a una sola causa.', ok: true, f: 'Exacto. Comparar no sirve para adivinar: sirve para decidir qué datos y observaciones hacen falta.' },
           { t: 'El árbol de la Zona B tiene un problema confirmado porque el suelo se ve más oscuro.', ok: false, f: 'Hay una diferencia visible, pero una sola imagen no confirma su causa ni permite hacer una recomendación.' },
           { t: 'El árbol de la Zona A siempre recibirá menos agua porque la línea pasa más lejos.', ok: false, f: 'Hay una diferencia visible, pero una sola imagen no confirma su causa ni permite hacer una recomendación.' }],
@@ -2578,7 +2586,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
             { id: 'c6', t: 'El árbol está mal.', slot: null, f: 'Esa frase no registra un hecho visible ni un dato pendiente. Una bitácora útil evita conclusiones apresuradas.' },
             { id: 'c7', t: 'Zona baja, junto a la línea que cruza la pendiente.', slot: 'zona' }],
           fbMal: 'Miremos otra vez la bitácora: cada campo guarda un tipo distinto de información.' },
-        { tipo: 'eleccionLibre', gradual: true, sinEscena: true, q: 'ines', letras: true, pregunta: '¿Para qué sirve anotar lo que falta confirmar?', opciones: [
+        { tipo: 'eleccionLibre', sinEscena: true, q: 'ines', letras: true, pregunta: '¿Para qué sirve anotar lo que falta confirmar?', opciones: [
           { t: 'Para saber qué información buscar antes de explicar una causa.', ok: true, f: 'Exacto. Registrar lo pendiente mantiene abierta la investigación y evita decidir con información incompleta.' },
           { t: 'Para decidir de inmediato qué cambiar en la parcela.', ok: false, f: 'Anotar lo pendiente no decide por sí solo qué cambiar: primero hace falta confirmar más datos.' },
           { t: 'Para reemplazar la observación directa.', ok: false, f: 'La bitácora complementa la observación directa; no la reemplaza.' }],
@@ -2615,7 +2623,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
             { n: 4, t: 'Permite ubicar la información para volver a observarla después.' }],
           fbMal: 'Miremos otra vez el mapa: busca qué aporta cada observación a la lectura de la parcela.',
           exito: 'Muy bien. Cada observación aporta una parte distinta a la lectura; ninguna la explica sola.', continuar: 'Elegir la conclusión' },
-        { tipo: 'eleccionLibre', gradual: true, q: 'ines', letras: true, pregunta: '¿Cuál conclusión representa mejor una lectura responsable de esta parcela?', opciones: [
+        { tipo: 'eleccionLibre', q: 'ines', letras: true, pregunta: '¿Cuál conclusión representa mejor una lectura responsable de esta parcela?', opciones: [
           { t: 'La pendiente, el recorrido de la línea y las diferencias visibles del suelo son pistas que conviene registrar y comparar antes de decidir una causa.', ok: true, f: 'Exacto. Conectaste las evidencias sin convertirlas en una conclusión apresurada.' },
           { t: 'El suelo oscuro demuestra que el sistema de riego está fallando.', ok: false, f: 'Esa afirmación va más allá de lo que la escena demuestra. Primero registra, compara y confirma.' },
           { t: 'La solución es abrir menos la llave sin revisar nada más.', ok: false, f: 'Esa afirmación va más allá de lo que la escena demuestra. Primero registra, compara y confirma.' }],
@@ -2735,6 +2743,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     $('nvEtq').textContent = nv.etiqueta || ('Nivel ' + nv.id);
     $('nvTit').textContent = nv.titulo; $('nvObj').textContent = nv.subtitulo || nv.objetivo;
     var dur = $('nvDur'); dur.hidden = !nv.duracion; dur.textContent = nv.duracion ? 'Duración: ' + nv.duracion : '';
+    $('nvNota').textContent = 'Puedes equivocarte y volver a mirar; lo importante es terminar comprendiendo.';
     mostrar('vistaNivel');
     mostrarMomento();
     $('nvTit').focus();
@@ -3097,7 +3106,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         var obs = m.izquierda.filter(function (x) { return x.id === tomada; })[0];
         if (obs.par === Number(d.getAttribute('data-der'))) {
           hechas[obs.id] = true; n++; tomada = null; fb.innerHTML = '';
-          puntajeDirecto(Math.max(0, 1 - MALA * (fallos[obs.id] || 0)));
+          puntajeDirecto(1);
           pintar();
           if (n === m.izquierda.length) { dlg(m.q, m.exito, 'acierto'); botonContinuar(m.continuar); }
         } else {
@@ -3128,7 +3137,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       });
       contar();
     },
-    // Relacionar observaciones con una de varias etiquetas (p. ej. Zona A / Zona B / Ambas). Cada fallo de una tarjeta resta 20% de su punto; se puede reintentar.
+    // Relacionar observaciones con una de varias etiquetas (p. ej. Zona A / Zona B / Ambas). Equivocarse solo explica; el punto cuenta cuando queda bien.
     asignar: function (m, nv) {
       dlg(m.q, m.intro);
       var hechas = 0, total = m.tarjetas.length;
@@ -3146,7 +3155,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
             if (o.id === c.ok) {
               fila.classList.add('es-ok'); b.classList.add('es-ok');
               Array.prototype.forEach.call(ops.children, function (x) { x.disabled = true; });
-              puntajeDirecto(Math.max(0, 1 - MALA * fallos)); hechas++; fb.innerHTML = '';
+              puntajeDirecto(1); hechas++; fb.innerHTML = '';
               if (hechas === total) { dlg(m.q, m.exito, 'acierto'); botonContinuar(m.continuar); }
             } else {
               fallos++; b.classList.add('es-no'); b.disabled = true;
@@ -3188,13 +3197,18 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       });
       var pista = boton('Necesito una pista', 'hs-btn--sec', function () {
         var p = m.puntos.filter(function (z) { return !halladas[z.n]; })[0]; if (!p) return;
-        var c = contorno(p, 'es-pista'); setTimeout(function () { if (c.parentNode) c.parentNode.removeChild(c); }, 2200);
+        var c = contorno(p, 'es-pista'); setTimeout(function () { if (c.parentNode) c.parentNode.removeChild(c); }, 3500);   // la pista no resta ni limita intentos
       });
-      var teclado = document.createElement('div'); teclado.className = 'm2-sr'; teclado.setAttribute('role', 'group'); teclado.setAttribute('aria-label', 'Alternativa para teclado: abrir cada señal');
-      m.puntos.forEach(function (p) { var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Abrir señal ' + p.n + ' de ' + m.puntos.length; b.addEventListener('click', function () { abrir(p); }); teclado.appendChild(b); });
+      // Alternativa visible y discreta para teclado: abre las mismas fichas y actualiza el mismo progreso que los puntos de la imagen
+      var teclado = document.createElement('div'); teclado.className = 'm2-teclado';
+      var tb = document.createElement('button'); tb.type = 'button'; tb.className = 'm2-tec-b'; tb.textContent = 'Explorar señales con teclado'; tb.setAttribute('aria-expanded', 'false');
+      var lista = document.createElement('div'); lista.className = 'm2-tec-lista'; lista.hidden = true; lista.setAttribute('role', 'group'); lista.setAttribute('aria-label', 'Abrir cada señal');
+      m.puntos.forEach(function (p) { var b = document.createElement('button'); b.type = 'button'; b.className = 'm2-tec-s'; b.textContent = 'Abrir señal ' + p.n + ' de ' + m.puntos.length; b.addEventListener('click', function () { abrir(p); }); lista.appendChild(b); });
+      tb.addEventListener('click', function () { lista.hidden = !lista.hidden; tb.setAttribute('aria-expanded', lista.hidden ? 'false' : 'true'); if (!lista.hidden) { var f = lista.querySelector('button'); if (f) { try { f.focus({ preventScroll: true }); } catch (e) { /* sin foco */ } } } });
+      teclado.appendChild(tb); teclado.appendChild(lista);
       $('nvDialogo').appendChild(detalle); inter.appendChild(estadoLbl); inter.appendChild(pista); inter.appendChild(teclado);
     },
-    // Tarjetas a dos columnas (p. ej. evidencia visible / necesita confirmarse): tocar tarjeta y columna, o arrastrar. Cada intento fallido de una tarjeta resta 20% de su punto.
+    // Tarjetas a dos columnas (p. ej. evidencia visible / necesita confirmarse): tocar tarjeta y columna, o arrastrar. Equivocarse solo explica; el punto cuenta cuando la tarjeta queda bien colocada.
     columnas: function (m, nv) {
       dlg(m.q, m.intro);
       var colocadas = {}, tomada = null, fallos = {}, listo = false, total = m.tarjetas.length, hechas = 0;
@@ -3220,7 +3234,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         run.avance = true;
         if (q.col === colId) {
           colocadas[cartaId] = colId; tomada = null; hechas++;
-          puntajeDirecto(Math.max(0, 1 - MALA * (fallos[cartaId] || 0)));
+          puntajeDirecto(1);   // cuenta el resultado final: equivocarse antes no resta
           fb.innerHTML = '';
           if (hechas >= total) { listo = true; pintar(); dlg(m.q, m.exito, 'acierto'); if (m.cierre) m.cierre.forEach(function (x) { dlg(x.q, x.t); }); botonContinuar(m.botonFinal); return; }
         } else {
@@ -3246,7 +3260,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       });
       pintar();
     },
-    // Ordenar tarjetas: flechas ▲▼ (o arrastrar) y «Comprobar orden». Cada comprobación fallida resta 20% del punto; se puede reintentar sin límite.
+    // Ordenar tarjetas: flechas ▲▼ (o arrastrar) y «Comprobar orden». Si el orden no es correcto solo se explica y se puede corregir sin límite; el punto cuenta cuando queda bien.
     ordenar: function (m, nv) {
       dlg(m.q, m.pregunta);
       var n = m.tarjetas.length, orden = barajarDistinto(m.tarjetas.map(function (_, k) { return k; })), errores = 0, listo = false, origen = null;
@@ -3258,7 +3272,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         run.avance = true;
         if (orden.every(function (v, p) { return v === p; })) {
           listo = true; comprobar.remove(); pintar();
-          puntaje(errores, false);
+          puntajeDirecto(1);   // cuenta el resultado final: los intentos previos no restan
           fb.innerHTML = ''; dlg(m.q, m.exito, 'acierto');
           if (m.cierre) m.cierre.forEach(function (x) { dlg(x.q, x.t); });
           botonContinuar(m.botonFinal);
@@ -3320,7 +3334,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       inter.appendChild(eleccionUnica({
         q: m.q, opciones: m.opciones, layout: m.layout, letras: m.letras, boton: m.boton, pista: m.pista,
         onOk: function (op, primero, errs) {
-          puntajeDirecto(m.gradual ? Math.max(0, 1 - MALA * (errs || 0)) : 1);   // gradual: cada intento fallido resta 20% de este punto
+          puntajeDirecto(1);   // cuenta el resultado final: haber probado otras opciones antes no resta
           dlg(m.q, op.f, 'acierto');
           if (m.cierre) m.cierre.forEach(function (x) { dlg(x.q, x.t); });
           botonContinuar(m.botonFinal);
@@ -3357,7 +3371,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       });
       $('nvDialogo').appendChild(detalle); inter.appendChild(estadoLbl);
     },
-    // Ficha con espacios y tarjetas: se coloca con toque (tarjeta y luego espacio) o arrastrando. Cada tarjeta correcta vale 1 punto si se colocó a la primera; las que no encajan no restan.
+    // Ficha con espacios y tarjetas: se coloca con toque (tarjeta y luego espacio) o arrastrando. Cada tarjeta correcta vale 1 punto cuando queda en su espacio, sin importar los intentos previos; las que no encajan no restan.
     ficha: function (m, nv) {
       dlg(m.q, m.intro);
       var colocadas = {}, tomada = null, fallos = {}, listo = false, aciertos = 0;
@@ -3400,7 +3414,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         run.avance = true;
         if (q.slot === slotId) {
           colocadas[slotId] = cartaId; tomada = null; aciertos++;
-          puntajeDirecto(Math.max(0, 1 - MALA * (fallos[cartaId] || 0)));   // un intento fallido de una tarjeta resta 20% de su punto
+          puntajeDirecto(1);   // cuenta el resultado final: equivocarse antes no resta
           if (aciertos >= n) {
             listo = true; fb.innerHTML = dlgHtml(m.q, m.exito, 'acierto'); pintar(); if (m.lectura) lectura(); botonContinuar(m.continuar);
             fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return;
