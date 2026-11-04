@@ -14375,6 +14375,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     observa: rtIcono('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>'),
     decide: rtIcono('<path d="M12 3v7m0 0-6 5m6-5 6 5M6 15v3m12-3v3"/><circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/>'),
     integra: rtIcono('<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5M3 17.5l9 5 9-5"/>'),
+    construye: rtIcono('<circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="6" r="2.2"/><circle cx="19" cy="12" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7 11l3.2-3.6M14 7.6l3.2 3.2M17 13.4 14 16.8M10 16.8 7 13.4"/>'),
     reloj: rtIcono('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>')
   };
   var RT_CAMPO = [
@@ -14395,7 +14396,14 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       { id: 'desafio-02', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 02', nivel: 'Experto', titulo: 'El dato que cambia la lectura', desc: 'Compara dos recorridos y descubre qué contexto cambia una observación.', xp: 30, img: 'assets/retos/desafio-02.jpg', respaldo: true, url: 'desafio-caso-02.html', min: '5–7 min', cta: 'Comparar recorridos', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
       { id: 'desafio-03', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 03', nivel: 'Experto', titulo: 'El expediente de la parcela', desc: 'Selecciona evidencia útil y construye un registro de campo completo.', xp: 40, img: 'assets/retos/desafio-03.jpg', respaldo: true, url: 'desafio-caso-03.html', min: '6–8 min', cta: 'Abrir expediente', hechoTxt: 'Misión completada', recompensa: '+40 XP semanal' },
       { id: 'desafio-04', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 04', nivel: 'Avanzado', titulo: 'Bitácora bajo lupa', desc: 'Revisa evidencias, detecta lo que falta y completa un registro que sí ayude a entender la parcela.', xp: 30, img: 'assets/retos/desafio-04.jpg', url: 'desafio-caso-04.html', min: '5–7 min', cta: 'Revisar bitácora', recompensa: '+30 XP semanal' },
-      { id: 'desafio-05', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 05', nivel: 'Avanzado', titulo: 'Conecta la parcela', desc: 'Relaciona agua, suelo, cultivos y registro para leer una parcela como un sistema.', xp: 40, img: 'assets/retos/desafio-05.jpg', url: 'desafio-caso-05.html', min: '6–8 min', cta: 'Conectar pistas', recompensa: '+40 XP semanal' }] }
+      { id: 'desafio-05', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 05', nivel: 'Avanzado', titulo: 'Conecta la parcela', desc: 'Relaciona agua, suelo, cultivos y registro para leer una parcela como un sistema.', xp: 40, img: 'assets/retos/desafio-05.jpg', url: 'desafio-caso-05.html', min: '6–8 min', cta: 'Conectar pistas', recompensa: '+40 XP semanal' }] },
+    { id: 'construye', prog: 'Arma el sistema', nombre: 'Construye', tiempo: '3–5 min', sub: 'Conecta piezas, recorridos y etapas.', ruta: 'arma-el-sistema', portada: 'assets/retos/portada-arma-el-sistema.jpg', desc: 'Conecta piezas, recorridos y etapas para comprender cómo funciona un proceso de campo.', boton: 'Construir sistemas →', logro: 'sistema', totalCasos: 5,
+      vistaSub: 'Construye relaciones de campo paso a paso.', vistaTexto: 'Todos los retos están abiertos. Elige el sistema que quieras construir.', items: [
+      { id: 'arma-01', tipo: 'caso', almacen: 'sinergia_arma_sistema_v1', num: 'Caso 01', nivel: 'Básico', titulo: 'El recorrido del riego', desc: 'Ordena y conecta las piezas básicas de un recorrido de riego.', xp: 15, img: 'assets/retos/arma-01.jpg', url: 'arma-caso-01.html', min: '3–4 min', cta: 'Construir', hechoTxt: 'Caso completado', recompensa: '+15 XP semanal' },
+      { id: 'arma-02', tipo: 'caso', almacen: 'sinergia_arma_sistema_v1', num: 'Caso 02', nivel: 'Básico', titulo: 'Vivero listo para crecer', desc: 'Construye una estación de vivero con charola, sustrato, semilla, etiqueta y sombra.', xp: 15, img: 'assets/retos/portada-arma-el-sistema.jpg', pronto: true, min: '3–4 min', recompensa: '+15 XP semanal' },
+      { id: 'arma-03', tipo: 'caso', almacen: 'sinergia_arma_sistema_v1', num: 'Caso 03', nivel: 'Intermedio', titulo: 'Bioinsumo bajo control', desc: 'Relaciona recipiente, insumo, protección y registro, sin convertirlo en una receta real.', xp: 20, img: 'assets/retos/portada-arma-el-sistema.jpg', pronto: true, min: '3–4 min', recompensa: '+20 XP semanal' },
+      { id: 'arma-04', tipo: 'caso', almacen: 'sinergia_arma_sistema_v1', num: 'Caso 04', nivel: 'Intermedio', titulo: 'Del corte a la sombra', desc: 'Ordena el flujo básico de una cosecha: corte, selección, sombra, registro y traslado.', xp: 20, img: 'assets/retos/portada-arma-el-sistema.jpg', pronto: true, min: '4–5 min', recompensa: '+20 XP semanal' },
+      { id: 'arma-05', tipo: 'caso', almacen: 'sinergia_arma_sistema_v1', num: 'Caso 05', nivel: 'Avanzado', titulo: 'La parcela conectada', desc: 'Integra cultivo, suelo, agua y registro en un sistema visual.', xp: 25, img: 'assets/retos/portada-arma-el-sistema.jpg', pronto: true, min: '5–6 min', recompensa: '+25 XP semanal' }]}
   ];
   // Los 6 reconocimientos de Retos (hitos, no uno por caso). El servidor los otorga; aquí se muestra su avance con los datos reales.
   var RT_LOGROS = [
@@ -14403,6 +14411,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     { id: 'ojo', panel: true, nombre: 'Ojo de campo', regla: 'Completa todos los casos de Detective Agrícola', ico: RT_ICO.observa },
     { id: 'calma', panel: true, nombre: 'Decidir con calma', regla: 'Completa todos los casos de Rescate del Cultivo', ico: RT_ICO.decide },
     { id: 'campo', panel: true, nombre: 'Criterio de campo', regla: 'Completa todos los casos de Desafío SINERGIA', ico: RT_ICO.integra },
+    { id: 'sistema', panel: true, nombre: 'Sistema conectado', regla: 'Completa los cinco casos de Arma el sistema', ico: RT_ICO.construye },
     { id: 'mirada', panel: true, nombre: 'Mirada de parcela', regla: 'Completa los 6 niveles del Mundo 01', ico: rtIcono('<path d="M12 21c-4.5 0-8-3.4-8-8 0-5 4-8 8-10 4 2 8 5 8 10 0 4.6-3.5 8-8 8Z"/><path d="M12 21V9"/>') },
     { id: 'constante', panel: true, nombre: 'Práctica constante', regla: 'Completa 5 retos distintos, sin importar la colección', ico: rtIcono('<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>') }
   ];
@@ -14448,7 +14457,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   // (XP de la semana, mejor resultado y logros). Aquí no se guarda nada nuevo, así no se duplican puntos ni avances.
   function rtCasosCampo() {
     var out = [];
-    RT_CAMPO.forEach(function (b) { b.items.forEach(function (i) { if (i.tipo === 'caso') { i.bloque = b.id; out.push(i); } }); });
+    RT_CAMPO.forEach(function (b) { b.items.forEach(function (i) { if (i.tipo === 'caso' && !i.pronto) { i.bloque = b.id; out.push(i); } }); });
     return out;
   }
   // Una fila por reto: resuelto, mejor resultado (el menor de este dispositivo y de la cuenta), última partida y XP de esta semana
@@ -14483,7 +14492,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   // Avance de Retos para la sección Logros: retos distintos resueltos y casos hechos por colección (clave = id del logro de esa colección)
   function rtAvanceRetos() {
     var col = {}, todos = [];
-    RT_CAMPO.forEach(function (b) { var a = rtCasosDeBloque(b); todos = todos.concat(a); if (b.logro) col[b.logro] = { hechos: a.filter(function (x) { return x.resuelto; }).length, total: a.length }; });
+    RT_CAMPO.forEach(function (b) { var a = rtCasosDeBloque(b); todos = todos.concat(a); if (b.logro) col[b.logro] = { hechos: a.filter(function (x) { return x.resuelto; }).length, total: b.totalCasos || a.length }; });
     return { distintos: todos.filter(function (x) { return x.resuelto; }).length, col: col };
   }
   // La sección Logros puede abrirse antes que Retos: se leen entonces los casos del servidor (una sola vez)
@@ -14502,7 +14511,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var listo = function (id, cumple) { return !!sv[id] || (miembro && cumple); };   // sin membresía los casos se prueban pero no dan insignias
     var todosCasos = []; RT_CAMPO.forEach(function (b) { todosCasos = todosCasos.concat(rtCasosDeBloque(b)); });
     o.primera = { ok: listo('retos-primera-mirada', av.distintos >= 1), fecha: fechaSrv('retos-primera-mirada') || ultimaPrimera(todosCasos), prog: Math.min(av.distintos, 1) + ' de 1 reto' };
-    var servidor = { ojo: 'retos-ojo-de-campo', calma: 'retos-decidir-con-calma', campo: 'retos-criterio-de-campo' };
+    var servidor = { ojo: 'retos-ojo-de-campo', calma: 'retos-decidir-con-calma', campo: 'retos-criterio-de-campo', sistema: 'retos-sistema-conectado' };
     Object.keys(servidor).forEach(function (k) {
       var c = av.col[k] || { hechos: 0, total: 0 }, b = RT_CAMPO.filter(function (x) { return x.logro === k; })[0];
       o[k] = { ok: listo(servidor[k], c.total > 0 && c.hechos >= c.total), fecha: fechaSrv(servidor[k]) || (b ? ultimaPrimera(rtCasosDeBloque(b)) : ''), prog: c.hechos + ' de ' + c.total + ' casos' };
@@ -14540,7 +14549,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<div><dt>Modo Historia</dt><dd>' + rtHistoriaResumen().hechos + ' / ' + rtHistoriaResumen().total + ' niveles</dd></div>' +
       '<div><dt>XP de esta semana</dt><dd>' + (xp === null ? '—' : '+' + credNum(xp)) + '</dd></div></dl>';
     RT_CAMPO.forEach(function (b) {
-      var lista = b.items.filter(function (i) { return i.tipo === 'caso'; });
+      var lista = b.items.filter(function (i) { return i.tipo === 'caso' && !i.pronto; });
       h += '<h4 class="rtb-sub">' + escapeHtml(b.nombre) + ' · ' + escapeHtml(b.prog) + '</h4><ul class="rtb-lista">' + lista.map(function (i) {
         var x = rtCasoDato(i);
         return '<li class="' + (x.resuelto ? 'es-hecho' : '') + '"><div class="rtb-t"><b>' + escapeHtml(i.titulo) + '</b><small>' + escapeHtml(i.num) + '</small></div>' +
@@ -14596,7 +14605,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     // Solo se muestra la PRÓXIMA insignia por conseguir (primera mirada → la de esta colección → práctica constante); si ya tiene las tres, la de la colección
     var cola = ['primera', b.logro, 'constante'].filter(Boolean);
     var proximo = cola.filter(function (id) { return lg && lg[id] && !lg[id].ok; })[0] || b.logro;
-    return { total: casos.length, hechos: hechos, pct: casos.length ? Math.round(hechos * 100 / casos.length) : 0, xp: xp,
+    var total = b.totalCasos || casos.length;
+    return { total: total, hechos: hechos, pct: total ? Math.round(hechos * 100 / total) : 0, xp: xp,
       logro: RT_LOGROS.filter(function (l) { return l.id === proximo; })[0] || null, estado: proximo && lg ? lg[proximo] : null };
   }
   function rtResumenHtml(x) {
@@ -14632,7 +14642,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       '<div><button type="button" class="rtx-btn rtx-btn--sec" data-rt-volver>← Volver a Retos</button></div>' +
       '<header class="rtk-hero"><img class="rtk-hero-img" src="' + escapeHtml(b.portada) + '" alt="" decoding="async"><div class="rtk-hero-in">' +
       '<span class="rtk-etq">' + escapeHtml(b.nombre) + ' · ' + escapeHtml(b.tiempo) + '</span>' +
-      '<h3 id="rtkTit" tabindex="-1">' + escapeHtml(b.prog) + '</h3><p>' + escapeHtml(b.desc) + '</p>' + rtResumenHtml(x) +
+      '<h3 id="rtkTit" tabindex="-1">' + escapeHtml(b.prog) + '</h3><p>' + escapeHtml(b.vistaSub || b.desc) + '</p>' + (b.vistaTexto ? '<p>' + escapeHtml(b.vistaTexto) + '</p>' : '') + rtResumenHtml(x) +
       '<div class="rtk-hero-datos">' + rtInsigniaHtml(x) + '<span class="rtk-xpsem">XP de esta semana · <b>' + (rtXpSemana() === null || window.isVIP !== true ? '—' : '+' + x.xp) + '</b></span></div>' +
       '</div></header>' +
       '<div class="rtc-grid">' + tarjetas + '</div>';
@@ -22292,6 +22302,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     { id: 'retos-decidir-con-calma',   cat: 'retos', icono: 'git-fork', nombre: 'Decidir con calma',   desc: 'Completa todos los casos de Rescate del Cultivo',         xp: 50, orden: 20.2, meta: { tipo: 'retos', col: 'calma' } },
     { id: 'retos-criterio-de-campo',   cat: 'retos', icono: 'layers',   nombre: 'Criterio de campo',   desc: 'Completa todos los casos de Desafío SINERGIA',            xp: 50,  orden: 20.3, meta: { tipo: 'retos', col: 'campo' } },
     { id: 'retos-lectura-del-agua',     cat: 'retos', icono: 'droplet',  nombre: 'Lectura del agua',    desc: 'Completa los 6 niveles del Mundo 02: El agua tiene camino', xp: 25, orden: 20.45, meta: { tipo: 'historia', n: 6, mundo: 2 } },
+    { id: 'retos-sistema-conectado',    cat: 'retos', icono: 'zap',      nombre: 'Sistema conectado',   desc: 'Completa los cinco casos de Arma el sistema',             xp: 50, orden: 20.35, meta: { tipo: 'retos', col: 'sistema' } },
     { id: 'retos-mirada-parcela',      cat: 'retos', icono: 'compass',  nombre: 'Mirada de parcela',   desc: 'Completa los 6 niveles del Mundo 01: La parcela despierta', xp: 25, orden: 20.4, meta: { tipo: 'historia', n: 6 } },
     { id: 'retos-practica-constante',  cat: 'retos', icono: 'repeat',   nombre: 'Práctica constante',  desc: 'Completa 5 retos distintos, sin importar la colección',   xp: 0,  orden: 20.5, meta: { tipo: 'retos', n: 5 } }
   ];
@@ -22663,7 +22674,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     'secreto-herramientas': 'Abriste la calculadora, el calendario, los apoyos y el clima',
     'retos-primera-mirada': 'Comenzaste a entrenar tu criterio de campo.', 'retos-ojo-de-campo': 'Reuniste evidencia antes de interpretar.',
     'retos-decidir-con-calma': 'Priorizaste observación y contexto antes de actuar.', 'retos-criterio-de-campo': 'Integraste observación, contexto y registro.',
-    'retos-mirada-parcela': 'Recorriste la parcela y construiste tu primer mapa de observación.', 'retos-lectura-del-agua': 'Aprendiste a seguir el recorrido del agua antes de sacar conclusiones.', 'retos-practica-constante': 'Convertiste la práctica en parte de tu aprendizaje.'
+    'retos-mirada-parcela': 'Recorriste la parcela y construiste tu primer mapa de observación.', 'retos-sistema-conectado': 'Construiste relaciones entre piezas, etapas y recursos del campo.', 'retos-lectura-del-agua': 'Aprendiste a seguir el recorrido del agua antes de sacar conclusiones.', 'retos-practica-constante': 'Convertiste la práctica en parte de tu aprendizaje.'
   };
   // Aviso de logros nuevos (junto, en una sola ventana): se espera a que no haya otra ventana abierta
   var logrosCola = [], logrosMostrando = false;
@@ -27981,7 +27992,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     .rtb-logros { grid-template-columns: 1fr; }
   }
   /* Colecciones de Retos de campo: tarjeta de la pantalla principal y vista interna */
-  .rtk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
+  .rtk-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+  @media (max-width: 1099px) { .rtk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .rtk-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-card); border-radius: 22px; background: var(--bg-card); transition: transform .2s, box-shadow .2s; }
   .rtk-card:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -22px rgba(17, 61, 53, 0.5); }
   .rtk-card.es-lograda { border-color: #1AA888; }
