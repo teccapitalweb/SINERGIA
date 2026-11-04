@@ -3483,6 +3483,7 @@ body::before { display: none; }
             </div>
             <div class="form-group">
               <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--stone-700);cursor:pointer;"><input type="checkbox" id="bibLibGratis" style="width:16px;height:16px;"><b>Libro gratis</b> · se puede leer sin membresía</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--stone-700);cursor:pointer;"><input type="checkbox" id="bibLibParaMiembros" style="width:16px;height:16px;"><b>Gratis para miembros</b> · lo abren los miembros activos; el resto lo canjea con créditos</label>
             </div>
             <div class="form-group">
               <label class="form-label" for="bibLibRetos">Retos para desbloquearlo (opcional)</label>
@@ -7936,6 +7937,7 @@ body::before { display: none; }
     document.getElementById('bibLibLicencia').value = l.licencia || '';
     document.getElementById('bibLibOrden').value = l.orden || '';
     document.getElementById('bibLibGratis').checked = l.gratis === true;
+    document.getElementById('bibLibParaMiembros').checked = l.paraMiembros === true;
     document.getElementById('bibLibRetos').value = l.retosRequeridos || '';
     document.getElementById('bibLibTitle').textContent = 'Editar libro';
     document.getElementById('bibLibCancel').style.display = '';
@@ -8003,6 +8005,7 @@ body::before { display: none; }
           licencia: document.getElementById('bibLibLicencia').value,
           orden: document.getElementById('bibLibOrden').value,
           gratis: document.getElementById('bibLibGratis').checked,
+          paraMiembros: document.getElementById('bibLibParaMiembros').checked,
           retosRequeridos: document.getElementById('bibLibRetos').value
         });
         showToast('Libro guardado');
