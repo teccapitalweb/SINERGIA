@@ -1870,6 +1870,22 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 #historia .m2-carta:disabled { cursor: default; opacity: .45; }
 .m2-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .hs-duracion { margin-top: 6px; }
+.m2-zona { position: absolute; z-index: 3; display: flex; align-items: flex-end; justify-content: center; padding: 0 0 14px; border: 2px dashed rgba(255, 255, 255, .0); border-radius: 0; background: transparent; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.m2-zona span { padding: 7px 16px; border-radius: 100px; background: rgba(8, 32, 27, .72); color: #fff; font: 800 14px var(--font-display, 'Plus Jakarta Sans', sans-serif); }
+.m2-zona:hover, .m2-zona.es-actual { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .85); }
+.m2-zona.es-visto span { background: var(--h-accent); }
+.m2-zona.es-visto span::before { content: '✓ '; }
+.m2-zona:focus-visible { outline: 3px solid #fff; outline-offset: -4px; }
+.m2-orden { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.m2-op { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; border: 2px solid var(--h-border); border-radius: 16px; background: var(--h-card); cursor: grab; }
+.m2-op.es-ok { border-color: var(--h-accent); background: var(--h-ok-bg); cursor: default; }
+.m2-pos { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--h-soft); font: 800 15px var(--font-display, 'Plus Jakarta Sans', sans-serif); color: var(--h-subtle); }
+.m2-op.es-ok .m2-pos { background: var(--h-accent); color: #fff; }
+.m2-ot { font: 700 15px/1.4 var(--font-body, 'Inter', sans-serif); }
+.m2-mover { display: inline-flex; gap: 6px; }
+#historia .m2-mover button { display: grid; place-items: center; width: 40px; height: 40px; border: 1.5px solid var(--h-border); border-radius: 12px; background: var(--h-bg); font-size: 15px; line-height: 1; }
+#historia .m2-mover button:hover:not(:disabled) { border-color: var(--h-accent); background: var(--h-soft); }
+#historia .m2-mover button:disabled { opacity: .35; cursor: default; }
 .hs-barra-item.hs-barra-dom { display: flex; }   /* en el Mundo 02 el dominio y su meta (80%) se ven durante el nivel */
 .m2-reiniciar { margin-top: 12px; }
 .m2-reiniciar small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--h-subtle); }
@@ -2391,30 +2407,29 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
           { t: 'Abrir la llave de inmediato y ver qué sucede.', ok: false, f: 'Antes de abrir la llave conviene observar la parcela. Así evitas interpretar sin información suficiente.' }],
           cierre: [{ q: 'ines', t: 'Observar no retrasa una decisión: ayuda a tomarla con mejor contexto.' }], botonFinal: 'Continuar al nivel 2.2 →' }] },
 
-    { id: '2.2', titulo: 'El terreno marca el camino', objetivo: 'Comparar recorridos posibles del agua según la pendiente.', duracion: '3 a 4 minutos', escena: 'panoramica', puntos: 6,
-      imagen: { src: IMG + 'nivel-2-rutas.svg', w: 1600, h: 900, alt: 'Vista desde arriba de una parcela con líneas de riego horizontales. Dos recorridos parten del mismo punto, arriba a la izquierda: la ruta A, azul, baja por el centro y termina abajo a la derecha; la ruta B, naranja, baja por el lado izquierdo y termina abajo, cerca del borde izquierdo.' },
-      aprendizaje: 'Dos recorridos pueden salir del mismo punto y terminar en lugares distintos: describirlos no es explicarlos.',
-      tituloExito: 'Nivel superado · 80% o más', textoRefuerzo: 'Vuelve a intentarlo. Describe primero; interpreta después.',
+    { id: '2.2', titulo: 'El terreno marca el camino', subtitulo: 'Compara los recorridos antes de explicar por qué ocurren.', objetivo: 'Comparar dos zonas de una parcela y describir diferencias visibles antes de atribuir una causa.', duracion: '3 a 4 minutos', escena: 'panoramica', puntos: 2,
+      siguienteTxt: 'Continuar al nivel 2.3 →',
+      imagen: { src: IMG + 'nivel-2-2-el-terreno-marca-el-camino.jpg', w: 1400, h: 788, alt: 'Un huerto de árboles jóvenes dividido por un poste de madera en el centro. A la izquierda, la línea negra de riego avanza en una curva suave sobre un terreno con pasto y suelo oscuro; a la derecha, la línea baja en diagonal por una pendiente más marcada de suelo seco y expuesto.' },
+      aprendizaje: 'El terreno marca pistas: se leen con calma, sin adivinar lo que significan.',
+      tituloExito: 'Nivel superado · 80% o más', textoRefuerzo: 'Miremos otra vez la escena. Repite el nivel con calma: primero describe lo visible y después ordena tu lectura.',
       momentos: [
-        { tipo: 'dialogo', boton: 'Comparar los recorridos', mensajes: [
-          { q: 'nico', t: 'Después de una lluvia el agua no se queda quieta. Marqué dos recorridos posibles, el A y el B.' },
-          { q: 'ines', t: 'No vamos a decidir cuál es el «bueno». Solo comparamos lo que cada recorrido deja ver.' }] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: '¿Qué afirmación describe una observación visible?', opciones: [
-          { t: 'Los dos recorridos salen del mismo punto, arriba, y bajan por la parcela.', ok: true, f: okF(1) },
-          { t: 'El recorrido A causa los problemas de la parcela.', ok: false, f: noF(1, 'Eso ya propone una causa.') },
-          { t: 'El agua nunca llega a la zona del recorrido B.', ok: false, f: noF(2, 'Eso afirma algo que la escena no muestra.') }] },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: '¿Qué diferencia visible hay entre el recorrido A y el B?', opciones: [
-          { t: 'A termina abajo a la derecha; B termina abajo, más cerca del borde izquierdo.', ok: true, f: okF(0) },
-          { t: 'A es el camino correcto del agua.', ok: false, f: noF(0, 'Todavía no hay evidencia para decir cuál es «correcto».') },
-          { t: 'B demuestra que el terreno está mal nivelado.', ok: false, f: noF(1) }] },
-        { tipo: 'clasificar', sinEscena: false, q: 'ines', intro: 'Lee cada frase y decide si describe algo que se ve o si ya propone una causa.',
-          fbBien: { observacion: 'Exacto. Describe algo visible sin afirmar aún por qué ocurre.', interpretacion: 'Sí. Podría ser una posibilidad, pero todavía no es un dato confirmado.' },
-          fbMal: { observacion: 'Miremos otra vez la escena. Esta frase es una observación: describe algo visible sin afirmar por qué ocurre.', interpretacion: 'Esa idea podría ser posible, pero aún no tenemos evidencia suficiente: esta frase es una interpretación.' },
-          frases: [
-            { t: 'La ruta A cruza varias líneas de riego antes de terminar.', ok: 'observacion' },
-            { t: 'La ruta B baja por un lado de la parcela.', ok: 'observacion' },
-            { t: 'El agua se pierde porque el terreno está mal.', ok: 'interpretacion' },
-            { t: 'Las plantas de la ruta B se están ahogando.', ok: 'interpretacion' }] }] },
+        { tipo: 'dialogo', boton: 'Mirar ambos lados', mensajes: [
+          { q: 'nico', t: 'Las dos zonas están dentro de la misma parcela, pero la línea de riego no sigue el terreno de la misma forma.' },
+          { q: 'ines', t: 'Compáralas primero. No necesitamos decidir cuál está bien para notar sus diferencias.' }] },
+        { tipo: 'fichas', q: 'ines', instruccion: 'Toca cada lado de la imagen para abrir su ficha. Puedes revisarlas cuantas veces quieras antes de contestar.', contador: 'Zonas revisadas', continuar: 'Responder',
+          final: 'Ya revisaste las dos zonas. Ahora elige la frase que describe lo que se puede ver.', puntos: [
+          { n: 1, etq: 'Zona A', area: { x: 0, y: 0, w: 49, h: 100 }, titulo: 'Zona A', t: 'La línea avanza siguiendo una curva parecida a la del terreno.' },
+          { n: 2, etq: 'Zona B', area: { x: 52, y: 0, w: 48, h: 100 }, titulo: 'Zona B', t: 'La línea cruza una pendiente más directa y el suelo se ve más expuesto.' }] },
+        { tipo: 'eleccionLibre', gradual: true, q: 'ines', letras: true, pregunta: '¿Cuál frase describe una observación visible en la imagen?', opciones: [
+          { t: 'En la Zona B la línea de riego cruza el terreno en diagonal y la pendiente se ve más marcada.', ok: true, f: 'Exacto. Describiste lo que se observa sin afirmar todavía una causa o resultado.' },
+          { t: 'La Zona B tendrá necesariamente problemas de riego.', ok: false, f: 'Podría ser una posibilidad, pero la imagen por sí sola no permite asegurarlo.' },
+          { t: 'La Zona A recibe siempre la cantidad perfecta de agua.', ok: false, f: 'Una escena no basta para asegurar que el riego funciona de forma perfecta. Primero registra y compara.' }],
+          botonFinal: 'Ordenar mi lectura' },
+        { tipo: 'ordenar', q: 'ines', pregunta: 'Ordena tu lectura: ¿en qué orden conviene hacerlo?', ayuda: 'Usa las flechas (o arrastra) para colocar las tres tarjetas y luego comprueba el orden.',
+          tarjetas: ['Observo la pendiente y el recorrido de la línea.', 'Registro las diferencias entre las dos zonas.', 'Después busco datos que ayuden a interpretarlas.'],
+          exito: 'Muy bien. Primero observas, después registras y al final interpretas con más información.',
+          fbMal: 'Miremos otra vez: primero se observa, luego se registra y solo después se buscan datos para interpretar.',
+          cierre: [{ q: 'ines', t: 'El terreno marca pistas. Nuestra tarea es leerlas con calma, no adivinar lo que significan.' }], botonFinal: 'Continuar al nivel 2.3 →' }] },
 
     { id: '2.3', titulo: 'Donde el agua se detiene', objetivo: 'Distinguir señales que vale la pena registrar.', duracion: '4 minutos', escena: 'panoramica', puntos: 5,
       imagen: { src: IMG + 'nivel-3-senales.svg', w: 1600, h: 900, alt: 'Una franja de terreno con una línea de riego. Debajo de la línea hay una zona de suelo muy oscura; a la izquierda, un charco; en el centro, un surco por donde baja agua; a la derecha, un parche de suelo más claro y agrietado. Arriba se ven un pájaro y un poste de cerca.' },
@@ -2760,7 +2775,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         listo = true; b.classList.remove('es-sel'); b.classList.add('es-ok');
         btns.forEach(function (x) { x.disabled = true; });
         validar.remove(); fb.innerHTML = '';
-        cfg.onOk(op, errores === 0);
+        cfg.onOk(op, errores === 0, errores);
       } else {
         errores++; b.classList.remove('es-sel'); b.classList.add('es-no'); b.disabled = true; b.setAttribute('aria-pressed', 'false');
         sel = -1; validar.disabled = true;
@@ -2964,6 +2979,44 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       }
       pintar();
     },
+    // Ordenar tarjetas: flechas ▲▼ (o arrastrar) y «Comprobar orden». Cada comprobación fallida resta 20% del punto; se puede reintentar sin límite.
+    ordenar: function (m, nv) {
+      dlg(m.q, m.pregunta);
+      var n = m.tarjetas.length, orden = barajarDistinto(m.tarjetas.map(function (_, k) { return k; })), errores = 0, listo = false, origen = null;
+      var caja = document.createElement('div'); caja.className = 'm2-ficha';
+      caja.innerHTML = '<p class="m2-aviso">' + esc(m.ayuda) + '</p><ol class="m2-orden" id="m2Orden" aria-label="Tarjetas por ordenar"></ol><div class="hs-elec-fb" id="m2OrdFb" aria-live="polite"></div>';
+      var lista = caja.querySelector('#m2Orden'), fb = caja.querySelector('#m2OrdFb');
+      var comprobar = boton('Comprobar orden', '', function () {
+        if (listo) return;
+        run.avance = true;
+        if (orden.every(function (v, p) { return v === p; })) {
+          listo = true; comprobar.remove(); pintar();
+          puntaje(errores, false);
+          fb.innerHTML = ''; dlg(m.q, m.exito, 'acierto');
+          if (m.cierre) m.cierre.forEach(function (x) { dlg(x.q, x.t); });
+          botonContinuar(m.botonFinal);
+        } else { errores++; fb.innerHTML = dlgHtml(m.q, m.fbMal, 'ayuda'); }
+      });
+      function mover(p, d) { var q = p + d; if (listo || q < 0 || q >= n) return; var x = orden[p]; orden[p] = orden[q]; orden[q] = x; fb.innerHTML = ''; pintar(p === 0 && d < 0 ? 0 : q); }
+      function pintar(foco) {
+        lista.innerHTML = orden.map(function (idx, p) {
+          return '<li class="m2-op' + (listo ? ' es-ok' : '') + '" data-pos="' + p + '"' + (listo ? '' : ' draggable="true"') + '><span class="m2-pos" aria-hidden="true">' + (p + 1) + '</span><span class="m2-ot">' + esc(m.tarjetas[idx]) + '</span>' +
+            (listo ? '' : '<span class="m2-mover"><button type="button" data-sube="' + p + '" aria-label="Subir: ' + esc(m.tarjetas[idx]) + '"' + (p === 0 ? ' disabled' : '') + '>▲</button><button type="button" data-baja="' + p + '" aria-label="Bajar: ' + esc(m.tarjetas[idx]) + '"' + (p === n - 1 ? ' disabled' : '') + '>▼</button></span>') + '</li>';
+        }).join('');
+        if (typeof foco === 'number') { var b = lista.querySelector('[data-pos="' + foco + '"] button:not([disabled])'); if (b) { try { b.focus({ preventScroll: true }); } catch (e) { /* sin foco */ } } }
+      }
+      lista.addEventListener('click', function (e) {
+        var s = e.target.closest('[data-sube]'), b = e.target.closest('[data-baja]');
+        if (s) mover(Number(s.getAttribute('data-sube')), -1); else if (b) mover(Number(b.getAttribute('data-baja')), 1);
+      });
+      lista.addEventListener('dragstart', function (e) { var li = e.target.closest ? e.target.closest('[data-pos]') : null; if (!li || listo) return; origen = Number(li.getAttribute('data-pos')); try { e.dataTransfer.setData('text/plain', String(origen)); e.dataTransfer.effectAllowed = 'move'; } catch (x) { /* sin dataTransfer */ } });
+      lista.addEventListener('dragover', function (e) { if (!listo && e.target.closest && e.target.closest('[data-pos]')) e.preventDefault(); });
+      lista.addEventListener('drop', function (e) {
+        var li = e.target.closest ? e.target.closest('[data-pos]') : null; if (!li || listo || origen === null) return;
+        e.preventDefault(); var d = Number(li.getAttribute('data-pos')); var v = orden.splice(origen, 1)[0]; orden.splice(d, 0, v); origen = null; fb.innerHTML = ''; pintar();
+      });
+      pintar(); inter.appendChild(caja); acc.appendChild(comprobar);
+    },
     // Zonas de la escena que abren una ficha breve de observación (sin decir si está bien o mal). Se pueden abrir otra vez; al abrir todas se continúa.
     fichas: function (m, nv) {
       dlg(m.q, m.instruccion);
@@ -2973,16 +3026,17 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       detalle.innerHTML = '<p class="hs-detalle-ini">Toca una zona para abrir su ficha.</p>';
       var estadoLbl = document.createElement('p'); estadoLbl.className = 'hs-contexto-t'; estadoLbl.setAttribute('aria-live', 'polite'); estadoLbl.textContent = m.contador + ': 0 de ' + m.puntos.length;
       m.puntos.forEach(function (p) {
-        var b = document.createElement('button'); b.type = 'button'; b.className = 'hs-punto historia-punto' + (p.x > 70 ? ' hs-punto--izq' : ''); b.style.left = p.x + '%'; b.style.top = p.y + '%';
+        var b = document.createElement('button'); b.type = 'button';
+        if (p.area) { b.className = 'm2-zona'; b.style.left = p.area.x + '%'; b.style.top = p.area.y + '%'; b.style.width = p.area.w + '%'; b.style.height = p.area.h + '%'; b.innerHTML = '<span>' + esc(p.etq) + '</span>'; }
+        else { b.className = 'hs-punto historia-punto' + (p.x > 70 ? ' hs-punto--izq' : ''); b.style.left = p.x + '%'; b.style.top = p.y + '%'; b.innerHTML = '<i>' + p.n + '</i><span>' + esc(p.etq) + '</span>'; }
         b.setAttribute('aria-label', 'Abrir ficha: ' + p.etq); b.setAttribute('aria-pressed', 'false');
-        b.innerHTML = '<i>' + p.n + '</i><span>' + esc(p.etq) + '</span>';
         b.addEventListener('click', function () {
           run.avance = true;
-          esc_.querySelectorAll('.hs-punto').forEach(function (o) { o.classList.remove('es-actual'); });
+          esc_.querySelectorAll('.hs-punto, .m2-zona').forEach(function (o) { o.classList.remove('es-actual'); });
           b.classList.add('es-actual');
           if (!hechas[p.n]) {
             hechas[p.n] = true; vistos++; b.classList.add('es-visto'); b.setAttribute('aria-pressed', 'true');
-            b.querySelector('i').innerHTML = IC.check; b.setAttribute('aria-label', 'Ficha abierta: ' + p.etq);
+            var ic = b.querySelector('i'); if (ic) ic.innerHTML = IC.check; b.setAttribute('aria-label', 'Ficha abierta: ' + p.etq);
             estadoLbl.textContent = m.contador + ': ' + vistos + ' de ' + m.puntos.length;
           }
           detalle.innerHTML = '<b>' + esc(p.titulo) + '</b><p>' + esc(p.t) + '</p>';
@@ -2998,8 +3052,8 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
       dlg(m.q, m.pregunta);
       inter.appendChild(eleccionUnica({
         q: m.q, opciones: m.opciones, layout: m.layout, letras: m.letras, boton: m.boton, pista: m.pista,
-        onOk: function (op) {
-          puntajeDirecto(1);
+        onOk: function (op, primero, errs) {
+          puntajeDirecto(m.gradual ? Math.max(0, 1 - MALA * (errs || 0)) : 1);   // gradual: cada intento fallido resta 20% de este punto
           dlg(m.q, op.f, 'acierto');
           if (m.cierre) m.cierre.forEach(function (x) { dlg(x.q, x.t); });
           botonContinuar(m.botonFinal);
