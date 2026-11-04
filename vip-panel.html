@@ -14206,8 +14206,26 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     } catch (e) { /* sin avance guardado */ }
     return 0;
   }
+  function rtHistoriaNiveles2() {
+    try {
+      var o = JSON.parse(localStorage.getItem('sinergia_mundo_02_v1') || 'null');
+      if (o && o.v === 1 && Array.isArray(o.completados)) return Math.min(6, o.completados.length);
+    } catch (e) { /* sin avance guardado */ }
+    return 0;
+  }
   function rtHistoriaHtml() {
     var n = rtHistoriaNiveles();
+    return rtHistoriaTarjeta1(n) + rtHistoriaTarjeta2(rtHistoriaNiveles2());
+  }
+  function rtHistoriaTarjeta2(n) {
+    return '<a class="rtx-historia rtx-historia--agua" href="historia-agua.html" aria-label="Modo Historia, Mundo 02: El agua tiene camino">' +
+      '<div class="rtx-historia-in"><span class="rtx-pill">Modo Historia · Mundo 02</span>' +
+      '<h3>El agua tiene camino</h3>' +
+      '<p>Observa el terreno, sigue el recorrido del agua y aprende a registrar antes de decidir.</p>' +
+      '<span class="rtx-historia-pie"><b>' + n + ' de 6 niveles</b>' +
+      '<span class="rtx-historia-go">' + (n === 0 ? 'Comenzar recorrido' : (n >= 6 ? 'Volver a recorrer' : 'Continuar recorrido')) + ' →</span></span></div></a>';
+  }
+  function rtHistoriaTarjeta1(n) {
     return '<a class="rtx-historia" href="historia-parcela.html' + (n >= 6 ? '#bitacora' : '') + '" aria-label="Modo Historia, Mundo 01: La parcela despierta">' +
       '<div class="rtx-historia-in"><span class="rtx-pill">Modo Historia · Mundo 01</span>' +
       '<h3>La parcela despierta</h3>' +
@@ -22110,6 +22128,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     { id: 'retos-ojo-de-campo',        cat: 'retos', icono: 'search',   nombre: 'Ojo de campo',        desc: 'Completa todos los casos de Detective Agrícola',          xp: 0,  orden: 20.1, meta: { tipo: 'retos', col: 'ojo' } },
     { id: 'retos-decidir-con-calma',   cat: 'retos', icono: 'git-fork', nombre: 'Decidir con calma',   desc: 'Completa todos los casos de Rescate del Cultivo',         xp: 50, orden: 20.2, meta: { tipo: 'retos', col: 'calma' } },
     { id: 'retos-criterio-de-campo',   cat: 'retos', icono: 'layers',   nombre: 'Criterio de campo',   desc: 'Completa todos los casos de Desafío SINERGIA',            xp: 50,  orden: 20.3, meta: { tipo: 'retos', col: 'campo' } },
+    { id: 'retos-lectura-del-agua',     cat: 'retos', icono: 'droplet',  nombre: 'Lectura del agua',    desc: 'Completa los 6 niveles del Mundo 02: El agua tiene camino', xp: 25, orden: 20.45, meta: { tipo: 'historia', n: 6, mundo: 2 } },
     { id: 'retos-mirada-parcela',      cat: 'retos', icono: 'compass',  nombre: 'Mirada de parcela',   desc: 'Completa los 6 niveles del Mundo 01: La parcela despierta', xp: 25, orden: 20.4, meta: { tipo: 'historia', n: 6 } },
     { id: 'retos-practica-constante',  cat: 'retos', icono: 'repeat',   nombre: 'Práctica constante',  desc: 'Completa 5 retos distintos, sin importar la colección',   xp: 0,  orden: 20.5, meta: { tipo: 'retos', n: 5 } }
   ];
@@ -22139,6 +22158,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   // El avance de cursos, la racha, el XP y los logros vienen del servidor: aquí solo se muestran.
   // ───────────────────────────────────────────────────────────────────
   var LOG_ICO = {
+    'droplet': '<span class="log-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg></span>',
     'sprout': '<span class="log-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4a4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3M4 9a5 5 0 0 1 8 4a5 5 0 0 1-8-4m1 12h14"/></svg></span>', 'leaf': '<span class="log-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11 20a10 10 0 0 0 10-10a25.9 25.9 0 0 0-1.04-7.281a1 1 0 0 0-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0 0 11 20"/><path d="M2 21a5 5 0 0 1 2.911-4.544C7.613 15.212 8.351 15.24 11 13"/></g></svg></span>',
     'wheat': '<span class="log-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 22L16 8M3.47 12.53L5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94m4-4L9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94m4-4L13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4"/><path d="M11.47 17.47L13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0m4-4L17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0m4-4L21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0"/></g></svg></span>', 'flower-2': '<span class="log-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12m0 0c4.2 0 7-1.667 7-5c-4.2 0-7 1.667-7 5m0 0c-4.2 0-7-1.667-7-5c4.2 0 7 1.667 7 5"/></g></svg></span>',
     'trophy': '<span class="log-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 14.66V17a1 1 0 0 1-1 1a2 2 0 0 0-2 2v2m7-7.34V17a1 1 0 0 0 1 1a2 2 0 0 1 2 2v2m.916-12H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></g></svg></span>', 'user-round-check': '<span class="log-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 21a8 8 0 0 1 13.292-6"/><circle cx="10" cy="8" r="5"/><path d="m16 19l2 2l4-4"/></g></svg></span>',
@@ -22246,7 +22266,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       var av = rtAvanceRetos();
       if (l.meta.col) { var cc = av.col[l.meta.col] || { hechos: 0, total: 0 }; return [Math.min(cc.hechos, cc.total), Math.max(cc.total, 1)]; }
       a = av.distintos;
-    } else if (t === 'historia') a = rtHistoriaNiveles();
+    } else if (t === 'historia') a = l.meta.mundo === 2 ? rtHistoriaNiveles2() : rtHistoriaNiveles();
     else if (t === 'cursos') a = logCursosCompletos().n;
     else if (t === 'areas') a = logCursosCompletos().areas;
     else if (t === 'racha') a = Number(m.rachaDias) || 0;
@@ -22480,7 +22500,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     'secreto-herramientas': 'Abriste la calculadora, el calendario, los apoyos y el clima',
     'retos-primera-mirada': 'Comenzaste a entrenar tu criterio de campo.', 'retos-ojo-de-campo': 'Reuniste evidencia antes de interpretar.',
     'retos-decidir-con-calma': 'Priorizaste observación y contexto antes de actuar.', 'retos-criterio-de-campo': 'Integraste observación, contexto y registro.',
-    'retos-mirada-parcela': 'Recorriste la parcela y construiste tu primer mapa de observación.', 'retos-practica-constante': 'Convertiste la práctica en parte de tu aprendizaje.'
+    'retos-mirada-parcela': 'Recorriste la parcela y construiste tu primer mapa de observación.', 'retos-lectura-del-agua': 'Aprendiste a seguir el recorrido del agua antes de sacar conclusiones.', 'retos-practica-constante': 'Convertiste la práctica en parte de tu aprendizaje.'
   };
   // Aviso de logros nuevos (junto, en una sola ventana): se espera a que no haya otra ventana abierta
   var logrosCola = [], logrosMostrando = false;
@@ -27392,7 +27412,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .rtc-practica { display: grid; gap: 14px; }
   /* Cuadrícula superior de Retos: Modo Historia (principal) + Tu práctica de campo (lateral, compacto) */
   .rtc-top { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: stretch; }
-  .rtc-top-main { display: flex; min-width: 0; }
+  .rtc-top-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
   .rtc-top-main > .rtx-historia { flex: 1; min-width: 0; }
   .rtc-practica--lado { align-content: start; gap: 12px; margin: 0; padding: 18px 18px 20px; }
   .rtc-practica--lado h3 { margin: 0; font-size: 17px; }
@@ -27662,6 +27682,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     .rtx-historia { align-items: flex-start; padding-bottom: 150px; background-size: auto 170px; background-position: 80% bottom; }
     .rtx-historia::before { background: linear-gradient(180deg, rgba(8, 32, 27, 0.96) 0%, rgba(8, 32, 27, 0.9) 62%, rgba(8, 32, 27, 0.1) 100%); }
   }
+  .rtx-historia--agua { background-image: url(assets/historia/mundo-02/hero-el-agua-tiene-camino.jpg); background-position: 62% center; }
   .rtx-historia--detective { background-image: url(assets/detective/caso-01-el-rastro-que-no-cuadra.webp); }
   @media (prefers-reduced-motion: reduce) { .rtx-historia { transition: none; } }
 
