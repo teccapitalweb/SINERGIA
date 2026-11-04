@@ -6433,8 +6433,9 @@
   .prod-buscador { margin: 0 0 10px; }
   .prod-buscar { width: 100%; padding: 11px 14px; border: 1px solid var(--border-card, #D9E5DF); border-radius: 12px; background: var(--bg-card, #fff); color: var(--text-primary, #183A33); font: 500 14px 'Inter', sans-serif; }
   .prod-buscar:focus { outline: 2px solid #1AA888; outline-offset: 1px; }
-  .prod-sug { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .prod-op { padding: 8px 14px; border: 1px solid var(--border-card, #D9E5DF); border-radius: 100px; background: var(--bg-subtle, #EDF4F0); color: var(--text-primary, #183A33); font: 700 13px 'Plus Jakarta Sans', sans-serif; cursor: pointer; }
+  .prod-sug { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; max-height: 232px; overflow-y: auto; }
+  .prod-sug[hidden] { display: none; }
+  .prod-op { padding: 9px 14px; border: 1px solid var(--border-card, #D9E5DF); border-radius: 12px; background: var(--bg-subtle, #EDF4F0); color: var(--text-primary, #183A33); font: 700 13px 'Plus Jakarta Sans', sans-serif; cursor: pointer; text-align: left; }
   .prod-op:hover { border-color: #1AA888; }
   .prod-msg { margin: 8px 0 0; padding: 9px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
   .prod-msg a { color: #087F70; font-weight: 700; }
@@ -12422,7 +12423,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         <p class="panel-subtitle">Compara referencias de precio y distancia entre mercados. Consulta siempre la fuente oficial antes de cerrar una venta.</p>
       </div>
 
-      <div class="tool-start"><span class="tool-start-icon">📍</span><span><strong>Úsalo para comparar:</strong> selecciona el producto y tu zona. Estas cifras son referencia; abre SNIIM o contacta la central de abasto para confirmar la cotización del día y calcula tu flete.</span></div>
+      <div class="tool-start"><span class="tool-start-icon">📍</span><span><strong>Úsalo para comparar:</strong> escribe el producto y elige tu zona. Los precios son de mayoreo del SNIIM, con la fecha de cada dato; confirma con la central de abasto antes de cerrar una venta y calcula tu flete.</span></div>
 
       <div class="merc-search-card">
         <div class="calc-grid">
@@ -20323,8 +20324,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   window.limpiarHerramienta = function(btn, op) {
     op = op || {};
     window.__mercUbicacion = null;
+    window.__mercSniim = null;
     const caja = btn.closest('.calc-card, .cal-card, .merc-search-card, .clima-search-box') || btn.parentElement;
     if (caja) {
+      caja.querySelectorAll('.prod-msg, .prod-sug').forEach(function (e) { e.hidden = true; e.textContent = ''; });
       caja.querySelectorAll('input, select, textarea').forEach(function (el) {
         if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
         else if (el.tagName === 'SELECT') el.selectedIndex = 0;
@@ -24126,36 +24129,101 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     espinaca: 'Espinaca', elote: 'Elote'
   };
 
-  // ─── Buscador de producto: se puede escribir. Si el producto no está en la lista se dice claro y se anota la búsqueda (anónima) ───
-  const SINONIMOS_PRODUCTO = {
-    tomate: ['jitomate', 'tomate rojo', 'saladette'], platano: ['banano', 'banana'], elote: ['maiz tierno', 'mazorca'],
-    berries: ['frambuesa', 'arandano', 'zarzamora', 'moras'], papa: ['papas', 'patata'], nopal: ['nopales'],
-    calabacita: ['calabacin', 'zucchini'], cafe: ['cafe verde'], cacao: ['cacao en grano']
+  // ─── Precios reales del SNIIM + buscador de producto ───
+  // El servidor consulta el SNIIM solo cuando alguien pide un producto y guarda la respuesta unas 12 horas.
+  // Si el SNIIM o el servidor no responden, se usan los precios de referencia que trae el panel (abril de 2026) y se avisa.
+  const SNIIM_LOCAL = {   // producto de la lista del panel → producto del SNIIM
+    aguacate: 133, limon: 426, mango: 465, platano: 732, sandia: 799, papaya: 609, manzana: 519, naranja: 549, fresa: 358, pina: 651,
+    uva: 869, guayaba: 378, melon: 516, tomate: 839, cebolla: 183, papa: 740, chile: 233, zanahoria: 880, lechuga: 409, pepino: 771,
+    ajo: 142, brocoli: 162, calabacita: 170, nopal: 560, espinaca: 316, elote: 308
   };
+  const sniimCachePrecios = new Map();
+  async function pedirPreciosSniim(id) {
+    const g = sniimCachePrecios.get(id);
+    if (g && Date.now() - g.t < 600000) return g.d;
+    const ctl = new AbortController();
+    const reloj = setTimeout(() => ctl.abort(), 25000);
+    try {
+      const r = await fetch(ACT_BACKEND + '/api/precios-mercado/precio?producto=' + encodeURIComponent(id), { signal: ctl.signal });
+      if (!r.ok) throw new Error('SNIIM ' + r.status);
+      const d = await r.json();
+      if (!d || !Array.isArray(d.mercados)) throw new Error('respuesta inesperada');
+      sniimCachePrecios.set(id, { t: Date.now(), d });
+      return d;
+    } finally { clearTimeout(reloj); }
+  }
+  let sniimCatalogoPromesa = null;
+  function catalogoSniim() {
+    if (!sniimCatalogoPromesa) {
+      sniimCatalogoPromesa = fetch(ACT_BACKEND + '/api/precios-mercado/catalogo')
+        .then(r => (r.ok ? r.json() : Promise.reject(new Error('catálogo'))))
+        .then(d => (Array.isArray(d.productos) ? d.productos : []))
+        .catch(() => { sniimCatalogoPromesa = null; return []; });
+    }
+    return sniimCatalogoPromesa;
+  }
+  function escSn(t) { return String(t == null ? '' : t).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c])); }
+  function fechaSn(iso) {
+    const d = new Date(iso + 'T12:00:00');
+    return isNaN(d.getTime()) ? iso : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  // Otras formas en que la gente nombra un producto (se suman a lo que dice el SNIIM)
+  const SINONIMOS_TEXTO = [
+    [/\btomate\b/, 'jitomate'], [/\belote\b/, 'maiz tierno mazorca'], [/\bplatano\b/, 'banano banana'], [/\bnopal\b/, 'nopales'],
+    [/\bcalabacita\b/, 'calabacin zucchini'], [/\bpapa\b/, 'patata papas'], [/\baguacate\b/, 'palta'], [/\bfresa\b/, 'fresas'],
+    [/\bzarzamora\b/, 'berries moras'], [/\barandano\b/, 'berries'], [/\bframbuesa\b/, 'berries'], [/\blimon s semilla\b/, 'persa limon persa'],
+    [/\bchile\b/, 'chiles'], [/\bpina\b/, 'ananas']
+  ];
   function normalizarBusqueda(s) {
-    return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9ñ ]/g, ' ').replace(/\s+/g, ' ').trim();
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function armarPalabras(texto) {
+    const base = normalizarBusqueda(texto);
+    let extra = '';
+    SINONIMOS_TEXTO.forEach(([re, mas]) => { if (re.test(base)) extra += ' ' + mas; });
+    return (base + ' ' + extra).trim().split(' ');
   }
   function iniciarBuscadorProducto(selectId, opc) {
     const sel = document.getElementById(selectId);
     if (!sel || sel.dataset.buscador) return;
     sel.dataset.buscador = '1';
     const campo = sel.closest('.calc-field') || sel.parentElement;
-    const opciones = Array.prototype.filter.call(sel.options, o => o.value).map(o => {
-      const palabras = normalizarBusqueda(o.textContent + ' ' + o.value + ' ' + (SINONIMOS_PRODUCTO[o.value] || []).join(' ')).split(' ');
-      return { valor: o.value, texto: o.textContent.trim(), palabras };
-    });
+    const locales = Array.prototype.filter.call(sel.options, o => o.value).map(o => ({ valor: o.value, texto: o.textContent.trim(), palabras: armarPalabras(o.textContent + ' ' + o.value) }));
+    let catalogo = [];   // productos del SNIIM, cuando el servidor responde
     const caja = document.createElement('div');
     caja.className = 'prod-buscador';
-    caja.innerHTML = '<input type="search" class="prod-buscar" autocomplete="off" placeholder="Escribe tu producto (por ejemplo: jitomate)" aria-label="Buscar producto">' +
+    caja.innerHTML = '<input type="search" class="prod-buscar" autocomplete="off" placeholder="Escribe tu producto" aria-label="Buscar producto">' +
       '<div class="prod-sug" role="listbox" hidden></div><p class="prod-msg" role="status" hidden></p><p class="prod-nota">' + opc.nota + '</p>';
     campo.insertBefore(caja, sel);
     const input = caja.querySelector('.prod-buscar'), sug = caja.querySelector('.prod-sug'), msg = caja.querySelector('.prod-msg');
     let temporizador = null;
 
+    function cargarCatalogo() {
+      if (!opc.catalogo || catalogo.length) return;
+      opc.catalogo().then(lista => {
+        if (!lista.length) return;
+        catalogo = lista.map(p => ({ sniim: true, id: p.id, texto: p.nombre, palabras: armarPalabras(p.nombre) }));
+        sel.style.display = 'none';   // con el catálogo completo ya no hace falta la lista corta
+        input.placeholder = 'Escribe tu producto';
+        if (input.value.trim()) pintar();
+      });
+    }
+    // El catálogo se pide cuando la herramienta se ve por primera vez (no al abrir el panel)
+    if (opc.catalogo) {
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { obs.disconnect(); cargarCatalogo(); } });
+        obs.observe(caja);
+      }
+      input.addEventListener('focus', cargarCatalogo);
+    }
+
     function coincidencias(q) {
       const ps = q.split(' ').filter(p => p.length >= 2);
       if (!ps.length) return [];
-      return opciones.filter(o => ps.every(p => o.palabras.some(w => w.indexOf(p) === 0)));
+      const lista = catalogo.length ? catalogo : locales;
+      const hallados = lista.filter(o => ps.every(p => o.palabras.some(w => w.indexOf(p) === 0)));
+      return hallados.sort((a, b) => (normalizarBusqueda(b.texto).indexOf(ps[0]) === 0) - (normalizarBusqueda(a.texto).indexOf(ps[0]) === 0));
     }
     function anotar(texto) {
       // Solo se anota si el navegador lo permite (respeta «No rastrear»); el servidor le quita correos, enlaces y números largos
@@ -24171,8 +24239,14 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       } catch (e) { return false; }
     }
     function elegir(o) {
-      sel.value = o.valor;
-      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      if (o.sniim) {
+        window.__mercSniim = { id: o.id, nombre: o.texto };
+        sel.value = '';
+      } else {
+        window.__mercSniim = null;
+        sel.value = o.valor;
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      }
       input.value = '';
       sug.hidden = true; sug.innerHTML = '';
       msg.hidden = false; msg.className = 'prod-msg prod-msg--ok'; msg.textContent = 'Elegiste: ' + o.texto;
@@ -24182,7 +24256,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       clearTimeout(temporizador);
       sug.innerHTML = ''; sug.hidden = true; msg.hidden = true;
       if (q.length < 2) return;
-      const hallados = coincidencias(q).slice(0, 6);
+      const hallados = coincidencias(q).slice(0, 40);
       if (hallados.length) {
         hallados.forEach(o => {
           const b = document.createElement('button');
@@ -24203,14 +24277,20 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         }
       }, 1500);
     }
-    input.addEventListener('input', pintar);
+    input.addEventListener('input', () => { cargarCatalogo(); pintar(); });
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); const h = coincidencias(normalizarBusqueda(input.value))[0]; if (h) elegir(h); }
       else if (e.key === 'Escape') { input.value = ''; pintar(); }
     });
-    sel.addEventListener('change', () => { if (sel.value && !input.value) { const o = opciones.filter(x => x.valor === sel.value)[0]; if (o) { msg.hidden = false; msg.className = 'prod-msg prod-msg--ok'; msg.textContent = 'Elegiste: ' + o.texto; } } });
+    sel.addEventListener('change', () => {
+      if (sel.value) {
+        window.__mercSniim = null;
+        const o = locales.filter(x => x.valor === sel.value)[0];
+        if (o) { msg.hidden = false; msg.className = 'prod-msg prod-msg--ok'; msg.textContent = 'Elegiste: ' + o.texto; }
+      }
+    });
   }
-  iniciarBuscadorProducto('mercProducto', { etiqueta: 'Precios de mercado', que: 'precios', enlace: 'https://www.economia-sniim.gob.mx/nuevo/', nota: 'Los precios son de referencia (abril de 2026) y no se actualizan en vivo. Confírmalos en el SNIIM antes de cerrar una venta.' });
+  iniciarBuscadorProducto('mercProducto', { etiqueta: 'Precios de mercado', que: 'precios', enlace: 'https://www.economia-sniim.gob.mx/nuevo/', catalogo: catalogoSniim, nota: 'Precios de mayoreo del SNIIM (Secretaría de Economía), con la fecha de cada dato. Si el SNIIM no responde, se muestran precios de referencia de abril de 2026.' });
   iniciarBuscadorProducto('expProducto', { etiqueta: 'Costos de exportación', que: 'una estimación', enlace: '', nota: 'Son estimaciones con tarifas típicas y un tipo de cambio de referencia; no son cotizaciones.' });
 
 
@@ -24264,11 +24344,15 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     const estadoId = document.getElementById('mercEstado').value;
     const municipio = document.getElementById('mercMunicipio').value.trim();
 
-    if (!productoId) return showToast('Selecciona un producto', 'error');
+    const elegidoSniim = window.__mercSniim || null;
+    if (!productoId && !elegidoSniim) return showToast('Escribe o selecciona un producto', 'error');
     if (!estadoId) return showToast('Selecciona tu estado', 'error');
     if (!municipio) return showToast('Escribe tu municipio', 'error');
 
-    const productoNombre = PRODUCTOS_NOMBRES[productoId] || productoId;
+    const sniimId = elegidoSniim ? elegidoSniim.id : SNIIM_LOCAL[productoId];
+    // Producto de la lista corta que le corresponde al del SNIIM (sirve como respaldo si el SNIIM no responde)
+    const productoLocal = productoId || Object.keys(SNIIM_LOCAL).filter(k => SNIIM_LOCAL[k] === sniimId)[0] || '';
+    const productoNombre = (elegidoSniim && elegidoSniim.nombre) || PRODUCTOS_NOMBRES[productoId] || productoId;
     const estadoCoords = ESTADOS_COORDS[estadoId];
     if (!estadoCoords) return showToast('Estado no encontrado', 'error');
 
@@ -24289,10 +24373,34 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     const origen = municipioCoords || estadoCoords;
     const origenEsAproximado = !municipioCoords;
 
+    // Precios reales del SNIIM (el servidor los guarda 12 horas). Si no responde, se usa la referencia que trae el panel.
+    const panelRes = document.getElementById('mercResultados');
+    let datosReales = null, sniimFalla = false;
+    if (sniimId) {
+      panelRes.innerHTML = '<div class="merc-disclaimer">Consultando los precios del SNIIM…</div>';
+      panelRes.style.display = 'flex';
+      document.getElementById('mercEmpty').style.display = 'none';
+      try { datosReales = await pedirPreciosSniim(sniimId); } catch (e) { sniimFalla = true; }
+      if (datosReales && !datosReales.mercados.length) {
+        panelRes.innerHTML = '<div class="merc-disclaimer"><strong>Sin cotización reciente.</strong> El SNIIM no publicó precios de ' + escSn(productoNombre) + ' en los últimos días. Prueba con otra presentación o consulta directamente en <a href="https://www.economia-sniim.gob.mx" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">economia-sniim.gob.mx</a>.</div>';
+        return;
+      }
+    }
+    if (!datosReales && !PRECIOS_PRODUCTOS[productoLocal]) {
+      panelRes.innerHTML = '<div class="merc-disclaimer"><strong>No pudimos consultar el SNIIM ahora.</strong> Inténtalo de nuevo en unos minutos o consulta directamente en <a href="https://www.economia-sniim.gob.mx" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">economia-sniim.gob.mx</a>.</div>';
+      panelRes.style.display = 'flex';
+      return;
+    }
+    const fuenteMercados = datosReales
+      ? datosReales.mercados.map(m => ({ id: 'sniim' + m.destinoId, nombre: m.nombre, ciudad: m.ciudad, estado: m.estado, lat: m.lat, lng: m.lng, real: m }))
+      : MERCADOS;
+
     // Calcular para cada mercado: precio + distancia + score
-    const resultados = MERCADOS.map(mkt => {
-      const precio = getPrecioMercado(productoId, mkt.id);
-      if (!precio) return null;
+    const resultados = fuenteMercados.map(mkt => {
+      const precio = mkt.real
+        ? { min: mkt.real.min != null ? mkt.real.min : mkt.real.frecuente, max: mkt.real.max != null ? mkt.real.max : mkt.real.frecuente, frecuente: mkt.real.frecuente }
+        : getPrecioMercado(productoLocal, mkt.id);
+      if (!precio || precio.frecuente == null) return null;
       const distLineaRecta = distanciaKm(origen.lat, origen.lng, mkt.lat, mkt.lng);
       const dist = distLineaRecta * 1.35; // factor de ruta real (carretera vs línea recta en México)
       // Score: precio frecuente menos costo de flete aproximado por tonelada
@@ -24302,9 +24410,20 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         mercado: mkt,
         precio,
         distancia: dist,
-        score: rentabilidadAprox
+        score: rentabilidadAprox,
+        real: mkt.real || null
       };
     }).filter(r => r !== null);
+
+    // Con datos reales: un precio muy distinto al de los demás mercados (típico error de captura) se marca y no manda en el ranking
+    if (datosReales && resultados.length >= 3) {
+      const fr = resultados.map(r => r.precio.frecuente).sort((a, b) => a - b);
+      const mediana = fr[Math.floor(fr.length / 2)];
+      resultados.forEach(r => {
+        r.atipico = mediana > 0 && (r.precio.frecuente > mediana * 2.2 || r.precio.frecuente < mediana / 2.2);
+        if (r.atipico) r.score = Math.max(Math.min(r.precio.frecuente, mediana * 2.2), mediana / 2.2) * 1000 - r.distancia * 1.4;
+      });
+    }
 
     // Ordenar por score descendente (mejor balance precio-distancia)
     resultados.sort((a, b) => b.score - a.score);
@@ -24319,16 +24438,30 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     const masCaro = [...top].sort((a, b) => b.precio.frecuente - a.precio.frecuente)[0];
     const masCercano = [...top].sort((a, b) => a.distancia - b.distancia)[0];
     const mejor = top[0];
-    const fecha = 'Referencia histórica · confirma en SNIIM';
+    const fechaReferencia = 'Referencia histórica · confirma en SNIIM';
+    const unidadDe = (r) => (r.real && !r.real.porKg ? 'por ' + escSn(String(r.real.presentacion || 'unidad').toLowerCase()) : 'por kg');
+    const unidadCorta = (r) => (r.real && !r.real.porKg ? '/' + escSn(String(r.real.presentacion || 'unidad').toLowerCase()) : '/kg');
 
     let html = `
       <div class="merc-summary">
         <div class="merc-summary-label">Mejor oportunidad para ti</div>
-        <div class="merc-summary-title">${mejor.mercado.nombre}</div>
-        <div class="merc-summary-sub">📍 ${mejor.mercado.ciudad}, ${mejor.mercado.estado} · 💵 $${mejor.precio.frecuente}/kg · 🛣️ ${Math.round(mejor.distancia)} km desde ${municipio}</div>
+        <div class="merc-summary-title">${escSn(mejor.mercado.nombre)}</div>
+        <div class="merc-summary-sub">📍 ${escSn(mejor.mercado.ciudad)}, ${escSn(mejor.mercado.estado)} · 💵 $${mejor.precio.frecuente}${unidadCorta(mejor)} · 🛣️ ${Math.round(mejor.distancia)} km desde ${municipio}</div>
       </div>
     `;
 
+    if (datosReales && datosReales.viejo) {
+      html += `
+        <div class="merc-disclaimer" style="background:#fffbeb;border-color:#fbbf24;color:#92400e;">
+          <strong>ℹ️ El SNIIM no respondió ahora.</strong> Estos son los últimos precios que consultamos (${escSn(fechaSn(String(datosReales.consultadoEn).slice(0, 10)))}). Confírmalos en el SNIIM antes de decidir.
+        </div>`;
+    }
+    if (!datosReales && sniimFalla) {
+      html += `
+        <div class="merc-disclaimer" style="background:#fffbeb;border-color:#fbbf24;color:#92400e;">
+          <strong>ℹ️ No pudimos consultar el SNIIM ahora.</strong> Mostramos precios de referencia de abril de 2026; no son los de hoy.
+        </div>`;
+    }
     if (origenEsAproximado) {
       html += `
         <div class="merc-disclaimer" style="background:#fffbeb;border-color:#fbbf24;color:#92400e;">
@@ -24351,10 +24484,10 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       html += `
         <div class="merc-card ${esElMejor ? 'best' : ''}">
           ${rankBadge}
-          <div class="merc-card-mercado">${r.mercado.nombre}</div>
+          <div class="merc-card-mercado">${escSn(r.mercado.nombre)}</div>
           <div class="merc-card-ubic">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            ${r.mercado.ciudad}, ${r.mercado.estado}
+            ${escSn(r.mercado.ciudad)}, ${escSn(r.mercado.estado)}
           </div>
           <div class="merc-card-precios">
             <div class="merc-card-precio">
@@ -24372,16 +24505,23 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           </div>
           <div class="merc-card-meta">
             <div class="merc-card-meta-item">🛣️ <strong>${Math.round(r.distancia)} km</strong> desde ${municipio}</div>
-            <div class="merc-card-meta-item">💵 Precio por <strong>kg</strong> en MXN</div>
-            <div class="merc-card-meta-item">📅 Dato: <strong>${fecha}</strong></div>
+            <div class="merc-card-meta-item">💵 Precio <strong>${unidadDe(r)}</strong> en MXN</div>
+            <div class="merc-card-meta-item">📅 Dato: <strong>${r.real ? 'del ' + fechaSn(r.real.fecha) : fechaReferencia}</strong></div>
+            ${r.atipico ? '<div class="merc-card-meta-item">⚠️ <strong>Precio muy distinto al de los demás mercados:</strong> confírmalo con la central</div>' : ''}
+            ${r.real ? '<div class="merc-card-meta-item">📦 <strong>' + escSn(r.real.presentacion) + '</strong> · origen: ' + escSn(r.real.origen) + '</div>' : ''}
           </div>
           <div class="merc-card-recom">${recomendacion}</div>
-          <div class="merc-source">Fuente de consulta: <a href="https://www.economia-sniim.gob.mx" target="_blank" rel="noopener">SNIIM · Secretaría de Economía</a></div>
+          <div class="merc-source">Fuente${r.real ? '' : ' de consulta'}: <a href="https://www.economia-sniim.gob.mx" target="_blank" rel="noopener">SNIIM · Secretaría de Economía</a></div>
         </div>
       `;
     });
 
-    html += `
+    if (datosReales) {
+      html += `
+      <div class="merc-disclaimer">
+        <strong>⚠️ Importante:</strong> Son precios de <strong>mayoreo</strong> reportados al SNIIM (Secretaría de Economía) en las centrales de abasto, con la fecha de cada dato. No son el precio al que tú vendes: cambian cada día y dependen de la calidad, la presentación y el comprador. Las distancias son estimadas desde el centro de cada ciudad. Confirma con la central antes de cerrar una venta.
+      </div>`;
+    } else html += `
       <div class="merc-disclaimer">
         <strong>⚠️ Importante:</strong> Los precios mostrados son referenciales basados en información histórica del SNIIM y pueden variar día a día por temporada, oferta y demanda. Para cotizaciones exactas del día, consulta directamente con cada central de abasto o visita <a href="https://www.economia-sniim.gob.mx" target="_blank" style="color:inherit;text-decoration:underline;">economia-sniim.gob.mx</a>. Considera siempre tu costo real de flete antes de tomar la decisión final.
       </div>
@@ -24393,7 +24533,9 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   };
 
   window.buscarMercadosPreset = function(producto, estado, municipio) {
+    window.__mercSniim = null;
     document.getElementById('mercProducto').value = producto;
+    document.getElementById('mercProducto').dispatchEvent(new Event('change', { bubbles: true }));
     document.getElementById('mercEstado').value = estado;
     document.getElementById('mercMunicipio').value = municipio;
     buscarMercados();
