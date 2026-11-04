@@ -1870,6 +1870,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
 #historia .m2-carta:disabled { cursor: default; opacity: .45; }
 .m2-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .hs-duracion { margin-top: 6px; }
+.hs-barra-item.hs-barra-dom { display: flex; }   /* en el Mundo 02 el dominio y su meta (80%) se ven durante el nivel */
 .m2-reiniciar { margin-top: 12px; }
 .m2-reiniciar small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--h-subtle); }
 @media (max-width: 760px) {
@@ -2370,34 +2371,25 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
   function noF(i, extra) { return AYUDA[i] + (extra ? ' ' + extra : ''); }
 
   var NIVELES = [
-    { id: '2.1', titulo: 'Antes de abrir la llave', objetivo: 'Observar el terreno antes de pensar en el riego.', duracion: '3 minutos', escena: 'panoramica', puntos: 5,
-      imagen: { src: IMG + 'nivel-1-ladera.svg', w: 1600, h: 900, alt: 'Una parcela en ligera pendiente. Arriba a la izquierda el suelo se ve claro y seco; abajo a la derecha, más oscuro y húmedo. Las líneas de riego siguen la inclinación del terreno.' },
-      aprendizaje: 'Mirar el terreno antes de abrir la llave evita decidir sobre el riego con datos incompletos.',
+    { id: '2.1', titulo: 'Antes de abrir la llave', subtitulo: 'Antes de usar el riego, observa cómo está la parcela.', objetivo: 'Observar el terreno antes de pensar en el riego.', duracion: '3 minutos', escena: 'panoramica', puntos: 1,
+      siguienteTxt: 'Continuar al nivel 2.2 →',
+      imagen: { src: IMG + 'nivel-2-1-antes-de-abrir-la-llave.jpg', w: 1400, h: 788, alt: 'Un huerto de árboles frutales en una ladera. A la izquierda el terreno sube en pendiente, con suelo claro y seco; en el centro hay una zona baja de suelo oscuro con hierbas pequeñas y una línea negra de riego que serpentea hasta una válvula con manija roja, en la esquina inferior derecha. Al fondo hay más árboles y un camino de tierra.' },
+      aprendizaje: 'Observar no retrasa una decisión: ayuda a tomarla con mejor contexto.',
       momentos: [
-        { tipo: 'dialogo', boton: 'Mirar el terreno', mensajes: [
-          { q: 'nico', t: 'Ya iba a abrir la llave del riego, pero hoy el terreno se ve distinto en cada zona y no sé por dónde empezar.' },
-          { q: 'ines', t: 'Antes de abrir nada, miremos el terreno. No vamos a buscar una solución: vamos a aprender a observar.' }] },
-        { tipo: 'explorar', panel: 'unico', instruccion: 'Toca cada punto para observarlo con calma. Describe primero; interpreta después.', contador: 'Elementos revisados', continuar: 'Elegir qué observar primero', puntos: [
-          { n: 1, etq: 'Inclinación del terreno', x: 28, y: 58, titulo: 'Inclinación del terreno', t: 'El terreno baja suavemente de la parte alta, a la izquierda, hacia la parte baja, a la derecha.', tag: 'Se ve a simple vista' },
-          { n: 2, etq: 'Zonas secas y húmedas', x: 78, y: 87, titulo: 'Zonas secas y húmedas', t: 'Arriba el suelo se ve más claro; abajo, más oscuro, y en una esquina parece haber agua.', tag: 'Visible en el color del suelo' },
-          { n: 3, etq: 'Recorrido de las líneas', x: 50, y: 68, titulo: 'Recorrido de las líneas de riego', t: 'Las líneas siguen la inclinación del terreno, de arriba hacia abajo.', tag: 'Se pueden seguir con la vista' }] },
-        { tipo: 'observaciones', q: 'ines', elegir: 3, intro: 'Tu libreta tiene espacio para tres notas. Elige qué conviene observar primero.',
-          tarjetas: [
-            { t: 'Inclinación del terreno', ok: true, ico: '<path d="M3 17 21 7M3 17h18"/>', f: okF(0, 'La pendiente orienta hacia dónde puede bajar el agua.') },
-            { t: 'Zonas secas o húmedas visibles', ok: true, ico: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', f: okF(0, 'Los cambios de color del suelo son una pista visible.') },
-            { t: 'Recorrido de las líneas de riego', ok: true, ico: '<path d="M4 8c3-3 5 3 8 0s5 3 8 0M4 14c3-3 5 3 8 0s5 3 8 0"/>', f: okF(0, 'Conviene saber por dónde pasa el agua antes de pensar en el riego.') },
-            { t: 'Cuánto tiempo abrir la llave', ok: false, ico: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', f: noF(2, 'Eso ya es una decisión sobre el riego.') },
-            { t: 'Qué sistema de riego instalar', ok: false, ico: '<path d="M12 3v18M5 9h14"/>', f: noF(1, 'Todavía no hay evidencia para elegir un sistema.') }],
-          exito: 'Bien observado. Primero miraste el terreno, no la solución.',
-          parcial: 'Miremos otra vez la escena: una de tus notas ya era una decisión sobre el riego. Lo verás en el resumen del nivel.' },
-        { tipo: 'eleccion', q: 'ines', letras: true, pregunta: 'Antes de abrir la llave, ¿qué conviene hacer primero?', opciones: [
-          { t: 'Observar el terreno y registrar lo que se ve.', ok: true, f: okF(2) },
-          { t: 'Abrir la llave para ver qué pasa.', ok: false, f: noF(2) },
-          { t: 'Decidir ya cuánto riego necesita cada zona.', ok: false, f: noF(1) }] },
-        { tipo: 'eleccion', q: 'nico', letras: true, pregunta: 'Nico comenta: «La parte baja se ve más húmeda». ¿Qué frase describe solo lo que se ve?', opciones: [
-          { t: 'En la parte baja el suelo se ve más oscuro.', ok: true, f: okF(1) },
-          { t: 'El riego está mal repartido.', ok: false, f: noF(1, 'Eso ya propone una causa.') },
-          { t: 'La parte baja tiene un problema de suelo.', ok: false, f: noF(2, 'Eso ya es un diagnóstico.') }] }] },
+        { tipo: 'dialogo', boton: 'Observar la parcela', mensajes: [
+          { q: 'nico', t: 'Esta parte de la parcela está en pendiente. Antes de abrir la llave, quiero asegurarme de no pasar algo por alto.' },
+          { q: 'ines', t: 'Antes de interpretar, miremos lo que ya podemos observar.' }] },
+        { tipo: 'fichas', q: 'ines', instruccion: 'Toca cada zona de la imagen para abrir su ficha de observación. Puedes volver a abrirlas cuando quieras.', contador: 'Fichas abiertas', continuar: 'Elegir qué observar primero',
+          final: 'Ya tienes cuatro pistas visibles. Ahora elige qué conviene observar primero antes de abrir el riego.', puntos: [
+          { n: 1, etq: 'Parte alta', x: 14, y: 38, titulo: 'Pendiente', t: 'Observa hacia dónde baja naturalmente el terreno.' },
+          { n: 2, etq: 'Zona baja', x: 48, y: 79, titulo: 'Zona baja', t: 'Hay diferencias visibles en el suelo que vale la pena registrar.' },
+          { n: 3, etq: 'Línea de riego', x: 61, y: 55, titulo: 'Recorrido de la línea', t: 'Sigue por dónde pasa la instalación antes de sacar conclusiones.' },
+          { n: 4, etq: 'Válvula', x: 86, y: 73, titulo: 'Punto de control', t: 'La llave está cerrada. Antes de abrirla, conviene revisar el contexto.' }] },
+        { tipo: 'eleccionLibre', q: 'ines', letras: true, pregunta: '¿Qué observarías primero?', opciones: [
+          { t: 'La pendiente, las zonas con suelo distinto y el recorrido de la línea de riego.', ok: true, f: 'Bien observado. Primero describes el terreno y el sistema; después puedes comparar lo que ocurra.' },
+          { t: 'Cuál árbol se ve más grande para regarlo más.', ok: false, f: 'El tamaño de un árbol por sí solo no explica el recorrido del agua. Primero revisa el contexto.' },
+          { t: 'Abrir la llave de inmediato y ver qué sucede.', ok: false, f: 'Antes de abrir la llave conviene observar la parcela. Así evitas interpretar sin información suficiente.' }],
+          cierre: [{ q: 'ines', t: 'Observar no retrasa una decisión: ayuda a tomarla con mejor contexto.' }], botonFinal: 'Continuar al nivel 2.2 →' }] },
 
     { id: '2.2', titulo: 'El terreno marca el camino', objetivo: 'Comparar recorridos posibles del agua según la pendiente.', duracion: '3 a 4 minutos', escena: 'panoramica', puntos: 6,
       imagen: { src: IMG + 'nivel-2-rutas.svg', w: 1600, h: 900, alt: 'Vista desde arriba de una parcela con líneas de riego horizontales. Dos recorridos parten del mismo punto, arriba a la izquierda: la ruta A, azul, baja por el centro y termina abajo a la derecha; la ruta B, naranja, baja por el lado izquierdo y termina abajo, cerca del borde izquierdo.' },
@@ -2638,7 +2630,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     if (!disponible(i)) return;
     run = { i: i, m: 0, scores: [], avance: false, terminado: false };
     $('nvEtq').textContent = 'Nivel ' + nv.id;
-    $('nvTit').textContent = nv.titulo; $('nvObj').textContent = nv.objetivo;
+    $('nvTit').textContent = nv.titulo; $('nvObj').textContent = nv.subtitulo || nv.objetivo;
     var dur = $('nvDur'); dur.hidden = !nv.duracion; dur.textContent = nv.duracion ? 'Duración: ' + nv.duracion : '';
     mostrar('vistaNivel');
     mostrarMomento();
@@ -2728,7 +2720,7 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
     $('nvInter').appendChild(r);
     if (supera) registrarCuenta(i, pct);
     $('nvAcc').appendChild(boton('Ver la ruta', 'hs-btn--sec', irInicio));
-    if (supera) $('nvAcc').appendChild(boton('Continuar a ' + NIVELES[i + 1].titulo, '', function () { abrirNivel(i + 1); }));
+    if (supera) $('nvAcc').appendChild(boton(nv.siguienteTxt || 'Continuar a ' + NIVELES[i + 1].titulo, '', function () { abrirNivel(i + 1); }));
     else $('nvAcc').appendChild(boton('Reintentar nivel', '', function () { abrirNivel(i); }));
     window.scrollTo(0, 0);
   }
@@ -2971,6 +2963,48 @@ html[data-theme="dark"] .hs-res--refuerzo .hs-eyebrow { color: #E7C873; }
         try { btns[0].b.focus({ preventScroll: true }); } catch (e) { /* sin foco */ }
       }
       pintar();
+    },
+    // Zonas de la escena que abren una ficha breve de observación (sin decir si está bien o mal). Se pueden abrir otra vez; al abrir todas se continúa.
+    fichas: function (m, nv) {
+      dlg(m.q, m.instruccion);
+      var esc_ = $('nvEscena').querySelector('.historia-escena'), vistos = 0, hechas = {};
+      esc_.classList.add('hs-escena--discreta');
+      var detalle = document.createElement('div'); detalle.className = 'hs-detalle hs-pista historia-pista'; detalle.setAttribute('aria-live', 'polite');
+      detalle.innerHTML = '<p class="hs-detalle-ini">Toca una zona para abrir su ficha.</p>';
+      var estadoLbl = document.createElement('p'); estadoLbl.className = 'hs-contexto-t'; estadoLbl.setAttribute('aria-live', 'polite'); estadoLbl.textContent = m.contador + ': 0 de ' + m.puntos.length;
+      m.puntos.forEach(function (p) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'hs-punto historia-punto' + (p.x > 70 ? ' hs-punto--izq' : ''); b.style.left = p.x + '%'; b.style.top = p.y + '%';
+        b.setAttribute('aria-label', 'Abrir ficha: ' + p.etq); b.setAttribute('aria-pressed', 'false');
+        b.innerHTML = '<i>' + p.n + '</i><span>' + esc(p.etq) + '</span>';
+        b.addEventListener('click', function () {
+          run.avance = true;
+          esc_.querySelectorAll('.hs-punto').forEach(function (o) { o.classList.remove('es-actual'); });
+          b.classList.add('es-actual');
+          if (!hechas[p.n]) {
+            hechas[p.n] = true; vistos++; b.classList.add('es-visto'); b.setAttribute('aria-pressed', 'true');
+            b.querySelector('i').innerHTML = IC.check; b.setAttribute('aria-label', 'Ficha abierta: ' + p.etq);
+            estadoLbl.textContent = m.contador + ': ' + vistos + ' de ' + m.puntos.length;
+          }
+          detalle.innerHTML = '<b>' + esc(p.titulo) + '</b><p>' + esc(p.t) + '</p>';
+          detalle.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          if (vistos === m.puntos.length && !acc.firstChild) { dlg(m.q, m.final); botonContinuar(m.continuar); }
+        });
+        esc_.appendChild(b);
+      });
+      $('nvDialogo').appendChild(detalle); inter.appendChild(estadoLbl);
+    },
+    // Pregunta de opciones: se aprueba con la respuesta correcta aunque antes se hayan probado otras (sin restar por intentos)
+    eleccionLibre: function (m, nv) {
+      dlg(m.q, m.pregunta);
+      inter.appendChild(eleccionUnica({
+        q: m.q, opciones: m.opciones, layout: m.layout, letras: m.letras, boton: m.boton, pista: m.pista,
+        onOk: function (op) {
+          puntajeDirecto(1);
+          dlg(m.q, op.f, 'acierto');
+          if (m.cierre) m.cierre.forEach(function (x) { dlg(x.q, x.t); });
+          botonContinuar(m.botonFinal);
+        }
+      }));
     },
     // Tocar puntos de la escena: unos son señales del agua y otros no. Las señales suman; lo demás se explica sin penalizar.
     senales: function (m, nv) {
