@@ -27804,7 +27804,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
      En celular la ilustración queda como fondo tenue: nunca tapa textos, cifras ni botones. */
   @media (max-width: 640px) {
     html .cur-hero { padding: 22px 18px; }
-    html .cur-hero .cur-paisaje { opacity: 0.18; background-size: auto 66%; background-position: right -26px bottom -8px; }
+    html .cur-hero:not(.live-hero) .cur-paisaje, html .live-hero .cur-paisaje { opacity: 0.16; background-size: auto 62%; background-position: right -30px bottom -8px; }
     html .log-hero.cur-hero:not(.live-hero) .cur-paisaje { opacity: 0.16; background-size: auto 74%; background-position: right -34px bottom -12px; }
     html .cert-hero.cur-hero:not(.live-hero) .cur-paisaje { opacity: 0.2; background-size: auto 78%; background-position: right -30px bottom -10px; }
     html .com-hero.cur-hero:not(.live-hero) .cur-paisaje { opacity: 0.2; background-size: auto 72%; background-position: right -34px bottom -10px; }
@@ -27815,11 +27815,20 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     html .cur-hero .cur-tabs { flex-wrap: nowrap; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
     html .live-hero .cur-tabs { flex-wrap: wrap; overflow: visible; border-radius: 24px; }
     html .cur-hero .cur-tabs::-webkit-scrollbar { display: none; }
-    html .cur-hero .cur-tabs button { flex: 1 0 auto; padding: 0 12px; font-size: 12.5px; white-space: nowrap; }
+    html .cur-hero .cur-tabs button { flex: 1 1 auto; min-width: 0; padding: 0 9px; font-size: 12px; white-space: nowrap; }
     html .rtx-hero { padding: 24px 18px; background-size: auto 100%; background-position: right bottom; }
     html .rtx-hero::before { background: linear-gradient(180deg, rgba(15, 59, 51, 0.96) 0%, rgba(15, 59, 51, 0.9) 55%, rgba(15, 59, 51, 0.78) 100%); }
     .dir-filtros { grid-template-columns: minmax(0, 1fr); }
     .dir-filtros .dir-select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+  }
+  /* Biblioteca y Modo Historia: misma idea que Inicio, bloque compacto con la imagen como fondo tenue (no apilada ni en caja aparte) */
+  @media (max-width: 720px) {
+    html .panel-illustrated-intro--bib { display: block; min-height: 0; margin-bottom: 18px; padding: 22px 18px; border-radius: 24px; }
+    html .panel-illustrated-intro--bib .panel-illustrated-image { position: absolute; right: -14px; bottom: -10px; order: 0; width: 150px; max-height: 150px; opacity: 0.2; pointer-events: none; }
+    html .panel-illustrated-intro--bib .panel-illustrated-copy { position: relative; z-index: 1; }
+    html .rtx-historia { min-height: 0; align-items: flex-start; padding: 22px 18px; background-size: cover; background-position: center; }
+    html .rtx-historia::before { background: linear-gradient(180deg, rgba(8, 32, 27, 0.94) 0%, rgba(8, 32, 27, 0.86) 60%, rgba(8, 32, 27, 0.7) 100%); }
+    html .rtx-historia h3 { font-size: 24px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .badge-card, .rank-card, .logro-filter, .log-barra-fill, .log-anillo-prog, .logro-toast { transition: none !important; animation: none !important; }
