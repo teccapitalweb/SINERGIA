@@ -1636,6 +1636,7 @@
   .notif-item-icon.referido { background: linear-gradient(135deg, #E3F4EF, #B8E9DF); color: #113D35; }
   .notif-item-icon.webinar { background: linear-gradient(135deg, #FCE7F3, #FBCFE8); color: #BE185D; }
   .notif-item-icon.certificado { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); color: #065F46; }
+  .notif-item-icon.curioso { background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: #92400E; }
   .notif-item-icon.sistema { background: linear-gradient(135deg, #E0E7FF, #C7D2FE); color: #4338CA; }
   .notif-item-body {
     flex: 1;
@@ -23247,6 +23248,102 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     }
   }
 
+  // ─── Dato curioso del día: uno distinto cada día, se calcula aquí y no depende del servidor ───
+  const DATOS_CURIOSOS = [
+      "Las plantas toman agua por las raíces, pero casi toda se evapora por los estomas, los poros de las hojas. A ese movimiento se le llama transpiración.",
+      "La mayoría de las hojas son verdes por la clorofila. En otoño, cuando se degrada, se dejan ver los amarillos y naranjas que ya estaban ahí.",
+      "Las tres letras de los fertilizantes, NPK, son nitrógeno, fósforo y potasio: los tres nutrientes que más necesitan las plantas.",
+      "Cuando falta nitrógeno, las hojas más viejas son las primeras en ponerse amarillas, porque la planta lo mueve hacia las hojas nuevas.",
+      "El frijol, el haba y la alfalfa viven con bacterias en sus raíces que toman nitrógeno del aire y lo dejan disponible para la planta.",
+      "El maíz se domesticó en México, a partir de una planta silvestre llamada teocintle, hace miles de años.",
+      "México es centro de origen de cultivos como el maíz, el frijol, la calabaza, el chile y el aguacate.",
+      "En la milpa se siembran juntos maíz, frijol y calabaza: el maíz sirve de guía al frijol, el frijol aporta nitrógeno y la calabaza cubre el suelo.",
+      "Una cucharadita de suelo sano puede tener miles de millones de bacterias, además de hongos y otros organismos que alimentan a las plantas.",
+      "Las lombrices de tierra airean el suelo, y lo que dejan en su camino, el humus de lombriz, es un abono muy rico.",
+      "Formar un centímetro de suelo fértil puede llevar cientos de años; perderlo por erosión puede pasar en unas cuantas lluvias fuertes.",
+      "La materia orgánica funciona como esponja: ayuda al suelo a guardar el agua y a soltarla poco a poco a las raíces.",
+      "El pH del suelo decide qué nutrientes puede tomar la planta. A la mayoría de los cultivos les va mejor un pH entre 6 y 7.",
+      "Muchas raíces se asocian con hongos llamados micorrizas, que las ayudan a absorber agua y fósforo a cambio de azúcares.",
+      "El riego por goteo entrega el agua junto a la raíz, y por eso puede ahorrar buena parte del agua frente al riego por inundación.",
+      "Regar temprano en la mañana o al atardecer reduce la evaporación: el agua llega a la raíz y no se pierde en el aire.",
+      "El acolchado, una capa de paja, hojas o composta sobre el suelo, conserva la humedad, frena la maleza y modera la temperatura.",
+      "Rotar los cultivos ayuda a cortar el ciclo de plagas y enfermedades y a equilibrar los nutrientes que toma cada especie.",
+      "Alrededor de tres cuartas partes de los principales cultivos alimentarios del mundo dependen, al menos en parte, de polinizadores como las abejas.",
+      "Una colmena fuerte puede reunir a decenas de miles de abejas trabajando juntas.",
+      "En México existen abejas nativas sin aguijón, como la melipona maya, que se cría desde hace siglos para cosechar su miel.",
+      "Las mariquitas se comen a los pulgones. Una planta con mariquitas suele necesitar menos productos contra plagas.",
+      "El cacao crece mejor bajo la sombra de árboles más altos, por eso se cultiva en sistemas agroforestales.",
+      "Después de la cosecha, el cacao se fermenta y se seca. Esa fermentación es la que desarrolla buena parte del sabor del chocolate.",
+      "Muchos frutales necesitan cierto número de horas de frío en invierno, las llamadas horas frío, para florecer y dar buena cosecha.",
+      "Podar a tiempo ayuda a que entren luz y aire al árbol, y a que dé fruta de mejor calidad.",
+      "El aguacate no madura mientras sigue en el árbol: lo hace después de cortado.",
+      "Las pequeñas semillas de la parte de afuera de la fresa son en realidad frutos secos diminutos llamados aquenios.",
+      "La planta del plátano es una hierba gigante: lo que parece su tronco son hojas enrolladas una sobre otra.",
+      "La piña tarda más de un año en dar su primer fruto desde que se siembra.",
+      "El picante del chile viene de la capsaicina, que se concentra sobre todo en las venas blancas del interior, no tanto en las semillas.",
+      "Las aves no sienten el picante del chile, por eso pueden comerlo y esparcir sus semillas.",
+      "El jitomate conserva mejor su sabor a temperatura ambiente: el refrigerador le quita aroma y sabor.",
+      "La planta de calabaza da flores macho y flores hembra por separado, y necesita que alguien lleve el polen de unas a otras.",
+      "El girasol joven sigue al sol durante el día, pero cuando madura se queda mirando hacia el este.",
+      "Las raíces de la alfalfa pueden bajar varios metros en busca de agua, por eso aguanta mejor las sequías.",
+      "El maíz usa un tipo de fotosíntesis muy eficiente con calor y mucha luz, llamado C4.",
+      "El maíz y el frijol comen bien juntos: sus proteínas se complementan y forman una combinación nutritiva.",
+      "El nopal abre sus poros de noche, cuando hace menos calor, para perder menos agua. Por eso resiste tan bien la sequía.",
+      "El agave tarda varios años en madurar antes de poder cosecharse para hacer tequila o mezcal.",
+      "La vainilla es una orquídea. En los cultivos casi siempre se poliniza a mano, flor por flor.",
+      "Lo que llamamos grano de café es la semilla que está dentro de un fruto rojo parecido a una cereza.",
+      "La caña de azúcar es un pasto gigante que puede crecer más de tres metros.",
+      "La agricultura usa cerca del 70 por ciento del agua dulce que se extrae en el mundo, por eso cada litro ahorrado cuenta.",
+      "Una buena composta mezcla material verde, que aporta nitrógeno, con material seco o café, que aporta carbono.",
+      "Dentro de una composta bien manejada, los microorganismos pueden calentar el centro hasta cerca de 60 grados.",
+      "La lombriz roja californiana puede comer cada día una buena parte de su propio peso en residuos orgánicos.",
+      "Los bioinsumos son productos hechos con organismos o extractos naturales que ayudan a nutrir o proteger a los cultivos.",
+      "Trichoderma es un hongo benéfico que se usa para proteger las raíces de otros hongos que causan enfermedades.",
+      "Las plantas fabrican sus propias hormonas. Las auxinas, por ejemplo, ayudan a que un esqueje forme raíces.",
+      "El etileno es una hormona en forma de gas que hace madurar la fruta. Una fruta muy madura puede acelerar a las que tiene cerca.",
+      "Lavarse las manos antes de cosechar es una de las medidas más sencillas y efectivas para que el alimento llegue limpio.",
+      "La calidad del agua de riego importa: si está contaminada, puede pasar microbios al alimento que se come crudo.",
+      "Para certificar un cultivo como orgánico, el terreno suele pasar un periodo de transición de varios años sin insumos prohibidos.",
+      "En el fertirriego, los nutrientes viajan disueltos en el agua de riego y llegan directo a la zona de la raíz.",
+      "Antes de trasplantar, las plántulas de vivero se endurecen: se exponen poco a poco al sol y al viento para que aguanten el campo.",
+      "Trasplantar por la tarde o con el cielo nublado reduce el estrés de la plántula y ayuda a que prenda mejor.",
+      "Vender directo al consumidor suele dejarle al productor una parte mayor del precio final que vender por varios intermediarios.",
+      "Anotar costos y ventas de cada cultivo es la forma más segura de saber si de verdad está dejando ganancia.",
+      "Una helada puede dañar cultivos sensibles aunque el termómetro marque un poco arriba de cero: junto al suelo hace más frío que a la altura del termómetro.",
+      "Cuando una planta es atacada por una plaga, algunas especies sueltan compuestos en el aire que pueden avisar a las plantas vecinas.",
+      "En el suelo hay un banco de semillas: por eso siguen saliendo malezas aunque las quites. Algunas pueden esperar años para germinar.",
+      "La maleza compite con el cultivo por agua, luz y nutrientes. Controlarla temprano rinde más que combatirla ya grande.",
+      "El jitomate se poliniza mejor cuando una abeja o un abejorro hace vibrar la flor con sus alas, un zumbido que suelta el polen.",
+      "Un suelo cubierto casi siempre por plantas pierde mucha menos tierra con la lluvia que un suelo desnudo.",
+      "Sembrar en curvas a nivel, siguiendo el contorno de la ladera, frena el agua de lluvia y reduce la erosión.",
+      "Los abonos verdes son plantas que se siembran para después incorporarlas al suelo y aportarle materia orgánica y nitrógeno.",
+      "Con sal de más en el suelo las plantas pueden sufrir sed aunque haya agua, porque las raíces ya no logran absorberla.",
+      "Las raíces también respiran: un encharcamiento largo las deja sin oxígeno y favorece las enfermedades.",
+      "Las hojas hablan: un amarillo parejo suele indicar falta de nitrógeno, y el amarillo entre las nervaduras puede indicar falta de hierro u otros micronutrientes.",
+      "La cal agrícola sirve para subir el pH de los suelos demasiado ácidos.",
+      "Una hectárea son 10 mil metros cuadrados: casi una cancha y media de futbol profesional.",
+      "México tiene más de cincuenta razas de maíz, con granos blancos, amarillos, rojos, azules y morados.",
+      "El huitlacoche es un hongo que crece en la mazorca del maíz y se considera un manjar en la cocina mexicana.",
+      "El amaranto fue un alimento básico de los pueblos mesoamericanos y sigue siendo muy nutritivo.",
+      "Las chinampas son islas de cultivo construidas en los lagos del Valle de México, y todavía se trabajan en Xochimilco.",
+      "Para la fotosíntesis las plantas aprovechan sobre todo la luz roja y la azul; la verde es la que más rebotan, por eso las vemos verdes.",
+      "Algunas plantas florecen según lo largo del día, lo que se llama fotoperiodo: las hay de día corto y de día largo.",
+      "Un suelo arcilloso retiene más agua que uno arenoso, pero la deja pasar más despacio. Por eso se encharca con más facilidad.",
+      "Prueba casera del suelo: aprieta un puñado húmedo. Si se desmorona es arenoso; si forma una bola que se deja moldear, tiene mucha arcilla."
+  ];
+  const ICONO_CURIOSO = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>';
+  function hoyIsoNotif() { const h = new Date(); return h.getFullYear() + '-' + String(h.getMonth() + 1).padStart(2, '0') + '-' + String(h.getDate()).padStart(2, '0'); }
+  function datoCuriosoDeHoy() {
+    const hoy = new Date();
+    const diaDelAnio = Math.floor((hoy - new Date(hoy.getFullYear(), 0, 0)) / 86400000);
+    return { id: 'curioso', tipo: 'curioso', titulo: '¿Sabías qué?', texto: DATOS_CURIOSOS[diaDelAnio % DATOS_CURIOSOS.length] };
+  }
+  function curiosoLeido() { try { return localStorage.getItem('sinergia_curioso_leido') === hoyIsoNotif(); } catch (e) { return false; } }
+  window.marcarCuriosoLeido = function() {
+    try { localStorage.setItem('sinergia_curioso_leido', hoyIsoNotif()); } catch (e) { /* sin almacenamiento: queda como nuevo */ }
+    renderNotifs();
+  };
+
   // ─── Renderizar notificaciones ───
   function renderNotifs() {
     const list = document.getElementById('notifList');
@@ -23255,7 +23352,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     const pill = document.getElementById('notifCountPill');
     if (!list || !empty || !badge || !pill) return;
 
-    const noLeidas = notifCacheArr.filter(n => !n.leida).length;
+    const dato = datoCuriosoDeHoy();
+    const noLeidas = notifCacheArr.filter(n => !n.leida).length + (curiosoLeido() ? 0 : 1);
 
     // Badge / contador
     if (noLeidas > 0) {
@@ -23268,7 +23366,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     }
 
     // Empty state
-    if (notifCacheArr.length === 0) {
+    const items = [{ ...dato, leida: curiosoLeido() }, ...notifCacheArr];
+    if (items.length === 0) {
       list.innerHTML = '';
       empty.classList.add('show');
       return;
@@ -23276,11 +23375,12 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     empty.classList.remove('show');
 
     // Lista
-    list.innerHTML = notifCacheArr.map(n => {
+    list.innerHTML = items.map(n => {
       const tipo = n.tipo || 'sistema';
-      const icon = TIPO_ICONS[tipo] || '🔔';
-      const tiempo = formatTiempoNotif(n.createdAt);
-      const onclick = n.link
+      const esCurioso = tipo === 'curioso';
+      const icon = esCurioso ? ICONO_CURIOSO : (TIPO_ICONS[tipo] || '🔔');
+      const tiempo = esCurioso ? 'hoy' : formatTiempoNotif(n.createdAt);
+      const onclick = esCurioso ? `onclick="marcarCuriosoLeido()"` : n.link
         ? `onclick="abrirNotif('${n.id}', '${escapeNotifAttr(n.link)}')"`
         : `onclick="marcarLeida('${n.id}')"`;
       return `
@@ -23349,6 +23449,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   window.marcarTodasLeidas = async function(silencioso = false) {
     const uid = currentUser?.uid;
     if (!uid) return;
+    if (!curiosoLeido()) window.marcarCuriosoLeido();
     const noLeidas = notifCacheArr.filter(n => !n.leida);
     if (!noLeidas.length) return;
     try {
@@ -23380,6 +23481,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   window.addEventListener('sinergiaUserReady', () => {
     if (currentUser?.uid && currentUser.uid !== 'invitado') {
       subscribeToNotifs(currentUser.uid);
+      renderNotifs();
     }
   });
 
