@@ -14225,7 +14225,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       { id: 'desafio-01', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 01', nivel: 'Experto', titulo: 'La ruta de las tres pistas', desc: 'Une observación, comparación y registro para entender una parcela con criterio.', xp: 30, img: 'assets/retos/desafio-01.jpg', respaldo: true, url: 'desafio-caso-01.html', min: '5–7 min', cta: 'Iniciar misión', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
       { id: 'desafio-02', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 02', nivel: 'Experto', titulo: 'El dato que cambia la lectura', desc: 'Compara dos recorridos y descubre qué contexto cambia una observación.', xp: 30, img: 'assets/retos/desafio-02.jpg', respaldo: true, url: 'desafio-caso-02.html', min: '5–7 min', cta: 'Comparar recorridos', hechoTxt: 'Misión completada', recompensa: '+30 XP semanal' },
       { id: 'desafio-03', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 03', nivel: 'Experto', titulo: 'El expediente de la parcela', desc: 'Selecciona evidencia útil y construye un registro de campo completo.', xp: 40, img: 'assets/retos/desafio-03.jpg', respaldo: true, url: 'desafio-caso-03.html', min: '6–8 min', cta: 'Abrir expediente', hechoTxt: 'Misión completada', recompensa: '+40 XP semanal' },
-      { id: 'desafio-04', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 04', nivel: 'Avanzado', titulo: 'Bitácora bajo lupa', desc: 'Revisa evidencias, detecta lo que falta y completa un registro que sí ayude a entender la parcela.', xp: 30, img: 'assets/retos/desafio-04.jpg', url: 'desafio-caso-04.html', min: '5–7 min', cta: 'Revisar bitácora', recompensa: '+30 XP semanal' }] }
+      { id: 'desafio-04', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 04', nivel: 'Avanzado', titulo: 'Bitácora bajo lupa', desc: 'Revisa evidencias, detecta lo que falta y completa un registro que sí ayude a entender la parcela.', xp: 30, img: 'assets/retos/desafio-04.jpg', url: 'desafio-caso-04.html', min: '5–7 min', cta: 'Revisar bitácora', recompensa: '+30 XP semanal' },
+      { id: 'desafio-05', tipo: 'caso', almacen: 'sinergia_desafio_v1', num: 'Caso 05', nivel: 'Avanzado', titulo: 'Conecta la parcela', desc: 'Relaciona agua, suelo, cultivos y registro para leer una parcela como un sistema.', xp: 40, img: 'assets/retos/desafio-05.jpg', url: 'desafio-caso-05.html', min: '6–8 min', cta: 'Conectar pistas', recompensa: '+40 XP semanal' }] }
   ];
   // Los 6 reconocimientos de Retos (hitos, no uno por caso). El servidor los otorga; aquí se muestra su avance con los datos reales.
   var RT_LOGROS = [
@@ -14488,6 +14489,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       if (h.indexOf('buscar=') === 0) {
         var i = document.getElementById('topbarSearchInput');
         if (i) { i.value = h.slice(7); i.focus(); i.dispatchEvent(new Event('input', { bubbles: true })); }
+      } else if (h === 'logros-retos') {
+        if (typeof window.verMisLogros === 'function') window.verMisLogros('retos');   // «Ver mis logros» de los casos de Retos
       } else if (h === 'cerrar-sesion') {
         if (typeof window.handleLogout === 'function') window.handleLogout();
       } else if (/^retos\/[a-z0-9-]+$/.test(h)) {
@@ -22092,7 +22095,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     { id: 'retos-primera-mirada',      cat: 'retos', icono: 'eye',      nombre: 'Primera mirada',      desc: 'Completa tu primer reto de cualquier colección',          xp: 0,  orden: 20,   meta: { tipo: 'retos', n: 1 } },
     { id: 'retos-ojo-de-campo',        cat: 'retos', icono: 'search',   nombre: 'Ojo de campo',        desc: 'Completa todos los casos de Detective Agrícola',          xp: 0,  orden: 20.1, meta: { tipo: 'retos', col: 'ojo' } },
     { id: 'retos-decidir-con-calma',   cat: 'retos', icono: 'git-fork', nombre: 'Decidir con calma',   desc: 'Completa todos los casos de Rescate del Cultivo',         xp: 50, orden: 20.2, meta: { tipo: 'retos', col: 'calma' } },
-    { id: 'retos-criterio-de-campo',   cat: 'retos', icono: 'layers',   nombre: 'Criterio de campo',   desc: 'Completa todos los casos de Desafío SINERGIA',            xp: 0,  orden: 20.3, meta: { tipo: 'retos', col: 'campo' } },
+    { id: 'retos-criterio-de-campo',   cat: 'retos', icono: 'layers',   nombre: 'Criterio de campo',   desc: 'Completa todos los casos de Desafío SINERGIA',            xp: 50,  orden: 20.3, meta: { tipo: 'retos', col: 'campo' } },
     { id: 'retos-mirada-parcela',      cat: 'retos', icono: 'compass',  nombre: 'Mirada de parcela',   desc: 'Completa los 6 niveles del Mundo 01: La parcela despierta', xp: 25, orden: 20.4, meta: { tipo: 'historia', n: 6 } },
     { id: 'retos-practica-constante',  cat: 'retos', icono: 'repeat',   nombre: 'Práctica constante',  desc: 'Completa 5 retos distintos, sin importar la colección',   xp: 0,  orden: 20.5, meta: { tipo: 'retos', n: 5 } }
   ];
