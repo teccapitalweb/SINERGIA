@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900" role="img" aria-label="Bitácora de riego y fertilización">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F5B4D"/><stop offset="1" stop-color="#113D35"/></linearGradient></defs>
+<rect width="600" height="900" fill="url(#g)"/>
+<g stroke="#FAF9F5" stroke-opacity=".07" stroke-width="2"><path d="M60 0V900"/><path d="M120 0V900"/><path d="M180 0V900"/><path d="M240 0V900"/><path d="M300 0V900"/><path d="M360 0V900"/><path d="M420 0V900"/><path d="M480 0V900"/><path d="M540 0V900"/><path d="M0 60H600"/><path d="M0 120H600"/><path d="M0 180H600"/><path d="M0 240H600"/><path d="M0 300H600"/><path d="M0 360H600"/><path d="M0 420H600"/><path d="M0 480H600"/><path d="M0 540H600"/><path d="M0 600H600"/><path d="M0 660H600"/><path d="M0 720H600"/><path d="M0 780H600"/><path d="M0 840H600"/></g>
+<text x="560" y="250" text-anchor="end" font-family="'Plus Jakarta Sans','Segoe UI',Arial,Helvetica,sans-serif" font-weight="800" font-size="250" fill="#FAF9F5" fill-opacity=".09">02</text>
+<text x="52" y="78" font-family="'Plus Jakarta Sans','Segoe UI',Arial,Helvetica,sans-serif" font-weight="800" font-size="22" letter-spacing="4" fill="#A9DDB9">SINERGIA AGRÍCOLA</text>
+<rect x="52" y="96" width="64" height="5" rx="2.5" fill="#1AA888"/>
+<g transform="translate(240 270) scale(1.2)"><rect width="120" height="120" rx="26" fill="#1AA888" fill-opacity=".22" stroke="#A9DDB9" stroke-opacity=".55" stroke-width="2"/><g transform="translate(0 0)"><g fill="none" stroke="#FAF9F5" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M60 16C60 16 30 52 30 74a30 30 0 0 0 60 0C90 52 60 16 60 16Z"/><path d="M46 78a14 14 0 0 0 14 14"/></g></g></g>
+<text x="52" y="640" font-family="'Plus Jakarta Sans','Segoe UI',Arial,Helvetica,sans-serif" font-weight="700" font-size="22" letter-spacing="3" fill="#1AA888">PLANTILLA DE EXCEL</text>
+<text x="52" y="700" font-family="'Plus Jakarta Sans','Segoe UI',Arial,Helvetica,sans-serif" font-weight="800" font-size="46" fill="#FAF9F5">Bitácora de riego</text>
+<text x="52" y="754" font-family="'Plus Jakarta Sans','Segoe UI',Arial,Helvetica,sans-serif" font-weight="800" font-size="46" fill="#FAF9F5">y fertilización</text>
+<text x="52" y="820" font-family="'Plus Jakarta Sans','Segoe UI',Arial,Helvetica,sans-serif" font-weight="600" font-size="22" fill="#A9DDB9">Herramienta editable de Sinergia</text>
+</svg>
