@@ -198,6 +198,36 @@
   }
   .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
   .nav-item-text { flex: 1; }
+  /* Apoyos verificados */
+  .ap-card { margin-bottom: 14px; }
+  .ap-cab { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .ap-titulo { font-family: var(--font-display); font-weight: 800; font-size: 16px; }
+  .ap-meta { margin-top: 3px; font-size: 12.5px; opacity: .72; }
+  .ap-pill { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 800; white-space: nowrap; }
+  .ap-pill--ok { background: #DDF3E8; color: #0F6B49; }
+  .ap-pill--mal { background: #FDE2E0; color: #A4271E; }
+  .ap-pill--cambio { background: #FFF0CC; color: #8A5A00; }
+  .ap-aviso { margin-top: 12px; padding: 12px 14px; border-radius: 12px; font-size: 13.5px; line-height: 1.5; color: #1c2b27; }
+  .ap-aviso--mal { background: #FDECEA; border: 1px solid #F5B7B1; }
+  .ap-aviso--ojo { background: #FFF8E1; border: 1px solid #F3DFA2; }
+  .ap-aviso--cambio { background: #EEF6FF; border: 1px solid #BBD7F5; }
+  .ap-aviso a { color: #0B5FA5; word-break: break-all; }
+  .ap-borrador { margin-top: 10px; padding: 10px 12px; background: #fff; border: 1px solid #CFE0D8; border-radius: 10px; }
+  .ap-borrador ul { margin: 6px 0 10px 18px; padding: 0; }
+  .ap-borrador s { opacity: .6; }
+  .ap-nota { font-size: 12px; opacity: .75; margin: 6px 0; }
+  .ap-editar { margin-top: 12px; }
+  .ap-editar > summary { cursor: pointer; font-weight: 700; font-size: 13px; }
+  .ap-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin-top: 10px; }
+  .ap-campo { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; }
+  .ap-campo input[type=text], .ap-campo input[type=number], .ap-campo select, .ap-campo textarea { padding: 9px 10px; border: 1px solid #D9E5DF; border-radius: 10px; font: inherit; font-weight: 400; font-size: 13.5px; background: #fff; color: #1c2b27; }
+  .ap-campo--ancho { grid-column: 1 / -1; }
+  .ap-campo--check { flex-direction: row; align-items: center; gap: 8px; }
+  .ap-acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ap-borrar { color: #B4232C; }
+  .ap-card--oculto { opacity: .65; }
+  .ap-etq { margin-left: 6px; padding: 2px 8px; border-radius: 99px; background: #E6E6E6; color: #444; font-size: 10.5px; }
+  @media (max-width: 700px) { .ap-form { grid-template-columns: 1fr; } }
   .nav-item-count {
     font-family: var(--font-mono);
     font-size: 10px;
@@ -2458,6 +2488,11 @@ body::before { display: none; }
       <span class="nav-item-text">Encuesta</span>
       <span id="navEncCount" class="nav-item-count" title="Personas que respondieron la ruta de la portada">0</span>
     </button>
+    <button class="nav-item" data-tab="apoyos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span class="nav-item-text">Apoyos</span>
+      <span id="navApoyosCount" class="nav-item-count" title="Apoyos con enlace roto o con cambios por revisar">0</span>
+    </button>
     <button class="nav-item" data-tab="notifications">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       <span class="nav-item-text">Notificaciones</span>
@@ -2955,6 +2990,21 @@ body::before { display: none; }
           <button type="button" class="btn-secondary" data-rc-accion="prueba-todos">Enviarme los 3</button>
         </div>
       </div>
+    </div>
+
+    <div class="tab-panel" data-panel="apoyos">
+      <div class="panel-head">
+        <div class="panel-head-info">
+          <h2 class="panel-title">Apoyos <em>verificados</em></h2>
+          <p class="panel-sub">Los apoyos del gobierno que ven los miembros en la herramienta «Apoyos verificados». Cada lunes el servidor revisa solo que los enlaces abran y que las páginas oficiales no hayan cambiado; si algo cambia, aquí te avisa. Nada se publica sin que tú lo apruebes.</p>
+        </div>
+        <div class="panel-head-accion">
+          <button type="button" class="btn-secondary" data-ap-accion="revisar">Revisar ahora</button>
+          <button type="button" class="btn-secondary" data-ap-accion="nuevo">Agregar apoyo</button>
+        </div>
+      </div>
+      <div class="widget-box" id="apResumen" style="margin-bottom:16px;font-size:13.5px;"></div>
+      <div id="apLista"></div>
     </div>
 
     <div class="tab-panel" data-panel="encuesta">
@@ -4404,6 +4454,7 @@ body::before { display: none; }
       'ratings': 'Calificaciones de los cursos',
       'retos': 'Retos',
       'creditos': 'Créditos',
+      'apoyos': 'Apoyos verificados',
       'valores': 'Valores de créditos',
       'config': 'Configuración del sistema'
     };
@@ -8225,6 +8276,146 @@ let _bibLibrosCargados = false;
     if (vacias && bibCargada) document.querySelectorAll('.mat-vacias').forEach(el => { el.textContent = vacias + (vacias === 1 ? ' colección sin libros' : ' colecciones sin libros'); });
   }
 
+  // ─── Apoyos verificados: ver avisos de la revisión semanal, aprobar borradores y editar los apoyos ───
+  const AP = { datos: null, error: '', cargando: false, abierto: '' };
+  const AP_ESTADOS = [['abierto', 'Abierto'], ['pronto', 'Próximamente'], ['consulta', 'Consultar fechas'], ['cerrado', 'Cerrado']];
+  const AP_CATEGORIAS = [['sader', 'SADER'], ['bienestar', 'Bienestar'], ['fira', 'FIRA'], ['conagua', 'CONAGUA'], ['estatales', 'Estatales']];
+  const AP_CAMPOS = { titulo: 'Título', descripcion: 'Descripción', monto: 'Monto', cierre: 'Fecha', requisitos: 'Requisitos', estado: 'Estado' };
+
+  function apFecha(v) {
+    if (!v) return '—';
+    const d = new Date(String(v).length === 10 ? v + 'T12:00:00' : v);
+    return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function apEstadoTxt(e) { const x = AP_ESTADOS.filter((p) => p[0] === e)[0]; return x ? x[1] : e; }
+  function apOpciones(lista, actual) { return lista.map((p) => '<option value="' + p[0] + '"' + (p[0] === actual ? ' selected' : '') + '>' + esc(p[1]) + '</option>').join(''); }
+  function apAvisos(a) {
+    let h = '';
+    const e = a.enlace;
+    if (e && e.roto) h += '<div class="ap-aviso ap-aviso--mal"><b>El enlace no abre bien.</b> ' + esc(e.motivo || '') + ' Falló en ' + e.fallos + ' revisiones seguidas. Corrígelo en «Editar».</div>';
+    else if (e && e.fallos > 0) h += '<div class="ap-aviso ap-aviso--ojo">La última revisión no pudo abrir el enlace (' + esc(e.motivo || 'sin respuesta') + '). Si falla otra vez, te lo marco como roto.</div>';
+    if (a.cambio) {
+      const b = a.borrador;
+      const pares = b && b.campos ? Object.keys(b.campos) : [];
+      h += '<div class="ap-aviso ap-aviso--cambio"><b>Cambió una página oficial</b> (' + esc(apFecha(a.cambio.detectadoEn)) + '). Revisa que los datos de abajo sigan siendo correctos: ' +
+        (a.cambio.fuentes || []).map((u) => '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u.replace(/^https?:\/\/(www\.)?/, '').slice(0, 60)) + '</a>').join(', ') + '.';
+      if (b && pares.length) {
+        h += '<div class="ap-borrador"><b>Borrador con IA' + (b.confianza ? ' · confianza ' + esc(b.confianza) : '') + '</b>' + (b.resumen ? '<p>' + esc(b.resumen) + '</p>' : '') +
+          '<ul>' + pares.map((k) => '<li><b>' + esc(AP_CAMPOS[k] || k) + ':</b> <s>' + esc(k === 'estado' ? apEstadoTxt(a[k]) : (a[k] || '—')) + '</s> → <span>' + esc(k === 'estado' ? apEstadoTxt(b.campos[k]) : b.campos[k]) + '</span></li>').join('') + '</ul>' +
+          '<p class="ap-nota">La IA puede equivocarse: compara con la página oficial antes de aplicar.</p>' +
+          '<button type="button" class="btn-primary" data-ap-accion="aplicar" data-id="' + esc(a.id) + '">Aplicar borrador</button> ' +
+          '<button type="button" class="btn-secondary" data-ap-accion="visto" data-id="' + esc(a.id) + '">Lo revisé: no aplicar</button></div>';
+      } else {
+        if (b && b.resumen) h += '<p>' + esc(b.resumen) + '</p>';
+        if (b && b.error) h += '<p class="ap-nota">' + esc(b.error) + '</p>';
+        else if (!b) h += '<p class="ap-nota">No hay borrador (la IA no está disponible). Compara con la página y edita lo que haga falta.</p>';
+        h += '<div style="margin-top:8px;"><button type="button" class="btn-secondary" data-ap-accion="visto" data-id="' + esc(a.id) + '">Ya lo revisé, no cambia nada</button></div>';
+      }
+      h += '</div>';
+    }
+    return h;
+  }
+  function apTarjeta(a) {
+    const abierto = AP.abierto === a.id;
+    const roto = a.enlace && a.enlace.roto;
+    const pendiente = !!a.cambio;
+    return '<div class="widget-box ap-card' + (a.visible === false ? ' ap-card--oculto' : '') + '" data-ap-id="' + esc(a.id) + '">' +
+      '<div class="ap-cab"><div><div class="ap-titulo">' + esc(a.titulo) + (a.visible === false ? ' <span class="ap-etq">Oculto</span>' : '') + '</div>' +
+      '<div class="ap-meta">' + esc(a.institucion) + ' · ' + esc(apEstadoTxt(a.estado)) + ' · Revisado: ' + esc(apFecha(a.revisadoEn)) +
+      (a.vigilando ? ' · vigilando ' + (a.fuentes || []).length + (a.fuentes.length === 1 ? ' página' : ' páginas') : ' · solo se revisa el enlace') + '</div></div>' +
+      '<div class="ap-estado">' + (roto ? '<span class="ap-pill ap-pill--mal">Enlace roto</span>' : pendiente ? '<span class="ap-pill ap-pill--cambio">Cambió</span>' : '<span class="ap-pill ap-pill--ok">Al día</span>') + '</div></div>' +
+      apAvisos(a) +
+      '<details class="ap-editar"' + (abierto ? ' open' : '') + ' data-ap-det="' + esc(a.id) + '"><summary>Editar</summary>' + apFormulario(a) + '</details></div>';
+  }
+  function apFormulario(a) {
+    const nuevo = !a.id;
+    const c = (campo, etq, valor, extra) => '<label class="ap-campo' + (extra || '') + '"><span>' + etq + '</span>' + valor + '</label>';
+    const inp = (n, v, max) => '<input type="text" data-ap-campo="' + n + '" maxlength="' + max + '" value="' + esc(v || '') + '">';
+    const area = (n, v, max) => '<textarea data-ap-campo="' + n + '" maxlength="' + max + '" rows="3">' + esc(v || '') + '</textarea>';
+    return '<div class="ap-form">' +
+      c('titulo', 'Título', inp('titulo', a.titulo, 100)) + c('institucion', 'Institución', inp('institucion', a.institucion, 80)) +
+      c('estado', 'Estado', '<select data-ap-campo="estado">' + apOpciones(AP_ESTADOS, a.estado || 'consulta') + '</select>') +
+      c('categoria', 'Categoría', '<select data-ap-campo="categoria">' + apOpciones(AP_CATEGORIAS, a.categoria || 'sader') + '</select>') +
+      c('monto', 'Monto', inp('monto', a.monto, 160)) + c('cierre', 'Fecha', inp('cierre', a.cierre, 120)) +
+      c('descripcion', 'Descripción', area('descripcion', a.descripcion, 500), ' ap-campo--ancho') +
+      c('requisitos', 'Requisitos', area('requisitos', a.requisitos, 700), ' ap-campo--ancho') +
+      c('link', 'Enlace oficial (https://…)', inp('link', a.link, 400), ' ap-campo--ancho') +
+      c('fuentes', 'Páginas oficiales a vigilar (una por línea, máximo 4; vacío = solo revisar el enlace)', '<textarea data-ap-campo="fuentes" rows="2">' + esc((a.fuentes || []).join('\n')) + '</textarea>', ' ap-campo--ancho') +
+      c('logo', 'Ícono', inp('logo', a.logo || '🏛️', 12)) + c('orden', 'Orden', '<input type="number" data-ap-campo="orden" min="0" max="9999" value="' + esc(a.orden != null ? a.orden : 99) + '">') +
+      '<label class="ap-campo ap-campo--check"><input type="checkbox" data-ap-campo="visible"' + (a.visible === false ? '' : ' checked') + '> <span>Visible para los miembros</span></label>' +
+      '<div class="ap-acciones ap-campo--ancho">' +
+      '<button type="button" class="btn-primary" data-ap-accion="guardar" data-id="' + esc(a.id || '') + '">' + (nuevo ? 'Crear apoyo' : 'Guardar') + '</button>' +
+      (nuevo ? '' : ' <button type="button" class="btn-secondary" data-ap-accion="revisado" data-id="' + esc(a.id) + '">Marcar como revisado hoy</button> <button type="button" class="btn-secondary ap-borrar" data-ap-accion="eliminar" data-id="' + esc(a.id) + '">Eliminar</button>') +
+      '</div></div>';
+  }
+  function apLeerForm(contenedor) {
+    const o = {};
+    contenedor.querySelectorAll('[data-ap-campo]').forEach((el) => {
+      const k = el.getAttribute('data-ap-campo');
+      if (el.type === 'checkbox') o[k] = el.checked;
+      else if (k === 'fuentes') o[k] = el.value.split('\n').map((x) => x.trim()).filter(Boolean);
+      else if (k === 'orden') o[k] = el.value === '' ? undefined : Number(el.value);
+      else o[k] = el.value;
+    });
+    return o;
+  }
+  function apPintar() {
+    const lista = document.getElementById('apLista'), res = document.getElementById('apResumen');
+    if (!lista || !res) return;
+    const d = AP.datos;
+    if (!d) { res.innerHTML = AP.error ? 'No se pudieron leer los apoyos: ' + esc(AP.error) : 'Cargando…'; lista.innerHTML = ''; return; }
+    const apoyos = d.apoyos || [];
+    const rotos = apoyos.filter((a) => a.enlace && a.enlace.roto).length, cambios = apoyos.filter((a) => a.cambio).length;
+    const u = d.ultimaRevision;
+    res.innerHTML = '<b>' + apoyos.length + ' apoyos.</b> ' + (rotos ? '<span class="ap-pill ap-pill--mal">' + rotos + ' con enlace roto</span> ' : '') + (cambios ? '<span class="ap-pill ap-pill--cambio">' + cambios + ' con cambios por revisar</span> ' : '') + (!rotos && !cambios ? '<span class="ap-pill ap-pill--ok">Todo al día</span> ' : '') +
+      '<br>Última revisión automática: <b>' + (u && u.en ? esc(apFecha(u.en)) : 'todavía ninguna') + '</b> (cada lunes a las 6:30 a. m.). ' +
+      (d.iaDisponible ? 'La IA prepara borradores cuando una página cambia.' : 'La IA no está disponible: solo recibirás el aviso de que algo cambió.');
+    const nav = document.getElementById('navApoyosCount'); if (nav) nav.textContent = String(rotos + cambios);
+    lista.innerHTML = (AP.abierto === '__nuevo' ? '<div class="widget-box ap-card"><div class="ap-titulo">Nuevo apoyo</div><details class="ap-editar" open>' + apFormulario({}) + '</details></div>' : '') + apoyos.map(apTarjeta).join('');
+  }
+  async function apCargar() {
+    if (AP.cargando) return;
+    AP.cargando = true;
+    try { AP.datos = await callAdminEndpoint('/admin/apoyos/listar', {}); AP.error = ''; }
+    catch (err) { AP.error = (err && err.message) || 'error'; showToast('No se pudieron leer los apoyos: ' + AP.error, 'error'); }
+    AP.cargando = false;
+    apPintar();
+  }
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest && e.target.closest('[data-ap-accion]');
+    if (!b || !document.querySelector('[data-panel="apoyos"].active')) return;
+    const accion = b.getAttribute('data-ap-accion'), id = b.getAttribute('data-id') || '';
+    const tarjeta = b.closest('.ap-card');
+    try {
+      b.disabled = true;
+      if (accion === 'nuevo') { AP.abierto = '__nuevo'; apPintar(); b.disabled = false; return; }
+      if (accion === 'revisar') {
+        showToast('Revisando los apoyos… puede tardar un minuto', 'success');
+        const r = await callAdminEndpoint('/admin/apoyos/revisar', {});
+        showToast('Revisión lista: ' + r.rotos + ' con enlace roto y ' + r.cambios + ' con cambios', r.rotos || r.cambios ? 'error' : 'success');
+        await apCargar(); b.disabled = false; return;
+      }
+      if (accion === 'guardar' || accion === 'revisado') {
+        const campos = apLeerForm(tarjeta);
+        const cuerpo = id ? Object.assign({ id }, campos, accion === 'revisado' ? { marcarRevisado: true } : {}) : campos;
+        const r = await callAdminEndpoint('/admin/apoyos/guardar', cuerpo);
+        showToast(id ? 'Apoyo guardado' : 'Apoyo creado', 'success');
+        AP.abierto = id ? id : ''; await apCargar(); if (!id) AP.abierto = ''; b.disabled = false; return;
+      }
+      if (accion === 'eliminar') {
+        if (!confirm('¿Eliminar este apoyo? Dejará de verse en el panel de los miembros.')) { b.disabled = false; return; }
+        await callAdminEndpoint('/admin/apoyos/guardar', { id, eliminar: true });
+        showToast('Apoyo eliminado', 'success'); await apCargar(); return;
+      }
+      if (accion === 'aplicar' || accion === 'visto') {
+        await callAdminEndpoint('/admin/apoyos/aviso', { id, accion: accion === 'aplicar' ? 'aprobar' : 'visto' });
+        showToast(accion === 'aplicar' ? 'Borrador aplicado: los miembros ya ven los datos nuevos' : 'Aviso resuelto', 'success');
+        await apCargar(); return;
+      }
+    } catch (err) { showToast((err && err.message) || 'No se pudo completar', 'error'); b.disabled = false; }
+  });
+  document.addEventListener('toggle', (e) => { const d = e.target; if (d && d.matches && d.matches('[data-ap-det]')) AP.abierto = d.open ? d.getAttribute('data-ap-det') : (AP.abierto === d.getAttribute('data-ap-det') ? '' : AP.abierto); }, true);
+
   window.matVista = function(v) {
     switchTab(v === 'biblioteca' ? 'library' : 'materials');
   };
@@ -8243,6 +8434,7 @@ let _bibLibrosCargados = false;
     if (tabName === 'freecourses') setTimeout(() => cargarAvanceGratis(true), 0);
     if (tabName === 'metricas') setTimeout(() => mtCargar(false), 0);
     if (tabName === 'encuesta') setTimeout(() => enCargar(), 0);
+    if (tabName === 'apoyos') setTimeout(() => apCargar(), 0);
     if (tabName === 'recordatorios') setTimeout(() => rcCargar(), 0);
     if (tabName === 'config') setTimeout(() => slCargar(), 0);
     if (tabName === 'valores') setTimeout(cargarValoresAdmin, 0);

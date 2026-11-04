@@ -12337,7 +12337,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       <div class="panel-header">
         <span class="panel-tag">Herramienta VIP</span>
         <h2 class="panel-title">Apoyos <em class="headline-accent">verificados</em>.</h2>
-        <p class="panel-subtitle">Convocatorias y programas con fuente oficial. Revisa requisitos, montos, vigencia y el enlace directo antes de iniciar tu trámite. Datos y enlaces revisados el 4 de noviembre de 2026.</p>
+        <p class="panel-subtitle">Convocatorias y programas con fuente oficial. Revisa requisitos, montos, vigencia y el enlace directo antes de iniciar tu trámite.<span id="apoyosRevisadoEn"> Datos y enlaces revisados el 4 de noviembre de 2026.</span></p>
       </div>
 
       <div class="tool-start"><span class="tool-start-icon">🔎</span><span><strong>Antes de solicitar:</strong> filtra por institución, abre la fuente oficial y confirma que la convocatoria siga vigente. Nunca compartas documentos o datos personales fuera del sitio oficial.</span></div>
@@ -19795,11 +19795,33 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   let apoyosAutoCache = []; // Cache de apoyos auto-generados (del cron)
   let apoyosFiltroActivo = 'todos';
 
+  // Los apoyos curados vienen del servidor (se editan en el admin); si no responde, se usa la lista que viaja en el panel
+  let apoyosServidor = null;
+  function fechaApoyo(v) {
+    const d = new Date(String(v).length === 10 ? v + 'T12:00:00' : v);
+    return isNaN(d.getTime()) ? '' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  async function cargarApoyosServidor() {
+    try {
+      const r = await fetch(ACT_BACKEND + '/api/apoyos');
+      if (!r.ok) return;
+      const d = await r.json();
+      if (!d || !Array.isArray(d.apoyos) || !d.apoyos.length) return;
+      apoyosServidor = d.apoyos.map(a => ({ ...a, esCurado: true }));
+      const fechas = apoyosServidor.map(a => a.revisadoEn).filter(Boolean).sort();
+      const el = document.getElementById('apoyosRevisadoEn');
+      if (el && fechas.length) el.textContent = ' Datos y enlaces revisados por última vez el ' + fechaApoyo(fechas[fechas.length - 1]) + '.';
+      renderApoyos(apoyosFiltroActivo);
+      try { renderApoyosDestacados(); } catch (e) { /* el inicio se pinta con lo que haya */ }
+    } catch (e) { /* sin conexión: se queda la lista del panel */ }
+  }
+  cargarApoyosServidor();
+
   
 
   function getApoyosTodos() {
     // Combina curados permanentes + auto-generados del cron
-    return [...APOYOS_CURADOS, ...apoyosAutoCache];
+    return [...(apoyosServidor || APOYOS_CURADOS), ...apoyosAutoCache];
   }
 
   function renderApoyos(filtro = 'todos') {
@@ -19855,7 +19877,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       const desc = (a.descripcion || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
       const institucion = (a.institucion || 'Gobierno').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
       const esc = (t) => String(t || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
-      const datos = (a.esCurado ? [['Monto', a.monto], ['Fecha', a.cierre], ['Requisitos', a.requisitos]] : []).filter(d => d[1]).map(d => `<p class="apoyo-row-dato"><b>${d[0]}:</b> ${esc(d[1])}</p>`).join('');
+      const datos = (a.esCurado ? [['Monto', a.monto], ['Fecha', a.cierre], ['Requisitos', a.requisitos], ['Revisado', a.revisadoEn ? fechaApoyo(a.revisadoEn) : '']] : []).filter(d => d[1]).map(d => `<p class="apoyo-row-dato"><b>${d[0]}:</b> ${esc(d[1])}</p>`).join('');
 
       return `
         <a class="apoyo-row" href="${a.link}" target="_blank" rel="noopener noreferrer">
