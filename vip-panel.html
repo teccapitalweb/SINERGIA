@@ -13011,7 +13011,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   <button class="mobile-nav-item" data-tab="courses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg><span>Cursos</span></button>
   <button class="mobile-nav-item" data-tab="material"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>Materiales</span></button>
   <button class="mobile-nav-item" data-tab="retos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg><span>Retos</span></button>
-  <button class="mobile-nav-item" id="mobileToolsBtn" onclick="abrirMobileDrawer('herramientas')" aria-label="Herramientas de campo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg><span>Campo</span></button>
+  <button class="mobile-nav-item" id="mobileToolsBtn" onclick="abrirHerramientas()" aria-label="Herramientas de campo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg><span>Campo</span></button>
   <button class="mobile-nav-item mobile-nav-menu-btn" id="mobileMenuBtn" onclick="abrirMobileDrawer()" aria-label="Abrir menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg><span>Más</span></button>
 </nav>
 
@@ -13054,6 +13054,154 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
 <!-- ═══════════════════════════════════════════════════════════
      FIREBASE + LÓGICA DEL PANEL
      ═══════════════════════════════════════════════════════════ -->
+<!-- ═══ Herramientas de campo: hoja que se abre desde «Campo» (abajo en celular, centrada en pantallas grandes) ═══ -->
+<style>
+  .hc-ov { position: fixed; inset: 0; z-index: 450; background: rgba(8, 24, 20, 0.58); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); opacity: 0; transition: opacity .2s ease; }
+  .hc-ov.is-open { opacity: 1; }
+  .hc-sheet { position: fixed; z-index: 451; left: 50%; bottom: 0; width: min(100%, 560px); max-height: 90vh; max-height: 90dvh; overflow-y: auto; overscroll-behavior: contain;
+    padding: 22px 20px max(22px, env(safe-area-inset-bottom, 22px)); border-radius: 26px 26px 0 0; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-card); border-bottom: 0;
+    box-shadow: 0 -24px 60px -20px rgba(8, 24, 20, 0.5); transform: translate(-50%, 28px); opacity: 0; transition: transform .24s ease, opacity .2s ease; }
+  .hc-sheet.is-open { transform: translate(-50%, 0); opacity: 1; }
+  .hc-ov[hidden], .hc-sheet[hidden] { display: none; }
+  .hc-cab { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+  .hc-eyebrow { display: block; margin-bottom: 6px; font-family: var(--font-display); font-weight: 800; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #087F70; }
+  html[data-theme="dark"] .hc-eyebrow { color: #92C7A1; }
+  .hc-cab h2 { margin: 0 0 4px; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 4.6vw, 1.55rem); line-height: 1.12; letter-spacing: -0.025em; color: var(--text-primary); }
+  .hc-cab p { margin: 0; font-family: var(--font-body); font-size: 13.5px; line-height: 1.5; color: var(--text-secondary); }
+  .hc-x { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--border-card); border-radius: 50%; background: var(--bg-subtle); color: var(--text-secondary); cursor: pointer; }
+  .hc-x:hover { color: var(--text-primary); border-color: #7fb7a6; }
+  .hc-x svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .hc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .hc-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; padding: 14px 14px 15px; border: 1px solid var(--border-card); border-radius: 18px; background: var(--bg-card); color: var(--text-primary); text-align: left; cursor: pointer;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+  .hc-card:hover { transform: translateY(-2px); border-color: #1AA888; box-shadow: 0 14px 28px -18px rgba(11, 32, 20, 0.4); }
+  .hc-card:focus-visible { outline: 2px solid #1AA888; outline-offset: 2px; }
+  .hc-card.is-activa { border-color: #1AA888; background: rgba(26, 168, 136, 0.08); }
+  .hc-ico { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; background: var(--bg-subtle); color: #1F5B4D; }
+  html[data-theme="dark"] .hc-ico { color: #92C7A1; }
+  .hc-ico svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .hc-nom { display: block; font-family: var(--font-display); font-weight: 800; font-size: 14.5px; line-height: 1.2; letter-spacing: -0.012em; color: var(--text-primary); }
+  .hc-desc { display: block; margin-top: 3px; font-family: var(--font-body); font-size: 12px; line-height: 1.4; color: var(--text-secondary); }
+  .hc-lock { position: absolute; top: 12px; right: 12px; width: 16px; height: 16px; fill: none; stroke: var(--text-tertiary); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .hc-card.is-bloqueada .hc-ico { opacity: 0.7; }
+  .hc-pie { margin: 14px 2px 0; font-family: var(--font-body); font-size: 12.5px; line-height: 1.45; text-align: center; color: var(--text-secondary); }
+  .hc-pie[hidden] { display: none; }
+  .nav-group-toggle.is-active { background: rgba(255, 255, 255, 0.12); }
+  @media (min-width: 641px) {
+    .hc-sheet { bottom: auto; top: 50%; max-height: 86vh; border: 1px solid var(--border-card); border-radius: 26px; padding: 26px 26px 24px; transform: translate(-50%, calc(-50% + 18px)); box-shadow: 0 30px 80px -24px rgba(8, 24, 20, 0.55); }
+    .hc-sheet.is-open { transform: translate(-50%, -50%); }
+    .hc-grid { gap: 12px; }
+  }
+  @media (max-width: 340px) { .hc-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (prefers-reduced-motion: reduce) { .hc-ov, .hc-sheet, .hc-card { transition: none; } }
+</style>
+<div class="hc-ov" id="hcOverlay" hidden onclick="cerrarHerramientas()"></div>
+<section class="hc-sheet" id="hcSheet" role="dialog" aria-modal="true" aria-labelledby="hcTitulo" hidden>
+  <header class="hc-cab">
+    <div>
+      <span class="hc-eyebrow">Herramientas de campo</span>
+      <h2 id="hcTitulo">Para decidir mejor en tu parcela</h2>
+      <p>Herramientas diseñadas para productores. Disponibles con membresía VIP.</p>
+    </div>
+    <button type="button" class="hc-x" id="hcCerrar" onclick="cerrarHerramientas()" aria-label="Cerrar herramientas de campo"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </header>
+  <div class="hc-grid" id="hcGrid"></div>
+  <p class="hc-pie" id="hcPie">Desbloquea todas las herramientas con tu membresía VIP.</p>
+</section>
+<script>
+(function () {
+  var HC = [
+    { k: 'clima', n: 'Clima y alertas', d: 'Pronóstico de 7 días para tu localidad', i: '<path d="M12 2v2m-7.07.93l1.41 1.41M20 12h2m-2.93-7.07l-1.41 1.41m-1.713 6.31a4 4 0 0 0-5.925-4.128M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6"/>' },
+    { k: 'mercados', n: 'Precios de mercado', d: 'Referencias de precio por producto y zona', i: '<path d="M16 7h6v6"/><path d="m22 7l-8.5 8.5l-5-5L2 17"/>' },
+    { k: 'apoyos', n: 'Apoyos verificados', d: 'Convocatorias con fuente oficial', i: '<path d="M10 18v-7m1.119-8.795a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949zM14 18v-7m4 7v-7M3 22h18M6 18v-7"/>' },
+    { k: 'exportacion', n: 'Rentabilidad', d: 'Costos, ganancia y punto de equilibrio', i: '<path d="M12 2v2m0 5.189V13m7-1V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M19.38 19A11.6 11.6 0 0 0 21 13l-8.188-3.639a2 2 0 0 0-1.624 0L3 13.001a11.6 11.6 0 0 0 2.81 7.76"/><path d="M2 20c.6.5 1.2 1 2.5 1c2.5 0 2.5-2 5-2c1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2c1.3 0 1.9.5 2.5 1"/>' },
+    { k: 'calculadora', n: 'Calculadora agrícola', d: 'Fertilización, riego, densidad y más', i: '<rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8m0 8v4m0-8h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"/>' },
+    { k: 'calendario', n: 'Planificador de cultivo', d: 'Labores por etapa según tu siembra', i: '<path d="M8 2v3m8-3v3"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01M16 17h.01"/>' }
+  ];
+  var LOCK = '<svg class="hc-lock" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  var previo = null;
+
+  function abiertas() { var s = document.getElementById('hcSheet'); return !!(s && !s.hidden); }
+  function activa() { var p = document.querySelector('.tab-panel.active'); return p ? p.getAttribute('data-panel') : ''; }
+  function tiene(k) { return typeof window.tieneHerramienta === 'function' ? window.tieneHerramienta(k) : window.isVIP === true; }
+
+  function pintar() {
+    var g = document.getElementById('hcGrid'); if (!g) return;
+    var ahora = activa(), html = '';
+    HC.forEach(function (h) {
+      var abierta = tiene(h.k);
+      html += '<button type="button" class="hc-card' + (abierta ? '' : ' is-bloqueada') + (ahora === h.k ? ' is-activa' : '') + '" data-hc="' + h.k + '"' + (ahora === h.k ? ' aria-current="page"' : '') + '>' +
+        (abierta ? '' : LOCK) +
+        '<span class="hc-ico"><svg viewBox="0 0 24 24" aria-hidden="true">' + h.i + '</svg></span>' +
+        '<span><span class="hc-nom">' + h.n + '</span><span class="hc-desc">' + h.d + '</span></span></button>';
+    });
+    g.innerHTML = html;
+    var pie = document.getElementById('hcPie'); if (pie) pie.hidden = window.isVIP === true;
+  }
+
+  window.abrirHerramientas = function () {
+    var s = document.getElementById('hcSheet'), o = document.getElementById('hcOverlay');
+    if (!s || !o) return;
+    if (typeof window.cerrarMobileDrawer === 'function') window.cerrarMobileDrawer();
+    previo = document.activeElement;
+    pintar();
+    o.hidden = false; s.hidden = false;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function () { o.classList.add('is-open'); s.classList.add('is-open'); });
+    var x = document.getElementById('hcCerrar'); if (x) x.focus({ preventScroll: true });
+  };
+
+  window.cerrarHerramientas = function () {
+    var s = document.getElementById('hcSheet'), o = document.getElementById('hcOverlay');
+    if (!s || !o || s.hidden) return;
+    o.classList.remove('is-open'); s.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(function () { o.hidden = true; s.hidden = true; }, 200);
+    if (previo && previo.focus) { try { previo.focus({ preventScroll: true }); } catch (e) { /* sin foco */ } }
+    previo = null;
+  };
+
+  // Tocar una herramienta: si ya está abierta (membresía o canje) se entra; si no, se ofrece canjearla
+  document.addEventListener('click', function (e) {
+    var c = e.target && e.target.closest ? e.target.closest('.hc-card[data-hc]') : null;
+    if (!c) return;
+    var k = c.getAttribute('data-hc');
+    window.cerrarHerramientas();
+    if (typeof window.switchTab === 'function') window.switchTab(k);   // switchTab ya ofrece el canje si está bloqueada
+  });
+
+  // «Herramientas de campo» en la barra lateral y en el cajón abre esta hoja, ya no se despliega
+  document.addEventListener('click', function (e) {
+    var t = e.target && e.target.closest ? e.target.closest('.nav-group-toggle') : null;
+    if (!t) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    window.abrirHerramientas();
+  }, true);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && abiertas()) window.cerrarHerramientas();
+    if (e.key === 'Tab' && abiertas()) {
+      var f = Array.prototype.slice.call(document.querySelectorAll('#hcSheet button')); if (!f.length) return;
+      var a = document.activeElement, i = f.indexOf(a);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+    }
+  });
+
+  // La entrada «Herramientas de campo» y el botón «Campo» se marcan cuando hay una herramienta abierta
+  function marcar() {
+    var ahora = activa(), enHerr = HC.some(function (h) { return h.k === ahora; });
+    document.querySelectorAll('.nav-group-toggle').forEach(function (t) { t.classList.toggle('is-active', enHerr); });
+    var b = document.getElementById('mobileToolsBtn'); if (b) b.classList.toggle('active', enHerr);
+  }
+  if (window.MutationObserver) {
+    var obs = new MutationObserver(function () { setTimeout(marcar, 0); });
+    document.querySelectorAll('.tab-panel').forEach(function (p) { obs.observe(p, { attributes: true, attributeFilter: ['class'] }); });
+  }
+  setTimeout(marcar, 400);
+})();
+</script>
+
 <script src="assets/sinergia-bunny-catalog-v2.js"></script>
 <script src="avatares.js?v=3"></script>
 <script type="module">
@@ -17451,7 +17599,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
           <div style="text-align:center;padding:2rem;color:#6b7280;">
             <div style="font-size:2rem;margin-bottom:0.5rem;">🎓</div>
             <p>Aún no tienes certificados.</p>
-                      <p style="font-size:0.85rem;margin-top:0.5rem;">Completa un curso para generar tu primer certificado IPCIL.</p>
+                      <p style="font-size:0.85rem;margin-top:0.5rem;">Completa un curso para generar tu primer certificado SINERGIA.</p>
                                 </div>`;
               return;
   }
@@ -25995,7 +26143,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="cert-cta-icon">🎓</div>
-    <div class="cert-cta-eyebrow">IPCIL · Sinergia-Agrícola</div>
+    <div class="cert-cta-eyebrow">SINERGIA Agrícola</div>
     <div class="cert-cta-heading">¡Curso completado!</div>
     <div class="cert-cta-course" id="certCtaTitle">Curso</div>
     <div class="cert-cta-sub">Ya puedes generar tu certificado oficial con folio y código QR</div>
@@ -27625,6 +27773,28 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .log-xp b, .log-stats b, .log-anillo-txt b, .badge-prog span, .badge-xp, .lf-count, .rank-range { font-variant-numeric: tabular-nums; }
   html .log-hero h2.cur-title { text-wrap: balance; }
   html[data-theme="dark"] { color-scheme: dark; }
+
+  /* ═══════════ Portadas responsivas: el mismo criterio que Inicio en todos los tamaños ═══════════
+     En celular la ilustración queda como fondo tenue: nunca tapa textos, cifras ni botones. */
+  @media (max-width: 640px) {
+    html .cur-hero { padding: 22px 18px; }
+    html .cur-hero .cur-paisaje { opacity: 0.18; background-size: auto 66%; background-position: right -26px bottom -8px; }
+    html .log-hero.cur-hero:not(.live-hero) .cur-paisaje { opacity: 0.16; background-size: auto 74%; background-position: right -34px bottom -12px; }
+    html .cert-hero.cur-hero:not(.live-hero) .cur-paisaje { opacity: 0.2; background-size: auto 78%; background-position: right -30px bottom -10px; }
+    html .com-hero.cur-hero:not(.live-hero) .cur-paisaje { opacity: 0.2; background-size: auto 72%; background-position: right -34px bottom -10px; }
+    html .cur-stats { gap: 12px 22px; }
+    html .cur-stats b { font-size: 22px; }
+    html .cur-stats span { font-size: 11.5px; }
+    html .cur-hero > * { min-width: 0; max-width: 100%; }
+    html .cur-hero .cur-tabs { flex-wrap: nowrap; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+    html .live-hero .cur-tabs { flex-wrap: wrap; overflow: visible; border-radius: 24px; }
+    html .cur-hero .cur-tabs::-webkit-scrollbar { display: none; }
+    html .cur-hero .cur-tabs button { flex: 1 0 auto; padding: 0 12px; font-size: 12.5px; white-space: nowrap; }
+    html .rtx-hero { padding: 24px 18px; background-size: auto 100%; background-position: right bottom; }
+    html .rtx-hero::before { background: linear-gradient(180deg, rgba(15, 59, 51, 0.96) 0%, rgba(15, 59, 51, 0.9) 55%, rgba(15, 59, 51, 0.78) 100%); }
+    .dir-filtros { grid-template-columns: minmax(0, 1fr); }
+    .dir-filtros .dir-select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .badge-card, .rank-card, .logro-filter, .log-barra-fill, .log-anillo-prog, .logro-toast { transition: none !important; animation: none !important; }
     .badge-card.unlocked:hover { transform: none; }
@@ -27958,7 +28128,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (activo) {
       var g = activo.closest('.nav-group');
       var tg = g && g.querySelector('.nav-group-toggle');
-      if (g && !g.classList.contains('open')) { g.classList.add('open'); if (tg) tg.setAttribute('aria-expanded', 'true'); }
+      if (tg) tg.classList.add('is-active');   // el grupo ya no se despliega: se abre la hoja de herramientas
     }
   }
   if (window.MutationObserver) {
