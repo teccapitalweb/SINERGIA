@@ -14291,15 +14291,18 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     var m = r.actual; if (!m) return '#retos/modo-historia';
     return r.av.n >= m.niveles.length ? m.urlFin : m.url + '#nivel-' + (r.av.n + 1);
   }
-  // Entrada en la pantalla principal de Retos: una colección más, igual que las demás
+  // Entrada en la pantalla principal de Retos: Modo Historia es una experiencia independiente (no una colección de retos). Va arriba de todo,
+  // como hero horizontal, junto al panel «Tu práctica de campo».
   function rtHistoriaHtml() {
     var r = rtHistoriaResumen();
     var boton = r.hechos === 0 ? 'Comenzar recorrido' : (r.hechos >= r.total ? 'Volver a la ruta' : 'Continuar recorrido');
-    return '<article class="rtk-card">' +
-      '<a class="rtk-portada" href="#retos/modo-historia" data-rt-col="modo-historia" tabindex="-1" aria-hidden="true"><img src="' + RT_HIST_PORTADA + '" alt="" loading="lazy" decoding="async"><span class="rtk-etq">Modo Historia</span></a>' +
-      '<div class="rtk-cu"><h4>Aprende a leer la parcela</h4><p>Recorre mundos, observa situaciones de campo y construye tu criterio paso a paso.</p>' +
-      '<div class="rtk-res"><p><b>' + r.hechos + ' de ' + r.total + '</b> niveles completados</p><i class="rtk-prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + r.pct + '" aria-label="Niveles completados del Modo Historia"><span style="width:' + r.pct + '%"></span></i></div>' +
-      '<div class="rtk-pie"><a class="rtx-btn" href="#retos/modo-historia" data-rt-col="modo-historia">' + boton + ' →</a></div></div></article>';
+    return '<section class="rtm-portada rtm-portada--entrada" aria-labelledby="rtHistTit">' +
+      '<img class="rtm-portada-img" src="' + RT_HIST_PORTADA + '" alt="" decoding="async"><div class="rtm-portada-in">' +
+      '<span class="rtm-etq">Modo Historia</span><h3 id="rtHistTit">Aprende a leer la parcela.</h3>' +
+      '<p>Recorre mundos, observa situaciones de campo y construye tu criterio paso a paso.</p>' +
+      '<div class="rtm-entrada-prog"><span><b>' + r.hechos + ' de ' + r.total + '</b> niveles completados</span>' +
+      '<i class="rtm-barra" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + r.pct + '" aria-label="Niveles completados del Modo Historia"><span style="width:' + r.pct + '%"></span></i></div>' +
+      '<div class="rtm-portada-pie"><a class="rtx-btn rtm-boton" href="#retos/modo-historia" data-rt-col="modo-historia">' + boton + ' →</a></div></div></section>';
   }
   var RT_RUTA_CLAVE = 'sinergia_historia_ruta_v1';
   function rtMundosVistos() {
@@ -14617,8 +14620,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   function rtColeccionesHtml(d) {
     var lg = rtLogrosDatos();
     var h = '<section class="rt-bloque rtc-seccion" aria-labelledby="rtcTit"><div><span class="cred-eyebrow">Retos de campo</span><h3 id="rtcTit">Elige una colección</h3>' +
-      '<p>Cada colección entrena una forma de mirar el campo. Todos sus casos están abiertos: escoge el que quieras, en el orden que quieras.</p></div>' +
-      '<div class="rtk-grid">' + rtHistoriaHtml() + RT_CAMPO.filter(function (b) { return b.ruta; }).map(function (b) { return rtColeccionTarjeta(b, lg); }).join('') + '</div>';
+      '<p>Cada colección entrena una forma distinta de mirar y practicar en campo.</p></div>' +
+      '<div class="rtk-grid">' + RT_CAMPO.filter(function (b) { return b.ruta; }).map(function (b) { return rtColeccionTarjeta(b, lg); }).join('') + '</div>';
     if (window.isVIP !== true) h += '<p class="rt-yo">Puedes probar un ejemplo de cada reto. Con membresía los terminas, sumas XP y desbloqueas insignias.</p>';
     return h + '</section>';
   }
@@ -14727,7 +14730,7 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     if (RT.vista === 'bitacora') { cuerpo.innerHTML = rtBitacoraHtml(d); rtHeroPintar(); return; }
     if (colecc) { cuerpo.innerHTML = colecc.historia ? rtHistoriaVistaHtml() : rtColeccionVistaHtml(colecc); rtHeroPintar(); return; }
     // Orden: Modo Historia arriba; luego tu práctica y los Retos de campo; después lo demás
-    var html = '<div class="rtc-top rtc-top--solo">' + rtPracticaHtml(d) + '</div>' + rtColeccionesHtml(d);
+    var html = '<div class="rtc-top"><div class="rtc-top-main">' + rtHistoriaHtml() + '</div>' + rtPracticaHtml(d) + '</div>' + rtColeccionesHtml(d);
 
     // Podio de constancia (los datos siguen viniendo del servidor)
     html += rtPodioHtml(d);
@@ -28181,8 +28184,6 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     .rtx-historia::before { background: linear-gradient(180deg, rgba(8, 32, 27, 0.96) 0%, rgba(8, 32, 27, 0.9) 62%, rgba(8, 32, 27, 0.1) 100%); }
   }
   /* Modo Historia: ruta continua (portada general + mundos consecutivos con niveles en zigzag) */
-  .rtc-top--solo { grid-template-columns: minmax(0, 1fr); }
-  .rtc-top--solo .rtc-practica--lado { grid-template-columns: minmax(0, 1fr); }
   .rtm-ruta { display: grid; gap: 22px; }
   .rtm-portada { position: relative; display: flex; align-items: center; min-height: 340px; padding: clamp(24px, 4vw, 48px); overflow: hidden; border-radius: 26px; isolation: isolate; color: #fff; background: #0F3B33; }
   .rtm-portada-img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 72% 40%; }
@@ -28196,6 +28197,12 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
   .rtm-global { display: grid; gap: 2px; font-family: var(--font-display); font-weight: 700; font-size: 14px; }
   .rtm-global b { font-weight: 800; }
   .rtm-global small { font-size: 12.5px; font-weight: 600; opacity: 0.85; }
+  .rtc-top-main > .rtm-portada--entrada { flex: 1; min-width: 0; }
+  .rtm-portada--entrada { min-height: 380px; }
+  .rtm-entrada-prog { display: grid; gap: 7px; width: min(360px, 100%); font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+  .rtm-entrada-prog b { font-weight: 800; }
+  .rtm-barra { display: block; height: 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.25); overflow: hidden; }
+  .rtm-barra span { display: block; height: 100%; border-radius: 4px; background: #7ED3C3; transition: width .4s ease; }
   .rtm-aventura { display: grid; gap: 28px; }
   .rtm-mundo { display: grid; gap: 6px; padding: 0 0 18px; border: 1px solid var(--border-card); border-radius: 26px; background: var(--bg-card); overflow: hidden; }
   .rtm-cab { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 22px; padding: 26px clamp(20px, 3vw, 34px); background: linear-gradient(120deg, #113D35 0%, #17564A 100%); color: #fff; }
