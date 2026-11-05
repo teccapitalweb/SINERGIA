@@ -16148,6 +16148,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
     const J = window.SinergiaJuegos;
     if (!juegoTiene(s) || !J) return;
     if (window.isVIP !== true && !desdeRetos && !esClaseGratis(cursoId, sIdx)) { try { mostrarPaywallCurso(cursoId); } catch (e) {} return; }
+    // El mini juego de una clase bloqueada por el orden tampoco se abre desde el temario
+    if (!desdeRetos && seqBloquea(cursoId, sIdx)) { cvAvisoBloqueo(cursoId, sIdx); return; }
     const previo = document.getElementById('actOverlay');
     if (previo) previo.remove();
     const ov = document.createElement('div');
@@ -16339,6 +16341,8 @@ html[data-theme="dark"] .cp-puntos svg { color: #92C7A1; }
         mostrarPaywallCurso(cursoId);
         return;
       }
+      // Aunque la clase sea gratis, se abre en orden: primero terminar la anterior
+      if (seqBloquea(cursoId, sIdx)) { cvAvisoBloqueo(cursoId, sIdx); return; }
       // Las clases gratis también cuentan: se marcan en el servidor y dan créditos
       if (sesion.videoId) { window.abrirClase(cursoId, sIdx); return; }
       window._sesionCtx = { cursoId, sIdx, total: sesiones.length };
