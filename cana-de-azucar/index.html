@@ -467,13 +467,7 @@
       </svg>
     </div>
 
-    <p class="count-label">Iniciamos el 20 de julio · faltan</p>
-    <div class="countdown" id="countdown">
-      <div class="count-box"><b id="cd-d">--</b><span>días</span></div>
-      <div class="count-box"><b id="cd-h">--</b><span>hrs</span></div>
-      <div class="count-box"><b id="cd-m">--</b><span>min</span></div>
-      <div class="count-box"><b id="cd-s">--</b><span>seg</span></div>
-    </div>
+    <div data-cierre></div>
 
     <div class="hero-price-row">
       <span class="hero-price">$<span data-precio="numero">550</span> <small>MXN</small></span>
@@ -897,6 +891,7 @@
           <span>Si el primer módulo no cumple tus expectativas, te devolvemos el 100% de tu inversión. Sin preguntas.</span>
         </div>
       </div>
+      <div data-cierre></div>
       <a class="btn btn-fire pulse js-buy" href="#" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
         INSCRIBIRME AHORA
@@ -1039,26 +1034,6 @@
     });
   });
 
-  // ===== Countdown al 20 de julio 2026 =====
-  var target = new Date('2026-07-20T00:00:00-06:00').getTime();
-  function pad(n){return n<10?'0'+n:n;}
-  function tick(){
-    var diff = target - Date.now();
-    if(diff <= 0){
-      document.getElementById('cd-d').textContent='0';
-      document.getElementById('cd-h').textContent='00';
-      document.getElementById('cd-m').textContent='00';
-      document.getElementById('cd-s').textContent='00';
-      document.querySelector('.count-label').textContent='¡El curso ya comenzó! Pregunta por disponibilidad';
-      return;
-    }
-    document.getElementById('cd-d').textContent = Math.floor(diff/86400000);
-    document.getElementById('cd-h').textContent = pad(Math.floor(diff%86400000/3600000));
-    document.getElementById('cd-m').textContent = pad(Math.floor(diff%3600000/60000));
-    document.getElementById('cd-s').textContent = pad(Math.floor(diff%60000/1000));
-    setTimeout(tick, 1000);
-  }
-  tick();
 
   // ===== Tabs =====
   var tabBtns = document.querySelectorAll('.tab-btn');
@@ -1094,5 +1069,6 @@
 <script src="../precios.js"></script>
 <script>Precios.init('cana-de-azucar');</script>
 
+<script src="/contador-cierre.js" defer></script>
 </body>
 </html>
