@@ -2424,6 +2424,11 @@ body::before { display: none; }
       <span class="nav-item-text">Suscripciones</span>
       <span id="navSuscCount" class="nav-item-count" title="Vencidas más desfases con Stripe">0</span>
     </button>
+    <button class="nav-item" data-tab="inscripciones">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      <span class="nav-item-text">Inscripciones a cursos</span>
+      <span id="navInscCount" class="nav-item-count" title="Inscripciones de este mes">0</span>
+    </button>
     <button class="nav-item" data-tab="certificates">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
       <span class="nav-item-text">Certificados</span>
@@ -2777,6 +2782,47 @@ body::before { display: none; }
         <div class="chip-filter" id="sbTabs"></div>
       </div>
       <div class="members-wrap"><div id="sbTabla"></div></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         INSCRIPCIONES A CURSOS (landings con pago único)
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="inscripciones">
+      <div class="db-hero">
+        <div class="db-hero-top">
+          <div>
+            <span class="db-eyebrow">Panel de administración</span>
+            <h2 class="db-hero-titulo">Inscripciones <em>a cursos.</em></h2>
+            <p class="db-hero-sub">Cada persona que pagó un curso desde su página (Biofertilizantes, Caña de azúcar, Soluciones nutritivas, Habanero, Gerberas). Se anota sola en cuanto Stripe confirma el pago.</p>
+          </div>
+          <div class="mi-hero-acc">
+            <button type="button" class="db-hero-btn" onclick="inExportar()">Descargar Excel (CSV)</button>
+            <button type="button" class="mi-hero-btn2" onclick="inCargar(true)">Actualizar</button>
+          </div>
+        </div>
+        <div class="db-hero-cifras">
+          <div><b id="inHeroTotal">—</b><span>inscripciones</span></div>
+          <div><b id="inHeroMes">—</b><span>este mes</span></div>
+          <div><b id="inHeroDinero">—</b><span>cobrado en total</span></div>
+        </div>
+      </div>
+
+      <div class="widget-box">
+        <div class="widget-head">
+          <span class="widget-name">Quién se ha inscrito</span>
+        </div>
+        <p class="db-nota" id="inNota">Cargando…</p>
+        <div class="toolbar">
+          <label class="mi-buscar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" placeholder="Buscar por nombre, correo o WhatsApp" autocomplete="off" oninput="inBuscar(this.value)">
+          </label>
+          <div class="chip-filter" id="inChips"></div>
+        </div>
+        <div class="members-wrap"><div id="inTabla"></div></div>
+        <p class="mi-pie" id="inPie"></p>
+        <button type="button" class="btn-secondary mi-mas" id="inMas" onclick="inMas()" hidden>Mostrar más</button>
+      </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -4441,6 +4487,7 @@ body::before { display: none; }
       'dashboard': 'Dashboard',
       'members': 'Gestión de miembros',
       'subscriptions': 'Suscripciones',
+      'inscripciones': 'Inscripciones a cursos',
       'freecourses': 'Pruebas gratuitas',
       'metricas': 'Métricas',
       'forum': 'Foro · moderación',
@@ -7194,6 +7241,103 @@ body::before { display: none; }
       } catch (e) { showToast('No se pudo restaurar: ' + (e.message || 'error'), 'error'); b.disabled = false; }
     }));
   };
+
+  /* INSCRIPCIONES-CURSOS */
+  // ═══════════════════════════════════════════════════
+  // INSCRIPCIONES A CURSOS: cada compra de un curso suelto (landing con pago único). Las guarda el aviso de Stripe en el
+  // servidor; aquí solo se leen por /admin/inscripciones/listar (solo lectura). Montos en pesos.
+  // ═══════════════════════════════════════════════════
+  const IN = { lista: null, error: '', cargando: false, curso: 'todos', q: '', visibles: 25, clave: '' };
+  const IN_PASO = 25;
+  const IN_NOMBRES = { 'biofertilizantes': 'Biofertilizantes', 'cana-de-azucar': 'Caña de azúcar', 'soluciones-nutritivas': 'Soluciones nutritivas', 'habanero': 'Chile habanero', 'gerberas': 'Gerberas' };
+  const inNombre = (c) => IN_NOMBRES[c] || c;
+  const inFecha = (iso) => { if (!iso) return '—'; const d = new Date(iso); return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }) + ' · ' + d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }); };
+
+  window.inCargar = async function(forzar) {
+    if (IN.cargando || (IN.lista && !forzar)) { inRender(); return; }
+    IN.cargando = true; IN.error = '';
+    inRender();
+    try {
+      const r = await callAdminEndpoint('/admin/inscripciones/listar', {});
+      IN.lista = Array.isArray(r.inscripciones) ? r.inscripciones : [];
+    } catch (e) {
+      IN.error = (e && e.message) || 'no disponible';
+    }
+    IN.cargando = false;
+    inRender();
+  };
+
+  function inVisibles() {
+    const q = IN.q.trim().toLowerCase();
+    return (IN.lista || []).filter(x => (IN.curso === 'todos' || x.curso === IN.curso) &&
+      (!q || ((x.nombre || '') + ' ' + (x.email || '') + ' ' + (x.telefono || '')).toLowerCase().includes(q)));
+  }
+
+  function inRender() {
+    const tabla = document.getElementById('inTabla');
+    if (!tabla) return;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const nota = document.getElementById('inNota');
+    const pie = document.getElementById('inPie'), mas = document.getElementById('inMas');
+    if (!IN.lista) {
+      tabla.innerHTML = '<div class="sb-vacio">' + (IN.error ? 'No se pudieron cargar las inscripciones (' + esc(IN.error) + '). Si dice «no es admin» o «404», el servidor todavía no tiene esta función: avísale a quien publica el servidor.' : 'Cargando…') + '</div>';
+      if (nota) nota.textContent = '';
+      pie.textContent = ''; mas.hidden = true;
+      return;
+    }
+    const todos = IN.lista;
+    const mes = dbMesClave(new Date());
+    const delMes = todos.filter(x => x.fecha && dbMesClave(new Date(x.fecha)) === mes);
+    set('inHeroTotal', dbNum(todos.length));
+    set('inHeroMes', dbNum(delMes.length));
+    set('inHeroDinero', dbMxn(todos.reduce((s, x) => s + (Number(x.monto) || 0), 0)));
+    const badge = document.getElementById('navInscCount');
+    if (badge) badge.textContent = String(delMes.length);
+    if (nota) nota.textContent = 'Una fila por compra, de la más reciente a la más antigua. Si alguien compró dos cursos, aparece dos veces.';
+
+    const cursos = [...new Set(todos.map(x => x.curso))];
+    const chips = [['todos', 'Todos', todos.length]].concat(cursos.map(c => [c, inNombre(c), todos.filter(x => x.curso === c).length]));
+    document.getElementById('inChips').innerHTML = chips.map(c => '<button type="button" class="chip' + (IN.curso === c[0] ? ' active' : '') + '" onclick="inCurso(\'' + esc(c[0]) + '\')">' + esc(c[1]) + ' <span style="margin-left:4px;">' + c[2] + '</span></button>').join('');
+
+    if (!todos.length) { tabla.innerHTML = '<div class="sb-vacio">Todavía no hay inscripciones registradas. En cuanto alguien pague un curso aparecerá aquí.</div>'; pie.textContent = ''; mas.hidden = true; return; }
+    const clave = IN.curso + '|' + IN.q;
+    if (clave !== IN.clave) { IN.clave = clave; IN.visibles = IN_PASO; }
+    const lista = inVisibles();
+    if (!lista.length) { tabla.innerHTML = '<div class="sb-vacio">Nadie coincide con el filtro.</div>'; pie.textContent = ''; mas.hidden = true; return; }
+    const ver = lista.slice(0, IN.visibles);
+    const wa = (t) => { const n = String(t || '').replace(/\D/g, ''); return n ? '<a href="https://wa.me/' + n + '" target="_blank" rel="noopener">' + esc(t) + '</a>' : '—'; };
+    tabla.innerHTML = '<table class="members-table"><thead><tr><th>Fecha</th><th>Alumno</th><th>WhatsApp</th><th>Curso</th><th>Pagó</th><th>Correo de acceso</th></tr></thead><tbody>' + ver.map(x => '<tr>' +
+      '<td data-label="Fecha">' + esc(inFecha(x.fecha)) + '</td>' +
+      '<td data-label="Alumno"><div class="m-info"><div class="m-name">' + esc(x.nombre || '(sin nombre)') + '</div><div class="m-email">' + esc(x.email || '—') + '</div></div></td>' +
+      '<td data-label="WhatsApp">' + wa(x.telefono) + '</td>' +
+      '<td data-label="Curso">' + esc(inNombre(x.curso)) + '</td>' +
+      '<td data-label="Pagó"><b>' + esc(dbMxn(x.monto)) + '</b></td>' +
+      '<td data-label="Correo de acceso"><span class="sb-v ' + (x.correoEnviado ? 'ok' : 'mal') + '">' + (x.correoEnviado ? 'Enviado' : 'Sin confirmar') + '</span></td></tr>').join('') + '</tbody></table>';
+    pie.textContent = 'Mostrando ' + ver.length + ' de ' + lista.length;
+    const faltan = lista.length - ver.length;
+    mas.hidden = faltan <= 0; mas.textContent = 'Mostrar ' + Math.min(IN_PASO, faltan) + ' más';
+  }
+
+  window.inCurso = function(c) { IN.curso = c; inRender(); };
+  window.inBuscar = function(v) { IN.q = v || ''; inRender(); };
+  window.inMas = function() { IN.visibles += IN_PASO; inRender(); };
+  window.inExportar = function() {
+    const lista = inVisibles();
+    if (!lista.length) { showToast('No hay inscripciones para descargar', 'error'); return; }
+    const campo = (v) => '"' + String(v === null || v === undefined ? '' : v).replace(/"/g, '""') + '"';
+    const filas = [['Fecha', 'Nombre', 'Correo', 'WhatsApp', 'Curso', 'Monto MXN', 'Correo de acceso'].join(',')].concat(lista.map(x =>
+      [campo(x.fecha ? inFecha(x.fecha) : ''), campo(x.nombre), campo(x.email), campo('\t' + (x.telefono || '')), campo(inNombre(x.curso)), campo(Number(x.monto || 0).toFixed(2)), campo(x.correoEnviado ? 'Enviado' : 'Sin confirmar')].join(',')));
+    const blob = new Blob(['﻿' + filas.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'inscripciones-cursos-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest && e.target.closest('[data-tab="inscripciones"]')) setTimeout(() => inCargar(false), 150);
+  });
 
   /* FASE3N-SUSCRIPCIONES-PAGOS */
   // ═══════════════════════════════════════════════════
