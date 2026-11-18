@@ -461,33 +461,36 @@
 </style>
 
 <style id="hero-n2">
-/* ── Hero reorganizado (estilo gallinas) ── */
+/* ── Hero reorganizado (estilo gallinas, compacto) ── */
 .hero .wrap{max-width:1080px}
-.hn2-badges{display:flex;flex-wrap:nowrap;gap:8px;justify-content:center;margin:14px auto 22px;padding:0 12px}
+.hero h1{text-transform:none!important;font-size:clamp(1.6rem,6.6vw,2.5rem)!important;line-height:1.14!important;letter-spacing:-.4px!important;max-width:none!important;margin:0 0 10px!important;text-align:left}
+.hero-sub{text-align:left;margin:0 0 14px!important;max-width:none;font-size:clamp(.95rem,4vw,1.05rem)!important;line-height:1.5!important}
+.hn2-badges{display:flex;flex-wrap:nowrap;gap:8px;justify-content:center;margin:12px auto 18px;padding:0 12px}
 .hn2-b1,.hn2-b2{white-space:nowrap;font-weight:800;border-radius:24px;font-size:clamp(.56rem,2.9vw,.84rem);padding:6px clamp(8px,2.6vw,16px);letter-spacing:.2px}
 .hn2-b1{background:linear-gradient(135deg,#ff6b35,#f7931e);color:#fff;box-shadow:0 4px 12px rgba(247,147,30,.3)}
 .hn2-b2{background:linear-gradient(135deg,#ffc93c,#f0b830);color:#5c4500}
-.hn2-grid{display:grid;gap:30px;align-items:center;text-align:left;max-width:640px;margin:0 auto}
-@media(min-width:960px){.hn2-grid.con-video{grid-template-columns:1.05fr .95fr;max-width:1040px}}
-.hero h1{text-align:left;margin-left:0}
-.hero-sub{text-align:left;margin-left:0;max-width:none}
-.hn2-precio{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:18px 0 14px}
-.hn2-monto{font-size:clamp(2rem,7vw,2.6rem);font-weight:800;color:#ffc93c;line-height:1}
+.hn2-grid{display:grid;gap:26px;align-items:center;text-align:left;max-width:640px;margin:0 auto}
+@media(min-width:960px){.hn2-grid{grid-template-columns:1.05fr .95fr;max-width:1040px}}
+.hn2-precio{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:12px 0 10px}
+.hn2-monto{font-size:clamp(1.8rem,6.4vw,2.3rem);font-weight:800;color:#ffc93c;line-height:1}
 .hn2-monto small{font-size:.45em;font-weight:700;color:rgba(255,255,255,.8)}
-.hn2-tag{font-size:.82rem;color:rgba(255,255,255,.85);font-weight:600}
-.hn2-benefs{display:grid;gap:7px;margin:0 0 18px;font-size:.92rem;color:rgba(255,255,255,.92)}
-.hn2-benefs div{display:flex;gap:8px;align-items:flex-start;line-height:1.4}
+.hn2-tag{font-size:.8rem;color:rgba(255,255,255,.85);font-weight:600}
+.hn2-benefs{display:grid;gap:5px;margin:0 0 14px;font-size:.88rem;color:rgba(255,255,255,.92)}
+.hn2-benefs div{display:flex;gap:8px;align-items:flex-start;line-height:1.35}
 .hn2-benefs span{color:#8fd694;font-weight:800;flex-shrink:0}
 .hn2-cta{display:inline-flex;align-items:center;justify-content:center!important;width:100%;max-width:460px;white-space:nowrap;font-size:clamp(.78rem,3.5vw,1rem)!important;text-align:center}
-.hero-note{text-align:left;margin-top:12px}
-.hn2-ya{display:inline-block;margin-top:12px;font-size:.9rem;font-weight:700;color:#cde8cf;text-decoration:underline;text-underline-offset:3px}
-.hn2-video{border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);background:#000}
+.hero-note{text-align:left;margin-top:10px;font-size:.78rem!important}
+.hn2-ya{display:inline-block;margin-top:10px;font-size:.88rem;font-weight:700;color:#cde8cf;text-decoration:underline;text-underline-offset:3px}
+.hn2-video{border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);background:#0b1f0e;position:relative}
 .hn2-video video{display:block;width:100%;height:auto}
-.hn2-etiqueta{text-align:center;margin-top:10px;font-size:.85rem;color:rgba(255,255,255,.75);font-weight:600}
+.hn2-video video[hidden]{display:none!important}
+.hn2-ph{aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:rgba(255,255,255,.75);background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(0,0,0,.25))}
+.hn2-ph svg{opacity:.8}
+.hn2-ph b{font-size:.92rem;letter-spacing:.3px}
+.hn2-ph small{font-size:.74rem;opacity:.75}
+.hn2-etiqueta{text-align:center;margin-top:9px;font-size:.82rem;color:rgba(255,255,255,.75);font-weight:600}
 @media(max-width:768px){
-  .hero{padding:22px 0 36px!important}
-  .hero h1{font-size:clamp(1.7rem,7.6vw,2.1rem)!important;line-height:1.14!important;letter-spacing:-.4px}
-  .hero-sub{font-size:16px!important;line-height:1.55!important}
+  .hero{padding:20px 0 32px!important}
 }
 </style>
 </head>
@@ -505,7 +508,7 @@
     <div class="hn2-grid" id="hn2-grid">
       <div class="hn2-left">
         <h1>Domina la producci&oacute;n rentable de <em>ca&ntilde;a de az&uacute;car</em></h1>
-        <p class="hero-sub">Aprende con el <b>M.A. Ing. Agr. Luis Alfredo D&iacute;az Ur&iacute;zar</b> &mdash;30+ a&ntilde;os de experiencia&mdash; a aumentar toneladas por hect&aacute;rea.</p>
+        <p class="hero-sub">Aprende con el <b>M.A. Ing. Agr. Luis Alfredo D&iacute;az Ur&iacute;zar</b> (30+ a&ntilde;os de experiencia) a aumentar toneladas por hect&aacute;rea.</p>
 
         <div class="hn2-precio">
           <span class="hn2-monto">$<span data-precio="numero">550</span> <small>MXN</small></span>
@@ -513,22 +516,27 @@
         </div>
 
         <div class="hn2-benefs">
-          <div><span>&#10003;</span> 5 d&iacute;as en vivo por Google Meet + grabaciones</div>
-          <div><span>&#10003;</span> Reconocimiento institucional con QR y folio v&aacute;lido</div>
-          <div><span>&#10003;</span> Material y formatos t&eacute;cnicos descargables</div>
-          <div><span>&#10003;</span> Grupo VIP de WhatsApp con otros productores</div>
+          <div><span>&#10003;</span> 5 d&iacute;as en vivo por Meet + grabaciones</div>
+          <div><span>&#10003;</span> Reconocimiento con QR y folio v&aacute;lido</div>
+          <div><span>&#10003;</span> Material t&eacute;cnico descargable</div>
+          <div><span>&#10003;</span> Grupo VIP de WhatsApp</div>
         </div>
 
         <a class="btn btn-fire pulse js-buy hn2-cta" href="#" rel="noopener">
-          INSCRIBIRME AHORA POR $<span data-precio="numero">550</span> &nbsp;&rarr;
+          <span>INSCRIBIRME AHORA POR&nbsp;$<span data-precio="numero">550</span>&nbsp;&rarr;</span>
         </a>
         <p class="hero-note">&#128737;&#65039; Garant&iacute;a de 7 d&iacute;as &middot; Pago seguro con Stripe</p>
         <div><a href="/campus/?curso=cana-de-azucar#/curso/cana-de-azucar" class="hn2-ya">Ya compr&eacute; &middot; Entrar a mi curso</a></div>
       </div>
 
-      <div class="hn2-right" id="hn2-video" hidden>
+      <div class="hn2-right">
         <div class="hn2-video">
-          <video id="hn2-vid" src="assets/video-hero.mp4" poster="assets/poster-hero.jpg" controls muted loop playsinline preload="metadata"></video>
+          <video id="hn2-vid" src="assets/video-hero.mp4" poster="assets/poster-hero.jpg" controls muted loop playsinline preload="metadata" hidden></video>
+          <div class="hn2-ph" id="hn2-ph">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            <b>Video del curso</b>
+            <small>Muy pronto aqu&iacute;</small>
+          </div>
         </div>
         <div class="hn2-etiqueta">&#128249; Preview del curso</div>
       </div>
@@ -536,13 +544,13 @@
   </div>
 </header>
 <script>
-// El cuadro del video aparece solo cuando assets/video-hero.mp4 existe
+// Cuando exista assets/video-hero.mp4, el video reemplaza al marcador autom&aacute;ticamente
 (function(){
   var v = document.getElementById('hn2-vid');
   if (!v) return;
   v.addEventListener('loadedmetadata', function(){
-    document.getElementById('hn2-video').hidden = false;
-    document.getElementById('hn2-grid').classList.add('con-video');
+    v.hidden = false;
+    var ph = document.getElementById('hn2-ph'); if (ph) ph.remove();
     v.play().catch(function(){});
   });
 })();
