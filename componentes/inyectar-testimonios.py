@@ -10,10 +10,11 @@ Uso: python3 componentes/inyectar-testimonios.py   (idempotente)
 import json, re, pathlib
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
+SUB = 'Recomendaciones reales de alumnos de Sinergia Agrícola en Facebook'
 CURSOS = {
-    'biofertilizantes': 'Opiniones de alumnos del curso de biofertilizantes',
-    'cana-de-azucar': 'Opiniones de alumnos del curso de caña de azúcar',
-    'soluciones-nutritivas': 'Opiniones de alumnos del curso de soluciones nutritivas',
+    'biofertilizantes': SUB,
+    'cana-de-azucar': SUB,
+    'soluciones-nutritivas': SUB,
 }
 CSS = (RAIZ / 'componentes/testimonios-carrusel.css').read_text(encoding='utf-8')
 JS = (RAIZ / 'componentes/testimonios-carrusel.js').read_text(encoding='utf-8')
@@ -21,7 +22,7 @@ JS = (RAIZ / 'componentes/testimonios-carrusel.js').read_text(encoding='utf-8')
 for slug, sub in CURSOS.items():
     p = RAIZ / slug / 'index.html'
     s = p.read_text(encoding='utf-8')
-    s = re.sub(r'<!-- TESTIMONIOS-VT:INICIO -->.*?<!-- TESTIMONIOS-VT:FIN -->\n?', '', s, flags=re.S)
+    s = re.sub(r'<!-- TESTIMONIOS-VT:INICIO.*?<!-- TESTIMONIOS-VT:FIN -->\n?', '', s, flags=re.S)
 
     datos_p = RAIZ / 'data/testimonios' / f'{slug}.json'
     if not datos_p.exists():

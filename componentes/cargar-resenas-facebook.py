@@ -1,0 +1,88 @@
+"""Carga en data/testimonios/*.json las recomendaciones públicas reales de la página
+de Facebook «Sinergia-Agricola» (facebook.com/twenty14031422, pestaña Opiniones,
+«Recomendado por el 96% (24 opiniones)», leída el 18-nov-2026).
+
+Son opiniones sobre los cursos de Sinergia Agrícola en general, por eso el mismo
+conjunto alimenta las tres landings (como se hizo en Visión Pecuaria). Solo se
+incluyen las recomendaciones positivas con texto; la única no-recomendación se
+excluye. Los textos son literales; los marcados con «nota» son extractos sin
+cambiar el sentido (se retiraron emojis que Facebook no exporta y rémoras de la
+interfaz, no palabras del autor).
+
+Uso: python3 componentes/cargar-resenas-facebook.py  y después
+     python3 componentes/inyectar-testimonios.py
+"""
+import json, pathlib
+
+RAIZ = pathlib.Path(__file__).resolve().parent.parent
+
+def fuente(fecha):
+    return ('Recomendación pública en la página de Facebook Sinergia-Agricola '
+            f'(facebook.com/twenty14031422, pestaña Opiniones), {fecha}')
+
+R = [
+    {"texto": "Profesionales y al servicio.", "nombre": "Rodrigo M.",
+     "contexto": "Recomendación en Facebook", "fuente": fuente("23-dic-2025")},
+    {"texto": "Excelente recomendacion de la informacion es facil de entender a pesar del tema complejo y con datos actuales me encanto el tema y mas la profesora que con sus conocimientos me ayudo a entender mejor el tema",
+     "nombre": "Logan D.", "contexto": "Recomendación en Facebook", "fuente": fuente("15-dic-2025")},
+    {"texto": "Excelente curso, muy bien explicado y después de terminarlo aún tienes acceso a las clases.",
+     "nombre": "Rosa María B.", "contexto": "Recomendación en Facebook", "fuente": fuente("15-dic-2025")},
+    {"texto": "Excelente plataforma de capacitación yo tome un curso y estuvo excelente ingenieros capacitados, que nos ayudan a despejarnos dudas en la agricultura. Los recomiendo",
+     "nombre": "Mi Casita Matamoros", "contexto": "Recomendación en Facebook", "fuente": fuente("13-dic-2025")},
+    {"texto": "Recomiendo ampliamente sus cursos, están actualizados y muy completos. Saludos.",
+     "nombre": "Rockdrigo O.", "contexto": "Recomendación en Facebook", "fuente": fuente("22-oct-2025")},
+    {"texto": "Muy buenos cursos personas especializadas en los temas tratados, los recomiendo ampliamente",
+     "nombre": "Willy J.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025")},
+    {"texto": "Los docentes manejan una gran dominación acerca de los temas y los explican de una manera completa, clara y fácil de entender.",
+     "nombre": "Jesús Alexis R.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025"),
+     "nota": "Extracto del texto original (sin cambiar el sentido)"},
+    {"texto": "Lo recomiendo, son de mucho aprendizaje y temas muy completos sobre el manejo adecuado en el campo agrícola",
+     "nombre": "Ana T.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025"),
+     "nota": "Extracto del texto original (sin cambiar el sentido)"},
+    {"texto": "Que cuenta con personas expertas en los temas y que imparten los temas en forma sencilla, digerible para el alumno, sus presentaciones son claras y aprende uno con facilidad.",
+     "nombre": "Miguel V.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025")},
+    {"texto": "Yo los recomiendo por los temas tan diversos y completos que tienen; los horarios de los cursos en mi caso son muy accesibles. Los felicito.",
+     "nombre": "Lidia A.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025")},
+    {"texto": "Excelentes cursos 100% recomendado",
+     "nombre": "Eduardo M.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025")},
+    {"texto": "Los cursos son muy buenos!! Recomendables!!",
+     "nombre": "Rojas N.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025")},
+    {"texto": "Excelentes cursos, recomendados al 100%. Cuentan con buenos temas y excelente apoyo visual",
+     "nombre": "Andrés L.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025"),
+     "nota": "Extracto del texto original (sin cambiar el sentido)"},
+    {"texto": "100% recomendable, excelentes cursos",
+     "nombre": "Danii Á.", "contexto": "Recomendación en Facebook", "fuente": fuente("21-oct-2025")},
+    {"texto": "¡Hola! Recomiendo sus cursos, son muy interesantes. Se toman el tiempo de responder cualquier duda que pueda surgir durante la ponencia, además de que los horarios son accesibles y podemos disponer de las grabaciones para retroalimentarnos.",
+     "nombre": "Williams C.", "contexto": "Recomendación en Facebook", "fuente": fuente("09-oct-2025")},
+    {"texto": "Muy buenos precios para cursos básicos y fundamentales. De aprovechar",
+     "nombre": "Roberta C.", "contexto": "Recomendación en Facebook", "fuente": fuente("02-oct-2025"),
+     "nota": "Extracto del texto original (sin cambiar el sentido)"},
+    {"texto": "Recomendado, tomé un curso de Manejo de Huertos Familiares, un tema muy bonito para comenzar a hacer mi huerto en casa con las técnicas adecuadas, respondieron mis dudas sobre el tema y toda la información necesaria para ejecutarlo, así como los videos y diapositivas. Gracias.",
+     "nombre": "Mafer Z.", "contexto": "Curso de Manejo de Huertos Familiares", "fuente": fuente("01-oct-2025")},
+    {"texto": "Recomendado, buenos cursos",
+     "nombre": "José Sebastián F.", "contexto": "Recomendación en Facebook", "fuente": fuente("01-oct-2025")},
+    {"texto": "Buena empresa para tomar cursos",
+     "nombre": "Marcos H.", "contexto": "Recomendación en Facebook", "fuente": fuente("01-oct-2025")},
+    {"texto": "Un curso con una explicación ampliamente entendible. Excelentes ejemplos visuales que facilitan el aprendizaje, nada aburridos, lo recomiendo al 100%",
+     "nombre": "Miguel Ángel A.", "contexto": "Recomendación en Facebook", "fuente": fuente("04-sep-2025")},
+    {"texto": "Son cursos realmente fáciles de entender con personas certificadas para darlas. Tuve muy buena experiencia!!",
+     "nombre": "Mar C.", "contexto": "Recomendación en Facebook", "fuente": fuente("04-sep-2025")},
+    {"texto": "Tomé el curso de manejo de postcosecha de café. Excelente curso, muy dinámico y con muchos conocimientos del expositor de clase, basado en experiencias vividas tanto como productor como profesional en el ramo cafetero.",
+     "nombre": "Tigrillo R.", "contexto": "Curso de Postcosecha de Café", "fuente": fuente("04-sep-2025"),
+     "nota": "Extracto del texto original (sin cambiar el sentido)"},
+    {"texto": "Son cursos prácticos y sencillos de entender para su aplicación. Despejan tus dudas. Recomendado ampliamente!",
+     "nombre": "Nohersa D.", "contexto": "Recomendación en Facebook", "fuente": fuente("04-sep-2025")},
+]
+
+for t in R:
+    t["autorizado"] = True
+
+for slug in ("biofertilizantes", "cana-de-azucar", "soluciones-nutritivas"):
+    p = RAIZ / "data/testimonios" / f"{slug}.json"
+    d = json.loads(p.read_text(encoding="utf-8"))
+    d["testimonios"] = R
+    d["_origen"] = ("Recomendaciones públicas reales de la página de Facebook Sinergia-Agricola "
+                    "(facebook.com/twenty14031422, 24 opiniones, 96% recomendado, leídas el 18-nov-2026). "
+                    "Opiniones sobre los cursos de Sinergia en general; mismo conjunto en las tres landings.")
+    p.write_text(json.dumps(d, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(slug, len(R))
