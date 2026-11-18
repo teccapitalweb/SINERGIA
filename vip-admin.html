@@ -1776,6 +1776,52 @@
 </style>
 <style id="sinergia-fase3k">
   /* Fase 3k: Dashboard (resumen) */
+  /* Campus Sinergia · administración de clases */
+  .cp-cursos { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .cp-curso { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: #fff; border-radius: 14px; padding: 10px 14px; text-align: left; min-width: 200px; transition: background .15s, border-color .15s; }
+  .cp-curso b { display: block; font-size: 14px; } .cp-curso span { font-size: 12px; opacity: .8; }
+  .cp-curso:hover { background: rgba(255,255,255,.14); } .cp-curso.active { background: #fff; color: #113D35; border-color: #fff; }
+  .cp-resumen { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 16px; }
+  .cp-dato { background: #fff; border: 1px solid var(--stone-200); border-radius: 16px; padding: 14px 16px; }
+  .cp-dato b { display: block; font-size: 24px; font-weight: 800; color: var(--stone-900); } .cp-dato span { font-size: 12px; color: var(--stone-500); }
+  .cp-aviso { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; border-radius: 14px; padding: 12px 16px; margin-bottom: 14px; font-size: 13.5px; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .cp-seccion-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 22px 0 12px; flex-wrap: wrap; }
+  .cp-seccion-head h3 { font-family: var(--font-display); font-size: 20px; font-weight: 800; }
+  .cp-mod { background: #fff; border: 1px solid var(--stone-200); border-radius: 18px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.03); }
+  .cp-mod.oculto { opacity: .72; border-style: dashed; }
+  .cp-mod-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .cp-num { width: 34px; height: 34px; border-radius: 10px; background: var(--teal-50); color: var(--teal-700); display: grid; place-items: center; font-weight: 800; flex: none; }
+  .cp-mod-head .form-input { flex: 1; min-width: 200px; font-weight: 700; }
+  .cp-iconos { display: flex; gap: 4px; }
+  .cp-ico { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--stone-200); background: #fff; color: var(--stone-600); display: grid; place-items: center; font-size: 15px; }
+  .cp-ico:hover:not(:disabled) { border-color: var(--teal-400); color: var(--teal-700); } .cp-ico:disabled { opacity: .35; cursor: default; }
+  .cp-ico.peligro:hover { border-color: var(--rose-400); color: var(--rose-600); }
+  .cp-mod textarea { margin-top: 10px; }
+  .cp-clases { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .cp-clase { display: grid; grid-template-columns: 26px 1fr auto auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--stone-50); border: 1px solid var(--stone-100); }
+  .cp-clase .cp-tit { font-weight: 600; font-size: 14px; } .cp-clase .cp-sub { font-size: 12px; color: var(--stone-500); }
+  .cp-estado { font-size: 11.5px; font-weight: 700; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+  .cp-estado.pub { background: #DCFCE7; color: #166534; } .cp-estado.prep { background: #FEF3C7; color: #92400E; } .cp-estado.oc { background: var(--stone-200); color: var(--stone-600); }
+  .cp-agregar { border: 1.5px dashed var(--stone-300); border-radius: 12px; padding: 10px; width: 100%; color: var(--stone-600); font-weight: 600; font-size: 13.5px; }
+  .cp-agregar:hover { border-color: var(--teal-400); color: var(--teal-700); background: var(--teal-50); }
+  .cp-switch { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; color: var(--stone-700); cursor: pointer; }
+  .cp-switch input { width: 18px; height: 18px; accent-color: var(--teal-600); }
+  .cp-mat { display: grid; grid-template-columns: 44px 1fr 170px auto auto; gap: 10px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--stone-100); }
+  .cp-ext { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; font-size: 11px; font-weight: 800; text-transform: uppercase; background: var(--teal-50); color: var(--teal-700); }
+  .cp-ext.pdf { background: #FEE2E2; color: #B91C1C; } .cp-ext.xlsx, .cp-ext.xls, .cp-ext.csv { background: #DCFCE7; color: #166534; }
+  .cp-form-mat { display: grid; grid-template-columns: 1fr 1fr 180px auto; gap: 10px; align-items: end; padding: 14px; background: var(--stone-50); border-radius: 14px; margin-top: 12px; }
+  .cp-archivo { cursor: pointer; display: inline-flex; align-items: center; }
+  .cp-nota { font-size: 12.5px; color: var(--stone-500); }
+  .cp-guardar { position: sticky; bottom: 14px; z-index: 20; margin-top: 16px; background: #113D35; color: #fff; border-radius: 16px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: 0 12px 30px rgba(17,61,53,.35); }
+  .cp-modal { position: fixed; inset: 0; z-index: 400; background: rgba(28,25,23,.55); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .cp-modal[hidden] { display: none; }
+  .cp-modal-caja { background: #fff; border-radius: 20px; padding: 22px; width: min(620px, 100%); max-height: 92vh; overflow: auto; }
+  .cp-modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; } .cp-modal-head h3 { font-family: var(--font-display); font-size: 19px; font-weight: 800; }
+  .cp-x { font-size: 26px; line-height: 1; color: var(--stone-500); } .cp-modal-pie { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+  .cp-fila2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .cp-subir { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: -4px 0 14px; }
+  @media (max-width: 860px) { .cp-resumen { grid-template-columns: repeat(2, minmax(0,1fr)); } .cp-form-mat { grid-template-columns: 1fr; } .cp-mat { grid-template-columns: 40px 1fr auto; } .cp-mat .cp-mat-mod, .cp-mat .cp-mat-pub { grid-column: 2 / -1; } }
+  @media (max-width: 560px) { .cp-clase { grid-template-columns: 1fr auto; } .cp-clase .cp-num-c { display: none; } .cp-clase .cp-estado { grid-column: 1; justify-self: start; } .cp-fila2 { grid-template-columns: 1fr; } .cp-curso { min-width: 0; flex: 1 1 100%; } }
   .db-hero { background: linear-gradient(135deg, #113D35 0%, #1A5446 100%); color: #fff; border-radius: 24px; padding: 28px 32px 24px; margin-bottom: 20px; }
   .db-hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
   .db-eyebrow { display: inline-block; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 100px; background: rgba(255, 255, 255, 0.12); color: #E7F3EF; }
@@ -2435,6 +2481,10 @@ body::before { display: none; }
     </button>
 
     <div class="nav-label">Contenido</div>
+    <button class="nav-item" data-tab="campus">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+      <span class="nav-item-text">Campus · cursos</span>
+    </button>
     <button class="nav-item" data-tab="courses">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       <span class="nav-item-text">Videoteca</span>
@@ -2822,6 +2872,54 @@ body::before { display: none; }
         <div class="members-wrap"><div id="inTabla"></div></div>
         <p class="mi-pie" id="inPie"></p>
         <button type="button" class="btn-secondary mi-mas" id="inMas" onclick="inMas()" hidden>Mostrar más</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         CAMPUS SINERGIA · módulos, clases y materiales de los cursos sueltos
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="campus">
+      <div class="db-hero">
+        <div class="db-hero-top">
+          <div>
+            <span class="db-eyebrow">Campus Sinergia</span>
+            <h2 class="db-hero-titulo">Clases <em>de los cursos.</em></h2>
+            <p class="db-hero-sub">Módulos, clases, videos de Bunny y materiales de Biofertilizantes, Caña de azúcar y Soluciones nutritivas. Solo ven el curso quienes lo compraron, y solo las clases publicadas que tienen video.</p>
+          </div>
+          <div class="mi-hero-acc">
+            <a class="db-hero-btn" id="cpVerCampus" href="campus/" target="_blank" rel="noopener">Abrir el campus</a>
+            <button type="button" class="mi-hero-btn2" onclick="cpCargar(true)">Actualizar</button>
+          </div>
+        </div>
+        <div class="cp-cursos" id="cpCursos"></div>
+      </div>
+      <div id="cpCuerpo"><div class="sb-vacio">Cargando…</div></div>
+      <div class="cp-guardar" id="cpGuardar" hidden>
+        <span><b>Cambios sin guardar</b> en <span id="cpGuardarCurso"></span></span>
+        <div><button type="button" class="btn-secondary" onclick="cpDescartar()">Descartar</button> <button type="button" class="btn-primary" id="cpBtnGuardar" onclick="cpGuardar()">Guardar cambios</button></div>
+      </div>
+    </div>
+
+    <!-- Ventana para editar una clase -->
+    <div class="cp-modal" id="cpModal" hidden>
+      <div class="cp-modal-caja" role="dialog" aria-modal="true" aria-labelledby="cpModalTitulo">
+        <div class="cp-modal-head"><h3 id="cpModalTitulo">Clase</h3><button type="button" class="cp-x" onclick="cpCerrarClase()" aria-label="Cerrar">×</button></div>
+        <div class="form-group"><label class="form-label" for="cpClTitulo">Título de la clase</label><input class="form-input" id="cpClTitulo" maxlength="160"></div>
+        <div class="form-group"><label class="form-label" for="cpClDesc">Descripción (opcional)</label><textarea class="form-textarea" id="cpClDesc" rows="3" maxlength="1500"></textarea></div>
+        <div class="cp-fila2">
+          <div class="form-group"><label class="form-label" for="cpClVideo">ID del video en Bunny</label><input class="form-input" id="cpClVideo" placeholder="573d362b-7d72-4292-a568-e60089854555" autocomplete="off"></div>
+          <div class="form-group"><label class="form-label" for="cpClLib">Biblioteca de Bunny</label><input class="form-input" id="cpClLib" inputmode="numeric" maxlength="10"></div>
+        </div>
+        <div class="cp-subir" id="cpSubirVideo">
+          <label class="btn-secondary cp-archivo">Subir video desde la computadora<input type="file" accept="video/*" id="cpVideoArchivo" hidden></label>
+          <span id="cpVideoEstado" class="cp-nota"></span>
+        </div>
+        <div class="cp-fila2">
+          <div class="form-group"><label class="form-label" for="cpClDur">Duración (minutos)</label><input class="form-input" id="cpClDur" type="number" min="1" max="600" step="1" placeholder="Opcional"></div>
+          <div class="form-group"><label class="form-label">Visible para los alumnos</label><label class="cp-switch"><input type="checkbox" id="cpClPub"><span>Publicada</span></label></div>
+        </div>
+        <p class="cp-nota">Una clase sin video no se puede publicar: los alumnos la verán como «en preparación» hasta que tenga su grabación.</p>
+        <div class="cp-modal-pie"><button type="button" class="btn-secondary" onclick="cpCerrarClase()">Cancelar</button> <button type="button" class="btn-primary" onclick="cpAplicarClase()">Listo</button></div>
       </div>
     </div>
 
@@ -4497,6 +4595,7 @@ body::before { display: none; }
       'materials': 'Material',
       'library': 'Material',
       'courses': 'Videoteca',
+      'campus': 'Campus Sinergia · cursos',
       'certificates': 'Certificados',
       'ratings': 'Calificaciones de los cursos',
       'retos': 'Retos',
@@ -7241,6 +7340,251 @@ body::before { display: none; }
       } catch (e) { showToast('No se pudo restaurar: ' + (e.message || 'error'), 'error'); b.disabled = false; }
     }));
   };
+
+  /* CAMPUS-SINERGIA-ADMIN */
+  // ═══════════════════════════════════════════════════
+  // CAMPUS SINERGIA: módulos, clases y materiales de Biofertilizantes, Caña de azúcar y Soluciones nutritivas.
+  // Todo se guarda en el servidor (/admin/campus/*). Los módulos y clases se editan en borrador y se guardan juntos;
+  // los materiales se suben y editan al momento. «rev» evita pisar los cambios de otra persona.
+  // ═══════════════════════════════════════════════════
+  const CP = { datos: null, slug: 'biofertilizantes', borrador: null, sucio: false, guardando: false, edit: null, cargando: false };
+  const CP_GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const cpCurso = () => (CP.datos ? CP.datos.cursos.find(c => c.slug === CP.slug) : null);
+  const cpCopia = (c) => ({ rev: c.rev, descripcion: c.descripcion || '', modulos: JSON.parse(JSON.stringify(c.modulos || [])) });
+  const cpTam = (b) => !b ? '' : b < 1024 * 1024 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
+  function cpMarcar() { CP.sucio = true; cpPintarGuardar(); }
+  function cpPintarGuardar() {
+    const bar = document.getElementById('cpGuardar'); if (!bar) return;
+    bar.hidden = !CP.sucio;
+    const c = cpCurso(); document.getElementById('cpGuardarCurso').textContent = c ? c.titulo : '';
+  }
+
+  window.cpCargar = async function(forzar) {
+    if (CP.cargando) return;
+    if (CP.datos && !forzar) { cpRender(); return; }
+    if (forzar && CP.sucio && !confirm('Tienes cambios sin guardar. ¿Descartarlos y recargar?')) return;
+    CP.cargando = true;
+    try {
+      CP.datos = await callAdminEndpoint('/admin/campus/cursos', {});
+      const c = cpCurso(); CP.borrador = c ? cpCopia(c) : null; CP.sucio = false;
+      const ver = document.getElementById('cpVerCampus'); if (ver && CP.datos.urlCampus) ver.href = CP.datos.urlCampus;
+    } catch (e) {
+      document.getElementById('cpCuerpo').innerHTML = '<div class="sb-vacio">No se pudo cargar el campus (' + esc(e.message || 'error') + '). Si dice «404», el servidor todavía no tiene esta función publicada.</div>';
+    }
+    CP.cargando = false;
+    cpRender();
+  };
+
+  window.cpElegir = function(slug) {
+    if (slug === CP.slug) return;
+    if (CP.sucio && !confirm('Tienes cambios sin guardar en este curso. ¿Descartarlos y cambiar de curso?')) return;
+    CP.slug = slug; const c = cpCurso(); CP.borrador = c ? cpCopia(c) : null; CP.sucio = false; cpRender();
+  };
+
+  function cpRender() {
+    const caja = document.getElementById('cpCursos'), cuerpo = document.getElementById('cpCuerpo');
+    if (!caja || !cuerpo || !CP.datos) return;
+    caja.innerHTML = CP.datos.cursos.map(c => '<button type="button" class="cp-curso' + (c.slug === CP.slug ? ' active' : '') + '" onclick="cpElegir(\'' + c.slug + '\')"><b>' + esc(c.titulo) + '</b><span>' + c.clasesDisponibles + ' clases publicadas · ' + c.alumnos + ' alumnos</span></button>').join('');
+    const c = cpCurso(), b = CP.borrador;
+    if (!c || !b) { cuerpo.innerHTML = '<div class="sb-vacio">Curso no encontrado.</div>'; return; }
+    const totalClases = b.modulos.reduce((n, m) => n + m.clases.length, 0);
+    const sinVideo = b.modulos.reduce((n, m) => n + m.clases.filter(x => !x.video).length, 0);
+    let h = '<div class="cp-resumen">' +
+      '<div class="cp-dato"><b>' + c.alumnos + '</b><span>alumnos con el curso</span></div>' +
+      '<div class="cp-dato"><b>' + b.modulos.length + '</b><span>módulos</span></div>' +
+      '<div class="cp-dato"><b>' + c.clasesDisponibles + ' / ' + totalClases + '</b><span>clases visibles para alumnos</span></div>' +
+      '<div class="cp-dato"><b>' + c.materiales.length + '</b><span>materiales</span></div></div>';
+    if (c.importable) h += '<div class="cp-aviso"><span>Este curso ya tenía un aula con módulos, videos y materiales. Puedes cargarla aquí tal cual (no se pisa nada: solo funciona con el curso vacío).</span><button type="button" class="btn-primary" onclick="cpImportar()">Cargar el contenido existente</button></div>';
+    if (c.clasesSinFirma) h += '<div class="cp-aviso"><span><b>' + c.clasesSinFirma + ' clase(s)</b> usan videos de una biblioteca de Bunny sin llave de firma en el servidor: solo las reciben alumnos con el curso, pero su enlace no caduca. Para protegerlas del todo, activa la protección con token en esa biblioteca de Bunny y agrega su llave en Railway.</span></div>';
+    if (!b.modulos.length && !c.importable) h += '<div class="cp-aviso"><span>Este curso todavía no tiene contenido. Crea sus módulos y agrega las clases; mientras no tengan video publicado, los alumnos verán el curso «en preparación».</span></div>';
+
+    h += '<div class="cp-seccion-head"><h3>Módulos y clases</h3><span class="cp-nota">' + (sinVideo ? sinVideo + ' clase(s) esperando su video · ' : '') + 'Los cambios se guardan con el botón verde de abajo.</span></div>';
+    h += b.modulos.map((m, i) => {
+      const clases = m.clases.map((x, j) => {
+        const estado = !x.video ? '<span class="cp-estado prep">Sin video</span>' : (x.publicada && m.publicado !== false) ? '<span class="cp-estado pub">Publicada</span>' : '<span class="cp-estado oc">Oculta</span>';
+        return '<div class="cp-clase"><span class="cp-num-c cp-nota">' + (j + 1) + '</span>' +
+          '<div><div class="cp-tit">' + esc(x.titulo) + '</div><div class="cp-sub">' + (x.duracionMin ? x.duracionMin + ' min · ' : '') + (x.video ? 'Bunny ' + esc(x.video.biblioteca) : 'Falta el video') + '</div></div>' + estado +
+          '<div class="cp-iconos">' +
+          '<button type="button" class="cp-ico" title="Subir" ' + (j === 0 ? 'disabled' : '') + ' onclick="cpClaseMover(' + i + ',' + j + ',-1)">↑</button>' +
+          '<button type="button" class="cp-ico" title="Bajar" ' + (j === m.clases.length - 1 ? 'disabled' : '') + ' onclick="cpClaseMover(' + i + ',' + j + ',1)">↓</button>' +
+          '<button type="button" class="cp-ico" title="Editar" onclick="cpClaseAbrir(' + i + ',' + j + ')">✎</button>' +
+          '<button type="button" class="cp-ico peligro" title="Eliminar" onclick="cpClaseEliminar(' + i + ',' + j + ')">🗑</button></div></div>';
+      }).join('');
+      return '<div class="cp-mod' + (m.publicado === false ? ' oculto' : '') + '"><div class="cp-mod-head"><span class="cp-num">' + (i + 1) + '</span>' +
+        '<input class="form-input" value="' + esc(m.titulo) + '" maxlength="140" aria-label="Título del módulo ' + (i + 1) + '" oninput="cpModCampo(' + i + ',\'titulo\',this.value)">' +
+        '<label class="cp-switch"><input type="checkbox" ' + (m.publicado !== false ? 'checked' : '') + ' onchange="cpModCampo(' + i + ',\'publicado\',this.checked)"><span>Visible</span></label>' +
+        '<div class="cp-iconos"><button type="button" class="cp-ico" title="Subir módulo" ' + (i === 0 ? 'disabled' : '') + ' onclick="cpModMover(' + i + ',-1)">↑</button>' +
+        '<button type="button" class="cp-ico" title="Bajar módulo" ' + (i === b.modulos.length - 1 ? 'disabled' : '') + ' onclick="cpModMover(' + i + ',1)">↓</button>' +
+        '<button type="button" class="cp-ico peligro" title="Eliminar módulo" onclick="cpModEliminar(' + i + ')">🗑</button></div></div>' +
+        '<textarea class="form-textarea" rows="2" maxlength="1500" placeholder="Descripción del módulo (opcional)" oninput="cpModCampo(' + i + ',\'descripcion\',this.value)">' + esc(m.descripcion || '') + '</textarea>' +
+        '<div class="cp-clases">' + clases + '<button type="button" class="cp-agregar" onclick="cpClaseAbrir(' + i + ',-1)">+ Agregar clase al módulo ' + (i + 1) + '</button></div></div>';
+    }).join('');
+    h += '<button type="button" class="cp-agregar" style="padding:14px" onclick="cpModAgregar()">+ Crear módulo</button>';
+
+    // Materiales
+    const mods = (c.modulos || []);
+    const opcMod = (sel) => '<option value="">Material general del curso</option>' + mods.map((m, i) => '<option value="' + m.id + '"' + (sel === m.id ? ' selected' : '') + '>Módulo ' + (i + 1) + ' · ' + esc(m.titulo.slice(0, 40)) + '</option>').join('');
+    h += '<div class="cp-seccion-head"><h3>Materiales</h3><span class="cp-nota">PDF, Excel, Word, PowerPoint, CSV, ZIP o imagen (máx. 25 MB). Solo los descargan alumnos con el curso.</span></div>';
+    h += '<div class="widget-box" style="padding:6px 6px 14px">' + (c.materiales.length ? c.materiales.map((x, k) =>
+      '<div class="cp-mat"><span class="cp-ext ' + esc(x.ext || '') + '">' + esc((x.ext || 'archivo').slice(0, 5)) + '</span>' +
+      '<div><div class="cp-tit" style="font-weight:600">' + esc(x.nombre) + '</div><div class="cp-nota">' + (x.tamano ? cpTam(x.tamano) + ' · ' : '') + (x.publicado === false ? 'Oculto' : 'Visible') + '</div></div>' +
+      '<select class="form-select cp-mat-mod" aria-label="Módulo del material" onchange="cpMatEditar(\'' + x.id + '\',{moduloId:this.value||null})">' + opcMod(x.moduloId) + '</select>' +
+      '<label class="cp-switch cp-mat-pub"><input type="checkbox" ' + (x.publicado !== false ? 'checked' : '') + ' onchange="cpMatEditar(\'' + x.id + '\',{publicado:this.checked})"><span>Visible</span></label>' +
+      '<div class="cp-iconos"><button type="button" class="cp-ico" title="Subir" ' + (k === 0 ? 'disabled' : '') + ' onclick="cpMatEditar(\'' + x.id + '\',{mover:\'arriba\'})">↑</button><button type="button" class="cp-ico" title="Bajar" ' + (k === c.materiales.length - 1 ? 'disabled' : '') + ' onclick="cpMatEditar(\'' + x.id + '\',{mover:\'abajo\'})">↓</button><button type="button" class="cp-ico" title="Abrir" onclick="cpMatAbrir(\'' + x.id + '\')">↗</button><button type="button" class="cp-ico peligro" title="Eliminar" onclick="cpMatEliminar(\'' + x.id + '\')">🗑</button></div></div>').join('')
+      : '<div class="sb-vacio">Todavía no hay materiales en este curso.</div>') +
+      '<div class="cp-form-mat"><div><label class="form-label" for="cpMatNombre">Nombre que verá el alumno</label><input class="form-input" id="cpMatNombre" maxlength="140" placeholder="Ej. Manual completo del curso"></div>' +
+      '<div><label class="form-label" for="cpMatArchivo">Archivo</label><input class="form-input" type="file" id="cpMatArchivo" accept=".pdf,.xlsx,.xls,.docx,.doc,.pptx,.ppt,.csv,.zip,.jpg,.jpeg,.png,.webp"></div>' +
+      '<div><label class="form-label" for="cpMatModulo">Módulo</label><select class="form-select" id="cpMatModulo">' + opcMod('') + '</select></div>' +
+      '<button type="button" class="btn-primary" id="cpMatBtn" onclick="cpMatSubir()">Subir material</button></div>' +
+      '<p class="cp-nota" style="margin:8px 14px 0">¿El archivo está en Drive u otro sitio? <a href="#" onclick="cpMatEnlace();return false" style="color:var(--teal-700);font-weight:600">Agrégalo como enlace privado</a>. Los módulos nuevos aparecen en la lista después de guardar.</p></div>';
+    cuerpo.innerHTML = h;
+    cpPintarGuardar();
+  }
+
+  // ── Módulos ──
+  window.cpModAgregar = function() { CP.borrador.modulos.push({ titulo: 'Módulo ' + (CP.borrador.modulos.length + 1), descripcion: '', publicado: true, clases: [] }); cpMarcar(); cpRender(); };
+  window.cpModCampo = function(i, campo, v) { CP.borrador.modulos[i][campo] = v; cpMarcar(); if (campo === 'publicado') cpRender(); };
+  window.cpModMover = function(i, d) { const L = CP.borrador.modulos, j = i + d; if (j < 0 || j >= L.length) return; [L[i], L[j]] = [L[j], L[i]]; cpMarcar(); cpRender(); };
+  window.cpModEliminar = function(i) {
+    const m = CP.borrador.modulos[i];
+    if (!confirm('¿Eliminar el módulo «' + m.titulo + '»' + (m.clases.length ? ' y sus ' + m.clases.length + ' clase(s)' : '') + '?\n\nNo se borra nada hasta que pulses «Guardar cambios». Los videos siguen en Bunny y sus materiales pasan a «material general».')) return;
+    CP.borrador.modulos.splice(i, 1); cpMarcar(); cpRender();
+  };
+
+  // ── Clases ──
+  window.cpClaseMover = function(i, j, d) { const L = CP.borrador.modulos[i].clases, k = j + d; if (k < 0 || k >= L.length) return; [L[j], L[k]] = [L[k], L[j]]; cpMarcar(); cpRender(); };
+  window.cpClaseEliminar = function(i, j) { const x = CP.borrador.modulos[i].clases[j]; if (!confirm('¿Eliminar la clase «' + x.titulo + '»?\n\nSe aplica al guardar. El video no se borra de Bunny.')) return; CP.borrador.modulos[i].clases.splice(j, 1); cpMarcar(); cpRender(); };
+  window.cpClaseAbrir = function(i, j) {
+    CP.edit = { i, j };
+    const x = j >= 0 ? CP.borrador.modulos[i].clases[j] : { titulo: '', descripcion: '', video: null, duracionMin: null, publicada: false };
+    document.getElementById('cpModalTitulo').textContent = (j >= 0 ? 'Editar clase' : 'Nueva clase') + ' · Módulo ' + (i + 1);
+    document.getElementById('cpClTitulo').value = x.titulo || '';
+    document.getElementById('cpClDesc').value = x.descripcion || '';
+    document.getElementById('cpClVideo').value = x.video ? x.video.id : '';
+    document.getElementById('cpClLib').value = x.video ? x.video.biblioteca : ((CP.datos && CP.datos.bunny.libreria) || '');
+    document.getElementById('cpClDur').value = x.duracionMin || '';
+    document.getElementById('cpClPub').checked = x.publicada === true;
+    document.getElementById('cpVideoEstado').textContent = (CP.datos && CP.datos.bunny.subidaDisponible) ? '' : 'La subida directa se activa al agregar BUNNY_STREAM_API_KEY en Railway. Mientras tanto, sube el video en Bunny y pega su ID.';
+    document.getElementById('cpVideoArchivo').disabled = !(CP.datos && CP.datos.bunny.subidaDisponible);
+    document.getElementById('cpModal').hidden = false;
+    setTimeout(() => document.getElementById('cpClTitulo').focus(), 50);
+  };
+  window.cpCerrarClase = function() { document.getElementById('cpModal').hidden = true; CP.edit = null; };
+  window.cpAplicarClase = function() {
+    const titulo = document.getElementById('cpClTitulo').value.trim();
+    const vid = document.getElementById('cpClVideo').value.trim().toLowerCase();
+    const lib = document.getElementById('cpClLib').value.trim();
+    const durTxt = document.getElementById('cpClDur').value.trim();
+    const publicada = document.getElementById('cpClPub').checked;
+    if (!titulo) { showToast('Escribe el título de la clase', 'error'); return; }
+    if (vid && !CP_GUID.test(vid)) { showToast('El ID de Bunny no es válido. Se ve así: 573d362b-7d72-4292-a568-e60089854555', 'error'); return; }
+    if (vid && !/^[0-9]{3,10}$/.test(lib)) { showToast('Escribe el número de la biblioteca de Bunny', 'error'); return; }
+    if (publicada && !vid) { showToast('No se puede publicar una clase sin video', 'error'); return; }
+    const dur = durTxt ? Number(durTxt) : null;
+    if (dur !== null && (!Number.isInteger(dur) || dur < 1 || dur > 600)) { showToast('La duración va en minutos enteros', 'error'); return; }
+    const { i, j } = CP.edit;
+    const prev = j >= 0 ? CP.borrador.modulos[i].clases[j] : {};
+    const clase = { ...prev, titulo, descripcion: document.getElementById('cpClDesc').value.trim(), video: vid ? { id: vid, biblioteca: lib } : null, duracionMin: dur, publicada };
+    if (j >= 0) CP.borrador.modulos[i].clases[j] = clase; else CP.borrador.modulos[i].clases.push(clase);
+    cpCerrarClase(); cpMarcar(); cpRender();
+  };
+  // Subida directa a Bunny (TUS): el servidor crea el video y firma; el archivo va del navegador a Bunny.
+  document.addEventListener('change', async (e) => {
+    if (!e.target || e.target.id !== 'cpVideoArchivo' || !e.target.files || !e.target.files[0]) return;
+    const archivo = e.target.files[0], estado = document.getElementById('cpVideoEstado');
+    try {
+      estado.textContent = 'Preparando subida…';
+      const titulo = document.getElementById('cpClTitulo').value.trim() || archivo.name;
+      const r = await callAdminEndpoint('/admin/campus/video/crear', { slug: CP.slug, titulo });
+      if (!window.tus) await new Promise((ok, mal) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js'; s.onload = ok; s.onerror = mal; document.head.appendChild(s); });
+      await new Promise((ok, mal) => {
+        const up = new window.tus.Upload(archivo, {
+          endpoint: r.tus.endpoint, retryDelays: [0, 3000, 10000, 30000],
+          headers: { AuthorizationSignature: r.tus.firma, AuthorizationExpire: String(r.tus.expira), VideoId: r.video.id, LibraryId: r.tus.libreria },
+          metadata: { filetype: archivo.type, title: titulo },
+          onError: mal, onSuccess: ok,
+          onProgress: (a, t) => { estado.textContent = 'Subiendo… ' + Math.round(a * 100 / t) + '% (no cierres esta ventana)'; }
+        });
+        up.start();
+      });
+      document.getElementById('cpClVideo').value = r.video.id;
+      document.getElementById('cpClLib').value = r.video.biblioteca;
+      estado.textContent = 'Video subido. Bunny lo procesa en unos minutos; pulsa «Listo» y luego «Guardar cambios».';
+    } catch (err) { estado.textContent = 'No se pudo subir: ' + ((err && err.message) || 'error'); }
+    e.target.value = '';
+  });
+
+  window.cpGuardar = async function() {
+    if (CP.guardando) return;
+    CP.guardando = true;
+    const btn = document.getElementById('cpBtnGuardar'); btn.disabled = true; btn.textContent = 'Guardando…';
+    try {
+      const r = await callAdminEndpoint('/admin/campus/curso/guardar', { slug: CP.slug, rev: CP.borrador.rev, descripcion: CP.borrador.descripcion, modulos: CP.borrador.modulos });
+      const i = CP.datos.cursos.findIndex(c => c.slug === CP.slug);
+      CP.datos.cursos[i] = { ...CP.datos.cursos[i], ...r.curso, importable: false };
+      CP.borrador = cpCopia(CP.datos.cursos[i]); CP.sucio = false;
+      showToast('Curso guardado');
+      cpRender();
+    } catch (e) { showToast('No se guardó: ' + (e.message || 'error'), 'error'); }
+    CP.guardando = false; btn.disabled = false; btn.textContent = 'Guardar cambios';
+  };
+  window.cpDescartar = function() { if (!confirm('¿Descartar los cambios sin guardar?')) return; const c = cpCurso(); CP.borrador = cpCopia(c); CP.sucio = false; cpRender(); };
+  window.cpImportar = async function() {
+    if (!confirm('Se cargarán los 5 módulos, sus videos de Bunny y los 6 materiales del aula anterior de este curso. ¿Continuar?')) return;
+    try { const r = await callAdminEndpoint('/admin/campus/importar-existente', { slug: CP.slug }); showToast('Listo: ' + r.modulos + ' módulos, ' + r.clasesConVideo + ' con video, ' + r.materialesCopiados + ' materiales copiados' + (r.materialesComoEnlace ? ', ' + r.materialesComoEnlace + ' como enlace' : '')); CP.sucio = false; await cpCargar(true); }
+    catch (e) { showToast('No se pudo cargar: ' + (e.message || 'error'), 'error'); }
+  };
+
+  // ── Materiales (se guardan al momento) ──
+  async function cpRecargarCurso() { const sucio = CP.sucio, borr = CP.borrador; CP.datos = await callAdminEndpoint('/admin/campus/cursos', {}); if (sucio) { CP.borrador = borr; CP.sucio = true; } else CP.borrador = cpCopia(cpCurso()); cpRender(); }
+  window.cpMatSubir = async function() {
+    const nombre = document.getElementById('cpMatNombre').value.trim();
+    const input = document.getElementById('cpMatArchivo');
+    const archivo = input.files && input.files[0];
+    if (!nombre) { showToast('Escribe el nombre del material', 'error'); return; }
+    if (!archivo) { showToast('Elige el archivo', 'error'); return; }
+    if (archivo.size > 25 * 1024 * 1024) { showToast('El archivo pesa más de 25 MB', 'error'); return; }
+    const btn = document.getElementById('cpMatBtn'); btn.disabled = true; btn.textContent = 'Subiendo…';
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const q = new URLSearchParams({ slug: CP.slug, nombre, archivo: archivo.name, modulo: document.getElementById('cpMatModulo').value || '' });
+      const resp = await fetch(BACKEND_URL + '/admin/campus/material/subir?' + q.toString(), { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': archivo.type || 'application/octet-stream' }, body: archivo });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(data.error || ('Error HTTP ' + resp.status));
+      showToast('Material subido');
+      await cpRecargarCurso();
+    } catch (e) { showToast('No se subió: ' + (e.message || 'error'), 'error'); btn.disabled = false; btn.textContent = 'Subir material'; }
+  };
+  window.cpMatEnlace = async function() {
+    const nombre = (document.getElementById('cpMatNombre').value.trim()) || prompt('Nombre que verá el alumno:') || '';
+    if (!nombre.trim()) return;
+    const url = prompt('Pega el enlace (debe empezar con https://). Solo lo verán alumnos con el curso:') || '';
+    if (!url.trim()) return;
+    try { await callAdminEndpoint('/admin/campus/material/enlace', { slug: CP.slug, nombre: nombre.trim(), url: url.trim(), moduloId: document.getElementById('cpMatModulo').value || null }); showToast('Material agregado'); await cpRecargarCurso(); }
+    catch (e) { showToast('No se agregó: ' + (e.message || 'error'), 'error'); }
+  };
+  window.cpMatEditar = async function(id, cambios) {
+    try { await callAdminEndpoint('/admin/campus/material/editar', { slug: CP.slug, id, ...cambios }); await cpRecargarCurso(); }
+    catch (e) { showToast('No se guardó: ' + (e.message || 'error'), 'error'); }
+  };
+  window.cpMatEliminar = async function(id) {
+    const m = cpCurso().materiales.find(x => x.id === id);
+    if (!confirm('¿Eliminar el material «' + (m ? m.nombre : '') + '»?\n\nSe borra el archivo y los alumnos dejan de verlo. No se puede deshacer.')) return;
+    try { await callAdminEndpoint('/admin/campus/material/eliminar', { slug: CP.slug, id }); showToast('Material eliminado'); await cpRecargarCurso(); }
+    catch (e) { showToast('No se eliminó: ' + (e.message || 'error'), 'error'); }
+  };
+  window.cpMatAbrir = async function(id) {
+    const ventana = window.open('', '_blank');
+    try { const r = await callAdminEndpoint('/admin/campus/material/abrir', { slug: CP.slug, id }); if (ventana) ventana.location = r.url; else window.location.href = r.url; }
+    catch (e) { if (ventana) ventana.close(); showToast('No se pudo abrir: ' + (e.message || 'error'), 'error'); }
+  };
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest && e.target.closest('[data-tab="campus"]')) setTimeout(() => cpCargar(false), 150);
+    if (e.target && e.target.id === 'cpModal') cpCerrarClase();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !document.getElementById('cpModal').hidden) cpCerrarClase(); });
+  window.addEventListener('beforeunload', (e) => { if (CP.sucio) { e.preventDefault(); e.returnValue = ''; } });
 
   /* INSCRIPCIONES-CURSOS */
   // ═══════════════════════════════════════════════════
