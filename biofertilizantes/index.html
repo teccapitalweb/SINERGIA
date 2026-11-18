@@ -536,17 +536,43 @@
                       font-size: 14px; transition: all 0.2s; }
   .faq-whatsapp-btn:hover { background: #1DA851; transform: translateY(-1px); }
 </style>
+
+<style id="compacto-movil">
+/* ── Compacto móvil: insignias en una línea bajo el cronómetro, espacios apretados ── */
+.hero-badges-top{flex-wrap:nowrap!important;gap:8px!important;padding:0 12px!important;margin:14px auto 18px!important;max-width:100%}
+.badge-oferta,.badge-cupos{white-space:nowrap!important;font-size:clamp(.56rem,2.9vw,.84rem)!important;padding:6px clamp(8px,2.6vw,16px)!important;letter-spacing:.2px}
+.btn-whatsapp{flex-wrap:nowrap!important;justify-content:center!important;gap:10px!important;white-space:nowrap!important}
+.btn-whatsapp svg{flex-shrink:0}
+.btn-numero{white-space:nowrap!important;flex-shrink:0}
+@media (max-width:768px){
+  .hero-nuevo{padding-top:16px!important}
+  .hero-beneficios-rapidos{gap:7px!important;margin-bottom:16px!important}
+  .stats-section{padding:32px 16px!important}
+  .tabs-section-nueva{padding:38px 12px!important}
+  .contacto-section{padding:42px 18px!important}
+  .faq-section{padding:38px 16px!important}
+  .compra-final-wow{padding:42px 16px!important}
+  .faq-item{margin-bottom:10px!important}
+  .faq-item summary{padding:13px 14px!important;font-size:.92rem!important;line-height:1.35!important}
+  .faq-respuesta,.faq-item p{font-size:.88rem!important;line-height:1.5!important}
+  .compra-lista li{font-size:.88rem!important;padding:9px 12px!important;line-height:1.4!important}
+  .btn-whatsapp{padding:13px 16px!important;font-size:clamp(.8rem,3.7vw,.95rem)!important;gap:8px!important}
+  .btn-whatsapp svg{width:20px;height:20px}
+  .btn-numero{margin-left:0!important;font-size:clamp(.74rem,3.3vw,.85rem)!important;padding:4px 10px!important}
+  h2{line-height:1.22!important}
+}
+</style>
 </head>
 <body>
 
 <!-- ============ HERO ============ -->
 <!-- ============ HERO NUEVO ============ -->
 <section class="hero-nuevo">
-  <div class="hero-badges-top">
+    <div data-cierre></div>
+<div class="hero-badges-top">
     <span class="badge-oferta">&#128293; OFERTA POR LANZAMIENTO</span>
     <span class="badge-cupos">&#9889; Solo quedan 10 cupos</span>
   </div>
-  <div data-cierre></div>
 
   <div class="hero-container">
     <div class="hero-left">
