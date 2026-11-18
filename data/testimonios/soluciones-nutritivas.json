@@ -1,0 +1,13 @@
+{
+  "curso": "soluciones-nutritivas",
+  "_nota": "Agrega aquí solo opiniones reales de alumnos de ESTE curso. Cada una necesita autorizado:true y fuente (dónde se obtuvo y cómo se autorizó). Sin ellas no se publica. Después corre: python3 componentes/inyectar-testimonios.py",
+  "_ejemplo": {
+    "texto": "Palabras originales del alumno",
+    "nombre": "Nombre e inicial, como lo autorizó",
+    "contexto": "Ocupación o curso",
+    "ubicacion": "Estado (opcional)",
+    "autorizado": true,
+    "fuente": "Mensaje de WhatsApp del 20-nov-2026, autorización por WhatsApp"
+  },
+  "testimonios": []
+}
