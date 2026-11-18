@@ -142,14 +142,14 @@
 
     <h1>Accede a tu curso</h1>
     <div class="acceso-curso">Cultivo y Manejo de Gerberas</div>
-    <p class="acceso-texto">Ingresa el correo con el que realizaste tu compra.</p>
+    <p class="acceso-texto">Escribe el correo con el que compraste y te mandamos un enlace para entrar (funciona una sola vez).</p>
 
     <form class="acceso-form" id="formAcceso" novalidate>
       <label for="email">Correo electrónico</label>
       <input class="acceso-input" type="email" id="email" name="email"
              placeholder="tucorreo@ejemplo.com" autocomplete="email" autofocus required>
       <button class="acceso-btn" type="submit" id="btnEntrar">
-        <span id="btnTexto">Entrar al curso</span>
+        <span id="btnTexto">Enviarme mi enlace de acceso</span>
       </button>
     </form>
 
@@ -194,10 +194,46 @@
     bloqueError.classList.add('visible');
   }
 
+  // Aviso en verde (no es error): el enlace va en camino al correo de compra.
+  function mostrarAviso(msg) {
+    textoError.textContent = msg;
+    bloqueError.classList.add('visible');
+    bloqueError.style.background = '#e8f5e9';
+    bloqueError.style.borderColor = '#a5d6a7';
+    bloqueError.style.color = '#1b5e20';
+  }
+
   function cargando(activo) {
     btn.disabled = activo;
-    btnTexto.textContent = activo ? 'Verificando…' : 'Entrar al curso';
+    btnTexto.textContent = activo ? 'Enviando…' : 'Enviarme mi enlace de acceso';
   }
+
+  (async function entrarConEnlace() {
+    var enlace = new URLSearchParams(location.search).get('enlace');
+    if (!enlace) return;
+    history.replaceState(null, '', location.pathname);
+    cargando(true);
+    btnTexto.textContent = 'Abriendo tu curso…';
+    try {
+      var r = await fetch(BACKEND + '/aula/verificar-acceso', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ curso: CURSO, enlace: enlace })
+      });
+      var data = await r.json();
+      if (data.acceso) {
+        localStorage.setItem('sinergia_aula_token_' + CURSO, data.token);
+        localStorage.setItem('sinergia_aula_email_' + CURSO, data.alumno.email);
+        localStorage.setItem('sinergia_aula_nombre_' + CURSO, data.alumno.nombre || data.alumno.email);
+        window.location.replace('index.html');
+        return;
+      }
+      mostrarError(data.mensaje || 'El enlace no es válido. Pide uno nuevo.');
+    } catch (err) {
+      mostrarError('No pudimos conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.');
+    }
+    cargando(false);
+  })();
 
   form.addEventListener('submit', async function (ev) {
     ev.preventDefault();
@@ -233,6 +269,11 @@
         return;
       }
 
+      if (data.enviado) {
+        mostrarAviso(data.mensaje);
+        cargando(false);
+        return;
+      }
       mostrarError(data.mensaje || 'No encontramos una compra de este curso con ese correo.');
     } catch (err) {
       console.error('Error verificando acceso:', err);
