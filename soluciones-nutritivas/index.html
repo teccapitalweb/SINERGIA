@@ -465,44 +465,94 @@
   h2{line-height:1.22!important}
 }
 </style>
+
+<style id="hero-n2">
+/* ── Hero reorganizado (estilo gallinas) ── */
+.hero .wrap{max-width:1080px}
+.hn2-badges{display:flex;flex-wrap:nowrap;gap:8px;justify-content:center;margin:14px auto 22px;padding:0 12px}
+.hn2-b1,.hn2-b2{white-space:nowrap;font-weight:800;border-radius:24px;font-size:clamp(.56rem,2.9vw,.84rem);padding:6px clamp(8px,2.6vw,16px);letter-spacing:.2px}
+.hn2-b1{background:linear-gradient(135deg,#ff6b35,#f7931e);color:#fff;box-shadow:0 4px 12px rgba(247,147,30,.3)}
+.hn2-b2{background:linear-gradient(135deg,#ffc93c,#f0b830);color:#5c4500}
+.hn2-grid{display:grid;gap:30px;align-items:center;text-align:left;max-width:640px;margin:0 auto}
+@media(min-width:960px){.hn2-grid.con-video{grid-template-columns:1.05fr .95fr;max-width:1040px}}
+.hero h1{text-align:left;margin-left:0}
+.hero-sub{text-align:left;margin-left:0;max-width:none}
+.hn2-precio{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:18px 0 14px}
+.hn2-monto{font-size:clamp(2rem,7vw,2.6rem);font-weight:800;color:#ffc93c;line-height:1}
+.hn2-monto small{font-size:.45em;font-weight:700;color:rgba(255,255,255,.8)}
+.hn2-tag{font-size:.82rem;color:rgba(255,255,255,.85);font-weight:600}
+.hn2-benefs{display:grid;gap:7px;margin:0 0 18px;font-size:.92rem;color:rgba(255,255,255,.92)}
+.hn2-benefs div{display:flex;gap:8px;align-items:flex-start;line-height:1.4}
+.hn2-benefs span{color:#8fd694;font-weight:800;flex-shrink:0}
+.hn2-cta{display:inline-flex;align-items:center;justify-content:center!important;width:100%;max-width:460px;white-space:nowrap;font-size:clamp(.78rem,3.5vw,1rem)!important;text-align:center}
+.hero-note{text-align:left;margin-top:12px}
+.hn2-ya{display:inline-block;margin-top:12px;font-size:.9rem;font-weight:700;color:#cde8cf;text-decoration:underline;text-underline-offset:3px}
+.hn2-video{border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);background:#000}
+.hn2-video video{display:block;width:100%;height:auto}
+.hn2-etiqueta{text-align:center;margin-top:10px;font-size:.85rem;color:rgba(255,255,255,.75);font-weight:600}
+@media(max-width:768px){
+  .hero{padding:22px 0 36px!important}
+  .hero h1{font-size:clamp(1.7rem,7.6vw,2.1rem)!important;line-height:1.14!important;letter-spacing:-.4px}
+  .hero-sub{font-size:16px!important;line-height:1.55!important}
+}
+</style>
 </head>
 <body>
 
 <!-- ============ HERO ============ -->
 <header class="hero">
   <div class="wrap">
-    <div class="live-pill"><span class="live-dot"></span> Curso en vivo · Clases online</div>
-    <h1>Domina la formulación de <em>soluciones nutritivas</em> para tus cultivos</h1>
-    <p class="hero-sub">5 módulos prácticos para elaborar, ajustar y aplicar soluciones nutritivas balanceadas — con el <b>Ing. Gustavo Sánchez Díaz</b>.</p>
-
-    <div class="hero-icon">
-      <!-- Matraz erlenmeyer con burbujas y hojas — thin-line SVG -->
-      <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#d6e4f0" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9.6 3v5.6l-5 9.1a1.7 1.7 0 001.5 2.5h11.8a1.7 1.7 0 001.5-2.5l-5-9.1V3"/>
-        <path d="M8.4 3h7.2"/>
-        <path d="M6.7 13.9h10.6"/>
-        <circle cx="10" cy="16.6" r=".85"/>
-        <circle cx="13.4" cy="18.2" r=".65"/>
-        <circle cx="11.4" cy="19.3" r=".5"/>
-        <path d="M17.2 6.4c1.9-.2 3.4-1.6 3.8-3.5-1.9.2-3.4 1.6-3.8 3.5Z"/>
-        <path d="M6.8 6.4C4.9 6.2 3.4 4.8 3 2.9c1.9.2 3.4 1.6 3.8 3.5Z"/>
-      </svg>
-    </div>
-
     <div data-cierre></div>
-
-    <div class="hero-price-row">
-      <span class="hero-price">$<span data-precio="numero">550</span> <small>MXN</small></span>
-      <span class="cupo-tag">Cupo limitado</span>
+    <div class="hn2-badges">
+      <span class="hn2-b1">&#128293; OFERTA POR LANZAMIENTO</span>
+      <span class="hn2-b2">&#9889; Cupo limitado</span>
     </div>
 
-    <a class="btn btn-fire pulse js-buy" href="#" rel="noopener">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
-      QUIERO MI LUGAR
-    </a>
-    <p class="hero-note">Pago seguro con tarjeta vía Stripe · Reconocimiento institucional con QR y folio válido</p>
+    <div class="hn2-grid" id="hn2-grid">
+      <div class="hn2-left">
+        <h1>Domina la formulaci&oacute;n de <em>soluciones nutritivas</em> para tus cultivos</h1>
+        <p class="hero-sub">Aprende con el <b>Ing. Gustavo S&aacute;nchez D&iacute;az</b> a formular, ajustar y aplicar soluciones nutritivas balanceadas.</p>
+
+        <div class="hn2-precio">
+          <span class="hn2-monto">$<span data-precio="numero">550</span> <small>MXN</small></span>
+          <span class="hn2-tag">Pago &uacute;nico &middot; Acceso inmediato</span>
+        </div>
+
+        <div class="hn2-benefs">
+          <div><span>&#10003;</span> 5 d&iacute;as en vivo por Google Meet + grabaciones</div>
+          <div><span>&#10003;</span> Reconocimiento institucional con QR y folio v&aacute;lido</div>
+          <div><span>&#10003;</span> Material y formatos t&eacute;cnicos descargables</div>
+          <div><span>&#10003;</span> Grupo VIP de WhatsApp con otros productores</div>
+        </div>
+
+        <a class="btn btn-fire pulse js-buy hn2-cta" href="#" rel="noopener">
+          INSCRIBIRME AHORA POR $<span data-precio="numero">550</span> &nbsp;&rarr;
+        </a>
+        <p class="hero-note">&#128737;&#65039; Garant&iacute;a de 7 d&iacute;as &middot; Pago seguro con Stripe</p>
+        <div><a href="/campus/?curso=soluciones-nutritivas#/curso/soluciones-nutritivas" class="hn2-ya">Ya compr&eacute; &middot; Entrar a mi curso</a></div>
+      </div>
+
+      <div class="hn2-right" id="hn2-video" hidden>
+        <div class="hn2-video">
+          <video id="hn2-vid" src="assets/video-hero.mp4" poster="assets/poster-hero.jpg" controls muted loop playsinline preload="metadata"></video>
+        </div>
+        <div class="hn2-etiqueta">&#128249; Preview del curso</div>
+      </div>
+    </div>
   </div>
 </header>
+<script>
+// El cuadro del video aparece solo cuando assets/video-hero.mp4 existe
+(function(){
+  var v = document.getElementById('hn2-vid');
+  if (!v) return;
+  v.addEventListener('loadedmetadata', function(){
+    document.getElementById('hn2-video').hidden = false;
+    document.getElementById('hn2-grid').classList.add('con-video');
+    v.play().catch(function(){});
+  });
+})();
+</script>
 
 <!-- ============ EMPRESAS QUE CONFÍAN ============ -->
 <section class="trusted">
@@ -731,9 +781,7 @@
     <div class="tab-panel active" id="tab-ponente">
       <div class="speaker">
         <div class="speaker-photo">
-          <!-- TODO: reemplazar cuando Jorge suba assets/ponente.jpg -->
-          <!-- <img src="assets/ponente.jpg" alt="Ing. Gustavo Sánchez Díaz" class="ponente-foto" loading="lazy" style="width:100%;height:100%;object-fit:cover;"> -->
-          <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0115 0"/></svg>
+          <img src="assets/ponente.jpg" alt="Ing. Gustavo Sánchez Díaz" class="ponente-foto" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <div>
           <h3>Ing. Gustavo Sánchez Díaz</h3>
