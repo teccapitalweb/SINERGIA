@@ -133,6 +133,41 @@
   }
   .hero-note{font-size:.82rem;color:rgba(255,255,255,.6);margin-top:14px;}
 
+
+  /* ============ PORTADA CON PONENTE (nov 2026) ============ */
+  .hero-hp{text-align:left;padding:36px 0 46px;}
+  .hero-hp .wrap{max-width:1120px;}
+  .hp-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:52px;align-items:center;position:relative;z-index:1;}
+  .hero-hp h1{margin:0 0 14px;max-width:none;font-size:clamp(1.9rem,4vw,3.1rem);line-height:1.04;}
+  .hero-hp .hero-sub{margin:0 0 20px;max-width:50ch;}
+  .hero-hp .hero-price-row{justify-content:flex-start;}
+  .hero-hp .cierre{margin-left:0;}
+  .hp-card{margin:0;justify-self:end;width:100%;max-width:400px;background:#fff;color:var(--ink);border-radius:24px;overflow:hidden;box-shadow:0 34px 70px -24px rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.4);}
+  .hp-foto{position:relative;aspect-ratio:1/1;background:linear-gradient(160deg,var(--crema),#fff);}
+  .hp-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;}
+  .hp-mono{position:absolute;inset:0;display:grid;place-items:center;font-family:'Archivo',system-ui,sans-serif;font-weight:900;font-size:4.2rem;color:var(--base);letter-spacing:.02em;}
+  .hp-cap{padding:16px 20px 20px;}
+  .hp-eti{display:block;font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:4px;}
+  .hp-nombre{display:block;font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:800;font-size:1.22rem;line-height:1.2;color:var(--base-negro);}
+  .hp-rol{display:block;font-size:.86rem;color:var(--ink-soft);margin-top:4px;line-height:1.4;}
+  .hp-tag{display:inline-block;margin-top:10px;font-size:.76rem;font-weight:700;padding:5px 10px;border-radius:99px;background:var(--crema);color:var(--base-negro);}
+  .hp-mini{display:none;}
+  @media (max-width:820px){
+    .hero-hp{text-align:center;padding:26px 0 38px;}
+    .hp-grid{grid-template-columns:1fr;gap:0;}
+    .hp-card{display:none;}
+    .hero-hp h1{font-size:clamp(1.6rem,7.2vw,2.4rem);margin-bottom:14px;}
+    .hero-hp .hero-sub{margin:0 auto 16px;}
+    .hero-hp .hero-price-row{justify-content:center;}
+    .hero-hp .cierre{margin-left:auto;}
+    .hp-mini{display:flex;align-items:center;gap:12px;text-align:left;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:10px 12px;margin:0 auto 14px;max-width:440px;}
+    .hp-mini .hp-foto{width:76px;height:76px;flex:none;border-radius:14px;overflow:hidden;aspect-ratio:auto;}
+    .hp-mini .hp-mono{font-size:1.6rem;}
+    .hp-mini .hp-eti{color:var(--hi);}
+    .hp-mini .hp-nombre{color:#fff;font-size:1.02rem;}
+    .hp-mini .hp-rol{color:rgba(255,255,255,.78);font-size:.8rem;margin-top:2px;}
+  }
+
   /* ============ LOGOS ============ */
   .trusted{background:var(--crema);padding:38px 0 34px;border-bottom:1px solid var(--line);}
   .trusted-title{
@@ -448,24 +483,13 @@
 <body>
 
 <!-- ============ HERO ============ -->
-<header class="hero">
-  <div class="wrap">
+<header class="hero hero-hp">
+  <div class="wrap hp-grid">
+  <div class="hp-txt">
     <div class="live-pill"><span class="live-dot"></span> Curso en vivo · Clases online</div>
     <h1>Domina la producción rentable de <em>caña de azúcar</em></h1>
-    <p class="hero-sub">5 módulos prácticos para aumentar toneladas por hectárea con el <b>M.A. Ing. Agr. Luis Alfredo Díaz Urízar</b> — 30+ años de experiencia en gestión agrícola.</p>
-
-    <div class="hero-icon">
-      <!-- Caña de azúcar thin-line SVG -->
-      <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#c8e6c9" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10.4 21.5V7.5"/>
-        <path d="M9.2 18.6h2.4M9.2 15.2h2.4M9.2 11.8h2.4M9.2 8.9h2.4"/>
-        <path d="M13.8 21.5V9"/>
-        <path d="M12.6 18.2h2.4M12.6 14.6h2.4M12.6 11h2.4"/>
-        <path d="M10.4 7.5C8.6 6.8 6.6 5.2 5.6 2.9C8.2 3.2 10 4.9 10.4 7.5Z"/>
-        <path d="M10.4 7.5C11 5 12.8 3.2 15.3 2.5C14.7 5 13 6.9 10.4 7.5Z"/>
-        <path d="M13.8 9C15.4 8.4 17.4 8.3 19 9.3C17.5 10.4 15.4 10.4 13.8 9Z"/>
-      </svg>
-    </div>
+    <div class="hp-mini"><div class="hp-foto"><img src="assets/ponente.jpg" alt="M.A. Ing. Agr. Luis Alfredo Díaz Urízar" width="800" height="800" fetchpriority="high"></div><div><span class="hp-eti">Imparte</span><span class="hp-nombre">M.A. Ing. Agr. Luis Alfredo Díaz Urízar</span><span class="hp-rol">Ingeniero Agrónomo Fitotecnista · Producción Agrícola</span></div></div>
+    <p class="hero-sub">5 módulos prácticos para aumentar toneladas por hectárea, con un especialista con más de 30 años en gestión agrícola.</p>
 
     <div data-cierre></div>
 
@@ -479,6 +503,8 @@
       QUIERO MI LUGAR
     </a>
     <p class="hero-note">Pago seguro con tarjeta vía Stripe · Reconocimiento institucional con QR y folio válido</p>
+  </div>
+  <figure class="hp-card"><div class="hp-foto"><img src="assets/ponente.jpg" alt="M.A. Ing. Agr. Luis Alfredo Díaz Urízar" width="800" height="800" fetchpriority="high"></div><figcaption class="hp-cap"><span class="hp-eti">Tu instructor</span><span class="hp-nombre">M.A. Ing. Agr. Luis Alfredo Díaz Urízar</span><span class="hp-rol">Ingeniero Agrónomo Fitotecnista · Producción Agrícola</span><span class="hp-tag">30+ años de experiencia</span></figcaption></figure>
   </div>
 </header>
 

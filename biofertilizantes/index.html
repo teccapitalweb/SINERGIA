@@ -155,6 +155,32 @@
     .hero-beneficios-rapidos { grid-template-columns: 1fr; }
   }
 
+
+  /* ============ PORTADA CON PONENTE (nov 2026) ============ */
+  .hp-foto{position:relative;aspect-ratio:1/1;background:linear-gradient(160deg,#e8f5e9,#fff);}
+  .hp-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;}
+  .hp-card{margin:0 0 18px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 20px 50px rgba(46,125,50,.22);border:2px solid #e8f5e9;display:grid;grid-template-columns:44% 1fr;align-items:center;}
+  .hp-card .hp-foto{height:100%;aspect-ratio:auto;min-height:220px;}
+  .hp-cap{padding:18px 20px;}
+  .hp-eti{display:block;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#388e3c;margin-bottom:6px;}
+  .hp-nombre{display:block;font-weight:800;font-size:22px;line-height:1.2;color:#1a1a1a;}
+  .hp-rol{display:block;font-size:14px;color:#555;margin-top:6px;line-height:1.45;}
+  .hp-tag{display:inline-block;margin-top:12px;font-size:13px;font-weight:700;padding:6px 12px;border-radius:99px;background:#e8f5e9;color:#1b5e20;}
+  .hp-mini{display:none;}
+  .hero-nuevo .hero-titulo{font-size:44px;}
+  @media (max-width: 768px) {
+    .hero-nuevo{padding-top:24px;}
+    .hero-nuevo .hero-badges-top{margin-bottom:14px;gap:8px;}
+    .hero-nuevo .hero-titulo{font-size:clamp(26px,7.4vw,34px);margin-bottom:14px;}
+    .hp-card{display:none;}
+    .hp-mini{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid #e8f5e9;border-radius:16px;padding:10px 12px;margin:0 0 16px;box-shadow:0 8px 20px rgba(46,125,50,.12);}
+    .hp-mini .hp-foto{width:76px;height:76px;flex:none;border-radius:14px;overflow:hidden;aspect-ratio:auto;}
+    .hp-mini .hp-nombre{font-size:16px;}
+    .hp-mini .hp-rol{font-size:12.5px;margin-top:2px;}
+    .hp-mini .hp-eti{font-size:11px;margin-bottom:2px;}
+    .hero-subtitulo{font-size:16px;margin-bottom:20px;}
+  }
+
   /* ============ LOGOS ============ */
   .trusted{background:var(--crema);padding:38px 0 34px;border-bottom:1px solid var(--line);}
   .trusted-title{
@@ -554,8 +580,9 @@
         Domina la elaboraci&oacute;n <span class="highlight">rentable</span>
         de <span class="highlight">biofertilizantes</span> desde tu casa
       </h1>
+      <div class="hp-mini"><div class="hp-foto"><img src="assets/ponente.jpg" alt="Ing. Agr. José Ángel de la Cruz Hernández" width="800" height="800" fetchpriority="high"></div><div><span class="hp-eti">Imparte</span><span class="hp-nombre">Ing. Agr. José Ángel de la Cruz Hernández</span><span class="hp-rol">Ingeniero Agrónomo Zootecnista · U. Autónoma Chapingo</span></div></div>
       <p class="hero-subtitulo">
-        Aprende con el Ing. Agr. Jos&eacute; &Aacute;ngel de la Cruz Hern&aacute;ndez c&oacute;mo
+        Aprende a
         producir biofertilizantes de calidad para reducir tu dependencia
         qu&iacute;mica y aumentar tu rentabilidad. Accede a los videos desde el
         momento en que te inscribes.
@@ -589,6 +616,7 @@
     </div>
 
     <div class="hero-right">
+      <figure class="hp-card"><div class="hp-foto"><img src="assets/ponente.jpg" alt="Ing. Agr. José Ángel de la Cruz Hernández" width="800" height="800" fetchpriority="high"></div><figcaption class="hp-cap"><span class="hp-eti">Tu instructor</span><span class="hp-nombre">Ing. Agr. José Ángel de la Cruz Hernández</span><span class="hp-rol">Ingeniero Agrónomo Zootecnista · U. Autónoma Chapingo</span><span class="hp-tag">30+ años de experiencia</span></figcaption></figure>
       <div class="hero-video-wrapper">
         <video src="assets/video-hero.mp4" poster="assets/poster-hero.jpg"
                controls autoplay muted loop playsinline preload="metadata"></video>
