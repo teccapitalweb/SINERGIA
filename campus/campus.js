@@ -10,6 +10,8 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
+import { pintarAula, cerrarVisor } from './aula.js?v=2';
+
 const firebaseConfig = {
   apiKey: 'AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0',
   authDomain: 'sinergia-agricola-vip.firebaseapp.com',
@@ -229,15 +231,6 @@ function siguienteClase(c) {
   }
   return todas.find((x) => !esVista(c, x.id)) || todas[0] || null;
 }
-function tarjetaLeccion(c, x, n) {
-  const img = IMAGENES[c.slug] || {};
-  return `<a class="leccion" href="#/curso/${c.slug}/clase/${x.id}" aria-label="Ver clase: ${esc(x.titulo)}">
-    ${img.ponente ? `<img src="${img.ponente}" alt="" loading="lazy">` : ''}
-    ${esVista(c, x.id) ? `<span class="visto">${ICO.check}Vista</span>` : ''}
-    <div class="leccion-info"><div class="chips"><span class="chip">Clase ${n}</span>${x.duracionMin ? `<span class="chip">${ICO.reloj}${minutos(x.duracionMin)}</span>` : ''}</div><b>${esc(x.titulo)}</b></div>
-    <span class="play">${ICO.play}</span>
-  </a>`;
-}
 function listaMateriales(c, lista) {
   if (!lista.length) return '<div class="caja vacio"><b>Sin materiales por ahora</b>Cuando el equipo publique materiales de este curso aparecerán aquí.</div>';
   return `<div class="materiales">${lista.map((m) => `<button class="material" data-material="${esc(c.slug)}|${esc(m.id)}"><span class="ext ${esc(m.ext)}">${esc((m.ext || 'doc').slice(0, 4))}</span><span style="min-width:0"><b>${esc(m.nombre)}</b><span>${m.tamano ? (m.tamano < 1048576 ? Math.max(1, Math.round(m.tamano / 1024)) + ' KB' : (m.tamano / 1048576).toFixed(1) + ' MB') + ' · ' : ''}Descargar</span></span><span class="bajar">${ICO.bajar}</span></button>`).join('')}</div>`;
@@ -267,99 +260,14 @@ function vistaCursos() {
   const d = E.datos;
   return `<div class="encabezado"><div><span class="eyebrow">Mi biblioteca</span><h1 class="titulo"><span>Mis cursos</span></h1><p class="sub">Solo aparecen los cursos de tu cuenta.</p></div></div>${d.cursos.length ? `<div class="rejilla">${d.cursos.map(tarjetaCurso).join('')}</div>` : sinCursos()}`;
 }
-function vistaCurso(slug) {
-  const c = curso(slug);
-  if (!c) return noTiene();
-  const p = c.progreso, sig = siguienteClase(c);
-  let n = 0;
-  let h = `<nav class="migas" aria-label="Ubicación"><a href="#/cursos">Mis cursos</a><span>›</span><span>${esc(c.titulo)}</span></nav>
-  <div class="tarjeta" style="margin-bottom:24px">${portada(c, `<div class="portada-info"><div class="chips">${c.contenidoListo ? `<span class="chip">${c.modulos.length} módulos</span><span class="chip">${p.total} clases</span>` : '<span class="chip prep">Contenido en preparación</span>'}</div><h3 style="font-size:clamp(20px,3vw,30px)">${esc(c.titulo)}</h3></div>`).replace('class="portada"', 'class="portada" style="aspect-ratio:21/7;min-height:180px"')}
-    <div class="tarjeta-cuerpo" style="flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between">
-      <div style="min-width:220px;flex:1">${c.ponente ? `<div class="ponente">Imparte: <b>${esc(c.ponente)}</b></div>` : ''}${c.contenidoListo ? `<div class="barra" style="margin-top:10px;max-width:420px"><i style="width:${p.porcentaje}%"></i></div><div class="barra-txt" style="max-width:420px;margin-top:6px"><span>${p.completadas.length} de ${p.total} clases vistas</span><b>${p.porcentaje}%</b></div>` : ''}</div>
-      ${sig ? `<a class="btn btn-pri" href="#/curso/${c.slug}/clase/${sig.id}">${ICO.play}${p.completadas.length ? 'Continuar aprendiendo' : 'Empezar el curso'}</a>` : ''}
-    </div></div>`;
-  if (c.descripcion) h += `<p class="sub" style="margin-bottom:20px">${esc(c.descripcion)}</p>`;
-  if (!c.contenidoListo) h += '<div class="aviso">Tu curso ya está en tu cuenta. El equipo está preparando las grabaciones: en cuanto se publiquen las verás aquí, sin hacer nada más.</div>';
-  c.modulos.forEach((m, i) => {
-    h += `<section class="modulo"><div class="modulo-head"><span class="modulo-num">${i + 1}</span><div><h3>${esc(m.titulo)}</h3>${m.descripcion ? `<p>${esc(m.descripcion)}</p>` : ''}</div></div><div class="lecciones">${m.clases.map((x) => tarjetaLeccion(c, x, ++n)).join('')}</div></section>`;
-  });
-  if (c.enPreparacion.length) h += `<h2 class="sec">Próximamente</h2><div class="prep-lista">${c.enPreparacion.map((m) => `<div class="prep-item"><span class="chip prep">${ICO.reloj}En preparación</span><div><b>${esc(m.titulo)}</b>${m.descripcion ? `<p>${esc(m.descripcion)}</p>` : ''}</div></div>`).join('')}</div>`;
-  h += `<h2 class="sec">Materiales del curso</h2>${listaMateriales(c, c.materiales)}`;
-  return h;
-}
 function noTiene() {
   return `<div class="caja vacio"><b>Este curso no está en tu cuenta</b>Si lo compraste con otro correo, cierra sesión y entra con ese correo.<div style="margin-top:14px"><a class="btn btn-sec" href="#/cursos">Ver mis cursos</a></div></div>`;
-}
-function vistaClase(slug, claseId) {
-  const c = curso(slug);
-  if (!c) return noTiene();
-  const todas = todasLasClases(c);
-  const i = todas.findIndex((x) => x.id === claseId);
-  if (i < 0) return `<div class="caja vacio"><b>Esta clase no está disponible</b>Puede que el equipo la esté actualizando.<div style="margin-top:14px"><a class="btn btn-sec" href="#/curso/${slug}">Volver al curso</a></div></div>`;
-  const x = todas[i], ant = todas[i - 1], sig = todas[i + 1];
-  const mats = c.materiales.filter((m) => m.moduloId === x.modulo.id);
-  const vista = esVista(c, x.id);
-  const temario = c.modulos.map((m, mi) => `<div class="mod-sep">Módulo ${mi + 1}</div>` + m.clases.map((k) => `<a href="#/curso/${slug}/clase/${k.id}" class="${k.id === x.id ? 'actual' : ''}"><span class="ico ${esVista(c, k.id) ? 'ok' : ''}">${esVista(c, k.id) ? ICO.check : ''}</span><span>${esc(k.titulo)}${k.duracionMin ? `<br><small style="color:var(--gris-500)">${minutos(k.duracionMin)}</small>` : ''}</span></a>`).join('')).join('');
-  return `<nav class="migas" aria-label="Ubicación"><a href="#/cursos">Mis cursos</a><span>›</span><a href="#/curso/${slug}">${esc(c.titulo)}</a><span>›</span><span>Módulo ${x.mi + 1}</span></nav>
-  <div class="clase-grid">
-    <div>
-      <div class="reproductor" id="reproductor"><div class="estado">Cargando el video…</div></div>
-      <div style="margin-top:16px"><span class="eyebrow">Módulo ${x.mi + 1} · ${esc(x.modulo.titulo)}</span><h1 class="titulo" style="font-size:clamp(22px,2.6vw,30px)">${esc(x.titulo)}</h1></div>
-      <div class="clase-acciones">
-        ${vista ? `<span class="chip ok">${ICO.check}Clase vista</span>` : `<button class="btn btn-azul" id="bVista" disabled>${ICO.check}Marcar como vista</button><span class="nota" id="nVista"></span>`}
-        <span style="flex:1"></span>
-        ${ant ? `<a class="btn btn-sec" href="#/curso/${slug}/clase/${ant.id}">← Anterior</a>` : ''}
-        ${sig ? `<a class="btn btn-pri" href="#/curso/${slug}/clase/${sig.id}">Siguiente →</a>` : `<a class="btn btn-sec" href="#/curso/${slug}">Volver al curso</a>`}
-      </div>
-      ${x.descripcion ? `<div class="clase-desc">${esc(x.descripcion)}</div>` : ''}
-      ${mats.length ? `<h2 class="sec">Materiales de este módulo</h2>${listaMateriales(c, mats)}` : ''}
-    </div>
-    <aside class="panel-lado" aria-label="Clases del curso"><h4>Contenido del curso</h4><div class="temario">${temario}</div></aside>
-  </div>`;
-}
-async function montarClase(slug, claseId) {
-  clearInterval(E.cuentaAtras);
-  const caja = document.getElementById('reproductor');
-  if (!caja) return;
-  try {
-    const r = await api('/campus/video', { body: { curso: slug, claseId } });
-    caja.innerHTML = `<iframe src="${esc(r.url)}" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Video de la clase"></iframe>`;
-    const b = document.getElementById('bVista'), n = document.getElementById('nVista');
-    if (b && !E.datos.alumno.esAdmin) {
-      let resta = r.minimoSegundos;
-      const tic = () => {
-        if (resta <= 0) { b.disabled = false; n.textContent = ''; clearInterval(E.cuentaAtras); return; }
-        n.textContent = 'Disponible al avanzar en la clase (' + Math.floor(resta / 60) + ':' + String(resta % 60).padStart(2, '0') + ')';
-        resta--;
-      };
-      tic(); E.cuentaAtras = setInterval(tic, 1000);
-      b.onclick = async () => {
-        b.disabled = true;
-        try {
-          await api('/campus/progreso', { body: { curso: slug, claseId, accion: 'completar' } });
-          const c = curso(slug); if (!c.progreso.completadas.includes(claseId)) c.progreso.completadas.push(claseId);
-          c.progreso.porcentaje = c.progreso.total ? Math.round(c.progreso.completadas.length * 100 / c.progreso.total) : 0;
-          toast('¡Clase vista! Tu avance quedó guardado.');
-          const cont = document.getElementById('contenido'); const y = window.scrollY;
-          cont.innerHTML = vistaClase(slug, claseId); window.scrollTo(0, y);
-          montarClase(slug, claseId);
-        } catch (e) {
-          if (e.datos && e.datos.faltanSegundos) { toast('Aún te faltan ' + Math.ceil(e.datos.faltanSegundos / 60) + ' min de la clase.', true); }
-          else toast(e.message, true);
-          b.disabled = false;
-        }
-      };
-    } else if (b) { b.disabled = true; n.textContent = 'Vista del equipo: el avance no se guarda.'; }
-    const c = curso(slug); if (c) c.progreso.ultimaClase = claseId;
-  } catch (e) {
-    caja.innerHTML = `<div class="estado"><b style="color:#fff">No pudimos abrir el video</b><span>${esc(e.message)}</span></div>`;
-  }
 }
 function vistaMateriales() {
   const d = E.datos;
   let h = '<div class="encabezado"><div><span class="eyebrow">Descargas</span><h1 class="titulo"><span>Materiales</span></h1><p class="sub">Los archivos de tus cursos. Cada descarga se prepara al momento solo para tu cuenta.</p></div></div>';
   if (!d.cursos.length) return h + sinCursos();
-  d.cursos.forEach((c) => { h += `<h2 class="sec">${esc(c.titulo)}</h2>${listaMateriales(c, c.materiales)}`; });
+  d.cursos.forEach((c) => { h += `<h2 class="sec">${esc(c.titulo)}</h2>${c.materiales.length ? `<div class="caja" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:200px"><b style="font-family:var(--f-tit)">${c.materiales.length} ${c.materiales.length === 1 ? 'material' : 'materiales'}</b><p class="sub" style="font-size:14px">Ábrelos en pantalla o descárgalos desde tu curso.</p></div><a class="btn btn-pri" href="#/curso/${c.slug}/materiales">Ver materiales</a></div>` : listaMateriales(c, [])}`; });
   return h;
 }
 function vistaProgreso() {
@@ -377,12 +285,12 @@ function vistaProgreso() {
 }
 function vistaCertificado() {
   const d = E.datos;
-  let h = '<div class="encabezado"><div><span class="eyebrow">Reconocimiento</span><h1 class="titulo"><span>Certificados</span></h1><p class="sub">El certificado con folio verificable lo emite Sinergia cuando terminas el curso completo.</p></div></div>';
+  let h = '<div class="encabezado"><div><span class="eyebrow">Reconocimiento</span><h1 class="titulo"><span>Certificados</span></h1><p class="sub">Solicita tu certificado con tus datos; Sinergia lo emite con folio verificable al concluir el curso.</p></div></div>';
   if (!d.cursos.length) return h + sinCursos();
+  const TXT = { pendiente: 'Solicitud recibida. Te avisaremos cuando esté emitido.', en_proceso: 'Tu certificado está en proceso.', emitido: 'Tu certificado ya fue emitido.', rechazado: 'Necesitamos revisar tus datos.' };
   d.cursos.forEach((c) => {
-    const listo = c.contenidoListo && c.progreso.porcentaje === 100 && !c.enPreparacion.length;
-    const texto = encodeURIComponent(`Hola, terminé el curso «${c.titulo}» en el Campus Sinergia (${d.alumno.email}) y quiero solicitar mi certificado.`);
-    h += `<div class="caja" style="margin-bottom:14px;display:flex;gap:16px;align-items:center;flex-wrap:wrap"><span class="ext" style="background:var(--verde-100);color:var(--verde-700)">${ICO.certificado}</span><div style="flex:1;min-width:200px"><b style="font-family:var(--f-tit)">${esc(c.titulo)}</b><p class="sub" style="font-size:14px">${listo ? 'Terminaste todas las clases. Solicita tu certificado y te lo enviamos con su folio.' : !c.contenidoListo || c.enPreparacion.length ? 'Disponible cuando el curso tenga todas sus clases publicadas y las termines.' : `Llevas ${c.progreso.porcentaje}%. Termina todas las clases para solicitarlo.`}</p></div>${listo ? `<a class="btn btn-pri" href="https://wa.me/${WHATSAPP}?text=${texto}" target="_blank" rel="noopener">Solicitar mi certificado</a>` : `<a class="btn btn-sec" href="#/curso/${c.slug}">Ir al curso</a>`}</div>`;
+    const so = c.solicitudCertificado;
+    h += `<div class="caja" style="margin-bottom:14px;display:flex;gap:16px;align-items:center;flex-wrap:wrap"><span class="ext" style="background:var(--verde-100);color:var(--verde-700)">${ICO.certificado}</span><div style="flex:1;min-width:200px"><b style="font-family:var(--f-tit)">${esc(c.titulo)}</b><p class="sub" style="font-size:14px">${so ? TXT[so.estado] || TXT.pendiente : `Llevas ${c.progreso.porcentaje}% del curso. Envía tus datos para tu certificado.`}</p></div><a class="btn ${so ? 'btn-sec' : 'btn-pri'}" href="#/curso/${c.slug}/certificado">${so ? 'Ver mi solicitud' : 'Solicitar mi certificado'}</a></div>`;
   });
   return h;
 }
@@ -425,10 +333,11 @@ function render() {
   }
   if (!E.datos) return;
   const { partes } = ruta();
+  cerrarVisor();
+  if (partes[0] === 'curso' && curso(partes[1])) { pintarAula({ app: $app, E, api, render, WHATSAPP }, curso(partes[1]), partes); window.scrollTo(0, 0); return; }
   let activo = '#/', html;
   if (partes[0] === 'cursos') { activo = '#/cursos'; html = vistaCursos(); }
-  else if (partes[0] === 'curso' && partes[2] === 'clase') { activo = '#/cursos'; html = vistaClase(partes[1], partes[3]); }
-  else if (partes[0] === 'curso') { activo = '#/cursos'; html = vistaCurso(partes[1]); }
+  else if (partes[0] === 'curso') { activo = '#/cursos'; html = noTiene(); }
   else if (partes[0] === 'materiales') { activo = '#/materiales'; html = vistaMateriales(); }
   else if (partes[0] === 'progreso') { activo = '#/progreso'; html = vistaProgreso(); }
   else if (partes[0] === 'certificado') { activo = '#/certificado'; html = vistaCertificado(); }
@@ -437,7 +346,6 @@ function render() {
   $app.innerHTML = marco(activo, html);
   const clave = location.hash;
   window.scrollTo(0, E.scroll[clave] || 0);
-  if (partes[0] === 'curso' && partes[2] === 'clase') montarClase(partes[1], partes[3]);
   const fn = document.getElementById('fNueva');
   if (fn) fn.addEventListener('submit', async (ev) => {
     ev.preventDefault();
