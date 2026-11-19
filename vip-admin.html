@@ -2894,6 +2894,7 @@ body::before { display: none; }
         <div class="cp-cursos" id="cpCursos"></div>
       </div>
       <div id="cpCuerpo"><div class="sb-vacio">Cargando…</div></div>
+      <div class="cp-sol" id="cpSolicitudes" style="margin-top:22px"></div>
       <div class="cp-guardar" id="cpGuardar" hidden>
         <span><b>Cambios sin guardar</b> en <span id="cpGuardarCurso"></span></span>
         <div><button type="button" class="btn-secondary" onclick="cpDescartar()">Descartar</button> <button type="button" class="btn-primary" id="cpBtnGuardar" onclick="cpGuardar()">Guardar cambios</button></div>
@@ -7359,6 +7360,48 @@ body::before { display: none; }
     const c = cpCurso(); document.getElementById('cpGuardarCurso').textContent = c ? c.titulo : '';
   }
 
+  // ── Solicitudes de certificado del Campus (bandeja del equipo) ──
+  const CPS = { lista: [], filtro: 'pendiente' };
+  const CPS_ESTADOS = { pendiente: 'Pendiente', en_proceso: 'En proceso', emitido: 'Emitido', rechazado: 'Rechazado' };
+  window.cpSolicitudesCargar = async function() {
+    const host = document.getElementById('cpSolicitudes'); if (!host) return;
+    try { const r = await callAdminEndpoint('/admin/campus/solicitudes', {}); CPS.lista = r.solicitudes || []; cpSolicitudesRender(); }
+    catch (e) { host.innerHTML = '<h3 style="margin:0 0 8px">Solicitudes de certificado</h3><div class="sb-vacio">No se pudieron cargar las solicitudes (' + esc(e.message || 'error') + ').</div>'; }
+  };
+  window.cpSolicitudesFiltro = function(f) { CPS.filtro = f; cpSolicitudesRender(); };
+  function cpSolicitudesRender() {
+    const host = document.getElementById('cpSolicitudes'); if (!host) return;
+    const cuenta = (e) => CPS.lista.filter((x) => x.estado === e).length;
+    const lista = CPS.filtro === 'todas' ? CPS.lista : CPS.lista.filter((x) => x.estado === CPS.filtro);
+    const tabs = [['pendiente', 'Pendientes'], ['en_proceso', 'En proceso'], ['emitido', 'Emitidos'], ['rechazado', 'Rechazados'], ['todas', 'Todas']]
+      .map(([k, t]) => '<button type="button" class="' + (CPS.filtro === k ? 'btn-primary' : 'btn-secondary') + '" style="padding:6px 12px;font-size:12px" onclick="cpSolicitudesFiltro(\'' + k + '\')">' + t + ' (' + (k === 'todas' ? CPS.lista.length : cuenta(k)) + ')</button>').join(' ');
+    const fila = (x) => {
+      const wa = String(x.whatsapp || '').replace(/\D/g, ''); const tel = wa.length === 10 ? '52' + wa : wa;
+      const acc = [];
+      if (x.estado === 'pendiente' || x.estado === 'rechazado') acc.push('<button type="button" class="btn-secondary" style="padding:5px 9px;font-size:12px" onclick="cpSolicitudEstado(\'' + esc(x.id) + '\',\'en_proceso\')">En proceso</button>');
+      if (x.estado !== 'emitido') acc.push('<button type="button" class="btn-primary" style="padding:5px 9px;font-size:12px" onclick="cpSolicitudEstado(\'' + esc(x.id) + '\',\'emitido\')">Marcar emitido</button>');
+      if (x.estado === 'pendiente' || x.estado === 'en_proceso') acc.push('<button type="button" class="btn-secondary" style="padding:5px 9px;font-size:12px" onclick="cpSolicitudEstado(\'' + esc(x.id) + '\',\'rechazado\')">Rechazar</button>');
+      return '<tr><td>' + (x.fechaSolicitud ? new Date(x.fechaSolicitud).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }) : '—') + '</td>' +
+        '<td><b>' + esc(x.nombreCompleto) + '</b><br><small>' + esc(x.email) + (x.ocupacion ? ' · ' + esc(x.ocupacion) : '') + '</small>' + (x.comentario ? '<br><small>«' + esc(x.comentario) + '»</small>' : '') + '</td>' +
+        '<td>' + esc(x.cursoTitulo) + '</td>' +
+        '<td>' + (tel ? '<a href="https://wa.me/' + esc(tel) + '" target="_blank" rel="noopener">' + esc(x.whatsapp) + '</a>' : '—') + '</td>' +
+        '<td>' + esc([x.ciudad, x.estadoRep].filter(Boolean).join(', ') || '—') + '</td>' +
+        '<td class="n">' + (Number(x.avance) || 0) + '%</td>' +
+        '<td>' + esc(CPS_ESTADOS[x.estado] || x.estado) + (x.folio ? '<br><small>Folio ' + esc(x.folio) + '</small>' : '') + (x.nota ? '<br><small>' + esc(x.nota) + '</small>' : '') + '</td>' +
+        '<td style="white-space:nowrap">' + acc.join(' ') + '</td></tr>';
+    };
+    host.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px"><h3 style="margin:0">Solicitudes de certificado</h3><div style="display:flex;gap:6px;flex-wrap:wrap">' + tabs + '</div></div>' +
+      (lista.length ? '<div class="en-tabla-ancha" style="overflow-x:auto"><table class="pg-tabla"><thead><tr><th>Fecha</th><th>Alumno</th><th>Curso</th><th>WhatsApp</th><th>Ubicación</th><th class="n">Avance</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>' + lista.map(fila).join('') + '</tbody></table></div>'
+        : '<div class="sb-vacio">No hay solicitudes en esta vista.</div>');
+  }
+  window.cpSolicitudEstado = async function(id, estado) {
+    const cuerpo = { id, estado };
+    if (estado === 'emitido') { const f = prompt('Folio del certificado emitido:'); if (!f || !f.trim()) return; cuerpo.folio = f.trim(); }
+    if (estado === 'rechazado') { const n = prompt('Motivo para el alumno (lo verá en su aula):'); if (!n || !n.trim()) return; cuerpo.nota = n.trim(); }
+    try { await callAdminEndpoint('/admin/campus/solicitudes/estado', cuerpo); showToast('Solicitud actualizada'); await cpSolicitudesCargar(); }
+    catch (e) { showToast(e.message || 'No se pudo actualizar', 'error'); }
+  };
+
   window.cpCargar = async function(forzar) {
     if (CP.cargando) return;
     if (CP.datos && !forzar) { cpRender(); return; }
@@ -7367,6 +7410,7 @@ body::before { display: none; }
     try {
       CP.datos = await callAdminEndpoint('/admin/campus/cursos', {});
       const c = cpCurso(); CP.borrador = c ? cpCopia(c) : null; CP.sucio = false;
+      cpSolicitudesCargar();
       const ver = document.getElementById('cpVerCampus'); if (ver && CP.datos.urlCampus) ver.href = CP.datos.urlCampus;
     } catch (e) {
       document.getElementById('cpCuerpo').innerHTML = '<div class="sb-vacio">No se pudo cargar el campus (' + esc(e.message || 'error') + '). Si dice «404», el servidor todavía no tiene esta función publicada.</div>';
