@@ -149,19 +149,31 @@ function miniClase(c, i, cls) {
 function filaClase(c, x, i, sig) {
   const v = vista(c, x.id), es = sig && sig.id === x.id && !v;
   const em = v ? 'Completada' : es ? 'Tu siguiente clase' : 'Disponible';
-  const sub = v ? 'Completada · vuelve a verla cuando quieras' : (x.duracionMin ? x.duracionMin + ' min · ' : '') + 'Disponible ahora';
+  // El círculo ya muestra el número; el título completo se conserva en el reproductor.
+  const titulo = String(x.titulo ?? '').replace(/^Clase\s+\d+\s*[·:–—-]\s*(?=\S)/iu, '');
+  const sub = (x.duracionMin ? x.duracionMin + ' min · ' : '') + (v ? 'Disponible para repasar' : 'Disponible ahora');
   const accion = v ? `<span class="mc__chip mc__chip--line">${I.check}<span>Repasar</span></span>` : es ? `<span class="mc__chip mc__chip--gold">${I.play}<span>Ver clase</span></span>` : `<span class="mc__chip mc__chip--line">${I.play}<span>Ver</span></span>`;
   return `<a class="mc__l conimg ${v ? 'vista' : ''} ${es ? 'sig' : ''}" href="${base(c.slug)}/clase/${esc(x.id)}">
     <span class="mc__ln">${v ? I.check : String(i + 1).padStart(2, '0')}</span>
     ${miniClase(c, i, 'mc__lth')}
-    <span class="mc__lt"><em>${em}</em><strong>${esc(x.titulo)}</strong><small>${esc(sub)}</small></span>
+    <span class="mc__lt"><em>${em}</em><strong>${esc(titulo)}</strong><small>${esc(sub)}</small></span>
     <span class="mc__la">${accion}</span>
   </a>`;
 }
 function bloqueTemario(c) {
-  const sig = siguiente(c); let n = 0;
-  if (!c.modulos.length) return '<div class="mc__card mc__empty"><h2>Las grabaciones aún no están publicadas</h2><p>Tu curso ya está en tu cuenta. En cuanto el equipo publique las clases aparecerán aquí, sin que hagas nada más.</p></div>';
-  return `<div class="mc__tem">${c.modulos.map((m, mi) => `<div class="mc__mod"><span>Módulo ${mi + 1}</span><b>${esc(m.titulo)}${m.descripcion ? `<small>${esc(m.descripcion)}</small>` : ''}</b></div>${m.clases.map((x) => filaClase(c, x, n++, sig)).join('')}`).join('')}</div>
+  const sig = siguiente(c);
+  let n = 0;
+  const filas = c.modulos.map((m, mi) => {
+    const grupo = m.clases.length > 1 ? `<div class="mc__mod"><span>Módulo ${mi + 1}</span><b>${esc(m.titulo)}</b></div>` : '';
+    return grupo + m.clases.map((x) => filaClase(c, x, n++, sig)).join('');
+  }).join('');
+  const temario = filas ? `<div class="mc__tem">${filas}</div>`
+    : '<div class="mc__card mc__empty"><h2>Las grabaciones aún no están publicadas</h2><p>Tu curso ya está en tu cuenta. En cuanto el equipo publique las clases aparecerán aquí, sin que hagas nada más.</p></div>';
+  const programa = c.modulos.length ? `<details class="mc__programa">
+    <summary>Contenido por módulo</summary>
+    <ol>${c.modulos.map((m) => `<li><strong>${esc(m.titulo)}</strong>${m.descripcion ? `<p>${esc(m.descripcion)}</p>` : ''}</li>`).join('')}</ol>
+  </details>` : '';
+  return `${temario}${programa}
     ${c.enPreparacion.length ? `<span class="mc__eyebrow mute" style="margin-top:18px">Próximamente</span><div class="mc__prox">${c.enPreparacion.map((m) => `<div>${I.reloj}<span><b>${esc(m.titulo)}</b><small>${esc(m.descripcion || 'En preparación')}</small></span></div>`).join('')}</div>` : ''}`;
 }
 function panelAprendizaje(c) {
@@ -315,7 +327,7 @@ function vistaInicio(c) {
 function vistaClases(c) {
   $('#mc-view').innerHTML = `<div class="mc__cols"><div>
     <span class="mc__eyebrow">Ruta de aprendizaje</span>
-    <div class="mc__sh" style="margin-top:4px"><h2>Temario del curso</h2><b>${clasesDe(c).length} clases</b></div>
+    <div class="mc__sh" style="margin-top:4px"><h2>Temario del curso</h2><b>${contar(clasesDe(c).length, 'clase')}</b></div>
     ${bloqueTemario(c)}
   </div><aside class="mc__aside">${panelAprendizaje(c)}</aside></div>`;
   ligar(c);
