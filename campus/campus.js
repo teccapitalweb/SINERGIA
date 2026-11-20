@@ -10,7 +10,7 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, cerrarVisor, confeti } from './aula.js?v=6';
+import { pintarAula, pintarSinCompra, pintarAvatar, cerrarVisor, confeti } from './aula.js?v=7';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0',
@@ -194,7 +194,7 @@ const NAV = [
   ['#/progreso', 'progreso', 'Mi progreso'], ['#/certificado', 'certificado', 'Certificados'], ['#/cuenta', 'cuenta', 'Mi cuenta']
 ];
 function marco(activo, html) {
-  const nav = NAV.map(([h, i, t]) => `<a class="nav-item${activo === h ? ' activo' : ''}" href="${h}">${ICO[i]}<span>${t}</span></a>`).join('');
+  const nav = NAV.map(([h, i, t]) => `<a class="nav-item${activo === h ? ' activo' : ''}" href="${h}" ${activo === h ? 'aria-current="page"' : ''}>${ICO[i]}<span>${t}</span></a>`).join('');
   const movil = NAV.filter(([h]) => h !== '#/progreso').map(([h, i, t]) => `<a class="${activo === h ? 'activo' : ''}" href="${h}">${ICO[i]}<span>${t.replace('Mis ', '').replace('Mi ', '')}</span></a>`).join('');
   return `${E.datos && E.datos.alumno.esAdmin ? '<div class="vista-equipo">Vista del equipo: ves todos los cursos y las clases ocultas también se pueden reproducir. Tu avance no se guarda.</div>' : ''}
   <div class="campus">
@@ -205,7 +205,7 @@ function marco(activo, html) {
       <a class="nav-item" href="/">${ICO.hoja}<span>Sitio de Sinergia</span></a>
       <button class="nav-item salir" data-salir>${ICO.salir}<span>Cerrar sesión</span></button>
     </aside>
-    <header class="barra-movil"><img src="/img/logo-sinergia-256.png" alt=""><b>Campus Sinergia</b></header>
+    <header class="barra-movil"><img src="/img/logo-sinergia-256.png" alt=""><b>Campus Sinergia</b><a class="campus-avatar" href="#/cuenta" aria-label="Mi cuenta"></a></header>
     <main class="contenido" id="contenido">${html}</main>
     <nav class="nav-movil" aria-label="Menú">${movil}</nav>
   </div>`;
@@ -222,7 +222,7 @@ function tarjetaCurso(c) {
   const accion = !c.contenidoListo
     ? `<a class="btn btn-sec" href="#/curso/${c.slug}">Ver el temario</a>`
     : `<a class="btn btn-pri" href="${sig ? `#/curso/${c.slug}/clase/${sig.id}` : `#/curso/${c.slug}`}">${ICO.play}${p.completadas.length ? 'Continuar aprendiendo' : 'Empezar el curso'}</a>`;
-  return `<article class="tarjeta">
+  return `<article class="tarjeta" data-curso="${esc(c.slug)}">
     ${portada(c, `<div class="portada-info"><div class="chips">${c.contenidoListo ? `<span class="chip">${p.total} clases</span><span class="chip">${c.modulos.length} módulos</span>` : '<span class="chip prep">Contenido en preparación</span>'}${p.porcentaje === 100 ? '<span class="chip ok">Completado</span>' : ''}</div><h3>${esc(c.titulo)}</h3></div>`)}
     <div class="tarjeta-cuerpo">
       ${c.ponente ? `<div class="ponente">Imparte: <b>${esc(c.ponente)}</b></div>` : ''}
@@ -373,6 +373,7 @@ function render() {
   else if (partes[0] === 'cuenta') { activo = '#/cuenta'; html = vistaCuenta(); }
   else html = vistaInicio();
   $app.innerHTML = marco(activo, html);
+  pintarAvatar($app.querySelector('.campus-avatar'), E.usuario, E.datos.alumno);
   const clave = location.hash;
   window.scrollTo(0, E.scroll[clave] || 0);
   const fn = document.getElementById('fNueva');
