@@ -10,7 +10,7 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, cerrarVisor } from './aula.js?v=3';
+import { pintarAula, pintarSinCompra, cerrarVisor, confeti } from './aula.js?v=4';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0',
@@ -36,6 +36,12 @@ setPersistence(auth, browserLocalPersistence).catch(() => null);
 
 const $app = document.getElementById('app');
 const E = { usuario: null, datos: null, error: null, cargando: false, scroll: {}, reproduciendo: null, cuentaAtras: null };
+
+// Regreso de un pago (lo deja gracias.html en esta pestaña): curso recién comprado, válido 15 minutos
+function pagoReciente() {
+  try { const p = JSON.parse(sessionStorage.getItem('campus_pago') || 'null'); return p && p.curso && Date.now() - p.t < 15 * 60 * 1000 ? p : null; } catch (e) { return null; }
+}
+const olvidarPago = () => { try { sessionStorage.removeItem('campus_pago'); } catch (e) {} };
 
 // ── Utilidades ─────────────────────────────────────────────
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -84,7 +90,12 @@ onAuthStateChanged(auth, async (u) => {
   E.usuario = u;
   const { partes, q } = ruta();
   if (partes[0] === 'entrar' && q.get('t')) return canjearEnlace(q.get('t'), q.get('curso'));
-  if (!u) { E.datos = null; return pantallaAcceso(); }
+  if (!u) {
+    E.datos = null;
+    const pg = pagoReciente();
+    if (pg) { confeti(); return pantallaAcceso({ aviso: pg.enlaceEnviado ? '¡Pago confirmado! Ese correo ya tenía cuenta: te enviamos un enlace de acceso (revisa tu correo, también en no deseados). También puedes entrar con Google o tu contraseña.' : '¡Pago confirmado! Entra con el correo con el que pagaste para ver tu curso.' }); }
+    return pantallaAcceso();
+  }
   await cargarDatos();
   render();
 });
@@ -137,7 +148,7 @@ function pantallaAcceso(opc = {}) {
           <div class="campo"><label for="eEmail">Correo de compra</label><input id="eEmail" type="email" autocomplete="email" inputmode="email" required placeholder="tu@correo.com"></div>
           <button class="btn btn-pri" style="width:100%" id="bEnlace">Enviarme mi enlace de acceso</button>
         </form>
-        <div id="mEnlace">${opc.error ? `<div class="mensaje mal">${esc(opc.error)}</div>` : ''}</div>
+        <div id="mEnlace">${opc.error ? `<div class="mensaje mal">${esc(opc.error)}</div>` : opc.aviso ? `<div class="mensaje ok">${esc(opc.aviso)}</div>` : ''}</div>
         <div class="separador">o entra con tu cuenta</div>
         <button class="btn btn-google" id="bGoogle"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">Continuar con Google</button>
         <details class="otra"><summary>Tengo correo y contraseña</summary>
@@ -334,7 +345,18 @@ function render() {
   if (!E.datos) return;
   const { partes } = ruta();
   cerrarVisor();
-  if (partes[0] === 'curso' && curso(partes[1])) { pintarAula({ app: $app, E, api, render, WHATSAPP }, curso(partes[1]), partes); window.scrollTo(0, 0); return; }
+  const pg = pagoReciente();
+  if (pg && !curso(pg.curso) && !E.datos.alumno.esAdmin && (E.esperaPago = (E.esperaPago || 0) + 1) <= 6) {
+    // Acaba de pagar y el curso todavía se está anotando en su cuenta: se espera en vez de decirle que no lo tiene
+    $app.innerHTML = '<div class="splash"><img src="/img/logo-sinergia-256.png" alt="" width="64" height="64"><span>Pago confirmado. Activando tu acceso…</span></div>';
+    setTimeout(async () => { await cargarDatos(); render(); }, 1800);
+    return;
+  }
+  if (partes[0] === 'curso' && curso(partes[1])) {
+    pintarAula({ app: $app, E, api, render, WHATSAPP }, curso(partes[1]), partes); window.scrollTo(0, 0);
+    if (pg && pg.curso === partes[1]) { olvidarPago(); confeti(); setTimeout(() => { const t = document.getElementById('mc-toast'); if (t) { t.textContent = '¡Bienvenido! Tu curso ya está activo'; t.className = 'mc__toast on'; setTimeout(() => { t.className = 'mc__toast'; }, 3800); } }, 400); }
+    return;
+  }
   // Llegó desde «Ya compré» de una landing (o abrió un curso) y esa cuenta no lo tiene: no entra al campus, se le manda a inscribirse.
   const pedido = partes[0] === 'curso' ? partes[1] : (!partes.length && !E.pedidoAtendido ? new URLSearchParams(location.search).get('curso') : null);
   const ajeno = pedido && !curso(pedido) && !E.datos.alumno.esAdmin ? (E.datos.otros || []).find((o) => o.slug === pedido) : null;

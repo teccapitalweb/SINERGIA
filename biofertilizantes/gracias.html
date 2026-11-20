@@ -69,52 +69,64 @@
 </style>
 </head>
 <body>
-  <div class="card">
+  <div class="card" id="g-card">
     <div class="check">
       <svg width="38" height="38" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <h1>¡Pago confirmado!</h1>
-    <p class="sub">Tu acceso al curso <b>Elaboración y Aplicación de Biofertilizantes en Cultivos</b> ya está activo. Puedes empezar ahora mismo.</p>
-
-    <!-- Acceso al aula -->
-    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:22px 20px;margin:22px 0;text-align:center;">
-      <strong style="display:block;font-size:17px;color:#111827;margin-bottom:6px;">Tu curso ya está disponible</strong>
-      <p style="font-size:14px;color:#6b7280;margin:0 0 16px;">Entra con el mismo correo que usaste para pagar.</p>
-      <a href="aula/acceso.html"
-         style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 4px 12px rgba(46,125,50,.25);">
-        Entrar a mi curso
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-      </a>
-      <!-- TODO: el correo de acceso aún no se envía — falta integrar Resend en sinergia-webhook. -->
-      <p style="font-size:12px;color:#9ca3af;margin:12px 0 0;">También te enviamos un correo con este acceso.</p>
-    </div>
-
-    <div style="background:rgba(0,0,0,0.04);border-left:3px solid #999;padding:12px 16px;margin:20px 0;border-radius:6px;font-size:13px;line-height:1.6;text-align:left;">
-      <strong>Sobre tu comprobante</strong><br>
-      Recibirás un correo de Stripe con el recibo a nombre de <strong>Bioorigen S.A. de C.V.</strong>, razón social de Sinergia Agrícola. En tu estado de cuenta bancario el cargo aparece como <strong>"SINERGIA BIOFERT"</strong>. Todo es legítimo y corresponde a tu inscripción.
-    </div>
-
-    <div class="steps">
-      <div class="step">
-        <span class="step-num">1</span>
-        <p><b>Revisa tu correo.</b> Stripe te envió el recibo de tu pago (revisa también spam).</p>
-      </div>
-      <div class="step">
-        <span class="step-num">2</span>
-        <p><b>Entra al aula cuando quieras.</b> Los videos, los materiales descargables y tu certificado están disponibles 24/7. Avanzas a tu ritmo, sin fechas.</p>
-      </div>
-      <div class="step">
-        <span class="step-num">3</span>
-        <p><b>Únete al grupo VIP de WhatsApp.</b> Ahí resuelves dudas con el instructor y recibes los avisos de material nuevo.</p>
-      </div>
-    </div>
-
-    <a class="btn-wa" href="https://wa.me/522221035842?text=Hola%2C%20ya%20realic%C3%A9%20mi%20pago%20del%20curso%20de%20Biofertilizantes.%20Quiero%20unirme%20al%20grupo%20VIP." rel="noopener">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.14 1.535 5.874L0 24l6.29-1.508A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.814 9.814 0 01-5.058-1.4l-.361-.214-3.735.896.944-3.653-.235-.374A9.817 9.817 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
-      UNIRME AL GRUPO VIP
+    <p class="sub" id="g-sub">Estamos abriendo tu curso <b>Elaboración y Aplicación de Biofertilizantes en Cultivos</b>. No cierres esta ventana…</p>
+    <div id="g-espera" style="margin:22px auto 6px;width:38px;height:38px;border-radius:50%;border:3.5px solid rgba(0,0,0,.1);border-top-color:var(--base);animation:g-giro .8s linear infinite"></div>
+    <a id="g-entrar" hidden href="/campus/?curso=biofertilizantes#/curso/biofertilizantes"
+       style="display:none;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:20px;padding:15px 20px;background:linear-gradient(135deg,var(--base),var(--acc));color:#fff;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none">
+      Entrar a mi curso
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
-
     <p class="foot">¿Algún problema con tu pago? Escríbenos al <a href="https://wa.me/522221035842">222 103 5842</a><br>© 2026 Sinergia Agrícola</p>
   </div>
+  <style>@keyframes g-giro{to{transform:rotate(360deg)}}</style>
+  <script type="module">
+  /* Al volver de Stripe: confeti y entrada directa al curso en el Campus.
+     El servidor confirma el pago con el session_id. Cuenta nueva: entra con un token de un solo uso.
+     Si el correo ya tenía cuenta, entra con su acceso de siempre (se le manda su enlace al correo). */
+  const CURSO = 'biofertilizantes';
+  const BACKEND = 'https://sinergia-webhook-production.up.railway.app';
+  const DESTINO = '/campus/?curso=' + CURSO + '#/curso/' + CURSO;
+  function confeti(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches||document.getElementById('sx-confeti'))return;var c=document.createElement('canvas');c.id='sx-confeti';c.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2147483647';document.body.appendChild(c);var x=c.getContext('2d'),d=Math.min(window.devicePixelRatio||1,2);c.width=innerWidth*d;c.height=innerHeight*d;var col=['#f2b632','#22A05A','#1D6FD1','#ffffff','#ff7043','#86efac'],P=[];for(var i=0;i<160;i++)P.push({x:Math.random()*c.width,y:-Math.random()*c.height*.7,vx:(Math.random()-.5)*5*d,vy:(2+Math.random()*4)*d,w:(6+Math.random()*6)*d,h:(5+Math.random()*6)*d,r:Math.random()*6.28,vr:(Math.random()-.5)*.3,c:col[i%col.length]});var t0=performance.now();(function f(t){var k=(t-t0)/5000;x.clearRect(0,0,c.width,c.height);x.globalAlpha=k>.75?Math.max(0,1-(k-.75)*4):1;P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.03*d;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore()});if(k<1)requestAnimationFrame(f);else c.remove()})(t0)}catch(e){}}
+  const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+  function manual(texto) {
+    document.getElementById('g-espera').style.display = 'none';
+    if (texto) document.getElementById('g-sub').innerHTML = texto;
+    const b = document.getElementById('g-entrar'); b.hidden = false; b.style.display = 'inline-flex';
+  }
+  async function entrar() {
+    confeti();
+    const sid = new URLSearchParams(location.search).get('session_id') || '';
+    if (!/^cs_[A-Za-z0-9_]+$/.test(sid)) return manual('Tu acceso al curso <b>Elaboración y Aplicación de Biofertilizantes en Cultivos</b> ya está activo.');
+    try {
+      let d = null;
+      for (let i = 0; i < 9; i++) {
+        const r = await fetch(BACKEND + '/campus/entrar-por-pago', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id: sid }) });
+        d = await r.json().catch(() => ({}));
+        if (r.status === 409 && d.pendiente) { await espera(2000); continue; }
+        if (!r.ok) throw new Error(d.error || 'error');
+        break;
+      }
+      if (!d || !d.pagado) throw new Error('pendiente');
+      sessionStorage.setItem('campus_pago', JSON.stringify({ curso: CURSO, t: Date.now(), cuentaExistente: !!d.cuentaExistente, enlaceEnviado: !!d.enlaceEnviado }));
+      if (d.entrada === 'token' && d.token) {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { getAuth, signInWithCustomToken, setPersistence, browserLocalPersistence } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+        const auth = getAuth(initializeApp({ apiKey: 'AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0', authDomain: 'sinergia-agricola-vip.firebaseapp.com', projectId: 'sinergia-agricola-vip', appId: '1:788533345154:web:4066de6561e1d54e2cad9b' }));
+        await setPersistence(auth, browserLocalPersistence).catch(() => null);
+        await signInWithCustomToken(auth, d.token);
+      }
+      await espera(900);            // que el confeti se alcance a ver
+      location.replace(DESTINO);
+    } catch (e) {
+      manual('Tu pago quedó registrado. Entra a tu curso con el correo con el que pagaste.');
+    }
+  }
+  entrar();
+  </script>
 </body>
 </html>

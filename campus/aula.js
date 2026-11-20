@@ -567,3 +567,6 @@ export function pintarSinCompra(ctx, info) {
   </div>`;
   const mis = $('#mc-mis'); if (mis) mis.onclick = () => ctx.verMisCursos();
 }
+
+// ── Confeti (bienvenida tras el pago) ──
+export function confeti(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches||document.getElementById('sx-confeti'))return;var c=document.createElement('canvas');c.id='sx-confeti';c.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2147483647';document.body.appendChild(c);var x=c.getContext('2d'),d=Math.min(window.devicePixelRatio||1,2);c.width=innerWidth*d;c.height=innerHeight*d;var col=['#f2b632','#22A05A','#1D6FD1','#ffffff','#ff7043','#86efac'],P=[];for(var i=0;i<160;i++)P.push({x:Math.random()*c.width,y:-Math.random()*c.height*.7,vx:(Math.random()-.5)*5*d,vy:(2+Math.random()*4)*d,w:(6+Math.random()*6)*d,h:(5+Math.random()*6)*d,r:Math.random()*6.28,vr:(Math.random()-.5)*.3,c:col[i%col.length]});var t0=performance.now();(function f(t){var k=(t-t0)/5000;x.clearRect(0,0,c.width,c.height);x.globalAlpha=k>.75?Math.max(0,1-(k-.75)*4):1;P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.03*d;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore()});if(k<1)requestAnimationFrame(f);else c.remove()})(t0)}catch(e){}}
