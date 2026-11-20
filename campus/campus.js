@@ -10,7 +10,7 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, pintarAvatar, cerrarVisor, confeti } from './aula.js?v=panel-382b52e';
+import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti } from './aula.js?v=biblioteca-c3e91f';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0',
@@ -219,9 +219,13 @@ function portada(c, extra = '') {
 function tarjetaCurso(c) {
   const p = c.progreso;
   const sig = siguienteClase(c);
+  const aula = '#/curso/' + encodeURIComponent(c.slug);
   const accion = !c.contenidoListo
-    ? `<a class="btn btn-sec" href="#/curso/${c.slug}">Ver el temario</a>`
-    : `<a class="btn btn-pri" href="${sig ? `#/curso/${c.slug}/clase/${sig.id}` : `#/curso/${c.slug}`}">${ICO.play}${p.completadas.length ? 'Continuar aprendiendo' : 'Empezar el curso'}</a>`;
+    ? `<a class="btn btn-sec" href="${aula}">Ver el temario</a>`
+    : `<div class="acciones-curso">
+        <a class="btn btn-pri" href="${sig ? aula + '/clase/' + encodeURIComponent(sig.id) : aula}">${ICO.play}${p.completadas.length ? 'Continuar aprendiendo' : 'Empezar el curso'}</a>
+        ${sig ? `<a class="btn btn-sec" href="${aula}">Ver curso</a>` : ''}
+      </div>`;
   return `<article class="tarjeta" data-curso="${esc(c.slug)}">
     ${portada(c, `<div class="portada-info"><div class="chips">${c.contenidoListo ? `<span class="chip">${p.total} clases</span><span class="chip">${c.modulos.length} módulos</span>` : '<span class="chip prep">Contenido en preparación</span>'}${p.porcentaje === 100 ? '<span class="chip ok">Completado</span>' : ''}</div><h3>${esc(c.titulo)}</h3></div>`)}
     <div class="tarjeta-cuerpo">
@@ -242,9 +246,24 @@ function siguienteClase(c) {
   }
   return todas.find((x) => !esVista(c, x.id)) || todas[0] || null;
 }
-function listaMateriales(c, lista) {
-  if (!lista.length) return '<div class="caja vacio"><b>Sin materiales por ahora</b>Cuando el equipo publique materiales de este curso aparecerán aquí.</div>';
-  return `<div class="materiales">${lista.map((m) => `<button class="material" data-material="${esc(c.slug)}|${esc(m.id)}"><span class="ext ${esc(m.ext)}">${esc((m.ext || 'doc').slice(0, 4))}</span><span style="min-width:0"><b>${esc(m.nombre)}</b><span>${m.tamano ? (m.tamano < 1048576 ? Math.max(1, Math.round(m.tamano / 1024)) + ' KB' : (m.tamano / 1048576).toFixed(1) + ' MB') + ' · ' : ''}Descargar</span></span><span class="bajar">${ICO.bajar}</span></button>`).join('')}</div>`;
+function listaMateriales(c) {
+  if (!c.materiales.length) return '<div class="caja vacio"><b>Sin materiales por ahora</b>Cuando el equipo publique materiales de este curso aparecerán aquí.</div>';
+  return `<div class="materiales">${c.materiales.map((m) => {
+    const ext = (m.ext || 'doc').toLowerCase().replace(/^\./, '');
+    return `<button type="button" class="material" data-curso-material="${esc(c.slug)}" data-material="${esc(m.id)}">
+      <span class="ext ${esc(ext)}" aria-hidden="true">${esc(ext === 'enlace' ? 'URL' : ext.slice(0, 4))}</span>
+      <span class="material-nombre"><b>${esc(m.nombre)}</b><span>Abrir archivo</span></span>
+      <span class="bajar" aria-hidden="true">${ICO.bajar}</span>
+    </button>`;
+  }).join('')}</div>`;
+}
+
+function otrosCursos(otros = []) {
+  if (!otros.length) return '';
+  return `<section><h2 class="sec">Otros cursos de Sinergia</h2>
+    <div class="materiales">${otros.map((c) => `<a class="material" href="${esc(c.landing)}" target="_blank" rel="noopener">
+      <span class="ext" aria-hidden="true">${ICO.hoja}</span><span class="material-nombre"><b>${esc(c.titulo)}</b><span>Conocer el curso</span></span>
+    </a>`).join('')}</div></section>`;
 }
 
 // ── Vistas ─────────────────────────────────────────────────
@@ -255,31 +274,35 @@ function vistaInicio() {
   const enCurso = d.cursos.filter((c) => c.contenidoListo && c.progreso.porcentaje < 100);
   let h = `<div class="encabezado"><div><span class="eyebrow">Campus Sinergia</span><h1 class="titulo">Hola, <span>${esc(nombre)}</span></h1><p class="sub">${d.cursos.length ? 'Aquí están tus cursos. Tu avance se guarda en tu cuenta y lo ves igual en la computadora y en el celular.' : ''}</p></div></div>`;
   if (bienvenida) h += '<div class="aviso azul">Listo, ya entraste. Para la próxima puedes volver a pedir tu enlace, entrar con Google o crear una contraseña en «Mi cuenta».</div>';
-  if (!d.cursos.length) return h + sinCursos();
+  if (!d.cursos.length) return h + sinCursos() + otrosCursos(d.otros);
   if (enCurso.length) {
     const c = enCurso[0], sig = siguienteClase(c);
     h += `<div class="caja continuar"><div><span class="eyebrow">Continúa donde te quedaste</span><h2>${esc(sig ? sig.titulo : c.titulo)}</h2><p class="sub" style="font-size:14px">${esc(c.titulo)} · ${c.progreso.porcentaje}% completado</p></div>${sig ? `<a class="btn btn-pri" href="#/curso/${c.slug}/clase/${sig.id}">${ICO.play}Seguir</a>` : ''}</div>`;
   }
   h += `<h2 class="sec">Mis cursos</h2><div class="rejilla">${d.cursos.map(tarjetaCurso).join('')}</div>`;
-  if (d.otros.length) h += `<h2 class="sec">Otros cursos de Sinergia</h2><div class="materiales">${d.otros.map((o) => `<a class="material" href="${esc(o.landing)}" target="_blank" rel="noopener"><span class="ext">${ICO.hoja}</span><span><b>${esc(o.titulo)}</b><span>Conocer el curso</span></span></a>`).join('')}</div>`;
-  return h;
+  return h + otrosCursos(d.otros);
 }
 function sinCursos() {
   return `<div class="caja vacio"><b>No encontramos cursos en esta cuenta</b>Entraste como <b>${esc(E.datos.alumno.email)}</b>. Si compraste con otro correo, cierra sesión y pide tu enlace con ese correo.<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px"><button class="btn btn-sec" data-salir>Usar otro correo</button><a class="btn btn-txt" href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener">Pedir ayuda por WhatsApp</a></div></div>`;
 }
 function vistaCursos() {
   const d = E.datos;
-  return `<div class="encabezado"><div><span class="eyebrow">Mi biblioteca</span><h1 class="titulo"><span>Mis cursos</span></h1><p class="sub">Solo aparecen los cursos de tu cuenta.</p></div></div>${d.cursos.length ? `<div class="rejilla">${d.cursos.map(tarjetaCurso).join('')}</div>` : sinCursos()}`;
+  return `<div class="encabezado"><div><span class="eyebrow">Mi biblioteca</span><h1 class="titulo"><span>Mis cursos</span></h1><p class="sub">Entra a las clases y materiales de tus cursos.</p></div></div>
+    ${d.cursos.length ? `<div class="rejilla">${d.cursos.map(tarjetaCurso).join('')}</div>` : sinCursos()}${otrosCursos(d.otros)}`;
 }
 function noTiene() {
   return `<div class="caja vacio"><b>Este curso no está en tu cuenta</b>Si lo compraste con otro correo, cierra sesión y entra con ese correo.<div style="margin-top:14px"><a class="btn btn-sec" href="#/cursos">Ver mis cursos</a></div></div>`;
 }
 function vistaMateriales() {
   const d = E.datos;
-  let h = '<div class="encabezado"><div><span class="eyebrow">Descargas</span><h1 class="titulo"><span>Materiales</span></h1><p class="sub">Los archivos de tus cursos. Cada descarga se prepara al momento solo para tu cuenta.</p></div></div>';
-  if (!d.cursos.length) return h + sinCursos();
-  d.cursos.forEach((c) => { h += `<h2 class="sec">${esc(c.titulo)}</h2>${c.materiales.length ? `<div class="caja" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:200px"><b style="font-family:var(--f-tit)">${c.materiales.length} ${c.materiales.length === 1 ? 'material' : 'materiales'}</b><p class="sub" style="font-size:14px">Ábrelos en pantalla o descárgalos desde tu curso.</p></div><a class="btn btn-pri" href="#/curso/${c.slug}/materiales">Ver materiales</a></div>` : listaMateriales(c, [])}`; });
-  return h;
+  const h = '<div class="encabezado"><div><h1 class="titulo">Materiales</h1><p class="sub">Abre o descarga los archivos de tus cursos.</p></div></div>';
+  return h + (d.cursos.length ? d.cursos.map((c) => `<section>
+    <div class="materiales-encabezado">
+      <h2 class="sec">${esc(c.titulo)}</h2>
+      <a class="btn btn-txt" href="#/curso/${encodeURIComponent(c.slug)}/materiales">Ver en el curso</a>
+    </div>
+    ${listaMateriales(c)}
+  </section>`).join('') : sinCursos());
 }
 function vistaProgreso() {
   const d = E.datos;
@@ -352,6 +375,16 @@ function render() {
     setTimeout(async () => { await cargarDatos(); render(); }, 1800);
     return;
   }
+  // «Ya compré» entra al aula cuando el servidor ya asignó ese curso a la cuenta.
+  const entrada = !partes.length ? new URL(location.href) : null;
+  const slugEntrada = entrada?.searchParams.get('curso');
+  if (slugEntrada && curso(slugEntrada)) {
+    entrada.searchParams.delete('curso');
+    entrada.hash = '#/curso/' + encodeURIComponent(slugEntrada);
+    history.replaceState(history.state, '', entrada);
+    hashAnterior = location.hash;
+    return render();
+  }
   if (partes[0] === 'curso' && curso(partes[1])) {
     pintarAula({ app: $app, E, api, render, WHATSAPP }, curso(partes[1]), partes); window.scrollTo(0, 0);
     if (pg && pg.curso === partes[1]) { olvidarPago(); confeti(); setTimeout(() => { const t = document.getElementById('mc-toast'); if (t) { t.textContent = '¡Bienvenido! Tu curso ya está activo'; t.className = 'mc__toast on'; setTimeout(() => { t.className = 'mc__toast'; }, 3800); } }, 400); }
@@ -390,12 +423,10 @@ let hashAnterior = location.hash;
 window.addEventListener('hashchange', () => { E.scroll[hashAnterior] = window.scrollY; hashAnterior = location.hash; const { partes, q } = ruta(); if (partes[0] === 'entrar' && q.get('t')) return canjearEnlace(q.get('t'), q.get('curso')); render(); });
 document.addEventListener('click', async (e) => {
   if (e.target.closest('[data-salir]')) { clearInterval(E.cuentaAtras); await signOut(auth); location.hash = '#/'; return; }
-  const m = e.target.closest('[data-material]');
+  const m = e.target.closest('[data-curso-material][data-material]');
   if (m) {
-    const [slug, id] = m.dataset.material.split('|');
-    const ventana = window.open('', '_blank');
-    try { const r = await api('/campus/material', { body: { curso: slug, id } }); if (ventana) ventana.location = r.url; else location.href = r.url; }
-    catch (err) { if (ventana) ventana.close(); toast(err.message, true); }
+    const c = curso(m.dataset.cursoMaterial);
+    if (c) abrirVisor(c, m.dataset.material, api);
   }
 });
 // El enlace del correo puede abrir el campus con ?curso=… para volver a la landing correcta

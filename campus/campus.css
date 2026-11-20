@@ -184,7 +184,7 @@ details.otra summary { cursor: pointer; color: var(--azul-700); font-weight: 700
 /* ── Responsive ── */
 @media (max-width: 1100px) { .clase-grid { grid-template-columns: 1fr; } .panel-lado { position: static; max-height: none; } }
 @media (max-width: 860px) {
-  .campus { grid-template-columns: 1fr; }
+  .campus { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
   .lateral { display: none; }
   .barra-movil { display: flex; position: sticky; top: 0; z-index: 30; align-items: center; gap: 10px; padding: 10px 16px; background: var(--verde-900); color: #fff; }
   .barra-movil img { width: 32px; height: 32px; border-radius: 9px; background: #fff; }
@@ -236,6 +236,12 @@ details.otra summary { cursor: pointer; color: var(--azul-700); font-weight: 700
 .campus .tarjeta :is(.btn-pri, .barra i) { background: var(--curso); box-shadow: none; }
 .campus .tarjeta .btn-pri:hover { background: var(--curso-oscuro); transform: none; }
 .campus .tarjeta-cuerpo { gap: 16px; padding: 18px; }
+.campus .acciones-curso { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+.campus .acciones-curso .btn { flex: 1 0 auto; margin-top: 0; }
+.materiales-encabezado { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0 14px; margin: 24px 0 10px; }
+.materiales-encabezado .sec { margin: 0; }
+.materiales-encabezado .btn { padding-inline: 0; }
+.material .material-nombre { min-width: 0; overflow-wrap: anywhere; }
 .campus-avatar {
   display: grid;
   position: relative;
