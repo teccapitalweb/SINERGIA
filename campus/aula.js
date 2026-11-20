@@ -262,7 +262,7 @@ function prepararPortadas(contenedor) {
 
 function ligar(c) {
   prepararPortadas($('#mc-view'));
-  document.querySelectorAll('#mi-curso [data-mat]').forEach((b) => b.onclick = () => abrirVisor(c, b.dataset.mat));
+  document.querySelectorAll('#mi-curso [data-mat]').forEach((b) => b.onclick = () => abrirVisor(c, b.dataset.mat, X.api));
   ligarCalifica(c);
 }
 
@@ -486,7 +486,7 @@ export function cerrarVisor() {
   document.removeEventListener('keydown', k.onKey, true);
   setTimeout(() => k.root.remove(), 200);
 }
-function abrirVisor(c, id) {
+export function abrirVisor(c, id, api) {
   const m = c.materiales.find((x) => x.id === id); if (!m) return;
   if (RV) cerrarVisor();
   const tipo = tipoDe(m), formato = RV_FORMATO[tipo] || 'Archivo';
@@ -513,7 +513,7 @@ function abrirVisor(c, id) {
     else if (ctx.viewerUrl) window.open(ctx.viewerUrl, '_blank', 'noopener');
   };
   estado('<div class="mcrv__spin"></div><h3>Preparando tu material…</h3><p>Un momento, estamos verificando tu acceso.</p>');
-  X.api('/campus/material', { body: { curso: c.slug, id } }).then(async (r) => {
+  api('/campus/material', { body: { curso: c.slug, id } }).then(async (r) => {
     if (RV !== ctx) return;
     const dl = root.querySelector('#mcrv-dl'); dl.href = r.url; dl.hidden = false; dl.target = '_blank'; dl.rel = 'noopener';
     if (/^(pptx?|docx?|xlsx?)$/.test(tipo)) {
@@ -554,7 +554,7 @@ function abrirVisor(c, id) {
   }).catch((e) => {
     if (RV !== ctx) return;
     estado(`<h3>No pudimos abrirlo</h3><p>${esc(e.message || 'Intenta de nuevo en unos segundos.')}</p><button type="button" class="mcrv__b" id="mcrv-retry"><span style="display:inline">Intentar de nuevo</span></button>`);
-    const b = root.querySelector('#mcrv-retry'); if (b) b.onclick = () => abrirVisor(c, id);
+    const b = root.querySelector('#mcrv-retry'); if (b) b.onclick = () => abrirVisor(c, id, api);
   });
 }
 
