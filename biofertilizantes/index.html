@@ -1632,5 +1632,13 @@
 
 </script>
 <!-- TESTIMONIOS-VT:FIN -->
+<script>
+/* Llega desde el Campus («Inscribirme al curso»): abre el pago directamente. */
+(function(){ try {
+  if (!/[?&]inscribir=1\b/.test(location.search)) return;
+  history.replaceState(null, '', location.pathname + location.hash);
+  window.addEventListener('load', function(){ setTimeout(function(){ var b = document.querySelector('.js-buy'); if (b) b.click(); }, 500); });
+} catch (e) {} })();
+</script>
 </body>
 </html>

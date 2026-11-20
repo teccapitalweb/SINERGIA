@@ -540,3 +540,30 @@ export function pintarAula(ctx, c, partes) {
   if (sub === 'certificado') return vistaCertificado(c);
   return vistaInicio(c);
 }
+
+// ── Sin compra: la cuenta no tiene este curso → se le manda a inscribirse ──
+// info: { slug, titulo }
+export function pintarSinCompra(ctx, info) {
+  X = ctx; cerrarVisor();
+  const d = ctx.E.datos, email = d.alumno.email;
+  const wa = `https://wa.me/${ctx.WHATSAPP}?text=${encodeURIComponent('Hola, pagué ' + info.titulo + ' y no puedo entrar a mis clases (' + email + ')')}`;
+  ctx.app.innerHTML = `<div class="mc solo" id="mi-curso" data-curso="${esc(info.slug)}">
+    <header class="mc__top">
+      <div class="mc__brand"><img src="/img/logo-sinergia-256.png" alt=""><b id="mc-titulo">${esc(info.titulo)}</b></div>
+      <a class="mc__x" id="mc-cerrar" href="/${esc(info.slug)}/" aria-label="Volver a la página del curso"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg><span>Volver</span></a>
+    </header>
+    <div class="mc__shell"><main class="mc__main" id="mc-body"><div class="mc__wrap" id="mc-view">
+      <div class="mc__card mc__auth" id="mc-sin-compra">
+        <h2>Aún no tienes este curso</h2>
+        <p class="mc__sub">No encontramos una compra de <b>${esc(info.titulo)}</b> con <b>${esc(email)}</b>. Si pagaste con otro correo, entra con ese. Si todavía no lo compras, inscríbete ahora y entras de inmediato.</p>
+        <div class="mc__acts">
+          <a class="mc__btn mc__btn--g" id="mc-pagar" href="/${esc(info.slug)}/?inscribir=1">Inscribirme al curso ${I.flecha}</a>
+          <button type="button" class="mc__btn mc__btn--l" id="mc-otra" data-salir>Entrar con otro correo</button>
+          ${d.cursos.length ? '<button type="button" class="mc__btn mc__btn--l" id="mc-mis">Ver mis cursos</button>' : ''}
+        </div>
+        <p class="mc__help">¿Ya pagaste y no aparece? <a class="mc__link" href="${wa}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> con tu comprobante.</p>
+      </div>
+    </div></main></div>
+  </div>`;
+  const mis = $('#mc-mis'); if (mis) mis.onclick = () => ctx.verMisCursos();
+}

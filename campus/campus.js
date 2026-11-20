@@ -10,7 +10,7 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, cerrarVisor } from './aula.js?v=2';
+import { pintarAula, pintarSinCompra, cerrarVisor } from './aula.js?v=3';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0',
@@ -335,6 +335,13 @@ function render() {
   const { partes } = ruta();
   cerrarVisor();
   if (partes[0] === 'curso' && curso(partes[1])) { pintarAula({ app: $app, E, api, render, WHATSAPP }, curso(partes[1]), partes); window.scrollTo(0, 0); return; }
+  // Llegó desde «Ya compré» de una landing (o abrió un curso) y esa cuenta no lo tiene: no entra al campus, se le manda a inscribirse.
+  const pedido = partes[0] === 'curso' ? partes[1] : (!partes.length && !E.pedidoAtendido ? new URLSearchParams(location.search).get('curso') : null);
+  const ajeno = pedido && !curso(pedido) && !E.datos.alumno.esAdmin ? (E.datos.otros || []).find((o) => o.slug === pedido) : null;
+  if (ajeno) {
+    pintarSinCompra({ app: $app, E, api, render, WHATSAPP, verMisCursos: () => { E.pedidoAtendido = true; ir('#/cursos'); } }, ajeno);
+    window.scrollTo(0, 0); return;
+  }
   let activo = '#/', html;
   if (partes[0] === 'cursos') { activo = '#/cursos'; html = vistaCursos(); }
   else if (partes[0] === 'curso') { activo = '#/cursos'; html = noTiene(); }
