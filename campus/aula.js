@@ -80,6 +80,7 @@ function siguiente(c) {
 }
 const tipoDe = (m) => String(m.ext || '').toLowerCase().replace(/^\./, '') || 'pdf';
 const peso = (b) => (!b ? '' : b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB');
+const contar = (n, unidad) => n + ' ' + unidad + (n === 1 ? '' : 's');
 const estrellas = (n) => { let h = ''; for (let i = 1; i <= 5; i++) h += i <= Math.round(n) ? '★' : '<i>★</i>'; return `<span class="mc__st" aria-label="${n} de 5">${h}</span>`; };
 const fecha = (iso) => { try { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (_) { return ''; } };
 const base = (slug) => '#/curso/' + slug;
@@ -93,23 +94,40 @@ const TABS = [
   { id: 'materiales', t: 'Materiales', lado: 'Materiales', i: 'doc' },
   { id: 'certificado', t: 'Certificado', lado: 'Mi certificado', i: 'cert' }
 ];
+
+export function pintarAvatar(elemento, usuario, alumno) {
+  const nombre = usuario.displayName?.trim() || alumno.nombre?.trim() || usuario.email?.trim() || alumno.email?.trim() || '?';
+  elemento.textContent = Array.from(nombre)[0].toLocaleUpperCase('es-MX');
+  const fotoGoogle = usuario.providerData?.find(p => p.providerId === 'google.com')?.photoURL;
+  const foto = fotoGoogle || usuario.photoURL;
+  if (!foto || !/^https:\/\//i.test(foto)) return;
+
+  const imagen = document.createElement('img');
+  imagen.alt = '';
+  imagen.hidden = true;
+  imagen.referrerPolicy = 'no-referrer';
+  imagen.addEventListener('load', () => { imagen.hidden = false; }, { once: true });
+  imagen.addEventListener('error', () => imagen.remove(), { once: true });
+  elemento.append(imagen);
+  imagen.src = foto;
+}
+
 function marco(c, activa) {
-  const d = X.E.datos, u = X.E.usuario || {};
+  const d = X.E.datos;
   const href = (t) => base(c.slug) + (t.id ? '/' + t.id : '');
   const pend = !c.solicitudCertificado;
-  const inicial = ((d.alumno.nombre || d.alumno.email || '?').trim()[0] || '?').toUpperCase();
   const wa = `https://wa.me/${X.WHATSAPP}?text=${encodeURIComponent('Hola, soy alumno de ' + c.titulo + ' en el Campus Sinergia y necesito ayuda')}`;
   return `<div class="mc" id="mi-curso" data-curso="${esc(c.slug)}">
     ${d.alumno.esAdmin ? '<div class="mc__equipo">Vista del equipo: ves todo el curso. Tu avance, valoración y solicitudes no se guardan.</div>' : ''}
     <header class="mc__top">
-      <div class="mc__brand"><img src="/img/logo-sinergia-256.png" alt=""><b id="mc-titulo">${esc(c.titulo)}</b></div>
-      <a class="mc__me" id="mc-me" href="#/cuenta" aria-label="Mi cuenta">${esc(inicial)}</a>
-      <a class="mc__x" id="mc-cerrar" href="#/cursos" aria-label="Volver a mis cursos"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg><span>Mis cursos</span></a>
+      <div class="mc__brand"><img src="/img/logo-sinergia-256.png" alt=""><div><small>Campus Sinergia · Aula</small><b id="mc-titulo">${esc(c.titulo)}</b></div></div>
+      <a class="mc__me" id="mc-me" href="#/cuenta" aria-label="Mi cuenta"></a>
+      <a class="mc__x" id="mc-cerrar" href="#/cursos" aria-label="Volver a mis cursos">${I.atras}<span>Mis cursos</span></a>
     </header>
     <div class="mc__shell">
       <aside class="mc__side" id="mc-side" aria-label="Menú del curso">
-        <div class="mc__glabel">Mi curso</div>
-        ${TABS.map((t) => `<a class="mc__ni ${t.id === activa ? 'on' : ''}" href="${href(t)}">${I[t.i]}${t.lado}</a>`).join('')}
+        <div class="mc__glabel">Aprendizaje</div>
+        ${TABS.map((t) => `<a class="mc__ni ${t.id === activa ? 'on' : ''}" href="${href(t)}" ${t.id === activa ? 'aria-current="page"' : ''}>${I[t.i]}${t.lado}</a>`).join('')}
         <div class="mc__glabel">Campus Sinergia</div>
         <a class="mc__ni" href="#/cursos">${I.clases}Mis cursos</a>
         <a class="mc__ni" href="#/cuenta">${I.user}Mi cuenta</a>
@@ -158,7 +176,7 @@ function panelAprendizaje(c) {
     <div class="mc__pstat"><span>● Completadas ${p.completadas.length}</span><span>${Math.max(p.total - p.completadas.length, 0)} pendientes</span></div>
     <div class="mc__bene">
       <span>${I.escudo} Certificado con folio al concluir</span>
-      <span>${I.doc} ${c.materiales.length} materiales dentro del curso</span>
+      <span>${I.doc} ${contar(c.materiales.length, 'recurso')} de apoyo</span>
       <span>${I.reloj} Avanza a tu propio ritmo</span>
     </div></div>
   <div class="mc__card mc__wa"><b>¿Dudas con tu curso?</b><p>Escríbenos y te ayudamos en minutos.</p>
@@ -169,7 +187,7 @@ function matCard(c, m, i) {
   const src = imgMat(c.slug, i), tipo = TIPO_MAT[tipoDe(m)] || 'Documento';
   return `<article class="mc__mc">
     <button type="button" class="mc__mcov" data-mat="${esc(m.id)}" aria-label="Abrir ${esc(m.nombre)}">
-      ${src ? `<img src="${esc(src)}" alt="" loading="lazy">` : arte(c.slug, '', i + 1)}
+      ${arte(c.slug, '')}${src ? `<img src="${esc(src)}" alt="" loading="lazy">` : ''}
       <span class="tag">${esc(tipo)}</span><span class="num">${String(i + 1).padStart(2, '0')}</span>
     </button>
     <div class="mc__mbody">
@@ -223,7 +241,27 @@ function ligarCalifica(c) {
     } catch (e) { b.disabled = false; toast(e.message || 'No pudimos guardar tu valoración', true); }
   };
 }
+function prepararPortadas(contenedor) {
+  contenedor.querySelectorAll('.mc__banner img, .mc__mcov img, img.mc__lth, img.mc__mth').forEach(imagen => {
+    const sinPortada = () => {
+      if (imagen.matches('.mc__banner img, .mc__mcov img')) {
+        imagen.remove();
+        return;
+      }
+      const respaldo = document.createElement('span');
+      respaldo.className = imagen.className + ' mc__imagen-vacia';
+      respaldo.setAttribute('aria-hidden', 'true');
+      respaldo.innerHTML = imagen.classList.contains('mc__lth') ? I.play : I.doc;
+      imagen.replaceWith(respaldo);
+    };
+    if (imagen.complete && !imagen.naturalWidth) sinPortada();
+    else imagen.addEventListener('error', sinPortada, { once: true });
+  });
+}
+
+
 function ligar(c) {
+  prepararPortadas($('#mc-view'));
   document.querySelectorAll('#mi-curso [data-mat]').forEach((b) => b.onclick = () => abrirVisor(c, b.dataset.mat));
   ligarCalifica(c);
 }
@@ -231,44 +269,41 @@ function ligar(c) {
 // ── Vistas ─────────────────────────────────────────────────
 function vistaInicio(c) {
   const p = c.progreso, sig = siguiente(c), cl = clasesDe(c);
-  const k = c.calificaciones || { promedio: 0, total: 0, mia: null };
   const minTot = cl.reduce((a, x) => a + (x.duracionMin || 0), 0);
   const dur = minTot ? (minTot >= 90 ? (Math.round(minTot / 6) / 10) + ' horas' : minTot + ' min') : '—';
   const estado = !c.contenidoListo ? 'En preparación' : p.porcentaje >= 100 ? 'Completado' : p.completadas.length ? 'En progreso' : 'Por empezar';
   const port = PORTADAS[c.slug]?.curso;
-  $('#mc-view').innerHTML = `<div class="mc__cols"><div>
-    <div class="mc__banner">${port ? `<img src="${esc(port)}" alt="">` : arte(c.slug, (TEMA[c.slug] || {}).lema || c.titulo)}
-      <div class="mc__pills"><span class="gold">${I.check} Curso adquirido</span><span>${c.modulos.length + c.enPreparacion.length} módulos</span></div>
-    </div>
+  $('#mc-view').innerHTML = `<section class="mc__hero" aria-labelledby="mc-curso-nombre">
     <div class="mc__head">
-      <h1>${esc(c.titulo)}</h1>
+      <span class="mc__eyebrow">${I.escudo} Aula del curso</span>
+      <h1 id="mc-curso-nombre">${esc(c.titulo)}</h1>
       ${c.descripcion ? `<p class="mc__desc">${esc(c.descripcion)}</p>` : ''}
       <div class="mc__meta">
         ${c.ponente ? `<span>${I.user} ${esc(c.ponente)}</span>` : ''}
-        <span>${I.reloj} ${esc(dur)}</span>
-        <span>${I.clases} ${cl.length} clases</span>
-        <span>${I.doc} ${c.materiales.length} recursos</span>
+        <span>${I.clases} ${contar(c.modulos.length + c.enPreparacion.length, 'módulo')}</span>
       </div>
-      <div class="mc__rate">${estrellas(k.promedio)}<b>${k.total ? k.promedio.toFixed(1) : '—'}</b><span>(${k.total} ${k.total === 1 ? 'valoración' : 'valoraciones'})</span>${k.mia ? `<span class="sep">·</span><span>Tu valoración: <b>${k.mia.estrellas}/5</b></span>` : ''}</div>
-      <div class="mc__prog"><div class="mc__bar"><i style="width:${p.porcentaje}%"></i></div><b>${p.porcentaje}%</b></div>
       <div class="mc__ctafila">
+        ${sig ? `<a class="mc__btn mc__btn--p" href="${base(c.slug)}/clase/${esc(sig.id)}">${p.completadas.length || c.progreso.ultimaClase ? 'Continuar curso' : 'Comenzar curso'} ${I.flecha}</a>` : ''}
         <span class="mc__chip ${p.completadas.length ? 'mc__chip--ok' : ''}">${p.completadas.length ? I.play : I.reloj} ${estado}</span>
-        ${sig ? `<a class="mc__btn mc__btn--g" href="${base(c.slug)}/clase/${esc(sig.id)}">${p.completadas.length || c.progreso.ultimaClase ? 'Continuar curso' : 'Comenzar curso'} ${I.flecha}</a>` : ''}
       </div>
+      <div class="mc__prog"><span>Tu avance</span><div class="mc__bar" role="progressbar" aria-label="Tu avance" aria-valuenow="${p.porcentaje}"><i style="width:${p.porcentaje}%"></i></div><b>${p.porcentaje}%</b></div>
     </div>
+    <div class="mc__banner">${arte(c.slug, '')}${port ? `<img src="${esc(port)}" alt="">` : ''}</div>
+  </section>
+  <div class="mc__cols"><div>
     <div class="mc__stats">
       <div>${I.reloj}<small>Duración</small><b>${esc(dur)}</b></div>
-      <div>${I.clases}<small>Contenido</small><b>${cl.length} clases</b></div>
-      <div>${I.doc}<small>Material de apoyo</small><b>${c.materiales.length} recursos</b></div>
+      <div>${I.clases}<small>Contenido</small><b>${contar(cl.length, 'clase')}</b></div>
+      <div>${I.doc}<small>Material de apoyo</small><b>${contar(c.materiales.length, 'recurso')}</b></div>
     </div>
     <div class="mc__sec">
       <span class="mc__eyebrow">Ruta de aprendizaje</span>
-      <div class="mc__sh" style="margin-top:4px"><h2>Temario del curso</h2><b>${cl.length} clases</b></div>
+      <div class="mc__sh" style="margin-top:4px"><h2>Temario del curso</h2><b>${contar(cl.length, 'clase')}</b></div>
       ${bloqueTemario(c)}
     </div>
     ${c.materiales.length ? `<div class="mc__sec">
       <span class="mc__eyebrow">Recursos incluidos</span>
-      <div class="mc__sh" style="margin-top:4px"><h2>Material del curso</h2><b>${c.materiales.length} recursos</b></div>
+      <div class="mc__sh" style="margin-top:4px"><h2>Material del curso</h2><b>${contar(c.materiales.length, 'recurso')}</b></div>
       <p class="mc__msnota">Abre cada archivo para verlo en pantalla o descargarlo.</p>
       <div class="mc__mgrid">${c.materiales.map((m, i) => matCard(c, m, i)).join('')}</div>
     </div>` : ''}
@@ -288,14 +323,11 @@ function vistaClases(c) {
 function vistaMateriales(c) {
   const n = c.materiales.length;
   $('#mc-view').innerHTML = `<section class="mc__mhero">
-      <h2>Materiales para aplicar desde hoy.</h2>
-      <p>Las guías, formatos y presentaciones de tu curso, listos para abrir y conservar.</p>
-      <div class="chk">${I.check} Incluidos con tu curso, sin costo extra.</div>
-      <div class="box"><b>${n}</b><div><small>Tu biblioteca</small><span>${n === 1 ? 'recurso disponible' : 'recursos disponibles'}</span></div></div>
+      <h2>Materiales del curso</h2>
+      <p>Abre las guías, formatos y presentaciones o descárgalos para estudiar.</p>
+      <div class="box"><b>${n}</b><div><span>${n === 1 ? 'recurso disponible' : 'recursos disponibles'}</span></div></div>
     </section>
-    <div class="mc__mhead"><h2>Elige un recurso práctico</h2><p>Ábrelos en pantalla o descárgalos para estudiar a tu ritmo.</p></div>
-    ${n ? `<span class="mc__mcount">${n} ${n === 1 ? 'material' : 'materiales'}</span>
-      <div class="mc__mgrid">${c.materiales.map((m, i) => matCard(c, m, i)).join('')}</div>
+    ${n ? `<div class="mc__mgrid mc__sec">${c.materiales.map((m, i) => matCard(c, m, i)).join('')}</div>
       <div class="mc__mnote">${I.escudo}<span>Cada archivo se prepara al momento y solo para tu cuenta. Puedes abrirlo las veces que quieras.</span></div>`
     : '<div class="mc__card mc__empty"><h2>Sin materiales por ahora</h2><p>Cuando el equipo publique las guías y herramientas del curso, aparecerán aquí.</p></div>'}`;
   ligar(c);
@@ -532,6 +564,7 @@ export function pintarAula(ctx, c, partes) {
   X = ctx; cerrarVisor();
   const sub = partes[2] || '', activa = sub === 'clase' ? 'clases' : (TABS.some((t) => t.id === sub) ? sub : '');
   ctx.app.innerHTML = marco(c, activa);
+  pintarAvatar($('#mc-me'), ctx.E.usuario, ctx.E.datos.alumno);
   const cuerpo = $('#mc-body'); if (cuerpo) cuerpo.scrollTop = 0;
   if (sub !== 'certificado') CERT_EDITAR = false;
   if (sub === 'clase') return vistaClase(c, partes[3]);
@@ -549,7 +582,7 @@ export function pintarSinCompra(ctx, info) {
   const wa = `https://wa.me/${ctx.WHATSAPP}?text=${encodeURIComponent('Hola, pagué ' + info.titulo + ' y no puedo entrar a mis clases (' + email + ')')}`;
   ctx.app.innerHTML = `<div class="mc solo" id="mi-curso" data-curso="${esc(info.slug)}">
     <header class="mc__top">
-      <div class="mc__brand"><img src="/img/logo-sinergia-256.png" alt=""><b id="mc-titulo">${esc(info.titulo)}</b></div>
+      <div class="mc__brand"><img src="/img/logo-sinergia-256.png" alt=""><div><small>Campus Sinergia · Aula</small><b id="mc-titulo">${esc(info.titulo)}</b></div></div>
       <a class="mc__x" id="mc-cerrar" href="/${esc(info.slug)}/" aria-label="Volver a la página del curso"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg><span>Volver</span></a>
     </header>
     <div class="mc__shell"><main class="mc__main" id="mc-body"><div class="mc__wrap" id="mc-view">

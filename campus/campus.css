@@ -203,3 +203,60 @@ details.otra summary { cursor: pointer; color: var(--azul-700); font-weight: 700
 }
 @media (max-width: 380px) { h1.titulo { font-size: 24px; } .leccion-info b { font-size: 14.5px; } .btn { padding: 10px 14px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Biblioteca y cuenta del alumno */
+.campus {
+  --biblioteca-fondo: #f6f7f4;
+  --biblioteca-borde: #e1e7df;
+  background: var(--biblioteca-fondo);
+}
+.campus .lateral {
+  background: #fff;
+  border-right: 1px solid var(--biblioteca-borde);
+}
+.campus .marca b { color: var(--tinta); }
+.campus .marca span { color: var(--verde-700); }
+.campus .nav-item { color: var(--gris-700); min-height: 44px; }
+.campus .nav-item:hover,
+.campus .nav-item.activo { background: #eaf3eb; color: var(--verde-900); }
+.campus .nav-item.activo { box-shadow: inset 2px 0 var(--verde-700); }
+.campus .contenido { width: 100%; max-width: 1320px; justify-self: center; }
+.campus h1.titulo { font-size: clamp(1.85rem, 4vw, 3rem); letter-spacing: -.04em; }
+.campus h1.titulo span { box-shadow: none; }
+.campus .eyebrow { color: var(--verde-700); letter-spacing: .095em; }
+.campus .tarjeta { --curso: #2e7d32; --curso-oscuro: #173f26; --curso-tinte: #edf4e9; }
+.campus .tarjeta[data-curso="cana-de-azucar"] { --curso: #26613c; --curso-oscuro: #18472e; --curso-tinte: #e9f2e9; }
+.campus .tarjeta[data-curso="soluciones-nutritivas"] { --curso: #1a4d7a; --curso-oscuro: #153e64; --curso-tinte: #eaf2f9; }
+.campus .tarjeta {
+  border-color: var(--biblioteca-borde);
+  box-shadow: 0 8px 24px -20px rgb(19 31 22 / 30%);
+}
+.campus .tarjeta .portada { background: linear-gradient(135deg, var(--curso), var(--curso-oscuro)); }
+.campus .tarjeta .chip:not(.ok, .prep) { background: var(--curso-tinte); color: var(--curso-oscuro); }
+.campus .tarjeta :is(.btn-pri, .barra i) { background: var(--curso); box-shadow: none; }
+.campus .tarjeta .btn-pri:hover { background: var(--curso-oscuro); transform: none; }
+.campus .tarjeta-cuerpo { gap: 16px; padding: 18px; }
+.campus-avatar {
+  display: grid;
+  position: relative;
+  place-items: center;
+  overflow: hidden;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  border-radius: 50%;
+  flex: none;
+  color: #fff;
+  background: var(--verde-900);
+  font-size: .875rem;
+  font-weight: 700;
+}
+.campus-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: white; }
+.campus-avatar img[hidden] { display: none; }
+.campus .barra-movil {
+  background: white;
+  color: var(--tinta);
+  border-bottom: 1px solid var(--biblioteca-borde);
+  padding-top: calc(8px + env(safe-area-inset-top));
+  padding-bottom: 8px;
+}
