@@ -502,6 +502,102 @@
   .hero{padding:20px 0 32px!important}
 }
 </style>
+<style id="paleta-sinergia">
+:root {
+  --base: #205773;
+  --base-osc: #12364b;
+  --base-negro: #0a2333;
+  --acc: #31674e;
+  --crema: #eff5f7;
+  --blanco: #fafcfc;
+  --ink: #172d3a;
+  --ink-soft: #475d69;
+  --line: #d9e4e9;
+  --precio-tinta: #c5ecdf;
+  --cta-superficie: #c3e6d1;
+  --cta-activa: #b3dbc5;
+  --cta-tinta: #12382e;
+  --halo: rgb(74 147 157 / 27%);
+  --sombra: rgb(11 38 54 / 12%);
+}
+
+/* Color y superficies. El layout se define en los estilos anteriores. */
+.hero {
+  background: radial-gradient(ellipse at 84% 4%, var(--halo), transparent 65%),
+    linear-gradient(155deg, var(--base-osc), var(--base-negro) 74%);
+}
+.hero h1 em, .hn2-monto, .buy-price, .sticky-price b { color: var(--precio-tinta); }
+.hero-sub, .hn2-tag, .hn2-etiqueta { color: rgb(255 255 255 / 84%); }
+.hero-note, .sticky-price span, footer .legal { color: rgb(255 255 255 / 72%); }
+.hn2-benefs span, .hn2-ya { color: var(--cta-superficie); }
+
+.hn2-b1 {
+  color: #423313;
+  background: #f2deb3;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 35%);
+}
+.hn2-b2 {
+  color: #f8f3e7;
+  background: rgb(255 255 255 / 8%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 22%);
+}
+.btn-fire {
+  background: var(--cta-superficie);
+  color: var(--cta-tinta);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 48%), 0 6px 16px rgb(0 0 0 / 14%);
+}
+.btn-fire:hover, .btn-fire:active { background: var(--cta-activa); }
+.btn-fire:active { box-shadow: inset 0 1px 3px rgb(0 0 0 / 12%); }
+@keyframes pulse {
+  0%, 100% { box-shadow: inset 0 1px 0 rgb(255 255 255 / 48%), 0 6px 16px rgb(0 0 0 / 14%); }
+  50% { box-shadow: inset 0 1px 0 rgb(255 255 255 / 48%), 0 7px 20px rgb(0 0 0 / 22%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-fire.pulse { animation: none; }
+}
+
+.hn2-video {
+  background: var(--base-negro);
+  border-color: rgb(255 255 255 / 21%);
+  box-shadow: 0 14px 30px rgb(0 0 0 / 20%);
+}
+.hn2-ph {
+  background: radial-gradient(ellipse at 50% 32%, var(--halo), transparent 72%),
+    repeating-linear-gradient(135deg, transparent 0 11px, rgb(255 255 255 / 3%) 11px 12px),
+    var(--base-negro);
+  color: rgb(255 255 255 / 88%);
+}
+.hn2-ph svg { color: var(--cta-superficie); opacity: 1; }
+
+.stat-label, .section-subtitle, .faq-answer, .faq-more p { color: var(--ink-soft); }
+.tab-btn.active, .tab-btn:hover { color: var(--base); }
+.tab-btn.active::after { background: var(--base); }
+.learn-item { box-shadow: inset 0 0 0 1px var(--line); }
+.mod, .inc-card, .faq-item { border-color: var(--line); }
+.mod[open], .faq-item[open] { border-color: var(--base); }
+.mod-num { background: var(--crema); color: var(--base); }
+.mod summary:hover, .faq-item summary:hover { background: var(--crema); }
+.inc-card { box-shadow: 0 6px 16px -10px var(--sombra); }
+.inc-ic { background: var(--crema); color: var(--base); }
+.inc-vip { border-color: var(--acc); }
+.inc-vip .inc-ic { background: var(--cta-superficie); color: var(--cta-tinta); }
+.faq-item summary { color: var(--ink); }
+.faq-whatsapp-btn { color: #fff; background: #216447; }
+.faq-whatsapp-btn:hover { background: #184d37; }
+
+.buy-card { background: linear-gradient(150deg, var(--base-osc), var(--base-negro)); }
+.buy-card::before { background: radial-gradient(ellipse at 85% 8%, var(--halo), transparent 60%); }
+.buy-tag { background: var(--precio-tinta); color: var(--base-negro); }
+.sticky-cta { background: var(--base-negro); border-top-color: var(--acc); }
+.pay-close:hover { background: var(--cta-superficie); }
+section.vt[data-testimonios] {
+  --vt-bg: var(--crema) !important;
+  --vt-accent: var(--base) !important;
+  --vt-line: var(--line);
+}
+body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); outline-offset: 3px; }
+:is(.hero, .buy-card, .sticky-cta, footer) :is(a, button):focus-visible { outline-color: var(--precio-tinta); }
+</style>
 </head>
 <body>
 
