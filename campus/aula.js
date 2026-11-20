@@ -332,23 +332,26 @@ function vistaMateriales(c) {
     : '<div class="mc__card mc__empty"><h2>Sin materiales por ahora</h2><p>Cuando el equipo publique las guías y herramientas del curso, aparecerán aquí.</p></div>'}`;
   ligar(c);
 }
-function vistaCertificado(c, msg) {
+function vistaCertificado(c) {
   const so = c.solicitudCertificado, p = c.progreso, u = X.E.datos.alumno;
   const emitido = so?.estado === 'emitido';
-  const pasos = `<div class="mc__card mc__pasos"><span class="mc__eyebrow mute">Cómo funciona</span>
+  const pasos = `<aside class="mc__card mc__pasos" aria-label="Avance y emisión del certificado">
+    <div class="mc__rowstat"><span>Avance del curso</span><b>${p.porcentaje}%</b></div>
+    <div class="mc__bar" role="progressbar" aria-label="Avance del curso" aria-valuenow="${p.porcentaje}"><i style="width:${p.porcentaje}%"></i></div>
+    <details class="mc__cert-detalle"><summary>Cómo funciona</summary><div>
     <div class="mc__paso ${so ? 'ok' : ''}"><b>${so ? '✓' : '1'}</b><span>Envías tus datos tal como deben aparecer en el certificado.</span></div>
     <div class="mc__paso ${so?.estado === 'en_proceso' || emitido ? 'ok' : ''}"><b>${so?.estado === 'en_proceso' || emitido ? '✓' : '2'}</b><span>El equipo de Sinergia revisa tu solicitud y emite el certificado con folio verificable.</span></div>
     <div class="mc__paso ${emitido ? 'ok' : ''}"><b>${emitido ? '✓' : '3'}</b><span>Te lo enviamos a tu correo y WhatsApp.</span></div>
-    <div class="mc__rowstat"><span>Avance del curso</span><b>${p.porcentaje}%</b></div></div>`;
+    </div></details></aside>`;
   let cuerpo;
   if (emitido) {
     cuerpo = `<div class="mc__cfh"><i>${I.cert}</i><div><h2>Tu certificado está listo</h2><p>${so.folio ? `Folio <b>${esc(so.folio)}</b> · ` : ''}verificable en línea.</p></div></div>
-      <div class="mc__card mc__estado"><p style="color:var(--soft)">Te lo enviamos a tu correo y WhatsApp. Si no lo encuentras, escríbenos y te lo reenviamos.</p>
-      ${so.folio ? `<a class="mc__btn mc__btn--g" style="width:100%;margin-top:12px" href="/validar-certificado.html?folio=${encodeURIComponent(so.folio)}" target="_blank" rel="noopener">${I.cert} Verificar mi certificado</a>` : ''}</div>`;
+      <div class="mc__estado"><p>Te lo enviamos a tu correo y WhatsApp. Si no lo encuentras, escríbenos y te lo reenviamos.</p>
+      ${so.folio ? `<a class="mc__btn mc__btn--p" href="/validar-certificado.html?folio=${encodeURIComponent(so.folio)}" target="_blank" rel="noopener">${I.cert} Verificar mi certificado</a>` : ''}</div>`;
   } else if (so && !CERT_EDITAR) {
     const txt = ({ pendiente: 'Recibimos tu solicitud', en_proceso: 'Tu certificado está en proceso', rechazado: 'Necesitamos revisar tus datos' })[so.estado] || 'Recibimos tu solicitud';
     cuerpo = `<div class="mc__cfh"><i>${I.cert}</i><div><h2>${txt}</h2><p>${fecha(so.fechaSolicitud) ? 'Enviada el ' + esc(fecha(so.fechaSolicitud)) + '. ' : ''}${so.estado === 'rechazado' && so.nota ? esc(so.nota) : 'Te avisaremos por correo y WhatsApp cuando esté emitido.'}</p></div></div>
-      <div class="mc__card mc__estado"><dl>
+      <div class="mc__estado"><dl>
         <dt>Nombre en el certificado</dt><dd><b>${esc(so.nombreCompleto)}</b></dd>
         <dt>WhatsApp</dt><dd>${esc(so.whatsapp || '—')}</dd>
         <dt>Ubicación</dt><dd>${esc([so.ciudad, so.estadoRep].filter(Boolean).join(', ') || '—')}</dd>
@@ -357,32 +360,38 @@ function vistaCertificado(c, msg) {
       ${so.estado !== 'en_proceso' ? '<button type="button" class="mc__btn mc__btn--l mc__btn--sm" id="mc-cert-editar">Corregir mis datos</button>' : ''}</div>`;
   } else {
     const v = so || {};
-    cuerpo = `<div class="mc__cfh"><i>${I.cert}</i><div><h2>Solicitar mi certificado</h2><p>Escribe tu nombre exactamente como quieres que aparezca. Se emite con folio único y verificable al concluir el curso.</p></div></div>
-      <form class="mc__card mc__form" id="mc-cert-form" novalidate>
-        <label class="mc__field">Nombre completo para el certificado<input id="cf-nombre" autocomplete="name" maxlength="120" value="${esc(v.nombreCompleto || u.nombre || '')}" placeholder="Ej. María González Ramírez" required><small>Revisa acentos y mayúsculas: así se imprimirá.</small></label>
+    cuerpo = `<div class="mc__cfh"><i aria-hidden="true">${I.cert}</i><div><h2>Solicitar mi certificado</h2><p>Escribe tu nombre tal como debe aparecer en el certificado.</p></div></div>
+      <form class="mc__form" id="mc-cert-form" novalidate>
+        <label class="mc__field">Nombre completo<input id="cf-nombre" autocomplete="name" maxlength="120" value="${esc(v.nombreCompleto || u.nombre || '')}" placeholder="Nombre y apellidos" required></label>
         <div class="mc__grid2">
           <label class="mc__field">WhatsApp<input id="cf-wa" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" value="${esc(v.whatsapp || '')}" placeholder="10 dígitos" required></label>
-          <label class="mc__field">Correo<input value="${esc(u.email || '')}" disabled></label>
           <label class="mc__field">Estado<select id="cf-estado" required><option value="">Selecciona…</option>${ESTADOS_MX.map((e) => `<option ${v.estadoRep === e ? 'selected' : ''}>${e}</option>`).join('')}</select></label>
-          <label class="mc__field">Ciudad o municipio <span class="mc__opt">(opcional)</span><input id="cf-ciudad" maxlength="80" value="${esc(v.ciudad || '')}" autocomplete="address-level2"></label>
         </div>
-        <label class="mc__field">Ocupación <span class="mc__opt">(opcional)</span><input id="cf-ocup" maxlength="80" placeholder="Ej. Productor, estudiante, ingeniero agrónomo"></label>
-        <label class="mc__field">Comentarios <span class="mc__opt">(opcional)</span><textarea id="cf-com" maxlength="400" placeholder="Algo que debamos saber para tu certificado"></textarea></label>
-        ${msg ? `<p class="mc__msg" role="alert">${esc(msg)}</p>` : ''}
-        <button class="mc__btn mc__btn--g" style="width:100%" type="submit" id="cf-enviar">${I.cert} Solicitar mi certificado</button>
-        ${CERT_EDITAR ? '<button type="button" class="mc__btn mc__btn--l" style="width:100%;margin-top:8px" id="cf-cancelar">Cancelar</button>' : ''}
+        <dl class="mc__cert-correo"><dt>Correo de entrega</dt><dd>${esc(u.email || '—')}</dd></dl>
+        <details class="mc__cert-detalle" id="cf-opcionales"><summary>Datos opcionales</summary><div>
+          <label class="mc__field">Ciudad o municipio<input id="cf-ciudad" maxlength="80" value="${esc(v.ciudad || '')}" autocomplete="address-level2"></label>
+          <label class="mc__field">Ocupación<input id="cf-ocup" maxlength="80" value="${esc(v.ocupacion || '')}"></label>
+          <label class="mc__field">Comentarios<textarea id="cf-com" maxlength="400">${esc(v.comentario || v.comentarios || '')}</textarea></label>
+        </div></details>
+        <p class="mc__msg" id="cf-error" role="alert" tabindex="-1" hidden></p>
+        <div class="mc__cert-acciones">
+          <button class="mc__btn mc__btn--p" type="submit" id="cf-enviar">${I.cert} Solicitar mi certificado</button>
+          ${CERT_EDITAR ? '<button type="button" class="mc__btn mc__btn--l" id="cf-cancelar">Cancelar</button>' : ''}
+        </div>
       </form>`;
   }
-  $('#mc-view').innerHTML = `<span class="mc__eyebrow">${esc(c.titulo)}</span>
-    <div class="mc__sh" style="margin-top:4px"><h2>Mi certificado</h2><b>${estadoCertTexto(c)}</b></div>
-    <div class="mc__cf"><div>${cuerpo}</div><aside class="mc__aside">${pasos}</aside></div>`;
+  $('#mc-view').innerHTML = `<section class="mc__cert" aria-labelledby="mc-cert-titulo">
+    <header class="mc__cert-titulo"><h1 id="mc-cert-titulo">Mi certificado</h1><span class="mc__chip${emitido ? ' mc__chip--ok' : ''}">${estadoCertTexto(c)}</span></header>
+    <div class="mc__cf"><div class="mc__card mc__cert-card">${cuerpo}</div>${pasos}</div>
+  </section>`;
   const ed = $('#mc-cert-editar'); if (ed) ed.onclick = () => { CERT_EDITAR = true; vistaCertificado(c); };
   const ca = $('#cf-cancelar'); if (ca) ca.onclick = () => { CERT_EDITAR = false; vistaCertificado(c); };
   const f = $('#mc-cert-form');
   const err = (m) => {
-    const g = { n: $('#cf-nombre')?.value, w: $('#cf-wa')?.value, e: $('#cf-estado')?.value, c: $('#cf-ciudad')?.value, o: $('#cf-ocup')?.value, t: $('#cf-com')?.value };
-    vistaCertificado(c, m);
-    if ($('#cf-nombre')) { $('#cf-nombre').value = g.n; $('#cf-wa').value = g.w; $('#cf-estado').value = g.e; $('#cf-ciudad').value = g.c; $('#cf-ocup').value = g.o; $('#cf-com').value = g.t; }
+    const aviso = $('#cf-error');
+    aviso.textContent = m;
+    aviso.hidden = false;
+    aviso.focus();
   };
   if (f) f.onsubmit = async (ev) => {
     ev.preventDefault();
@@ -390,13 +399,14 @@ function vistaCertificado(c, msg) {
     if (nombre.split(/\s+/).filter(Boolean).length < 2) return err('Escribe tu nombre completo (nombre y apellidos).');
     if (wa.replace(/\D/g, '').length < 10) return err('Escribe un WhatsApp de 10 dígitos.');
     if (!est) return err('Selecciona tu estado.');
+    $('#cf-error').hidden = true;
     const b = $('#cf-enviar'); b.disabled = true; b.textContent = 'Enviando…';
     try {
       const r = await X.api('/campus/certificado/solicitar', { body: { curso: c.slug, nombreCompleto: nombre, whatsapp: wa, estadoRep: est, ciudad: $('#cf-ciudad').value, ocupacion: $('#cf-ocup').value, comentario: $('#cf-com').value } });
       if (r.vistaAdmin) { toast('Vista del equipo: la solicitud no se guarda'); b.disabled = false; b.innerHTML = I.cert + ' Solicitar mi certificado'; return; }
       c.solicitudCertificado = r.solicitudCertificado; CERT_EDITAR = false;
       X.render(); toast('¡Listo! Recibimos tu solicitud de certificado');
-    } catch (e) { err(e.message || 'No pudimos enviar tu solicitud'); }
+    } catch (e) { b.disabled = false; b.innerHTML = I.cert + ' Solicitar mi certificado'; err(e.message || 'No pudimos enviar tu solicitud'); }
   };
 }
 async function vistaClase(c, id) {
