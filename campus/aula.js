@@ -24,9 +24,9 @@ const ESTADOS_MX = ['Aguascalientes','Baja California','Baja California Sur','Ca
 
 // Portadas definitivas: cuando existan, se escriben aquí (rutas del sitio). Sin portada se dibuja una de arte.
 const PORTADAS = {
-  'biofertilizantes': { curso: '/biofertilizantes/assets/poster-hero.jpg', clases: [], materiales: [] },
-  'cana-de-azucar': { curso: '', clases: [], materiales: [] },
-  'soluciones-nutritivas': { curso: '', clases: [], materiales: [] }
+  'biofertilizantes': { curso: '/biofertilizantes/assets/poster-hero.jpg', clases: ['/campus/portadas/biofertilizantes-1.jpg', '/campus/portadas/biofertilizantes-2.jpg', '/campus/portadas/biofertilizantes-3.jpg', '/campus/portadas/biofertilizantes-4.jpg', '/campus/portadas/biofertilizantes-5.jpg'], materiales: [] },
+  'cana-de-azucar': { curso: '/campus/portadas/cana-de-azucar-2.jpg', clases: ['/campus/portadas/cana-de-azucar-1.jpg', '/campus/portadas/cana-de-azucar-2.jpg', '/campus/portadas/cana-de-azucar-3.jpg', '/campus/portadas/cana-de-azucar-4.jpg', '/campus/portadas/cana-de-azucar-5.jpg'], materiales: [] },
+  'soluciones-nutritivas': { curso: '/campus/portadas/soluciones-nutritivas-1.jpg', clases: ['/campus/portadas/soluciones-nutritivas-1.jpg', '/campus/portadas/soluciones-nutritivas-2.jpg', '/campus/portadas/soluciones-nutritivas-3.jpg', '/campus/portadas/soluciones-nutritivas-4.jpg', '/campus/portadas/soluciones-nutritivas-5.jpg'], materiales: [] }
 };
 const TEMA = {
   'biofertilizantes': { corto: 'Biofertilizantes', lema: 'Nutrición viva para tu suelo', motivo: 'hoja' },
