@@ -10,7 +10,7 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, cerrarVisor, confeti } from './aula.js?v=4';
+import { pintarAula, pintarSinCompra, cerrarVisor, confeti } from './aula.js?v=5';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0',
