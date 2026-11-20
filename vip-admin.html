@@ -2485,6 +2485,10 @@ body::before { display: none; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
       <span class="nav-item-text">Campus · cursos</span>
     </button>
+    <button class="nav-item" data-tab="precios">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 6.5c0-1.9-2.2-3-5-3s-5 1.1-5 3 2 2.8 5 3.5 5 1.6 5 3.5-2.2 3-5 3-5-1.1-5-3"/></svg>
+      <span class="nav-item-text">Precios de cursos</span>
+    </button>
     <button class="nav-item" data-tab="courses">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       <span class="nav-item-text">Videoteca</span>
@@ -2878,6 +2882,21 @@ body::before { display: none; }
     <!-- ═══════════════════════════════════════════════════════════
          CAMPUS SINERGIA · módulos, clases y materiales de los cursos sueltos
          ═══════════════════════════════════════════════════════════ -->
+    <div class="tab-panel" data-panel="precios">
+      <div class="db-hero">
+        <div class="db-hero-top">
+          <div>
+            <span class="db-eyebrow">Cursos con página propia</span>
+            <h2 class="db-hero-titulo">Precios <em>de los cursos.</em></h2>
+            <p class="db-hero-sub">Cambia lo que se cobra en Stripe y lo que anuncia la página, juntos. El cambio aplica a las compras nuevas en cuanto lo guardas; las compras anteriores no se tocan.</p>
+          </div>
+          <div class="mi-hero-acc"><button type="button" class="mi-hero-btn2" onclick="pxCargar(true)">Actualizar</button></div>
+        </div>
+      </div>
+      <div id="pxCuerpo"><div class="sb-vacio">Cargando…</div></div>
+      <div id="pxHistorial" style="margin-top:22px"></div>
+    </div>
+
     <div class="tab-panel" data-panel="campus">
       <div class="db-hero">
         <div class="db-hero-top">
@@ -4597,6 +4616,7 @@ body::before { display: none; }
       'library': 'Material',
       'courses': 'Videoteca',
       'campus': 'Campus Sinergia · cursos',
+      'precios': 'Precios de cursos',
       'certificates': 'Certificados',
       'ratings': 'Calificaciones de los cursos',
       'retos': 'Retos',
@@ -7359,6 +7379,81 @@ body::before { display: none; }
     bar.hidden = !CP.sucio;
     const c = cpCurso(); document.getElementById('cpGuardarCurso').textContent = c ? c.titulo : '';
   }
+
+  // ── Precios de los cursos (Stripe + página) ──
+  // El servidor hace el cambio completo y seguro (/admin/precios/cambiar): crea el precio en Stripe, mueve el cobro y
+  // actualiza lo que anuncian las landings; si algo falla, no deja nada a medias. Aquí solo se pide y se muestra.
+  const PX = { datos: null, cargando: false };
+  const PX_MIN = 10, PX_MAX = 50000;
+  async function pxPedir(ruta, cuerpo) {
+    if (!auth.currentUser) throw new Error('No estás autenticado');
+    const tok = await auth.currentUser.getIdToken();
+    const r = await fetch(BACKEND_URL + ruta, { method: cuerpo ? 'POST' : 'GET', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok }, body: cuerpo ? JSON.stringify(cuerpo) : undefined });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || d.ok === false) { const e = new Error(d.error || ('Error ' + r.status)); e.status = r.status; throw e; }
+    return d;
+  }
+  window.pxCargar = async function(forzar) {
+    const host = document.getElementById('pxCuerpo'); if (!host || PX.cargando) return;
+    if (PX.datos && !forzar) return pxRender();
+    PX.cargando = true; host.innerHTML = '<div class="sb-vacio">Cargando precios…</div>';
+    try { PX.datos = await pxPedir('/admin/panel/precios'); pxRender(); pxHistorial(); }
+    catch (e) {
+      host.innerHTML = '<div class="sb-vacio">' + (e.status === 403
+        ? 'Tu cuenta no tiene permiso para cambiar precios. Solo las cuentas autorizadas para el panel de Sinergia pueden hacerlo.'
+        : 'No se pudieron cargar los precios (' + esc(e.message || 'error') + ').') + '</div>';
+    }
+    PX.cargando = false;
+  };
+  const pxPesos = (n) => (typeof n === 'number' ? '$' + n.toLocaleString('es-MX') : '—');
+  function pxRender() {
+    const host = document.getElementById('pxCuerpo'); const cursos = (PX.datos && PX.datos.cursos) || {};
+    const filas = Object.keys(cursos).map((slug) => {
+      const c = cursos[slug];
+      const est = c.estado === 'sincronizado' ? '<span style="color:#15803d;font-weight:700">✓ Página y cobro iguales</span>'
+        : c.estado === 'desincronizado' ? '<span style="color:#b91c1c;font-weight:700">⚠ La página dice ' + pxPesos(c.precio_mostrado) + ' y Stripe cobra ' + pxPesos(c.precio_cobro_real) + '</span>'
+        : '<span style="color:#92400e;font-weight:700">No se pudo comparar' + (c.error_stripe ? ' (' + esc(c.error_stripe) + ')' : '') + '</span>';
+      return '<tr><td><b>' + esc(c.titulo) + '</b><br><small>' + esc(slug) + '</small></td>' +
+        '<td class="n"><b style="font-size:16px">' + pxPesos(c.precio_cobro_real) + '</b><br><small>cobra Stripe</small></td>' +
+        '<td class="n">' + pxPesos(c.precio_mostrado) + (c.antes ? '<br><small>antes <s>' + pxPesos(c.antes) + '</s></small>' : '') + '</td>' +
+        '<td>' + est + '</td>' +
+        '<td style="white-space:nowrap"><label style="font-size:11px;color:var(--stone-500);display:block">Precio nuevo (MXN)</label><input type="number" inputmode="numeric" min="' + PX_MIN + '" max="' + PX_MAX + '" step="1" id="pxN-' + esc(slug) + '" value="' + (c.precio_mostrado ?? '') + '" style="width:110px;padding:7px 9px;border:1px solid var(--stone-300,#d6d3d1);border-radius:8px;font:inherit"></td>' +
+        '<td style="white-space:nowrap"><label style="font-size:11px;color:var(--stone-500);display:block">Tachado «antes» (opcional)</label><input type="number" inputmode="numeric" step="1" id="pxA-' + esc(slug) + '" value="' + (c.antes ?? '') + '" placeholder="sin tachado" style="width:120px;padding:7px 9px;border:1px solid var(--stone-300,#d6d3d1);border-radius:8px;font:inherit"></td>' +
+        '<td><button type="button" class="btn-primary" style="padding:8px 14px" onclick="pxCambiar(\'' + esc(slug) + '\')">Cambiar precio</button></td></tr>';
+    }).join('');
+    host.innerHTML = '<div class="en-tabla-ancha" style="overflow-x:auto"><table class="pg-tabla"><thead><tr><th>Curso</th><th class="n">Cobro real</th><th class="n">Se anuncia</th><th>Estado</th><th>Nuevo precio</th><th>Precio «antes»</th><th></th></tr></thead><tbody>' + (filas || '<tr><td colspan="7">Sin cursos.</td></tr>') + '</tbody></table></div>' +
+      '<p style="font-size:12.5px;color:var(--stone-500);margin-top:10px">Mínimo $' + PX_MIN + ' MXN (el cobro más bajo que acepta Stripe en pesos). Para probar un pago: pon el curso en $' + PX_MIN + ', haz la compra y <b>regresa el precio</b> al terminar. Cada cambio queda en el historial y se avisa por correo.</p>';
+  }
+  window.pxCambiar = function(slug) {
+    const c = ((PX.datos && PX.datos.cursos) || {})[slug]; if (!c) return;
+    const nuevo = Number(document.getElementById('pxN-' + slug).value);
+    const antesTxt = document.getElementById('pxA-' + slug).value.trim();
+    const antes = antesTxt === '' ? null : Number(antesTxt);
+    if (!Number.isInteger(nuevo) || nuevo < PX_MIN || nuevo > PX_MAX) return showToast('El precio debe ser un número entero entre $' + PX_MIN + ' y $' + PX_MAX.toLocaleString('es-MX'), 'error');
+    if (antes !== null && (!Number.isInteger(antes) || antes <= nuevo)) return showToast('El precio «antes» debe ser un entero mayor que el precio nuevo (o déjalo vacío)', 'error');
+    if (nuevo === c.precio_cobro_real && nuevo === c.precio_mostrado && antes === (c.antes ?? null)) return showToast('Ese ya es el precio actual', 'error');
+    showModal({
+      title: 'Cambiar el precio de ' + c.titulo,
+      body: 'Pasará de <b>' + pxPesos(c.precio_cobro_real) + '</b> a <b>' + pxPesos(nuevo) + ' MXN</b>' + (antes ? ' (tachado ' + pxPesos(antes) + ')' : ', sin precio tachado') + '.<br><br>Cambia <b>el cobro real en Stripe</b> y lo que anuncia la página del curso. Aplica de inmediato a las compras nuevas.',
+      confirmText: 'Sí, cambiar a ' + pxPesos(nuevo), type: 'warn',
+      onConfirm: async () => {
+        const r = await pxPedir('/admin/precios/cambiar', { curso: slug, nuevo_precio: nuevo, nuevo_antes: antes });
+        showToast('Listo: ' + c.titulo + ' ahora cuesta ' + pxPesos(r.precio_nuevo) + (r.correo_enviado ? '' : ' (el aviso por correo no salió)'));
+        PX.datos = null; await pxCargar(true);
+      }
+    });
+  };
+  async function pxHistorial() {
+    const host = document.getElementById('pxHistorial'); if (!host) return;
+    try {
+      const r = await pxPedir('/admin/panel/precios/historial'); const l = r.cambios || [];
+      host.innerHTML = '<h3 style="margin:0 0 10px">Historial de cambios</h3>' + (l.length
+        ? '<div class="en-tabla-ancha" style="overflow-x:auto"><table class="pg-tabla"><thead><tr><th>Cuándo</th><th>Curso</th><th class="n">Antes</th><th class="n">Después</th><th>Quién</th></tr></thead><tbody>' +
+          l.map((x) => '<tr><td>' + (x.cuando ? new Date(x.cuando).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' }) : '—') + '</td><td>' + esc(x.curso) + '</td><td class="n">' + pxPesos(x.precio_viejo) + '</td><td class="n"><b>' + pxPesos(x.precio_nuevo) + '</b></td><td>' + esc(x.quien || '') + '</td></tr>').join('') + '</tbody></table></div>'
+        : '<div class="sb-vacio">Aún no hay cambios de precio registrados.</div>');
+    } catch (e) { host.innerHTML = ''; }
+  }
+  { const previo = window.switchTab; window.switchTab = function(tab) { previo(tab); if (tab === 'precios') pxCargar(false); }; }
 
   // ── Solicitudes de certificado del Campus (bandeja del equipo) ──
   const CPS = { lista: [], filtro: 'pendiente' };
