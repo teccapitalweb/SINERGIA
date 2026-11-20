@@ -471,12 +471,45 @@ svg.sx-art text{stroke:none}
 .mc__lth.art{width:92px;aspect-ratio:16/9;border-radius:10px;border:1px solid var(--line)}
 .mc__mth.art{width:76px;aspect-ratio:16/9;border-radius:9px}
 .mc__next .art{width:128px;aspect-ratio:16/9;border-radius:11px}
-/* Módulos dentro del temario */
-.mc__mod{display:flex;align-items:center;gap:12px;padding:14px 16px 12px;background:linear-gradient(180deg,rgba(0,0,0,.025),transparent);border-top:1px solid var(--line)}
-.mc__mod:first-child{border-top:0}
-.mc__mod span{flex:none;font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--a);padding:5px 9px;border-radius:999px}
-.mc__mod b{font-family:'Archivo',sans-serif;font-size:.95rem;line-height:1.25;min-width:0}
-.mc__mod small{display:block;font-size:.76rem;color:var(--mute);font-weight:500;margin-top:2px}
+/* Programa accesible sin interrumpir la lista de clases */
+.mc__mod {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 3px 9px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  font-size: .8125rem;
+  overflow-wrap: anywhere;
+}
+.mc__mod:first-child { border-top: 0; }
+.mc__mod span { color: var(--a2); font-size: .75rem; font-weight: 700; }
+.mc__mod b { min-width: 0; }
+.mc__programa {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.mc__programa summary {
+  min-height: 44px;
+  padding: 11px 13px;
+  cursor: pointer;
+  color: var(--a2);
+  font-size: .875rem;
+  font-weight: 650;
+}
+.mc__programa summary:focus-visible { outline: 2px solid var(--a); outline-offset: -2px; }
+.mc__programa ol {
+  display: grid;
+  gap: 10px;
+  padding: 2px 14px 14px 35px;
+  font-size: .85rem;
+  overflow-wrap: anywhere;
+}
+.mc__programa li::marker { color: var(--a2); font-weight: 700; }
+.mc__programa p { margin-top: 2px; color: var(--soft); }
 .mc__prox{display:grid;gap:8px;margin-top:10px}
 .mc__prox div{display:flex;gap:12px;align-items:center;padding:13px 15px;border:1px dashed var(--line2);border-radius:14px;background:rgba(255,255,255,.6);font-size:.86rem}
 .mc__prox b{display:block}.mc__prox small{color:var(--mute)}
@@ -766,5 +799,4 @@ svg.sx-art text{stroke:none}
   --t2: var(--dark);
   --t3: #73af63;
 }
-.mc__mod { background: var(--bg); }
 .mc [hidden] { display: none !important; }
