@@ -35,6 +35,58 @@ function prepararFoto(nodo) {
   foto.src = PORTADA_PROMOCION;
 }
 
+function celebrarReserva() {
+  const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (movimientoReducido.matches || document.visibilityState === 'hidden') return;
+
+  const lienzo = document.createElement('canvas');
+  const dibujo = lienzo.getContext('2d');
+  if (!dibujo) return;
+
+  const ancho = window.innerWidth;
+  const alto = window.innerHeight;
+  const escala = Math.min(window.devicePixelRatio || 1, 2);
+  lienzo.className = 'sgi-confeti';
+  lienzo.setAttribute('aria-hidden', 'true');
+  lienzo.width = ancho * escala;
+  lienzo.height = alto * escala;
+  dibujo.scale(escala, escala);
+
+  const colores = ['#167348', '#55a457', '#ffd263', '#208ab0', '#f29853'];
+  const piezas = Array.from({ length: ancho < 600 ? 48 : 72 }, (_, i) => ({
+    x: ancho * (.47 + Math.random() * .06),
+    y: alto * (.4 + Math.random() * .04),
+    vx: (Math.random() - .5) * Math.min(ancho * 1.15, 720),
+    vy: -140 - Math.random() * 310,
+    giro: (Math.random() - .5) * 14,
+    ancho: 5 + Math.random() * 4,
+    color: colores[i % colores.length]
+  }));
+  const inicio = performance.now();
+  const duracion = 2.1;
+  document.body.append(lienzo);
+
+  function animar(ahora) {
+    const t = (ahora - inicio) / 1000;
+    if (t >= duracion || movimientoReducido.matches || document.visibilityState === 'hidden') {
+      lienzo.remove();
+      return;
+    }
+    dibujo.clearRect(0, 0, ancho, alto);
+    dibujo.globalAlpha = Math.min(1, (duracion - t) / .5);
+    for (const pieza of piezas) {
+      dibujo.save();
+      dibujo.translate(pieza.x + pieza.vx * t, pieza.y + pieza.vy * t + 260 * t * t);
+      dibujo.rotate(pieza.giro * t);
+      dibujo.fillStyle = pieza.color;
+      dibujo.fillRect(0, 0, pieza.ancho, pieza.ancho * .6);
+      dibujo.restore();
+    }
+    requestAnimationFrame(animar);
+  }
+  requestAnimationFrame(animar);
+}
+
 export function regaloCurso(slug) {
   const claveReclamo = 'sinergia_regalo_reclamo_v1_' + slug;
   const dialogo = document.createElement('dialog');
@@ -219,9 +271,12 @@ export function regaloCurso(slug) {
     activacion = null;
     activando = false;
     if (id !== navegadorId) return sincronizar();
+    const confirmada = estado?.disponible && restante(estado.reserva) > 0;
+    const repetida = confirmada && [reclamo, leerReclamo()].some(dato => dato?.token === estado.reserva.token);
     aplicar(estado);
     if (!restante(reserva)) errores.forEach(n => { n.hidden = false; });
     pintar();
+    if (confirmada && !repetida) celebrarReserva();
   }
 
   for (const b of botones) b.addEventListener('click', activar);
