@@ -338,7 +338,7 @@ export function recomendarCursos(datos, c) {
   const nombreOrigen = c.titulo || CURSOS_INDIVIDUALES[c.slug].titulo;
   return `<section class="mc__sec mc__recomendados">
     <h2>Descuento especial para alumnos</h2>
-    <p class="mc__beneficio-alumno">Por haber comprado <strong>${esc(nombreOrigen)}</strong> con nosotros, consulta tu precio especial para estos cursos.</p>
+    <p class="mc__beneficio-alumno">Por haber comprado <strong>${esc(nombreOrigen)}</strong><span class="mc__beneficio-detalle"> con nosotros, consulta tu precio especial para estos cursos</span>.</p>
     <div class="mc__recomendados-grid">${pendientes.map(x => `
       <a class="mc__recomendado" data-origen="${esc(c.slug)}" data-destino="${esc(x.slug)}" href="${esc(landingCurso(x.slug, c.slug))}">
         <img src="${esc(portadaCurso(x))}" alt="" loading="lazy">

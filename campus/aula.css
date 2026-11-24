@@ -817,6 +817,21 @@ svg.sx-art text{stroke:none}
 .mc__importe-alumno strong { font-size: 1.01rem; }
 .mc__recomendado-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: auto; font-weight: 750; font-size: .83rem; color: var(--t1, #23613b); }
 .mc__recomendado-cta svg { width: 15px; height: 15px; flex: none; }
+@media (max-width: 620px) {
+  .mc__beneficio-alumno { margin-bottom: 12px; font-size: .83rem; }
+  .mc__beneficio-detalle { display: none; }
+  .mc__recomendados-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .mc__recomendado { grid-template-columns: 64px minmax(0, 1fr); grid-template-rows: auto; align-items: center; gap: 10px; padding: 9px; border-radius: 12px; }
+  .mc__recomendado img { width: 64px; height: 60px; aspect-ratio: auto; border-radius: 8px; }
+  .mc__recomendado-info { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 5px 8px; padding: 0; }
+  .mc__recomendado h3 { grid-column: 1; font-size: .88rem; line-height: 1.25; }
+  .mc__precio-alumno { grid-column: 1; justify-self: start; width: auto; max-width: 100%; gap: 2px; padding: 4px 6px; border-radius: 6px; }
+  .mc__ahorro-alumno { font-size: .69rem; }
+  .mc__importe-alumno { gap: 2px 5px; font-size: .71rem; }
+  .mc__importe-alumno strong { font-size: .84rem; }
+  .mc__recomendado-cta { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
+  .mc__recomendado-cta [data-cta-alumno] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 .mc__regalo { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 16px; padding: 14px; border: 1px solid var(--line2); border-radius: 14px; background: white; }
 .mc__regalo img { width: 68px; height: 58px; object-fit: cover; border-radius: 8px; }
 .mc__regalo div { flex: 1 1 170px; }
