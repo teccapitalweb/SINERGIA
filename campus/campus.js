@@ -10,19 +10,12 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=ofertas-cursos-1';
-import { API_SINERGIA, CURSO_RIEGO, CURSOS_INDIVIDUALES, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=1';
+import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=portadas-2';
+import { API_SINERGIA, CURSO_RIEGO, CURSOS_INDIVIDUALES, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=2';
 
 import { firebaseConfig } from '../componentes/campus-firebase-config.js?v=1';
 const BACKEND = API_SINERGIA;
 const WHATSAPP = '5212361074058';
-
-// Fotos reales que ya existen en el sitio (ponente / portada de cada landing). Sin foto: fondo de color.
-const IMAGENES = {
-  'biofertilizantes': { portada: '/biofertilizantes/assets/poster-hero.jpg', ponente: '/biofertilizantes/assets/ponente.jpg' },
-  'cana-de-azucar': { portada: '/cana-de-azucar/assets/ponente.jpg', ponente: '/cana-de-azucar/assets/ponente.jpg' },
-  'soluciones-nutritivas': {}
-};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -207,7 +200,7 @@ function marco(activo, html) {
 
 // ── Componentes ────────────────────────────────────────────
 function portada(c, extra = '') {
-  const imagen = portadaCurso(c) || IMAGENES[c.slug]?.portada;
+  const imagen = portadaCurso(c);
   return `<div class="portada">${imagen ? `<img src="${esc(imagen)}" alt="" loading="lazy">` : `<div class="hoja">${ICO.hoja}</div>`}${extra}</div>`;
 }
 function tarjetaCurso(c) {

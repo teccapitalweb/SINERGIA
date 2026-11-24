@@ -4,7 +4,7 @@
    con visor, valoración con estrellas y solicitud de certificado), adaptado a cada curso de Sinergia.
    El servidor sigue decidiendo todo: qué clases hay, el video firmado, el avance y las descargas.
    ═══════════════════════════════════════════════════════════ */
-import { CURSO_RIEGO, esCursoIndividual, landingCurso, portadaCurso, portadaPublica, mxn, validarOferta } from '../componentes/cursos-individuales-config.js?v=1';
+import { CURSO_RIEGO, esCursoIndividual, landingCurso, portadaCurso, portadaPublica, mxn, validarOferta } from '../componentes/cursos-individuales-config.js?v=2';
 
 const I = {
   casa: '<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>',
@@ -26,9 +26,9 @@ const ESTADOS_MX = ['Aguascalientes','Baja California','Baja California Sur','Ca
 
 // Portadas definitivas: cuando existan, se escriben aquí (rutas del sitio). Sin portada se dibuja una de arte.
 const PORTADAS = {
-  'biofertilizantes': { curso: '/biofertilizantes/assets/poster-hero.jpg', clases: ['/campus/portadas/biofertilizantes-1.jpg', '/campus/portadas/biofertilizantes-2.jpg', '/campus/portadas/biofertilizantes-3.jpg', '/campus/portadas/biofertilizantes-4.jpg', '/campus/portadas/biofertilizantes-5.jpg'], materiales: ['/campus/portadas/mat-biofertilizantes-1.jpg', '/campus/portadas/mat-biofertilizantes-2.jpg', '/campus/portadas/mat-biofertilizantes-3.jpg', '/campus/portadas/mat-biofertilizantes-4.jpg', '/campus/portadas/mat-biofertilizantes-5.jpg'] },
-  'cana-de-azucar': { curso: '/campus/portadas/cana-de-azucar-2.jpg', clases: ['/campus/portadas/cana-de-azucar-1.jpg', '/campus/portadas/cana-de-azucar-2.jpg', '/campus/portadas/cana-de-azucar-3.jpg', '/campus/portadas/cana-de-azucar-4.jpg', '/campus/portadas/cana-de-azucar-5.jpg'], materiales: ['/campus/portadas/mat-cana-de-azucar-1.jpg', '/campus/portadas/mat-cana-de-azucar-2.jpg', '/campus/portadas/mat-cana-de-azucar-3.jpg', '/campus/portadas/mat-cana-de-azucar-4.jpg', '/campus/portadas/mat-cana-de-azucar-5.jpg'] },
-  'soluciones-nutritivas': { curso: '/campus/portadas/soluciones-nutritivas-1.jpg', clases: ['/campus/portadas/soluciones-nutritivas-1.jpg', '/campus/portadas/soluciones-nutritivas-2.jpg', '/campus/portadas/soluciones-nutritivas-3.jpg', '/campus/portadas/soluciones-nutritivas-4.jpg', '/campus/portadas/soluciones-nutritivas-5.jpg'], materiales: ['/campus/portadas/mat-soluciones-nutritivas-1.jpg', '/campus/portadas/mat-soluciones-nutritivas-2.jpg', '/campus/portadas/mat-soluciones-nutritivas-3.jpg', '/campus/portadas/mat-soluciones-nutritivas-4.jpg', '/campus/portadas/mat-soluciones-nutritivas-5.jpg'] }
+  'biofertilizantes': { clases: ['/campus/portadas/biofertilizantes-1.jpg', '/campus/portadas/biofertilizantes-2.jpg', '/campus/portadas/biofertilizantes-3.jpg', '/campus/portadas/biofertilizantes-4.jpg', '/campus/portadas/biofertilizantes-5.jpg'], materiales: ['/campus/portadas/mat-biofertilizantes-1.jpg', '/campus/portadas/mat-biofertilizantes-2.jpg', '/campus/portadas/mat-biofertilizantes-3.jpg', '/campus/portadas/mat-biofertilizantes-4.jpg', '/campus/portadas/mat-biofertilizantes-5.jpg'] },
+  'cana-de-azucar': { clases: ['/campus/portadas/cana-de-azucar-1.jpg', '/campus/portadas/cana-de-azucar-2.jpg', '/campus/portadas/cana-de-azucar-3.jpg', '/campus/portadas/cana-de-azucar-4.jpg', '/campus/portadas/cana-de-azucar-5.jpg'], materiales: ['/campus/portadas/mat-cana-de-azucar-1.jpg', '/campus/portadas/mat-cana-de-azucar-2.jpg', '/campus/portadas/mat-cana-de-azucar-3.jpg', '/campus/portadas/mat-cana-de-azucar-4.jpg', '/campus/portadas/mat-cana-de-azucar-5.jpg'] },
+  'soluciones-nutritivas': { clases: ['/campus/portadas/soluciones-nutritivas-1.jpg', '/campus/portadas/soluciones-nutritivas-2.jpg', '/campus/portadas/soluciones-nutritivas-3.jpg', '/campus/portadas/soluciones-nutritivas-4.jpg', '/campus/portadas/soluciones-nutritivas-5.jpg'], materiales: ['/campus/portadas/mat-soluciones-nutritivas-1.jpg', '/campus/portadas/mat-soluciones-nutritivas-2.jpg', '/campus/portadas/mat-soluciones-nutritivas-3.jpg', '/campus/portadas/mat-soluciones-nutritivas-4.jpg', '/campus/portadas/mat-soluciones-nutritivas-5.jpg'] }
 };
 const TEMA = {
   'biofertilizantes': { corto: 'Biofertilizantes', lema: 'Nutrición viva para tu suelo', motivo: 'hoja' },
@@ -287,7 +287,7 @@ function vistaInicio(c) {
   const minTot = cl.reduce((a, x) => a + (x.duracionMin || 0), 0);
   const dur = minTot ? (minTot >= 90 ? (Math.round(minTot / 6) / 10) + ' horas' : minTot + ' min') : '—';
   const estado = !c.contenidoListo ? 'En preparación' : p.porcentaje >= 100 ? 'Completado' : p.completadas.length ? 'En progreso' : 'Por empezar';
-  const port = portadaPublica(c.portada) || PORTADAS[c.slug]?.curso || portadaCurso(c);
+  const port = portadaCurso(c);
   const regalo = X.E.datos.cursos.find(x => x.origen === 'regalo' && x.regaloDe === c.slug && x.slug === CURSO_RIEGO);
   $('#mc-view').innerHTML = `<section class="mc__hero" aria-labelledby="mc-curso-nombre">
     <div class="mc__head">
