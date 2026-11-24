@@ -8,6 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 
 <link rel="icon" href="img/logo.jpg" type="image/jpeg">
+<link rel="stylesheet" href="admin/cursos-individuales.css">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2472,7 +2473,7 @@ body::before { display: none; }
     </button>
     <button class="nav-item" data-tab="inscripciones">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-      <span class="nav-item-text">Inscripciones a cursos</span>
+      <span class="nav-item-text">Cursos individuales</span>
       <span id="navInscCount" class="nav-item-count" title="Inscripciones de este mes">0</span>
     </button>
     <button class="nav-item" data-tab="certificates">
@@ -2484,10 +2485,6 @@ body::before { display: none; }
     <button class="nav-item" data-tab="campus">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
       <span class="nav-item-text">Campus · cursos</span>
-    </button>
-    <button class="nav-item" data-tab="precios">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 6.5c0-1.9-2.2-3-5-3s-5 1.1-5 3 2 2.8 5 3.5 5 1.6 5 3.5-2.2 3-5 3-5-1.1-5-3"/></svg>
-      <span class="nav-item-text">Precios de cursos</span>
     </button>
     <button class="nav-item" data-tab="courses">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -2841,13 +2838,30 @@ body::before { display: none; }
     <!-- ═══════════════════════════════════════════════════════════
          INSCRIPCIONES A CURSOS (landings con pago único)
          ═══════════════════════════════════════════════════════════ -->
-    <div class="tab-panel" data-panel="inscripciones">
+    <div class="tab-panel" data-panel="inscripciones" id="cursosIndividuales">
+      <div class="db-hero sg-ci-hero">
+        <div class="db-hero-top"><div>
+          <span class="db-eyebrow">Panel de administración</span>
+          <h2 class="db-hero-titulo">Cursos <em>individuales.</em></h2>
+          <p class="db-hero-sub">Inscripciones, actividad de las páginas de cada curso y precios.</p>
+        </div></div>
+      </div>
+      <nav class="sg-ci-tabs" aria-label="Cursos individuales">
+        <button type="button" data-ci-tab="resumen" aria-current="true">Resumen comparativo</button>
+        <button type="button" data-ci-tab="inscripciones">Inscripciones</button>
+        <button type="button" data-ci-tab="visitas">Visitas</button>
+        <button type="button" data-ci-tab="video">Video</button>
+        <button type="button" data-ci-tab="pagos">Pagos</button>
+        <button type="button" data-ci-tab="precios">Precios</button>
+      </nav>
+      <div id="ciMetricas"></div>
+      <div data-ci-panel="inscripciones" hidden>
       <div class="db-hero">
         <div class="db-hero-top">
           <div>
             <span class="db-eyebrow">Panel de administración</span>
-            <h2 class="db-hero-titulo">Inscripciones <em>a cursos.</em></h2>
-            <p class="db-hero-sub">Cada persona que pagó un curso desde su página (Biofertilizantes, Caña de azúcar, Soluciones nutritivas, Habanero, Gerberas). Se anota sola en cuanto Stripe confirma el pago.</p>
+            <h2 class="db-hero-titulo">Historial <em>de inscripciones.</em></h2>
+            <p class="db-hero-sub">Consulta las compras y el estado de pago que se registró para cada curso.</p>
           </div>
           <div class="mi-hero-acc">
             <button type="button" class="db-hero-btn" onclick="inExportar()">Descargar Excel (CSV)</button>
@@ -2857,7 +2871,7 @@ body::before { display: none; }
         <div class="db-hero-cifras">
           <div><b id="inHeroTotal">—</b><span>inscripciones</span></div>
           <div><b id="inHeroMes">—</b><span>este mes</span></div>
-          <div><b id="inHeroDinero">—</b><span>cobrado en total</span></div>
+          <div><b id="inHeroDinero">—</b><span>importe registrado</span></div>
         </div>
       </div>
 
@@ -2877,12 +2891,8 @@ body::before { display: none; }
         <p class="mi-pie" id="inPie"></p>
         <button type="button" class="btn-secondary mi-mas" id="inMas" onclick="inMas()" hidden>Mostrar más</button>
       </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════════
-         CAMPUS SINERGIA · módulos, clases y materiales de los cursos sueltos
-         ═══════════════════════════════════════════════════════════ -->
-    <div class="tab-panel" data-panel="precios">
+      </div>
+      <div data-ci-panel="precios" hidden>
       <div class="db-hero">
         <div class="db-hero-top">
           <div>
@@ -2895,8 +2905,10 @@ body::before { display: none; }
       </div>
       <div id="pxCuerpo"><div class="sb-vacio">Cargando…</div></div>
       <div id="pxHistorial" style="margin-top:22px"></div>
+      </div>
     </div>
 
+    <!-- CAMPUS SINERGIA · módulos, clases y materiales de los cursos sueltos -->
     <div class="tab-panel" data-panel="campus">
       <div class="db-hero">
         <div class="db-hero-top">
@@ -4596,6 +4608,8 @@ body::before { display: none; }
   // TABS SWITCHER
   // ═══════════════════════════════════════════════════
   window.switchTab = function(tabName) {
+    const abrirPrecios = tabName === 'precios';
+    if (abrirPrecios) tabName = 'inscripciones';
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.querySelectorAll(`[data-tab="${tabName}"]`).forEach(n => n.classList.add('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -4605,7 +4619,7 @@ body::before { display: none; }
       'dashboard': 'Dashboard',
       'members': 'Gestión de miembros',
       'subscriptions': 'Suscripciones',
-      'inscripciones': 'Inscripciones a cursos',
+      'inscripciones': 'Cursos individuales',
       'freecourses': 'Pruebas gratuitas',
       'metricas': 'Métricas',
       'forum': 'Foro · moderación',
@@ -4616,7 +4630,6 @@ body::before { display: none; }
       'library': 'Material',
       'courses': 'Videoteca',
       'campus': 'Campus Sinergia · cursos',
-      'precios': 'Precios de cursos',
       'certificates': 'Certificados',
       'ratings': 'Calificaciones de los cursos',
       'retos': 'Retos',
@@ -4629,6 +4642,7 @@ body::before { display: none; }
     if (titleEl) titleEl.textContent = titles[tabName] || tabName;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     cerrarMenuMovil();
+    if (tabName === 'inscripciones') ciAbrir(abrirPrecios ? 'precios' : CI.pestana);
   };
 
   // Menú lateral en celular (cajón que se abre con el botón de la barra superior)
@@ -7396,9 +7410,15 @@ body::before { display: none; }
   window.pxCargar = async function(forzar) {
     const host = document.getElementById('pxCuerpo'); if (!host || PX.cargando) return;
     if (PX.datos && !forzar) return pxRender();
+    const version = CI.version;
     PX.cargando = true; host.innerHTML = '<div class="sb-vacio">Cargando precios…</div>';
-    try { PX.datos = await pxPedir('/admin/panel/precios'); pxRender(); pxHistorial(); }
+    try {
+      const datos = await pxPedir('/admin/panel/precios');
+      if (version !== CI.version) return;
+      PX.datos = datos; pxRender(); pxHistorial();
+    }
     catch (e) {
+      if (version !== CI.version) return;
       host.innerHTML = '<div class="sb-vacio">' + (e.status === 403
         ? 'Tu cuenta no tiene permiso para cambiar precios. Solo las cuentas autorizadas para el panel de Sinergia pueden hacerlo.'
         : 'No se pudieron cargar los precios (' + esc(e.message || 'error') + ').') + '</div>';
@@ -7414,18 +7434,19 @@ body::before { display: none; }
         : c.estado === 'desincronizado' ? '<span style="color:#b91c1c;font-weight:700">⚠ La página dice ' + pxPesos(c.precio_mostrado) + ' y Stripe cobra ' + pxPesos(c.precio_cobro_real) + '</span>'
         : '<span style="color:#92400e;font-weight:700">No se pudo comparar' + (c.error_stripe ? ' (' + esc(c.error_stripe) + ')' : '') + '</span>';
       return '<tr><td><b>' + esc(c.titulo) + '</b><br><small>' + esc(slug) + '</small></td>' +
-        '<td class="n"><b style="font-size:16px">' + pxPesos(c.precio_cobro_real) + '</b><br><small>cobra Stripe</small></td>' +
-        '<td class="n">' + pxPesos(c.precio_mostrado) + (c.antes ? '<br><small>antes <s>' + pxPesos(c.antes) + '</s></small>' : '') + '</td>' +
-        '<td>' + est + '</td>' +
+        '<td class="n" data-label="Cobro real"><b style="font-size:16px">' + pxPesos(c.precio_cobro_real) + '</b><br><small>cobra Stripe</small></td>' +
+        '<td class="n" data-label="Se anuncia">' + pxPesos(c.precio_mostrado) + (c.antes ? '<br><small>antes <s>' + pxPesos(c.antes) + '</s></small>' : '') + '</td>' +
+        '<td data-label="Estado">' + est + '</td>' +
         '<td style="white-space:nowrap"><label style="font-size:11px;color:var(--stone-500);display:block">Precio nuevo (MXN)</label><input type="number" inputmode="numeric" min="' + PX_MIN + '" max="' + PX_MAX + '" step="1" id="pxN-' + esc(slug) + '" value="' + (c.precio_mostrado ?? '') + '" style="width:110px;padding:7px 9px;border:1px solid var(--stone-300,#d6d3d1);border-radius:8px;font:inherit"></td>' +
         '<td style="white-space:nowrap"><label style="font-size:11px;color:var(--stone-500);display:block">Tachado «antes» (opcional)</label><input type="number" inputmode="numeric" step="1" id="pxA-' + esc(slug) + '" value="' + (c.antes ?? '') + '" placeholder="sin tachado" style="width:120px;padding:7px 9px;border:1px solid var(--stone-300,#d6d3d1);border-radius:8px;font:inherit"></td>' +
         '<td><button type="button" class="btn-primary" style="padding:8px 14px" onclick="pxCambiar(\'' + esc(slug) + '\')">Cambiar precio</button></td></tr>';
     }).join('');
-    host.innerHTML = '<div class="en-tabla-ancha" style="overflow-x:auto"><table class="pg-tabla"><thead><tr><th>Curso</th><th class="n">Cobro real</th><th class="n">Se anuncia</th><th>Estado</th><th>Nuevo precio</th><th>Precio «antes»</th><th></th></tr></thead><tbody>' + (filas || '<tr><td colspan="7">Sin cursos.</td></tr>') + '</tbody></table></div>' +
+    host.innerHTML = '<div class="en-tabla-ancha" style="overflow-x:auto"><table class="pg-tabla sg-ci-precios"><thead><tr><th>Curso</th><th class="n">Cobro real</th><th class="n">Se anuncia</th><th>Estado</th><th>Nuevo precio</th><th>Precio «antes»</th><th></th></tr></thead><tbody>' + (filas || '<tr><td colspan="7">Sin cursos.</td></tr>') + '</tbody></table></div>' +
       '<p style="font-size:12.5px;color:var(--stone-500);margin-top:10px">Mínimo $' + PX_MIN + ' MXN (el cobro más bajo que acepta Stripe en pesos). Para probar un pago: pon el curso en $' + PX_MIN + ', haz la compra y <b>regresa el precio</b> al terminar. Cada cambio queda en el historial y se avisa por correo.</p>';
   }
   window.pxCambiar = function(slug) {
     const c = ((PX.datos && PX.datos.cursos) || {})[slug]; if (!c) return;
+    const version = CI.version;
     const nuevo = Number(document.getElementById('pxN-' + slug).value);
     const antesTxt = document.getElementById('pxA-' + slug).value.trim();
     const antes = antesTxt === '' ? null : Number(antesTxt);
@@ -7437,7 +7458,9 @@ body::before { display: none; }
       body: 'Pasará de <b>' + pxPesos(c.precio_cobro_real) + '</b> a <b>' + pxPesos(nuevo) + ' MXN</b>' + (antes ? ' (tachado ' + pxPesos(antes) + ')' : ', sin precio tachado') + '.<br><br>Cambia <b>el cobro real en Stripe</b> y lo que anuncia la página del curso. Aplica de inmediato a las compras nuevas.',
       confirmText: 'Sí, cambiar a ' + pxPesos(nuevo), type: 'warn',
       onConfirm: async () => {
+        if (version !== CI.version) return;
         const r = await pxPedir('/admin/precios/cambiar', { curso: slug, nuevo_precio: nuevo, nuevo_antes: antes });
+        if (version !== CI.version) return;
         showToast('Listo: ' + c.titulo + ' ahora cuesta ' + pxPesos(r.precio_nuevo) + (r.correo_enviado ? '' : ' (el aviso por correo no salió)'));
         PX.datos = null; await pxCargar(true);
       }
@@ -7445,15 +7468,16 @@ body::before { display: none; }
   };
   async function pxHistorial() {
     const host = document.getElementById('pxHistorial'); if (!host) return;
+    const version = CI.version;
     try {
       const r = await pxPedir('/admin/panel/precios/historial'); const l = r.cambios || [];
+      if (version !== CI.version) return;
       host.innerHTML = '<h3 style="margin:0 0 10px">Historial de cambios</h3>' + (l.length
         ? '<div class="en-tabla-ancha" style="overflow-x:auto"><table class="pg-tabla"><thead><tr><th>Cuándo</th><th>Curso</th><th class="n">Antes</th><th class="n">Después</th><th>Quién</th></tr></thead><tbody>' +
           l.map((x) => '<tr><td>' + (x.cuando ? new Date(x.cuando).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' }) : '—') + '</td><td>' + esc(x.curso) + '</td><td class="n">' + pxPesos(x.precio_viejo) + '</td><td class="n"><b>' + pxPesos(x.precio_nuevo) + '</b></td><td>' + esc(x.quien || '') + '</td></tr>').join('') + '</tbody></table></div>'
         : '<div class="sb-vacio">Aún no hay cambios de precio registrados.</div>');
-    } catch (e) { host.innerHTML = ''; }
+    } catch (e) { if (version === CI.version) host.innerHTML = ''; }
   }
-  { const previo = window.switchTab; window.switchTab = function(tab) { previo(tab); if (tab === 'precios') pxCargar(false); }; }
 
   // ── Solicitudes de certificado del Campus (bandeja del equipo) ──
   const CPS = { lista: [], filtro: 'pendiente' };
@@ -7713,8 +7737,33 @@ body::before { display: none; }
     catch (e) { showToast('No se eliminó: ' + (e.message || 'error'), 'error'); }
   };
   window.cpMatAbrir = async function(id) {
+    const version = CI.version;
     const ventana = window.open('', '_blank');
-    try { const r = await callAdminEndpoint('/admin/campus/material/abrir', { slug: CP.slug, id }); if (ventana) ventana.location = r.url; else window.location.href = r.url; }
+    if (ventana) ventana.opener = null;
+    try {
+      const r = await callAdminEndpoint('/admin/campus/material/abrir', { slug: CP.slug, id });
+      if (version !== CI.version) { ventana?.close(); return; }
+      if (typeof r.archivo?.base64 === 'string' && r.archivo.base64) {
+        const pdf = r.archivo.mime === 'application/pdf';
+        const bytes = Uint8Array.from(atob(r.archivo.base64), c => c.charCodeAt(0));
+        const url = URL.createObjectURL(new Blob([bytes], { type: pdf ? 'application/pdf' : 'application/octet-stream' }));
+        if (ventana && pdf) ventana.location = url;
+        else {
+          ventana?.close();
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = r.archivo.nombreArchivo || 'material';
+          document.body.append(a);
+          a.click();
+          a.remove();
+        }
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        return;
+      }
+      const url = new URL(r.url);
+      if (url.protocol !== 'https:') throw new Error('Enlace de material inválido');
+      if (ventana) ventana.location = url.href; else window.location.href = url.href;
+    }
     catch (e) { if (ventana) ventana.close(); showToast('No se pudo abrir: ' + (e.message || 'error'), 'error'); }
   };
 
@@ -7730,20 +7779,32 @@ body::before { display: none; }
   // INSCRIPCIONES A CURSOS: cada compra de un curso suelto (landing con pago único). Las guarda el aviso de Stripe en el
   // servidor; aquí solo se leen por /admin/inscripciones/listar (solo lectura). Montos en pesos.
   // ═══════════════════════════════════════════════════
-  const IN = { lista: null, error: '', cargando: false, curso: 'todos', q: '', visibles: 25, clave: '' };
+  const IN = { lista: null, error: '', cargando: false, curso: 'todos', q: '', visibles: 25, clave: '', truncado: false };
   const IN_PASO = 25;
   const IN_NOMBRES = { 'biofertilizantes': 'Biofertilizantes', 'cana-de-azucar': 'Caña de azúcar', 'soluciones-nutritivas': 'Soluciones nutritivas', 'habanero': 'Chile habanero', 'gerberas': 'Gerberas' };
-  const inNombre = (c) => IN_NOMBRES[c] || c;
-  const inFecha = (iso) => { if (!iso) return '—'; const d = new Date(iso); return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }) + ' · ' + d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }); };
+  const IN_DISPOSITIVOS = { telefono: 'Teléfono', computadora: 'Computadora', tableta: 'Tableta' };
+  const inNombre = (c) => Object.hasOwn(IN_NOMBRES,c) ? IN_NOMBRES[c] : String(c || '').replace(/-/g,' ').replace(/^./, letra => letra.toUpperCase());
+  const IN_FECHA = new Intl.DateTimeFormat('es-MX', { timeZone: 'America/Mexico_City', dateStyle: 'medium', timeStyle: 'short', hourCycle: 'h23' });
+  const IN_MES = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Mexico_City', year: 'numeric', month: 'numeric' });
+  const inFecha = (iso) => { const d = iso ? new Date(iso) : null; return d && Number.isFinite(+d) ? IN_FECHA.format(d) : '—'; };
+  const inFechaCompra = (c) => c.confirmadoEn || c.fecha;
+  const inEstadoPago = (c) => ({paid: 'Pago confirmado', no_payment_required: 'Sin cobro'}[c.estadoPago] || 'Confirmación sin dato');
+  const inMoneda = (monto, moneda) => /^[A-Z]{3}$/i.test(moneda || '')
+    ? new Intl.NumberFormat('es-MX', { style: 'currency', currency: moneda }).format(Number(monto) || 0)
+    : dbMxn(monto);
 
   window.inCargar = async function(forzar) {
     if (IN.cargando || (IN.lista && !forzar)) { inRender(); return; }
+    const version = CI.version;
     IN.cargando = true; IN.error = '';
     inRender();
     try {
       const r = await callAdminEndpoint('/admin/inscripciones/listar', {});
+      if (version !== CI.version) return;
       IN.lista = Array.isArray(r.inscripciones) ? r.inscripciones : [];
+      IN.truncado = r.truncado === true;
     } catch (e) {
+      if (version !== CI.version) return;
       IN.error = (e && e.message) || 'no disponible';
     }
     IN.cargando = false;
@@ -7769,14 +7830,19 @@ body::before { display: none; }
       return;
     }
     const todos = IN.lista;
-    const mes = dbMesClave(new Date());
-    const delMes = todos.filter(x => x.fecha && dbMesClave(new Date(x.fecha)) === mes);
+    const mes = IN_MES.format(new Date());
+    const delMes = todos.filter(x => inFechaCompra(x) && Number.isFinite(+new Date(inFechaCompra(x))) && IN_MES.format(new Date(inFechaCompra(x))) === mes);
     set('inHeroTotal', dbNum(todos.length));
     set('inHeroMes', dbNum(delMes.length));
-    set('inHeroDinero', dbMxn(todos.reduce((s, x) => s + (Number(x.monto) || 0), 0)));
+    const montos = new Map();
+    for (const x of todos) {
+      const moneda = String(x.moneda || 'MXN').toUpperCase();
+      montos.set(moneda, (montos.get(moneda) || 0) + (Number(x.monto) || 0));
+    }
+    set('inHeroDinero', [...montos].map(([moneda, monto]) => inMoneda(monto, moneda)).join(' · ') || dbMxn(0));
     const badge = document.getElementById('navInscCount');
     if (badge) badge.textContent = String(delMes.length);
-    if (nota) nota.textContent = 'Una fila por compra, de la más reciente a la más antigua. Si alguien compró dos cursos, aparece dos veces.';
+    if (nota) nota.textContent = 'Horario de Ciudad de México. Algunos registros históricos pueden carecer de una confirmación de pago guardada.' + (IN.truncado ? ' La consulta llegó a su límite. Las cifras cubren los registros disponibles.' : '');
 
     const cursos = [...new Set(todos.map(x => x.curso))];
     const chips = [['todos', 'Todos', todos.length]].concat(cursos.map(c => [c, inNombre(c), todos.filter(x => x.curso === c).length]));
@@ -7789,12 +7855,15 @@ body::before { display: none; }
     if (!lista.length) { tabla.innerHTML = '<div class="sb-vacio">Nadie coincide con el filtro.</div>'; pie.textContent = ''; mas.hidden = true; return; }
     const ver = lista.slice(0, IN.visibles);
     const wa = (t) => { const n = String(t || '').replace(/\D/g, ''); return n ? '<a href="https://wa.me/' + n + '" target="_blank" rel="noopener">' + esc(t) + '</a>' : '—'; };
-    tabla.innerHTML = '<table class="members-table"><thead><tr><th>Fecha</th><th>Alumno</th><th>WhatsApp</th><th>Curso</th><th>Pagó</th><th>Correo de acceso</th></tr></thead><tbody>' + ver.map(x => '<tr>' +
-      '<td data-label="Fecha">' + esc(inFecha(x.fecha)) + '</td>' +
+    tabla.innerHTML = '<table class="members-table"><thead><tr><th>Fecha</th><th>Alumno</th><th>WhatsApp</th><th>Curso</th><th>Importe</th><th>Correo de acceso</th></tr></thead><tbody>' + ver.map(x => '<tr>' +
+      '<td data-label="Fecha">' + esc(inFecha(inFechaCompra(x))) + '</td>' +
       '<td data-label="Alumno"><div class="m-info"><div class="m-name">' + esc(x.nombre || '(sin nombre)') + '</div><div class="m-email">' + esc(x.email || '—') + '</div></div></td>' +
       '<td data-label="WhatsApp">' + wa(x.telefono) + '</td>' +
-      '<td data-label="Curso">' + esc(inNombre(x.curso)) + '</td>' +
-      '<td data-label="Pagó"><b>' + esc(dbMxn(x.monto)) + '</b></td>' +
+      '<td data-label="Curso">' + esc(inNombre(x.curso)) + (x.promoOrigenSlug ? '<div class="m-email">Desde ' + esc(inNombre(x.promoOrigenSlug)) + '</div>' : '') +
+        (x.regalo ? '<div class="m-email">Regalo ' + esc(inNombre(x.regalo)) + '</div>' : '') +
+        (Object.hasOwn(IN_DISPOSITIVOS, x.dispositivo) ? '<div class="m-email">' + IN_DISPOSITIVOS[x.dispositivo] + '</div>' : '') + '</td>' +
+      '<td data-label="Importe"><b>' + esc(inMoneda(x.monto, x.moneda)) + '</b><div class="m-email">' + esc(inEstadoPago(x)) + '</div>' +
+        (x.promoDescuentoCentavos > 0 ? '<div class="m-email">Ahorro ' + esc(inMoneda(x.promoDescuentoCentavos / 100, x.moneda)) + '</div>' : '') + '</td>' +
       '<td data-label="Correo de acceso"><span class="sb-v ' + (x.correoEnviado ? 'ok' : 'mal') + '">' + (x.correoEnviado ? 'Enviado' : 'Sin confirmar') + '</span></td></tr>').join('') + '</tbody></table>';
     pie.textContent = 'Mostrando ' + ver.length + ' de ' + lista.length;
     const faltan = lista.length - ver.length;
@@ -7807,9 +7876,13 @@ body::before { display: none; }
   window.inExportar = function() {
     const lista = inVisibles();
     if (!lista.length) { showToast('No hay inscripciones para descargar', 'error'); return; }
-    const campo = (v) => '"' + String(v === null || v === undefined ? '' : v).replace(/"/g, '""') + '"';
-    const filas = [['Fecha', 'Nombre', 'Correo', 'WhatsApp', 'Curso', 'Monto MXN', 'Correo de acceso'].join(',')].concat(lista.map(x =>
-      [campo(x.fecha ? inFecha(x.fecha) : ''), campo(x.nombre), campo(x.email), campo('\t' + (x.telefono || '')), campo(inNombre(x.curso)), campo(Number(x.monto || 0).toFixed(2)), campo(x.correoEnviado ? 'Enviado' : 'Sin confirmar')].join(',')));
+    const campo = (v) => {
+      const cadena = String(v ?? '');
+      const seguro = /^\s*[=+\-@]/.test(cadena) ? "'" + cadena : cadena;
+      return '"' + seguro.replace(/"/g, '""') + '"';
+    };
+    const filas = [['Fecha', 'Nombre', 'Correo', 'WhatsApp', 'Curso', 'Monto', 'Correo de acceso', 'Moneda', 'Estado de pago'].join(',')].concat(lista.map(x =>
+      [campo(inFechaCompra(x) ? inFecha(inFechaCompra(x)) : ''), campo(x.nombre), campo(x.email), campo('\t' + (x.telefono || '')), campo(inNombre(x.curso)), campo(Number(x.monto || 0).toFixed(2)), campo(x.correoEnviado ? 'Enviado' : 'Sin confirmar'), campo(x.moneda || 'MXN'), campo(inEstadoPago(x))].join(',')));
     const blob = new Blob(['﻿' + filas.join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -7818,8 +7891,67 @@ body::before { display: none; }
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   };
 
-  document.addEventListener('click', (e) => {
-    if (e.target.closest && e.target.closest('[data-tab="inscripciones"]')) setTimeout(() => inCargar(false), 150);
+  const CI = { pestana: 'resumen', modulo: null, panel: null, uid: null, version: 0 };
+  const ciRaiz = document.getElementById('cursosIndividuales');
+  const ciMetricas = document.getElementById('ciMetricas');
+  function ciSesion(uid) {
+    if (CI.uid === uid) return;
+    if (CI.uid) {
+      closeModal();
+      document.getElementById('modalConfirm').onclick = null;
+      document.getElementById('modalBody').replaceChildren();
+    }
+    CI.uid = uid;
+    CI.version++;
+    CI.panel?.cerrar();
+    CI.panel = null;
+    CI.modulo = null;
+    ciMetricas.replaceChildren();
+    Object.assign(IN, { lista: null, error: '', cargando: false, curso: 'todos', q: '', visibles: IN_PASO, clave: '', truncado: false });
+    Object.assign(PX, { datos: null, cargando: false });
+    inRender();
+    for (const id of ['inChips','pxCuerpo','pxHistorial']) document.getElementById(id).replaceChildren();
+    for (const id of ['inHeroTotal','inHeroMes','inHeroDinero','navInscCount']) document.getElementById(id).textContent = '—';
+    ciRaiz.querySelector('.search-input').value = '';
+  }
+  async function ciAbrir(tab) {
+    const version = CI.version;
+    CI.pestana = tab;
+    ciRaiz.querySelectorAll('[data-ci-tab]').forEach(b => {
+      if (b.dataset.ciTab === tab) b.setAttribute('aria-current', 'true');
+      else b.removeAttribute('aria-current');
+    });
+    ciRaiz.querySelectorAll('[data-ci-panel]').forEach(p => { p.hidden = p.dataset.ciPanel !== tab; });
+    ciMetricas.hidden = tab === 'inscripciones' || tab === 'precios';
+    if (tab === 'inscripciones') return inCargar(false);
+    if (tab === 'precios') return pxCargar(false);
+    if (!CI.modulo) {
+      ciMetricas.innerHTML = '<p class="widget-box" role="status">Cargando la actividad…</p>';
+      CI.modulo = import('./admin/cursos-individuales.js').then(m => {
+        if (version !== CI.version) return null;
+        CI.panel = m.crearMetricasCursos({
+          contenedor: ciMetricas,
+          pedir: pxPedir,
+          historial: async () => {
+            await inCargar(false);
+            return { compras: IN.lista, truncado: IN.truncado };
+          }
+        });
+        return CI.panel;
+      });
+    }
+    try {
+      const metricas = await CI.modulo;
+      if (version === CI.version && CI.pestana === tab) metricas?.abrir(tab);
+    } catch {
+      if (version !== CI.version) return;
+      CI.modulo = null;
+      if (CI.pestana === tab) ciMetricas.innerHTML = '<p class="widget-box" role="alert">No se pudo abrir la actividad. Selecciona esta pestaña para reintentar.</p>';
+    }
+  }
+  ciRaiz.querySelector('.sg-ci-tabs').addEventListener('click', e => {
+    const boton = e.target.closest('[data-ci-tab]');
+    if (boton) ciAbrir(boton.dataset.ciTab);
   });
 
   /* FASE3N-SUSCRIPCIONES-PAGOS */
@@ -11684,6 +11816,8 @@ let _bibLibrosCargados = false;
   // INIT: gatekeeper
   // ═══════════════════════════════════════════════════
   onAuthStateChanged(auth, async (user) => {
+    ciSesion(user?.uid || null);
+    const version = CI.version;
     if (!user) {
       // Mostrar login propio del admin (NO redirigir a vip-auth.html que es de miembros)
       document.getElementById('pageLoader').classList.add('hidden');
@@ -11696,6 +11830,7 @@ let _bibLibrosCargados = false;
 
     // Verificar whitelist
     if (!ADMIN_EMAILS.map(e => e.toLowerCase()).includes(user.email.toLowerCase())) {
+      document.getElementById('app').style.display = 'none';
       document.getElementById('adminLoginScreen').classList.remove('show');
       document.getElementById('accessDeniedEmail').textContent = user.email;
       document.getElementById('pageLoader').classList.add('hidden');
@@ -11720,8 +11855,10 @@ let _bibLibrosCargados = false;
 
     // Ocultar loader, mostrar app
     setTimeout(() => {
+      if (version !== CI.version) return;
       document.getElementById('pageLoader').classList.add('hidden');
       document.getElementById('app').style.display = 'grid';
+      if (ciRaiz.classList.contains('active')) ciAbrir(CI.pestana);
     }, 300);
   });
 </script>

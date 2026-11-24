@@ -592,8 +592,10 @@ section.vt[data-testimonios] {
 body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); outline-offset: 3px; }
 :is(.hero, .buy-card, .sticky-cta, footer) :is(a, button):focus-visible { outline-color: var(--precio-tinta); }
 </style>
+<link rel="stylesheet" href="/componentes/curso-individual.css?v=1">
+<script src="/cookies.js?v=cursos-1" defer></script>
 </head>
-<body>
+<body data-curso-individual="cana-de-azucar">
 
 <!-- ============ HERO ============ -->
 <header class="hero">
@@ -1032,6 +1034,7 @@ body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); out
       Este sitio no está afiliado ni respaldado por Meta™ / Facebook™. El reconocimiento institucional se entrega al finalizar el curso conforme a los lineamientos de Sinergia Agrícola / IPCI. Cupo sujeto a disponibilidad. © 2026 Sinergia Agrícola.
     </p>
   </div>
+  <button class="sgi-config-cookies" type="button" data-cookies-abrir>Configurar cookies</button>
 </footer>
 
 <!-- ============ WHATSAPP FLOTANTE ============ -->
@@ -1096,6 +1099,7 @@ body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); out
 
   function closeModal(){
     overlay.classList.remove('open');
+    window.SinergiaCurso?.cerrarPago();
     document.body.style.overflow = '';
     if (checkoutInstance) { try { checkoutInstance.destroy(); } catch(e){} checkoutInstance = null; }
     mountEl.innerHTML = '';
@@ -1109,25 +1113,44 @@ body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); out
     opening = true;
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
+    payLoading.style.display = 'flex';
+    window.SinergiaCurso?.abrirPago();
+    var intento;
     try {
+      intento = await window.SinergiaCurso?.datosPago();
+      if (!overlay.classList.contains('open')) return;
       var results = await Promise.all([
         fetch(BACKEND_URL + '/stripe/cana-de-azucar/checkout-session', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: intento?.headers || { 'Content-Type': 'application/json' },
+          body: JSON.stringify(intento?.body || {})
         }).then(function(r){ if(!r.ok) throw new Error('backend ' + r.status); return r.json(); }),
         loadStripeJs()
       ]);
       var data = results[0];
       if (!data.clientSecret || !data.publishableKey) throw new Error('respuesta incompleta');
+      if (!overlay.classList.contains('open')) return;
       var stripeClient = Stripe(data.publishableKey);
       checkoutInstance = await stripeClient.initEmbeddedCheckout({ clientSecret: data.clientSecret });
+      if (!overlay.classList.contains('open')) {
+        checkoutInstance.destroy();
+        checkoutInstance = null;
+        return;
+      }
       payLoading.style.display = 'none';
       checkoutInstance.mount('#stripeCheckoutMount');
+      window.SinergiaCurso?.montarPago(data, intento);
     } catch (err) {
-      console.error('Embedded checkout falló, usando Payment Link:', err);
-      fallbackRedirect();
+      if (!overlay.classList.contains('open')) return;
+      console.error('No se pudo abrir el pago integrado:', err);
+      if (window.SinergiaCurso?.errorPago(intento, openEmbeddedCheckout, fallbackRedirect)) {
+        payLoading.style.display = 'none';
+      } else {
+        fallbackRedirect();
+      }
+    } finally {
+      opening = false;
     }
-    opening = false;
   }
 
   document.getElementById('payClose').addEventListener('click', closeModal);
@@ -1565,13 +1588,6 @@ body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); out
 
 </script>
 <!-- TESTIMONIOS-VT:FIN -->
-<script>
-/* Llega desde el Campus («Inscribirme al curso»): abre el pago directamente. */
-(function(){ try {
-  if (!/[?&]inscribir=1\b/.test(location.search)) return;
-  history.replaceState(null, '', location.pathname + location.hash);
-  window.addEventListener('load', function(){ setTimeout(function(){ var b = document.querySelector('.js-buy'); if (b) b.click(); }, 500); });
-} catch (e) {} })();
-</script>
+<script type="module" src="/componentes/curso-individual.js?v=1"></script>
 </body>
 </html>

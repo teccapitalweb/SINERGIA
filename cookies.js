@@ -9,6 +9,7 @@
   var KEY = 'sinergia_cookies';
   var VERSION = 1;
   var memoria = null;
+  var landingCurso = function () { return !!document.body?.dataset.cursoIndividual; };
 
   function leer() {
     try {
@@ -18,7 +19,11 @@
     return memoria && memoria.v === VERSION ? memoria : null;
   }
   function guardar(pref, est) {
+    var previo = leer();
     var d = { v: VERSION, necesarias: true, preferencias: !!pref, estadisticas: !!est, fecha: new Date().toISOString() };
+    if (landingCurso() || typeof previo?.cursosIndividuales === 'boolean') {
+      d.cursosIndividuales = !!est && (landingCurso() || previo.cursosIndividuales === true);
+    }
     memoria = d;
     try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) { /* sin almacenamiento */ }
     try { window.dispatchEvent(new CustomEvent('sinergia:cookies', { detail: d })); } catch (e) { /* navegador antiguo */ }
@@ -87,11 +92,13 @@
     el.innerHTML =
       '<h2 id="ck-tit">Cookies en Sinergia</h2>' +
       '<p id="ck-txt">Usamos cookies y almacenamiento del navegador para que el sitio funcione, recordar tus preferencias y, si lo permites, entender cómo se usa para mejorarlo.</p>' +
-      '<p class="ck-links"><a href="terminos.html">Términos y condiciones</a> · <a href="privacidad.html">Aviso de privacidad</a></p>' +
+      '<p class="ck-links"><a href="/terminos.html">Términos y condiciones</a> · <a href="/privacidad.html">Aviso de privacidad</a></p>' +
       '<div class="ck-prefs" id="ck-prefs" hidden>' +
         '<div class="ck-op"><div><b>Necesarias</b><span>Mantienen tu sesión y hacen funcionar el sitio y los pagos. Siempre activas.</span></div><label class="ck-sw"><input type="checkbox" checked disabled aria-label="Necesarias"><i></i></label></div>' +
         '<div class="ck-op"><div><b>Preferencias</b><span>Recuerdan cosas como tu ruta de cursos sugerida y el tema que elegiste.</span></div><label class="ck-sw"><input type="checkbox" id="ck-pref" aria-label="Preferencias"><i></i></label></div>' +
-        '<div class="ck-op"><div><b>Estadísticas</b><span>Un conteo anónimo de visitas por día y página, para mejorar el sitio. No guarda tu IP ni te identifica.</span></div><label class="ck-sw"><input type="checkbox" id="ck-est" aria-label="Estadísticas"><i></i></label></div>' +
+        '<div class="ck-op"><div><b>Estadísticas</b><span>' + (landingCurso()
+          ? 'Miden visitas, reproducciones, enlaces y pagos del curso. Si ya iniciaste sesión, se asocian a tu cuenta.'
+          : 'Un conteo anónimo de visitas por día y página, para mejorar el sitio.') + '</span></div><label class="ck-sw"><input type="checkbox" id="ck-est" aria-label="Estadísticas"><i></i></label></div>' +
       '</div>' +
       '<div class="ck-acc">' +
         '<button type="button" class="ck-b main" id="ck-todo">Aceptar todo</button>' +
@@ -106,7 +113,7 @@
     var est = el.querySelector('#ck-est');
     var pers = el.querySelector('#ck-pers');
     var acc = el.querySelector('.ck-acc');
-    if (actual) { pref.checked = actual.preferencias; est.checked = actual.estadisticas; }
+    if (actual) { pref.checked = actual.preferencias; est.checked = landingCurso() ? actual.cursosIndividuales === true : actual.estadisticas; }
 
     function decidir(p, e) { guardar(p, e); cerrar(); }
     el.querySelector('#ck-todo').addEventListener('click', function () { decidir(true, true); });
@@ -137,7 +144,8 @@
       var t = e.target.closest ? e.target.closest('[data-cookies-abrir]') : null;
       if (t) { e.preventDefault(); abrir(); }
     });
-    if (!leer()) setTimeout(abrir, 600);
+    var actual = leer();
+    if (!actual || (landingCurso() && typeof actual.cursosIndividuales !== 'boolean')) setTimeout(abrir, 600);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();

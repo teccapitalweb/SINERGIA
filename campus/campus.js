@@ -10,17 +10,11 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti } from './aula.js?v=temario-58fb20';
+import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=ofertas-cursos-1';
+import { API_SINERGIA, CURSO_RIEGO, CURSOS_INDIVIDUALES, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=1';
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyBDuTlF5zL0wDrOBhF-jOQLZWJiUtWRfG0',
-  authDomain: 'sinergia-agricola-vip.firebaseapp.com',
-  projectId: 'sinergia-agricola-vip',
-  storageBucket: 'sinergia-agricola-vip.firebasestorage.app',
-  messagingSenderId: '788533345154',
-  appId: '1:788533345154:web:4066de6561e1d54e2cad9b'
-};
-const BACKEND = 'https://sinergia-webhook-production.up.railway.app';
+import { firebaseConfig } from '../componentes/campus-firebase-config.js?v=1';
+const BACKEND = API_SINERGIA;
 const WHATSAPP = '5212361074058';
 
 // Fotos reales que ya existen en el sitio (ponente / portada de cada landing). Sin foto: fondo de color.
@@ -213,8 +207,8 @@ function marco(activo, html) {
 
 // ── Componentes ────────────────────────────────────────────
 function portada(c, extra = '') {
-  const img = IMAGENES[c.slug] || {};
-  return `<div class="portada">${img.portada ? `<img src="${img.portada}" alt="" loading="lazy">` : `<div class="hoja">${ICO.hoja}</div>`}${extra}</div>`;
+  const imagen = portadaCurso(c) || IMAGENES[c.slug]?.portada;
+  return `<div class="portada">${imagen ? `<img src="${esc(imagen)}" alt="" loading="lazy">` : `<div class="hoja">${ICO.hoja}</div>`}${extra}</div>`;
 }
 function tarjetaCurso(c) {
   const p = c.progreso;
@@ -227,7 +221,7 @@ function tarjetaCurso(c) {
         ${sig ? `<a class="btn btn-sec" href="${aula}">Ver curso</a>` : ''}
       </div>`;
   return `<article class="tarjeta" data-curso="${esc(c.slug)}">
-    ${portada(c, `<div class="portada-info"><div class="chips">${c.contenidoListo ? `<span class="chip">${p.total} clases</span><span class="chip">${c.modulos.length} módulos</span>` : '<span class="chip prep">Contenido en preparación</span>'}${p.porcentaje === 100 ? '<span class="chip ok">Completado</span>' : ''}</div><h3>${esc(c.titulo)}</h3></div>`)}
+    ${portada(c, `<div class="portada-info"><div class="chips">${c.origen === 'regalo' ? '<span class="chip prep">Regalo incluido</span>' : ''}${c.contenidoListo ? `<span class="chip">${p.total} clases</span><span class="chip">${c.modulos.length} módulos</span>` : '<span class="chip prep">Contenido en preparación</span>'}${p.porcentaje === 100 ? '<span class="chip ok">Completado</span>' : ''}</div><h3>${esc(c.titulo)}</h3></div>`)}
     <div class="tarjeta-cuerpo">
       ${c.ponente ? `<div class="ponente">Imparte: <b>${esc(c.ponente)}</b></div>` : ''}
       ${c.contenidoListo ? `<div><div class="barra"><i style="width:${p.porcentaje}%"></i></div><div class="barra-txt" style="margin-top:6px"><span>${p.completadas.length} de ${p.total} clases vistas</span><b>${p.porcentaje}%</b></div></div>`
@@ -250,8 +244,9 @@ function listaMateriales(c) {
   if (!c.materiales.length) return '<div class="caja vacio"><b>Sin materiales por ahora</b>Cuando el equipo publique materiales de este curso aparecerán aquí.</div>';
   return `<div class="materiales">${c.materiales.map((m) => {
     const ext = (m.ext || 'doc').toLowerCase().replace(/^\./, '');
+    const imagen = portadaPublica(m.portada) || (c.slug === CURSO_RIEGO ? portadaCurso(c) : '');
     return `<button type="button" class="material" data-curso-material="${esc(c.slug)}" data-material="${esc(m.id)}">
-      <span class="ext ${esc(ext)}" aria-hidden="true">${esc(ext === 'enlace' ? 'URL' : ext.slice(0, 4))}</span>
+      ${imagen ? `<img class="material-portada" src="${esc(imagen)}" alt="" loading="lazy">` : `<span class="ext ${esc(ext)}" aria-hidden="true">${esc(ext === 'enlace' ? 'URL' : ext.slice(0, 4))}</span>`}
       <span class="material-nombre"><b>${esc(m.nombre)}</b><span>Abrir archivo</span></span>
       <span class="bajar" aria-hidden="true">${ICO.bajar}</span>
     </button>`;
@@ -259,9 +254,10 @@ function listaMateriales(c) {
 }
 
 function otrosCursos(otros = []) {
-  if (!otros.length) return '';
+  const disponibles = otros.filter(c => landingCurso(c.slug));
+  if (!disponibles.length) return '';
   return `<section><h2 class="sec">Otros cursos de Sinergia</h2>
-    <div class="materiales">${otros.map((c) => `<a class="material" href="${esc(c.landing)}" target="_blank" rel="noopener">
+    <div class="materiales">${disponibles.map((c) => `<a class="material" href="${esc(landingCurso(c.slug))}">
       <span class="ext" aria-hidden="true">${ICO.hoja}</span><span class="material-nombre"><b>${esc(c.titulo)}</b><span>Conocer el curso</span></span>
     </a>`).join('')}</div></section>`;
 }
@@ -274,7 +270,10 @@ function vistaInicio() {
   const enCurso = d.cursos.filter((c) => c.contenidoListo && c.progreso.porcentaje < 100);
   let h = `<div class="encabezado"><div><span class="eyebrow">Campus Sinergia</span><h1 class="titulo">Hola, <span>${esc(nombre)}</span></h1><p class="sub">${d.cursos.length ? 'Aquí están tus cursos. Tu avance se guarda en tu cuenta y lo ves igual en la computadora y en el celular.' : ''}</p></div></div>`;
   if (bienvenida) h += '<div class="aviso azul">Listo, ya entraste. Para la próxima puedes volver a pedir tu enlace, entrar con Google o crear una contraseña en «Mi cuenta».</div>';
-  if (!d.cursos.length) return h + sinCursos() + otrosCursos(d.otros);
+  if (!d.cursos.length) {
+    const tuvoCompra = (d.compras || []).some(x => landingCurso(x.curso) && x.monto > 0);
+    return h + (tuvoCompra ? '<a class="btn btn-pri" href="#/cursos">Ver mis cursos</a>' : sinCursos()) + otrosCursos(d.otros);
+  }
   if (enCurso.length) {
     const c = enCurso[0], sig = siguienteClase(c);
     h += `<div class="caja continuar"><div><span class="eyebrow">Continúa donde te quedaste</span><h2>${esc(sig ? sig.titulo : c.titulo)}</h2><p class="sub" style="font-size:14px">${esc(c.titulo)} · ${c.progreso.porcentaje}% completado</p></div>${sig ? `<a class="btn btn-pri" href="#/curso/${c.slug}/clase/${sig.id}">${ICO.play}Seguir</a>` : ''}</div>`;
@@ -287,8 +286,12 @@ function sinCursos() {
 }
 function vistaCursos() {
   const d = E.datos;
+  const compras = (d.compras || []).filter(x => landingCurso(x.curso) && x.monto > 0 && !curso(x.curso));
+  const anteriores = [...new Set(compras.map(x => x.curso))];
   return `<div class="encabezado"><div><span class="eyebrow">Mi biblioteca</span><h1 class="titulo"><span>Mis cursos</span></h1><p class="sub">Entra a las clases y materiales de tus cursos.</p></div></div>
-    ${d.cursos.length ? `<div class="rejilla">${d.cursos.map(tarjetaCurso).join('')}</div>` : sinCursos()}${otrosCursos(d.otros)}`;
+    ${d.cursos.length ? `<div class="rejilla">${d.cursos.map(tarjetaCurso).join('')}</div>` : (!anteriores.length ? sinCursos() : '')}
+    ${anteriores.map(slug => recomendarCursos(d, { slug }, 'Por tu compra de ' + CURSOS_INDIVIDUALES[slug].titulo)).join('')}
+    ${anteriores.length ? '' : otrosCursos(d.otros)}`;
 }
 function noTiene() {
   return `<div class="caja vacio"><b>Este curso no está en tu cuenta</b>Si lo compraste con otro correo, cierra sesión y entra con ese correo.<div style="margin-top:14px"><a class="btn btn-sec" href="#/cursos">Ver mis cursos</a></div></div>`;
@@ -392,7 +395,8 @@ function render() {
   }
   // Llegó desde «Ya compré» de una landing (o abrió un curso) y esa cuenta no lo tiene: no entra al campus, se le manda a inscribirse.
   const pedido = partes[0] === 'curso' ? partes[1] : (!partes.length && !E.pedidoAtendido ? new URLSearchParams(location.search).get('curso') : null);
-  const ajeno = pedido && !curso(pedido) && !E.datos.alumno.esAdmin ? (E.datos.otros || []).find((o) => o.slug === pedido) : null;
+  const ajeno = pedido && landingCurso(pedido) && !curso(pedido) && !E.datos.alumno.esAdmin ?
+    (E.datos.otros || []).find((o) => o.slug === pedido) : null;
   if (ajeno) {
     pintarSinCompra({ app: $app, E, api, render, WHATSAPP, verMisCursos: () => { E.pedidoAtendido = true; ir('#/cursos'); } }, ajeno);
     window.scrollTo(0, 0); return;
@@ -406,6 +410,7 @@ function render() {
   else if (partes[0] === 'cuenta') { activo = '#/cuenta'; html = vistaCuenta(); }
   else html = vistaInicio();
   $app.innerHTML = marco(activo, html);
+  if (activo === '#/cursos') mostrarPreciosRecomendados($app, api);
   pintarAvatar($app.querySelector('.campus-avatar'), E.usuario, E.datos.alumno);
   const clave = location.hash;
   window.scrollTo(0, E.scroll[clave] || 0);

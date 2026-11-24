@@ -4,6 +4,8 @@
    con visor, valoración con estrellas y solicitud de certificado), adaptado a cada curso de Sinergia.
    El servidor sigue decidiendo todo: qué clases hay, el video firmado, el avance y las descargas.
    ═══════════════════════════════════════════════════════════ */
+import { CURSO_RIEGO, esCursoIndividual, landingCurso, portadaCurso, portadaPublica, mxn, validarOferta } from '../componentes/cursos-individuales-config.js?v=1';
+
 const I = {
   casa: '<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>',
   clases: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>',
@@ -31,7 +33,8 @@ const PORTADAS = {
 const TEMA = {
   'biofertilizantes': { corto: 'Biofertilizantes', lema: 'Nutrición viva para tu suelo', motivo: 'hoja' },
   'cana-de-azucar': { corto: 'Caña de azúcar', lema: 'Del surco a la cosecha', motivo: 'cana' },
-  'soluciones-nutritivas': { corto: 'Soluciones nutritivas', lema: 'La fórmula exacta para tu cultivo', motivo: 'gota' }
+  'soluciones-nutritivas': { corto: 'Soluciones nutritivas', lema: 'La fórmula exacta para tu cultivo', motivo: 'gota' },
+  [CURSO_RIEGO]: { corto: 'Riego eficiente', motivo: 'gota' }
 };
 const TIPO_MAT = { pptx: 'Presentación', ppt: 'Presentación', pdf: 'Documento', docx: 'Documento', doc: 'Documento', xlsx: 'Excel', xls: 'Excel', zip: 'Paquete', enlace: 'Enlace' };
 const RV_FORMATO = { pdf: 'PDF', docx: 'Documento de Word', doc: 'Documento de Word', xlsx: 'Libro de Excel', xls: 'Libro de Excel', pptx: 'Presentación', ppt: 'Presentación', zip: 'Paquete' };
@@ -63,8 +66,8 @@ function arte(slug, etiqueta, numero) {
     ${etiqueta && numero == null ? (() => { const t = String(etiqueta).slice(0, 44), k = t.length > 20 ? t.lastIndexOf(' ', Math.ceil(t.length / 2) + 3) : -1, l = k > 0 ? [t.slice(0, k), t.slice(k + 1)] : [t]; return `<text x="28" y="${l.length > 1 ? 96 : 110}" font-family="Archivo,Inter,sans-serif" font-weight="800" font-size="22" fill="rgba(255,255,255,.96)">${l.map((x, i) => `<tspan x="28" dy="${i ? 27 : 0}">${esc(x)}</tspan>`).join('')}</text>`; })() : ''}
   </svg>`;
 }
-const imgClase = (slug, i) => (PORTADAS[slug]?.clases || [])[i] || '';
-const imgMat = (slug, i) => (PORTADAS[slug]?.materiales || [])[i] || '';
+const imgClase = (c, i) => portadaPublica(clasesDe(c)[i]?.portada) || (PORTADAS[c.slug]?.clases || [])[i] || (c.slug === CURSO_RIEGO ? portadaCurso(c) : '');
+const imgMat = (c, m, i) => portadaPublica(m.portada) || (PORTADAS[c.slug]?.materiales || [])[i] || (c.slug === CURSO_RIEGO ? portadaCurso(c) : '');
 
 // ── Adaptadores del modelo de Sinergia ─────────────────────
 function clasesDe(c) { const l = []; c.modulos.forEach((m, mi) => m.clases.forEach((x) => l.push({ ...x, modulo: m, mi }))); return l; }
@@ -143,7 +146,7 @@ function marco(c, activa) {
 
 // ── Bloques ────────────────────────────────────────────────
 function miniClase(c, i, cls) {
-  const src = imgClase(c.slug, i);
+  const src = imgClase(c, i);
   return src ? `<img class="${cls}" src="${esc(src)}" alt="" loading="lazy">` : `<span class="${cls} art">${arte(c.slug, '', i + 1)}</span>`;
 }
 function filaClase(c, x, i, sig) {
@@ -196,7 +199,7 @@ function panelAprendizaje(c) {
 }
 function nombreModulo(c, m) { const i = c.modulos.findIndex((x) => x.id === m.moduloId); return i >= 0 ? 'Módulo ' + (i + 1) : 'Material general'; }
 function matCard(c, m, i) {
-  const src = imgMat(c.slug, i), tipo = TIPO_MAT[tipoDe(m)] || 'Documento';
+  const src = imgMat(c, m, i), tipo = TIPO_MAT[tipoDe(m)] || 'Documento';
   return `<article class="mc__mc">
     <button type="button" class="mc__mcov" data-mat="${esc(m.id)}" aria-label="Abrir ${esc(m.nombre)}">
       ${arte(c.slug, '')}${src ? `<img src="${esc(src)}" alt="" loading="lazy">` : ''}
@@ -213,7 +216,7 @@ function matCard(c, m, i) {
   </article>`;
 }
 function matFila(c, m) {
-  const i = c.materiales.indexOf(m), src = imgMat(c.slug, i);
+  const i = c.materiales.indexOf(m), src = imgMat(c, m, i);
   return `<button class="mc__m" type="button" data-mat="${esc(m.id)}">${src ? `<img class="mc__mth" src="${esc(src)}" alt="" loading="lazy">` : `<span class="mc__mth art">${arte(c.slug, '', i + 1)}</span>`}<span><b>${esc(m.nombre)}</b><small>${esc((TIPO_MAT[tipoDe(m)] || 'Documento') + ' · ' + nombreModulo(c, m))}</small></span>${I.descarga}</button>`;
 }
 function bloqueCalifica(c) {
@@ -284,7 +287,8 @@ function vistaInicio(c) {
   const minTot = cl.reduce((a, x) => a + (x.duracionMin || 0), 0);
   const dur = minTot ? (minTot >= 90 ? (Math.round(minTot / 6) / 10) + ' horas' : minTot + ' min') : '—';
   const estado = !c.contenidoListo ? 'En preparación' : p.porcentaje >= 100 ? 'Completado' : p.completadas.length ? 'En progreso' : 'Por empezar';
-  const port = PORTADAS[c.slug]?.curso;
+  const port = portadaPublica(c.portada) || PORTADAS[c.slug]?.curso || portadaCurso(c);
+  const regalo = X.E.datos.cursos.find(x => x.origen === 'regalo' && x.regaloDe === c.slug && x.slug === CURSO_RIEGO);
   $('#mc-view').innerHTML = `<section class="mc__hero" aria-labelledby="mc-curso-nombre">
     <div class="mc__head">
       <span class="mc__eyebrow">${I.escudo} Aula del curso</span>
@@ -297,6 +301,7 @@ function vistaInicio(c) {
       <div class="mc__ctafila">
         ${sig ? `<a class="mc__btn mc__btn--p" href="${base(c.slug)}/clase/${esc(sig.id)}">${p.completadas.length || c.progreso.ultimaClase ? 'Continuar curso' : 'Comenzar curso'} ${I.flecha}</a>` : ''}
         <span class="mc__chip ${p.completadas.length ? 'mc__chip--ok' : ''}">${p.completadas.length ? I.play : I.reloj} ${estado}</span>
+        ${c.origen === 'regalo' ? '<span class="mc__chip mc__chip--gold">Regalo incluido</span>' : ''}
       </div>
       <div class="mc__prog"><span>Tu avance</span><div class="mc__bar" role="progressbar" aria-label="Tu avance" aria-valuenow="${p.porcentaje}"><i style="width:${p.porcentaje}%"></i></div><b>${p.porcentaje}%</b></div>
     </div>
@@ -319,17 +324,50 @@ function vistaInicio(c) {
       <p class="mc__msnota">Abre cada archivo para verlo en pantalla o descargarlo.</p>
       <div class="mc__mgrid">${c.materiales.map((m, i) => matCard(c, m, i)).join('')}</div>
     </div>` : ''}
+    ${regalo ? `<section class="mc__sec mc__regalo"><img src="${esc(portadaCurso(regalo))}" alt="" loading="lazy"><div><span class="mc__eyebrow">Tu curso de regalo</span><h2>${esc(regalo.titulo)}</h2></div><a class="mc__btn mc__btn--p" href="${base(regalo.slug)}">Abrir curso ${I.flecha}</a></section>` : ''}
     <div class="mc__sec">${bloqueCalifica(c)}</div>
   </div>
   <aside class="mc__aside">${panelAprendizaje(c)}</aside></div>`;
   ligar(c);
 }
+export function recomendarCursos(datos, c, encabezado = 'Porque adquiriste este curso te podría interesar') {
+  if (!esCursoIndividual(c.slug) || c.origen === 'regalo' ||
+      !(datos.compras || []).some(x => x.curso === c.slug && x.monto > 0)) return '';
+  const pendientes = (datos.otros || []).filter(x => landingCurso(x.slug) && x.slug !== c.slug);
+  if (!pendientes.length) return '';
+  return `<section class="mc__sec mc__recomendados">
+    <h2>${esc(encabezado)}</h2>
+    <div class="mc__recomendados-grid">${pendientes.map(x => `
+      <a class="mc__recomendado" data-origen="${esc(c.slug)}" data-destino="${esc(x.slug)}" href="${esc(landingCurso(x.slug, c.slug))}">
+        <img src="${esc(portadaCurso(x))}" alt="" loading="lazy">
+        <div><h3>${esc(x.titulo)}</h3><p data-precio-alumno hidden></p><span>Ver curso ${I.flecha}</span></div>
+      </a>`).join('')}</div>
+  </section>`;
+}
+
+export function mostrarPreciosRecomendados(app, api) {
+  for (const tarjeta of app.querySelectorAll('.mc__recomendado')) {
+    const { origen: origenSlug, destino: destinoSlug } = tarjeta.dataset;
+    api('/publico/cursos/promociones/cotizar', { body: { origenSlug, destinoSlug } })
+      .then(({ oferta }) => {
+        const precio = validarOferta(oferta, origenSlug, destinoSlug);
+        if (!tarjeta.isConnected || !precio) return;
+        const nodo = tarjeta.querySelector('[data-precio-alumno]');
+        nodo.innerHTML = `<s>${mxn(precio.precioCentavos)}</s> <b>${mxn(precio.totalCentavos)}</b>`;
+        nodo.hidden = false;
+      })
+      .catch(() => {});
+  }
+}
+
 function vistaClases(c) {
   $('#mc-view').innerHTML = `<div class="mc__cols"><div>
     <span class="mc__eyebrow">Ruta de aprendizaje</span>
     <div class="mc__sh" style="margin-top:4px"><h2>Temario del curso</h2><b>${contar(clasesDe(c).length, 'clase')}</b></div>
     ${bloqueTemario(c)}
+    ${recomendarCursos(X.E.datos, c)}
   </div><aside class="mc__aside">${panelAprendizaje(c)}</aside></div>`;
+  mostrarPreciosRecomendados(X.app, X.api);
   ligar(c);
 }
 function vistaMateriales(c) {
@@ -503,6 +541,7 @@ const RV_I = {
 export function cerrarVisor() {
   if (!RV) return; const k = RV; RV = null;
   try { k.destroy && k.destroy(); } catch (_) {}
+  if (k.blobUrl) URL.revokeObjectURL(k.blobUrl);
   if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
   k.root.classList.remove('on'); document.body.classList.remove('mcrv-lock');
   document.removeEventListener('keydown', k.onKey, true);
@@ -527,7 +566,7 @@ export function abrirVisor(c, id, api) {
   document.addEventListener('keydown', ctx.onKey, true); RV = ctx;
   const stage = root.querySelector('.mcrv__stage');
   const estado = (html) => { stage.classList.remove('pdf'); stage.innerHTML = `<div class="mcrv__st"><div>${html}</div></div>`; };
-  const descarga = (url, txt) => `<a class="mcrv__b" href="${esc(url)}" target="_blank" rel="noopener">${RV_I.down}<span style="display:inline">${txt}</span></a>`;
+  const descarga = (url, txt, nombre) => `<a class="mcrv__b" href="${esc(url)}" ${nombre ? 'download="' + esc(nombre) + '"' : 'target="_blank" rel="noopener"'}>${RV_I.down}<span style="display:inline">${txt}</span></a>`;
   root.querySelector('#mcrv-x').onclick = cerrarVisor;
   root.querySelector('#mcrv-full').onclick = () => {
     if (document.fullscreenElement) { document.exitFullscreen && document.exitFullscreen(); return; }
@@ -537,9 +576,25 @@ export function abrirVisor(c, id, api) {
   estado('<div class="mcrv__spin"></div><h3>Preparando tu material…</h3><p>Un momento, estamos verificando tu acceso.</p>');
   api('/campus/material', { body: { curso: c.slug, id } }).then(async (r) => {
     if (RV !== ctx) return;
-    const dl = root.querySelector('#mcrv-dl'); dl.href = r.url; dl.hidden = false; dl.target = '_blank'; dl.rel = 'noopener';
+    let url = r.url, nombreDescarga = '';
+    if (typeof r.archivo?.base64 === 'string' && r.archivo.base64) {
+      const bytes = Uint8Array.from(atob(r.archivo.base64), c => c.charCodeAt(0));
+      ctx.blobUrl = URL.createObjectURL(new Blob([bytes], { type: tipo === 'pdf' ? 'application/pdf' : 'application/octet-stream' }));
+      url = ctx.blobUrl;
+      nombreDescarga = r.archivo.nombreArchivo || m.nombre;
+    }
+    if (!url) throw new Error('El archivo todavía no está disponible.');
+    const dl = root.querySelector('#mcrv-dl');
+    dl.href = url;
+    dl.hidden = false;
+    if (nombreDescarga) dl.download = nombreDescarga;
+    else { dl.target = '_blank'; dl.rel = 'noopener'; }
     if (/^(pptx?|docx?|xlsx?)$/.test(tipo)) {
-      ctx.viewerUrl = RV_OFFICE + encodeURIComponent(r.url);
+      if (ctx.blobUrl) {
+        estado(`<h3>Tu archivo está listo</h3><p>Descárgalo y ábrelo con una aplicación de Office en tu dispositivo.</p>${descarga(url, 'Descargar', nombreDescarga)}`);
+        return;
+      }
+      ctx.viewerUrl = RV_OFFICE + encodeURIComponent(url);
       stage.innerHTML = `<div class="mcrv__st" id="mcrv-wait"><div><div class="mcrv__spin"></div><h3>Abriendo el visor…</h3><p>Los archivos de Office tardan unos segundos en mostrarse.</p></div></div>
         <iframe class="mcrv__frame" title="${esc(m.nombre)}" src="${esc(ctx.viewerUrl)}" allowfullscreen></iframe>`;
       const frame = stage.querySelector('iframe'), wait = stage.querySelector('#mcrv-wait');
@@ -552,9 +607,10 @@ export function abrirVisor(c, id, api) {
       estado('<div class="mcrv__spin"></div><h3>Abriendo el documento…</h3><p>Cargando las páginas.</p>');
       try {
         const lib = await import(PDFJS); lib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
-        const pdf = await lib.getDocument({ url: r.url, disableRange: true, disableStream: true, withCredentials: false }).promise;
+        const pdf = await lib.getDocument({ url, disableRange: true, disableStream: true, withCredentials: false }).promise;
         if (RV !== ctx) { pdf.destroy(); return; }
         ctx.destroy = () => pdf.destroy();
+        ctx.viewerUrl = url;
         stage.classList.add('pdf'); stage.innerHTML = '<div class="mcrv__pages"></div>';
         const cont = stage.querySelector('.mcrv__pages');
         const ancho = Math.min(stage.clientWidth - 12, 980), ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -568,11 +624,11 @@ export function abrirVisor(c, id, api) {
         }
       } catch (e) {
         if (RV !== ctx) return;
-        estado(`<h3>Tu documento está listo</h3><p>Ábrelo o descárgalo para verlo en tu equipo.</p>${descarga(r.url, 'Abrir PDF')}`);
+        estado(`<h3>Tu documento está listo</h3><p>Ábrelo o descárgalo para verlo en tu equipo.</p>${descarga(url, 'Abrir PDF')}`);
       }
       return;
     }
-    estado(`<h3>Listo para ${tipo === 'enlace' ? 'abrir' : 'descargar'}</h3><p>Este recurso se abre mejor fuera del aula.</p>${descarga(r.url, tipo === 'enlace' ? 'Abrir recurso' : 'Descargar')}`);
+    estado(`<h3>Listo para ${tipo === 'enlace' ? 'abrir' : 'descargar'}</h3><p>Este recurso se abre mejor fuera del aula.</p>${descarga(url, tipo === 'enlace' ? 'Abrir recurso' : 'Descargar', nombreDescarga)}`);
   }).catch((e) => {
     if (RV !== ctx) return;
     estado(`<h3>No pudimos abrirlo</h3><p>${esc(e.message || 'Intenta de nuevo en unos segundos.')}</p><button type="button" class="mcrv__b" id="mcrv-retry"><span style="display:inline">Intentar de nuevo</span></button>`);
