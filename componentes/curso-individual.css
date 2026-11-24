@@ -44,11 +44,25 @@ body.sgi-reserva-activa { padding-top: var(--sgi-cinta-alto, 54px); }
 .sgi-pago-acciones button { padding: 8px 13px; border: 1px solid #226434; border-radius: 8px; background: #fff; color: #174e2e; font: inherit; font-weight: 750; cursor: pointer; }
 .sgi-pago-acciones button:first-child { background: #226434; color: #fff; }
 .sgi-regalo button:focus-visible, .sgi-cinta button:focus-visible, .sgi-precio a:focus-visible, .sgi-regalo-card-btn:focus-visible { outline: 2px solid #1b71a0; outline-offset: 3px; }
+.sgi-regalo-breve { display: none; }
 @media (max-width: 540px) {
   .sgi-cinta { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; text-align: left; font-size: .76rem; }
-  .sgi-regalo-contenido { padding: 17px 18px; }
-  .sgi-regalo-card { grid-template-columns: minmax(68px, 26%) minmax(0, 1fr); }
-  .sgi-regalo-card-texto { padding: 10px 11px; }
+  .sgi-regalo-amplio { display: none; }
+  .sgi-regalo-breve { display: inline; }
+  .sgi-regalo > .sgi-regalo-foto { height: clamp(96px, 27vw, 136px); }
+  .sgi-regalo-contenido { padding: 13px 15px 14px; }
+  .sgi-regalo h2 { margin: 2px 0 6px; font-size: clamp(1.13rem, 4.5vw, 1.32rem); }
+  .sgi-regalo p { font-size: .83rem; line-height: 1.38; }
+  .sgi-regalo .sgi-regalo-detalle { margin-block: 6px; }
+  .sgi-tiempo { gap: 8px; margin: 10px 0; padding: 7px 9px; font-size: .78rem; }
+  .sgi-tiempo b { font-size: 1.1rem; }
+  .sgi-omitir { margin-top: 4px; }
+  .sgi-regalo-card { grid-template-columns: clamp(59px, 20vw, 78px) minmax(0, 1fr); margin: 9px auto 13px; }
+  .sgi-regalo-card-texto { padding: 8px 10px; }
+  .sgi-regalo-card .sgi-regalo-etiqueta { padding: 2px 6px; line-height: 1.2; }
+  .sgi-regalo-card p, .sgi-regalo-card .sgi-regalo-detalle { margin: 3px 0; font-size: .79rem; line-height: 1.35; }
+  .sgi-regalo-card p.sgi-regalo-card-titulo { margin: 3px 0; }
+  .sgi-regalo-card-btn { margin-top: 4px; }
 }
 .sgi-config-cookies { margin-top: 8px; padding: 5px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-decoration: underline; }
 .sgi-campus-link { display: block; margin: 12px 0; color: inherit; text-underline-offset: 3px; font-size: .875rem; font-weight: 750; }
