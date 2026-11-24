@@ -1,20 +1,34 @@
-.sgi-regalo, .sgi-cinta, .sgi-precio, .sgi-pago-nota { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; line-height: 1.45; }
+.sgi-regalo, .sgi-regalo-card, .sgi-cinta, .sgi-precio, .sgi-pago-nota { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; line-height: 1.45; }
 .sgi-regalo { position: fixed; inset: 0; margin: auto; width: min(calc(100% - 28px), 420px); max-height: calc(100dvh - 28px); padding: 0; overflow: auto; border: 0; border-radius: 18px; background: #fff; color: #162d23; box-shadow: 0 24px 65px #0d241e55; text-align: left; }
 .sgi-regalo::backdrop { background: #0c2521a8; }
-.sgi-regalo > img { display: block; width: 100%; height: clamp(112px, 26vw, 174px); object-fit: cover; background: #23684e; }
+.sgi-regalo-foto { position: relative; overflow: hidden; background: #23684e; }
+.sgi-regalo-foto img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.sgi-regalo > .sgi-regalo-foto { height: clamp(136px, 25vw, 178px); }
+.sgi-regalo > .sgi-regalo-foto::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #06231786, transparent 52%); pointer-events: none; }
+.sgi-regalo-etiqueta { display: inline-block; width: fit-content; padding: 4px 8px; border-radius: 6px; background: #e8f3e7; color: #225833; font-size: .68rem; font-weight: 800; letter-spacing: .04em; }
+.sgi-regalo-foto .sgi-regalo-etiqueta { position: absolute; z-index: 1; left: 14px; bottom: 12px; background: #fff; }
 .sgi-regalo-contenido { padding: 20px 22px; }
 .sgi-regalo h2 { margin: 3px 0 9px; font: 800 clamp(1.24rem, 4.7vw, 1.56rem)/1.16 Inter, system-ui, sans-serif; color: #15392a; }
 .sgi-regalo p { margin: 0; font-size: .88rem; color: #465e52; }
-.sgi-regalo p.sgi-tag { color: #27603c; font-weight: 750; font-size: .77rem; }
 .sgi-cerrar { position: absolute; top: 10px; right: 10px; width: 38px; height: 38px; border: 0; border-radius: 50%; background: white; color: #163727; font: 600 24px/1 Inter, system-ui, sans-serif; cursor: pointer; }
 .sgi-tiempo { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 15px 0; padding: 10px 13px; border-radius: 10px; background: #eff7ee; color: #254e30; font-size: 13px; }
 .sgi-tiempo b { font-size: 1.34rem; font-variant-numeric: tabular-nums; }
 .sgi-btn { width: 100%; min-height: 46px; border: 0; border-radius: 10px; background: #226434; color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
 .sgi-btn:disabled { opacity: .75; cursor: wait; }
-.sgi-regalo .sgi-error { margin-top: 8px; color: #8d2626; }
+.sgi-regalo .sgi-regalo-detalle, .sgi-regalo-card .sgi-regalo-detalle { margin-block: 8px; color: #234934; font-size: .83rem; font-weight: 620; }
+.sgi-regalo .sgi-error, .sgi-regalo-card .sgi-error { margin-top: 8px; color: #8d2626; }
 .sgi-omitir { display: block; margin: 8px auto 0; padding: 6px; border: 0; background: transparent; color: #4b6355; font: inherit; font-size: .82rem; cursor: pointer; text-decoration: underline; }
-.sgi-cinta { position: sticky; top: 0; z-index: 101; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 7px 14px; padding: 9px 12px; background: #174e2e; color: white; text-align: center; font-size: .87rem; }
-.sgi-cinta[hidden] { display: none; }
+.sgi-regalo-card { display: grid; grid-template-columns: minmax(80px, 30%) minmax(0, 1fr); width: min(100%, 36rem); margin: 12px auto 18px; border: 1px solid #c5dfc7; border-radius: 15px; overflow: hidden; background: #f9fcf7; color: #173d28; text-align: left; box-shadow: 0 5px 18px #143b2422; }
+.sgi-regalo-card .sgi-regalo-foto img { position: absolute; inset: 0; }
+.sgi-regalo-card-texto { min-width: 0; padding: 12px 14px 13px; }
+.sgi-regalo-card p { margin: 4px 0; font-size: .82rem; overflow-wrap: anywhere; }
+.sgi-regalo-card p.sgi-regalo-card-titulo { margin: 4px 0; font-size: clamp(.93rem, 3.2vw, 1.08rem); line-height: 1.25; }
+.sgi-regalo-card-btn { min-height: 42px; margin-top: 6px; padding: 5px 12px; border: 1px solid #226434; border-radius: 8px; background: #edf7ec; color: #174e2e; font: 750 .83rem Inter, system-ui, sans-serif; cursor: pointer; }
+.sgi-regalo-card-btn:hover { background: #dcefdc; }
+.sgi-regalo-card-btn:disabled { opacity: .7; cursor: wait; }
+.sgi-cinta { position: fixed; inset: 0 0 auto; z-index: 99; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 7px 14px; padding: max(9px, env(safe-area-inset-top)) 12px 9px; background: #174e2e; color: white; text-align: center; font-size: .87rem; box-shadow: 0 5px 18px #102a1b44; }
+body.sgi-reserva-activa { padding-top: var(--sgi-cinta-alto, 54px); }
+.sgi-cinta[hidden], .sgi-regalo-card[hidden], .sgi-regalo [hidden], .sgi-regalo-card [hidden] { display: none !important; }
 .sgi-cinta strong { white-space: nowrap; font-variant-numeric: tabular-nums; color: #fff2a8; }
 .sgi-cinta button { flex: none; min-height: 36px; padding: 5px 14px; border: 0; border-radius: 999px; background: #fff; color: #174e2e; font: inherit; font-weight: 800; cursor: pointer; }
 .sgi-precio, .sgi-pago-nota { max-width: 100%; padding: 12px 14px; border: 1px solid #b4d8ba; border-radius: 12px; background: #f1f9ef; color: #20392a; text-align: left; font-size: .87rem; overflow-wrap: anywhere; }
@@ -28,7 +42,12 @@
 .sgi-pago-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .sgi-pago-acciones button { padding: 8px 13px; border: 1px solid #226434; border-radius: 8px; background: #fff; color: #174e2e; font: inherit; font-weight: 750; cursor: pointer; }
 .sgi-pago-acciones button:first-child { background: #226434; color: #fff; }
-.sgi-regalo button:focus-visible, .sgi-cinta button:focus-visible, .sgi-precio a:focus-visible { outline: 2px solid #1b71a0; outline-offset: 3px; }
-@media (max-width: 540px) { .sgi-cinta { font-size: .76rem; } .sgi-regalo-contenido { padding: 17px 18px; } }
+.sgi-regalo button:focus-visible, .sgi-cinta button:focus-visible, .sgi-precio a:focus-visible, .sgi-regalo-card-btn:focus-visible { outline: 2px solid #1b71a0; outline-offset: 3px; }
+@media (max-width: 540px) {
+  .sgi-cinta { font-size: .76rem; }
+  .sgi-regalo-contenido { padding: 17px 18px; }
+  .sgi-regalo-card { grid-template-columns: minmax(68px, 26%) minmax(0, 1fr); }
+  .sgi-regalo-card-texto { padding: 10px 11px; }
+}
 .sgi-config-cookies { margin-top: 8px; padding: 5px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-decoration: underline; }
 .sgi-campus-link { display: block; margin: 12px 0; color: inherit; text-underline-offset: 3px; font-size: .875rem; font-weight: 750; }
