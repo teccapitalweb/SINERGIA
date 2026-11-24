@@ -4,7 +4,7 @@
    con visor, valoración con estrellas y solicitud de certificado), adaptado a cada curso de Sinergia.
    El servidor sigue decidiendo todo: qué clases hay, el video firmado, el avance y las descargas.
    ═══════════════════════════════════════════════════════════ */
-import { CURSO_RIEGO, esCursoIndividual, landingCurso, portadaCurso, portadaPublica, mxn, validarOferta } from '../componentes/cursos-individuales-config.js?v=2';
+import { CURSO_RIEGO, CURSOS_INDIVIDUALES, esCursoIndividual, landingCurso, portadaCurso, portadaPublica, mxn, validarOferta } from '../componentes/cursos-individuales-config.js?v=2';
 
 const I = {
   casa: '<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>',
@@ -330,17 +330,23 @@ function vistaInicio(c) {
   <aside class="mc__aside">${panelAprendizaje(c)}</aside></div>`;
   ligar(c);
 }
-export function recomendarCursos(datos, c, encabezado = 'Porque adquiriste este curso te podría interesar') {
+export function recomendarCursos(datos, c) {
   if (!esCursoIndividual(c.slug) || c.origen === 'regalo' ||
       !(datos.compras || []).some(x => x.curso === c.slug && x.monto > 0)) return '';
   const pendientes = (datos.otros || []).filter(x => landingCurso(x.slug) && x.slug !== c.slug);
   if (!pendientes.length) return '';
+  const nombreOrigen = c.titulo || CURSOS_INDIVIDUALES[c.slug].titulo;
   return `<section class="mc__sec mc__recomendados">
-    <h2>${esc(encabezado)}</h2>
+    <h2>Descuento especial para alumnos</h2>
+    <p class="mc__beneficio-alumno">Por haber comprado <strong>${esc(nombreOrigen)}</strong> con nosotros, consulta tu precio especial para estos cursos.</p>
     <div class="mc__recomendados-grid">${pendientes.map(x => `
       <a class="mc__recomendado" data-origen="${esc(c.slug)}" data-destino="${esc(x.slug)}" href="${esc(landingCurso(x.slug, c.slug))}">
         <img src="${esc(portadaCurso(x))}" alt="" loading="lazy">
-        <div><h3>${esc(x.titulo)}</h3><p data-precio-alumno hidden></p><span>Ver curso ${I.flecha}</span></div>
+        <div class="mc__recomendado-info">
+          <h3>${esc(x.titulo)}</h3>
+          <div class="mc__precio-alumno" data-precio-alumno hidden></div>
+          <span class="mc__recomendado-cta"><span data-cta-alumno>Ver curso</span>${I.flecha}</span>
+        </div>
       </a>`).join('')}</div>
   </section>`;
 }
@@ -353,8 +359,10 @@ export function mostrarPreciosRecomendados(app, api) {
         const precio = validarOferta(oferta, origenSlug, destinoSlug);
         if (!tarjeta.isConnected || !precio) return;
         const nodo = tarjeta.querySelector('[data-precio-alumno]');
-        nodo.innerHTML = `<s>${mxn(precio.precioCentavos)}</s> <b>${mxn(precio.totalCentavos)}</b>`;
+        nodo.innerHTML = `<span class="mc__ahorro-alumno">Ahorras ${mxn(precio.descuentoCentavos)}</span>
+          <p class="mc__importe-alumno"><s>${mxn(precio.precioCentavos)}</s> <strong>${mxn(precio.totalCentavos)}</strong></p>`;
         nodo.hidden = false;
+        tarjeta.querySelector('[data-cta-alumno]').textContent = 'Ver curso con descuento';
       })
       .catch(() => {});
   }
