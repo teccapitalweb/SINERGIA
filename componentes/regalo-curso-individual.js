@@ -123,20 +123,23 @@ export function regaloCurso(slug) {
   tarjetas.forEach(tarjeta => {
     tarjeta.classList.add('sgi-regalo-card');
     tarjeta.innerHTML = `<div class="sgi-regalo-foto"><img alt="" decoding="async" loading="lazy"></div>
-      <div class="sgi-regalo-card-texto">
-        <span class="sgi-regalo-etiqueta">Curso de regalo</span>
+      <div class="sgi-regalo-card-encabezado">
+        <span class="sgi-regalo-card-etiqueta">Curso de regalo</span>
         <p class="sgi-regalo-card-titulo"><b>${NOMBRE}</b></p>
-        <p data-sgi-card-plazo><span class="sgi-regalo-amplio"></span><span class="sgi-regalo-breve"></span></p>
-        ${detalle}
+      </div>
+      <p class="sgi-regalo-card-detalle" data-sgi-contenido hidden></p>
+      <div class="sgi-regalo-card-acciones">
         <button class="sgi-regalo-card-btn" type="button" data-sgi-reclamar>Apartar regalo</button>
-        <p class="sgi-error" data-sgi-error role="status" hidden>No pudimos apartar tu regalo. Intenta de nuevo.</p>
-      </div>`;
+        <span class="sgi-regalo-card-plazo" data-sgi-card-plazo></span>
+      </div>
+      <p class="sgi-error" data-sgi-error role="status" hidden>No pudimos apartar tu regalo. Intenta de nuevo.</p>`;
   });
 
   const superficies = [dialogo, ...tarjetas];
   const botones = superficies.map(n => n.querySelector('[data-sgi-reclamar]'));
   const plazos = tarjetas.map(n => n.querySelector('[data-sgi-card-plazo]'));
-  const detalles = superficies.map(n => n.querySelector('[data-sgi-contenido]'));
+  const detalleDialogo = dialogo.querySelector('[data-sgi-contenido]');
+  const detallesTarjetas = tarjetas.map(n => n.querySelector('[data-sgi-contenido]'));
   const errores = superficies.map(n => n.querySelector('[data-sgi-error]'));
   const reloj = cinta.querySelector('[data-sgi-reloj]');
   let navegadorId, reserva = null, reclamo = leerReclamo(), notaPago = null, activacion = null;
@@ -198,9 +201,11 @@ export function regaloCurso(slug) {
     if (reserva) recordarReclamo();
     if (estado.contenido) {
       contenido = estado.contenido;
-      detalles.forEach(n => {
-        n.querySelector('.sgi-regalo-amplio').textContent = contenido;
-        n.querySelector('.sgi-regalo-breve').textContent = estado.contenidoBreve;
+      detalleDialogo.querySelector('.sgi-regalo-amplio').textContent = contenido;
+      detalleDialogo.querySelector('.sgi-regalo-breve').textContent = estado.contenidoBreve;
+      detalleDialogo.hidden = false;
+      detallesTarjetas.forEach(n => {
+        n.textContent = estado.contenidoBreve;
         n.hidden = false;
       });
     }
@@ -222,15 +227,10 @@ export function regaloCurso(slug) {
       document.body.classList.toggle('sgi-reserva-activa', mostrarCinta);
       medirCinta();
     }
-    tarjetas.forEach((n, i) => {
-      n.hidden = !mostrar;
-      const leyenda = inscripcion ? 'Apartado · confirma tu pago en ' + tiempo(falta) + '.' :
-        'Aparta el regalo y confirma tu pago en 60 minutos.';
-      const leyendaBreve = inscripcion ? leyenda : 'Confirma tu pago en 60 min tras apartar.';
-      const amplio = plazos[i].querySelector('.sgi-regalo-amplio');
-      const breve = plazos[i].querySelector('.sgi-regalo-breve');
-      if (amplio.textContent !== leyenda) amplio.textContent = leyenda;
-      if (breve.textContent !== leyendaBreve) breve.textContent = leyendaBreve;
+    tarjetas.forEach(n => { n.hidden = !mostrar; });
+    const leyenda = inscripcion ? 'Paga en ' + tiempo(falta) : '1 h para pagar';
+    plazos.forEach(n => {
+      if (n.textContent !== leyenda) n.textContent = leyenda;
     });
     botones.forEach((b, i) => {
       b.disabled = activando;
