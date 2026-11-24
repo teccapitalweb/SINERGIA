@@ -1,6 +1,6 @@
 import { API_SINERGIA, CURSOS_INDIVIDUALES, REFERIDO, esCursoIndividual, mxn, validarOferta } from './cursos-individuales-config.js?v=1';
 import { actividadCurso } from './actividad-curso-individual.js?v=1';
-import { regaloCurso } from './regalo-curso-individual.js?v=2';
+import { regaloCurso } from './regalo-curso-individual.js?v=3';
 
 let cargaAuth;
 function cargarAuth() {

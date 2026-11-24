@@ -15,9 +15,14 @@ const VISTAS = {
   visitas: ['pagina_visitada', 'enlace_abierto'], video: ['video_reproducido'],
   pagos: ['checkout_creado', 'checkout_montado', 'compra_pagada']
 };
+const INDICADORES_RESUMEN = {
+  pagina_visitada: 'Visitas', video_reproducido: 'Reproducciones',
+  checkout_montado: 'Formularios abiertos', compra_pagada: 'Pagos con seguimiento'
+};
 const DISPOSITIVOS = { telefono: 'Teléfono', computadora: 'Computadora', tableta: 'Tableta', desconocido: 'Sin dato' };
 const MODOS = { manual: 'Manual', automatico: 'Automática', desconocido: 'Sin dato' };
 const FORMATO = new Intl.NumberFormat('es-MX');
+const PORCENTAJE = new Intl.NumberFormat('es-MX', { style: 'percent', maximumFractionDigits: 1 });
 const FECHA = new Intl.DateTimeFormat('es-MX', { timeZone: 'America/Mexico_City', dateStyle: 'medium', timeStyle: 'short', hourCycle: 'h23' });
 const DIA = new Intl.DateTimeFormat('es-MX', { timeZone: 'UTC', day: 'numeric', month: 'short' });
 const RUTA = '/admin/panel/cursos/metricas';
@@ -61,10 +66,58 @@ const opcionesOrigen = (origenes, cursos, actual) => opcion('', 'Todos los oríg
 function filtros(estado, cursos, origenes) {
   return `<form class="widget-box sg-ci-filtros" data-ci-filtros>
     <label>Curso<select name="destinoSlug">${opcion('', 'Todos los cursos', estado.destinoSlug)}${[...cursos.keys()].map(slug => opcion(slug, nombre(slug, cursos), estado.destinoSlug)).join('')}</select></label>
-    <label>Origen<select name="origenSlug">${opcionesOrigen(origenes, cursos, estado.origenSlug)}</select></label>
     <label>Periodo<select name="dias">${[7, 30, 90].map(d => opcion(d, 'Últimos ' + d + ' días', estado.dias)).join('')}</select></label>
+    <label>Origen<select name="origenSlug">${opcionesOrigen(origenes, cursos, estado.origenSlug)}</select></label>
     <button type="submit" class="btn-secondary">Aplicar filtros</button>
   </form>`;
+}
+
+function resumenKpis(totales) {
+  return '<div class="sg-ci-kpis sg-ci-kpis-resumen">' + VISTAS.resumen.map((tipo, i) =>
+    `<article class="widget-box sg-ci-kpi"><span><i data-color="${i}" aria-hidden="true"></i>${INDICADORES_RESUMEN[tipo]}</span>
+      <strong>${numero(totales[tipo]?.eventos)}</strong></article>`).join('') + '</div>';
+}
+
+function comparacionBarras(datos, cursos, seleccionado, tipo) {
+  const totales = new Map(lista(datos.porCurso).map(c => [c.slug, c.totales]));
+  const slugs = seleccionado ? [seleccionado] : [...cursos.keys()];
+  const filas = slugs.map(slug => ({ nombre: nombre(slug, cursos), cantidad: n((totales.get(slug) || (seleccionado ? datos.totales : {}))?.[tipo]?.eventos) }))
+    .sort((a, b) => b.cantidad - a.cantidad || a.nombre.localeCompare(b.nombre, 'es-MX'));
+  const maximo = filas[0]?.cantidad;
+  if (!maximo) return '<p class="sg-ci-grafico-vacio">Sin actividad de este indicador en el periodo.</p>';
+  const color = VISTAS.resumen.indexOf(tipo);
+  return `<ul class="sg-ci-barras-curso" aria-label="${INDICADORES_RESUMEN[tipo]} por curso">` + filas.slice(0, 5).map(fila =>
+    `<li><div><span>${esc(fila.nombre)}</span><b>${numero(fila.cantidad)}</b></div>
+      <div class="sg-ci-pista" aria-hidden="true"><i data-color="${color}" style="width:${(100 * fila.cantidad / maximo).toFixed(2)}%"></i></div></li>`).join('') + '</ul>' +
+    (filas.length > 5 ? texto('Cinco cursos con mayor actividad. Todos aparecen en el desglose.') : '');
+}
+
+function donaDispositivos(dispositivos) {
+  const filas = Object.keys(DISPOSITIVOS).map((dispositivo, color) => ({
+    etiqueta: DISPOSITIVOS[dispositivo], color,
+    cantidad: lista(dispositivos).filter(d => d.dispositivo === dispositivo).reduce((total, d) => total + n(d.totales?.pagina_visitada?.eventos), 0)
+  })).filter(fila => fila.cantidad > 0);
+  const total = filas.reduce((suma, fila) => suma + fila.cantidad, 0);
+  let acumulado = 0;
+  const segmentos = filas.map(fila => {
+    const inicio = 100 * acumulado / total;
+    acumulado += fila.cantidad;
+    return `var(--sg-ci-color-${fila.color}) ${inicio.toFixed(3)}% ${(100 * acumulado / total).toFixed(3)}%`;
+  });
+  return `<div class="sg-ci-dispositivos"><div class="sg-ci-dona" ${total ? `style="--sg-ci-anillo:conic-gradient(${segmentos.join(',')})"` : ''} aria-hidden="true">
+    <div><b>${numero(total)}</b><span>visitas</span></div></div>` + (total ? '<ul class="sg-ci-dona-leyenda">' + filas.map(fila =>
+      `<li><i data-color="${fila.color}" aria-hidden="true"></i><span>${fila.etiqueta}<small>${PORCENTAJE.format(fila.cantidad / total)}</small></span><b>${numero(fila.cantidad)}</b></li>`).join('') + '</ul>' :
+    texto('Sin visitas registradas en el periodo.')) + '</div>';
+}
+
+function resumen(datos, cursos, seleccionado, tipo) {
+  const controles = `<div class="sg-ci-grafico-head"><h3>Actividad por curso</h3><label class="sg-ci-indicador">
+    <span class="sg-ci-solo-lector">Indicador de actividad</span><select data-ci-indicador>${VISTAS.resumen.map(k => opcion(k, INDICADORES_RESUMEN[k], tipo)).join('')}</select>
+    </label></div>`;
+  return resumenKpis(datos.totales) + '<div class="sg-ci-resumen-graficas"><section class="widget-box sg-ci-widget sg-ci-grafico">' + controles +
+    `<div data-ci-barras>${comparacionBarras(datos, cursos, seleccionado, tipo)}</div></section>` +
+    tarjeta('Visitas por dispositivo', donaDispositivos(datos.dispositivos)) + '</div>' +
+    '<details class="widget-box sg-ci-widget sg-ci-desglose" data-ci-desglose><summary>Ver desglose</summary><div data-ci-desglose-contenido></div></details>';
 }
 
 function indicadores(totales = {}, tipos) {
@@ -92,6 +145,10 @@ function comparar(datos, cursos, historial, seleccionado) {
     (!compras ? texto('El historial de inscripciones no está disponible en este momento.') : '') +
     (historial?.truncado ? texto('El historial alcanzó su límite de consulta.') : '') +
     tabla(['Curso', ...tipos.map(t => EVENTOS[t]), 'Inscripciones históricas'], filas));
+}
+function valoresPorDia(serie, tipos) {
+  return detalles('Valores por día', tabla(['Día', ...tipos.map(t => EVENTOS[t])],
+    lista(serie).map(d => [esc(dia(d.fecha)), ...tipos.map(t => numero(d[t]))])));
 }
 function grafica(serie, tipos, porTiempo) {
   const columnas = porTiempo ? tipos.map(t => MEDIDAS[t]).filter(Boolean) : tipos;
@@ -161,6 +218,8 @@ export function crearMetricasCursos({ contenedor, pedir, historial }) {
   let pestaña = 'resumen';
   let peticion = 0;
   let vigente = null;
+  let resumenActual = null;
+  let indicadorResumen = 'pagina_visitada';
   const interacciones = new AbortController();
   function origenesValidos(destino) {
     return new Set(ofertas.filter(e => !destino || e.destinoSlug === destino).map(e => e.origenSlug || 'directo'));
@@ -184,9 +243,10 @@ export function crearMetricasCursos({ contenedor, pedir, historial }) {
   async function abrir(tab, forzar) {
     pestaña = Object.hasOwn(VISTAS, tab) ? tab : 'resumen';
     const id = ++peticion;
+    resumenActual = null;
     contenedor.innerHTML = formulario() + '<p class="widget-box" role="status">Cargando la actividad…</p>';
     try {
-      const [datos, compras] = await Promise.all([cargar(forzar), pestaña === 'resumen' ? historial().catch(() => null) : null]);
+      const datos = await cargar(forzar);
       if (id !== peticion) return;
       lista(datos.cursos).forEach(c => { if (c.slug) cursos.set(c.slug, c.titulo || cursos.get(c.slug)); });
       lista(datos.porCurso).forEach(c => { if (c.slug && !cursos.has(c.slug)) cursos.set(c.slug, c.titulo); });
@@ -194,6 +254,12 @@ export function crearMetricasCursos({ contenedor, pedir, historial }) {
       ofertas.forEach(e => {
         if (e?.destinoSlug && !cursos.has(e.destinoSlug)) cursos.set(e.destinoSlug, e.titulo);
       });
+      const truncado = datos.truncado ? '<p class="widget-box" role="status">La consulta llegó al límite de registros. Acorta el periodo para revisar los totales.</p>' : '';
+      if (pestaña === 'resumen') {
+        resumenActual = datos;
+        contenedor.innerHTML = formulario() + truncado + resumen(datos, cursos, filtro.destinoSlug, indicadorResumen);
+        return;
+      }
       const tipos = pestaña === 'pagos' && n(datos.totales.ya_pague?.eventos) ? [...VISTAS.pagos, 'ya_pague'] : VISTAS[pestaña];
       const dispositivos = lista(datos.dispositivos).map(d => ({ etiqueta: dispositivo(d.dispositivo), totales: d.totales }));
       const modos = lista(datos.porModoVideo).map(d => ({ etiqueta: modo(d.modo), totales: d.totales }));
@@ -203,11 +269,11 @@ export function crearMetricasCursos({ contenedor, pedir, historial }) {
         'Las aperturas de oferta pueden formar parte de las visitas a página. Los registros anónimos se cuentan por visita.';
       contenedor.innerHTML = formulario() + indicadores(datos.totales, tipos) +
         texto(nota + ' Horario de Ciudad de México. La actividad anterior a la medición no está disponible.') +
-        (datos.truncado ? '<p class="widget-box" role="status">La consulta llegó al límite de registros. Acorta el periodo para revisar los totales.</p>' : '') +
-        (pestaña === 'resumen' ? comparar(datos, cursos, compras, filtro.destinoSlug) : '') +
-        (pestaña === 'pagos' ? embudo(datos.embudo) : '') + grafica(datos.serie, tipos, false) + grafica(datos.serie, tipos, true) +
-        distribucion(dispositivos, tipos, 'Actividad por dispositivo') + (pestaña === 'video' ? distribucion(modos, tipos, 'Inicio de reproducción') : '') +
-        (pestaña === 'visitas' ? distribucion(origenes, tipos, 'Origen de las visitas') : '') + actividad(datos, tipos, cursos);
+        truncado + (pestaña === 'pagos' ? embudo(datos.embudo) : '') +
+        detalles('Actividad por día', '<div class="sg-ci-desglose-contenido">' + grafica(datos.serie, tipos, false) + grafica(datos.serie, tipos, true) + '</div>') +
+        detalles('Ver desglose', '<div class="sg-ci-desglose-contenido">' +
+          distribucion(dispositivos, tipos, 'Actividad por dispositivo') + (pestaña === 'video' ? distribucion(modos, tipos, 'Inicio de reproducción') : '') +
+          (pestaña === 'visitas' ? distribucion(origenes, tipos, 'Origen de las visitas') : '') + actividad(datos, tipos, cursos) + '</div>');
     } catch (error) {
       const mensaje = error?.status === 401 || error?.status === 403
         ? 'Tu cuenta no tiene permiso para consultar la actividad de cursos individuales.'
@@ -217,10 +283,30 @@ export function crearMetricasCursos({ contenedor, pedir, historial }) {
   }
 
   contenedor.addEventListener('change', e => {
+    if (e.target.matches('[data-ci-indicador]') && resumenActual && Object.hasOwn(INDICADORES_RESUMEN, e.target.value)) {
+      indicadorResumen = e.target.value;
+      contenedor.querySelector('[data-ci-barras]').innerHTML = comparacionBarras(resumenActual, cursos, filtro.destinoSlug, indicadorResumen);
+      return;
+    }
     if (!e.target.matches('select[name="destinoSlug"]')) return;
     const origen = e.target.form.elements.origenSlug;
     origen.innerHTML = opcionesOrigen(origenesValidos(e.target.value), cursos, origen.value);
   }, { signal: interacciones.signal });
+  contenedor.addEventListener('toggle', async e => {
+    const panel = e.target;
+    if (!panel.matches('details[data-ci-desglose]') || !panel.open || panel.dataset.estado || !resumenActual) return;
+    const cuerpo = panel.querySelector('[data-ci-desglose-contenido]');
+    const id = peticion;
+    const datos = resumenActual;
+    panel.dataset.estado = 'cargando';
+    cuerpo.innerHTML = '<p role="status">Cargando el historial…</p>';
+    let compras;
+    try { compras = await historial(); } catch { compras = null; }
+    if (peticion !== id || !cuerpo.isConnected) return;
+    panel.dataset.estado = Array.isArray(compras?.compras) ? 'listo' : '';
+    cuerpo.innerHTML = texto('Horario de Ciudad de México. En Inscripciones puedes consultar el historial de compras disponible.') +
+      comparar(datos, cursos, compras, filtro.destinoSlug) + valoresPorDia(datos.serie, VISTAS.resumen);
+  }, { capture: true, signal: interacciones.signal });
   contenedor.addEventListener('submit', e => {
     if (!e.target.matches('[data-ci-filtros]')) return;
     e.preventDefault();
@@ -233,6 +319,7 @@ export function crearMetricasCursos({ contenedor, pedir, historial }) {
   function cerrar() {
     peticion++;
     vigente = null;
+    resumenActual = null;
     interacciones.abort();
   }
   return { abrir, cerrar };
