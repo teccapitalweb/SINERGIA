@@ -1,0 +1,73 @@
+#cursosIndividuales, #ciMetricas { min-width: 0; }
+#ciMetricas:not([hidden]) { display: grid; gap: 12px; }
+#cursosIndividuales .sg-ci-hero { margin-bottom: 16px; }
+.sg-ci-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.sg-ci-tabs button {
+  min-height: 42px; padding: 8px 15px; border: 1px solid var(--stone-200);
+  border-radius: 10px; background: #fff; color: var(--stone-700); font: 600 13px var(--font-body);
+}
+.sg-ci-tabs button:hover { border-color: var(--teal-500); }
+.sg-ci-tabs button[aria-current] { background: var(--teal-800); color: #fff; border-color: var(--teal-800); }
+.sg-ci-tabs button:focus-visible, .sg-ci-filtros select:focus-visible, .sg-ci-widget summary:focus-visible { outline: 2px solid var(--teal-600); outline-offset: 3px; }
+.sg-ci-filtros, .sg-ci-kpis, .sg-ci-distribucion { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 165px), 1fr)); gap: 12px; }
+.sg-ci-filtros { align-items: end; }
+.sg-ci-filtros label { display: grid; gap: 5px; min-width: 0; font-size: 13px; font-weight: 650; }
+.sg-ci-filtros select { width: 100%; min-width: 0; height: 42px; border: 1px solid var(--stone-300); border-radius: 10px; background: #fff; color: var(--stone-900); padding-inline: 10px; font: inherit; font-weight: 400; }
+.sg-ci-filtros .btn-secondary { min-height: 42px; justify-content: center; }
+.sg-ci-kpis .widget-box { margin: 0; }
+.sg-ci-kpi { display: grid; align-content: start; gap: 4px; padding: 14px; overflow-wrap: anywhere; }
+.sg-ci-kpi > strong { font: 800 clamp(1.4rem, 3vw, 1.95rem)/1.1 var(--font-display); }
+.sg-ci-kpi > span, .sg-ci-kpi > small, .sg-ci-nota { color: var(--stone-600); font-size: .82rem; }
+#ciMetricas > .sg-ci-nota { margin-inline: 2px; }
+.sg-ci-widget { min-width: 0; }
+.sg-ci-widget h3 { font-size: 1rem; margin-bottom: 8px; }
+.sg-ci-widget .sg-ci-nota { margin-bottom: 8px; }
+.sg-ci-widget summary { cursor: pointer; font-size: .92rem; font-weight: 700; }
+.sg-ci-widget details > summary { font-size: .83rem; }
+.sg-ci-widget[open] summary, .sg-ci-widget details[open] summary { margin-bottom: 8px; }
+.sg-ci-leyenda { display: flex; flex-wrap: wrap; gap: 5px 12px; margin-bottom: 8px; font-size: .75rem; color: var(--stone-600); }
+.sg-ci-leyenda span { display: inline-flex; align-items: center; gap: 4px; }
+.sg-ci-leyenda i { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+#ciMetricas [data-color="0"] { background: #0f766e; }
+#ciMetricas [data-color="1"] { background: #bb821a; }
+#ciMetricas [data-color="2"] { background: #496db1; }
+#ciMetricas [data-color="3"] { background: #944e7a; }
+.sg-ci-grafica { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; border-bottom: 1px solid var(--stone-200); }
+.sg-ci-barras { height: 104px; display: flex; flex-direction: column-reverse; align-items: center; justify-content: flex-start; }
+.sg-ci-barras i { display: block; width: min(24px,100%); border-radius: 2px; flex: 0 0 auto; }
+.sg-ci-eje { position: relative; min-height: 24px; color: var(--stone-600); font-size: .8rem; }
+.sg-ci-eje small { position: absolute; top: 3px; white-space: nowrap; transform: translateX(-50%); }
+.sg-ci-eje small:first-child { transform: none; }
+.sg-ci-eje small:last-child:not(:first-child) { transform: translateX(-100%); }
+.sg-ci-distribucion article, .sg-ci-widget .sg-ci-kpi { border: 1px solid var(--stone-200); border-radius: 12px; padding: 10px; }
+.sg-ci-distribucion h4 { font-size: .82rem; margin-bottom: 8px; }
+.sg-ci-distribucion dl { display: grid; gap: 5px; font-size: .75rem; }
+.sg-ci-distribucion dl div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 7px; align-items: center; }
+.sg-ci-distribucion dd { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 6px; margin: 0; }
+.sg-ci-distribucion dd small { grid-column: 1 / -1; color: var(--stone-600); }
+.sg-ci-distribucion progress { width: 100%; height: 8px; accent-color: var(--teal-700); }
+.sg-ci-tabla-scroll { max-width: 100%; max-height: 36rem; overflow: auto; }
+.sg-ci-tabla { width: 100%; border-collapse: collapse; font-size: .82rem; text-align: left; }
+.sg-ci-tabla th, .sg-ci-tabla td { padding: 8px 10px; border-bottom: 1px solid var(--stone-200); vertical-align: top; }
+.sg-ci-tabla th, .sg-ci-tabla td small { color: var(--stone-600); }
+.sg-ci-tabla td { overflow-wrap: anywhere; }
+.sg-ci-tabla td small { display: block; font-size: .75rem; }
+@media (max-width: 640px) {
+  .sg-ci-tabs { gap: 6px; }
+  .sg-ci-tabs button { padding-inline: 10px; }
+  .sg-ci-filtros, .sg-ci-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .sg-ci-filtros label:first-child, .sg-ci-filtros button, .sg-ci-kpis > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .sg-ci-tabla, .sg-ci-tabla tbody { display: block; }
+  .sg-ci-tabla thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .sg-ci-tabla tr { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--stone-200); }
+  .sg-ci-tabla td { padding: 0; border: 0; }
+  .sg-ci-tabla td:first-child { grid-column: 1 / -1; }
+  .sg-ci-tabla td::before { display: block; content: attr(data-label); font-size: .72rem; color: var(--stone-600); }
+  #cursosIndividuales .sg-ci-precios, #cursosIndividuales .sg-ci-precios tbody { display: block; min-width: 0; }
+  #cursosIndividuales .sg-ci-precios thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  #cursosIndividuales .sg-ci-precios tr { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; padding: 12px; border-bottom: 1px solid var(--stone-200); }
+  #cursosIndividuales .sg-ci-precios td { padding: 0; border: 0; text-align: left; white-space: normal !important; }
+  #cursosIndividuales .sg-ci-precios td:is(:first-child,:nth-child(4),:last-child) { grid-column: 1 / -1; }
+  #cursosIndividuales .sg-ci-precios td[data-label]::before { content: attr(data-label); display: block; color: var(--stone-600); font-size: .75rem; }
+  #cursosIndividuales .sg-ci-precios input { max-width: 100%; }
+}

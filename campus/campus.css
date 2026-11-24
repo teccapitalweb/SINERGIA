@@ -266,3 +266,4 @@ details.otra summary { cursor: pointer; color: var(--azul-700); font-weight: 700
   padding-top: calc(8px + env(safe-area-inset-top));
   padding-bottom: 8px;
 }
+.material-portada { width: 58px; height: 44px; object-fit: cover; border-radius: 8px; flex: none; }
