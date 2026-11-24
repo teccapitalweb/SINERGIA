@@ -7,15 +7,17 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{1
 const leer = clave => { try { return localStorage.getItem(clave); } catch (_) { return null; } };
 const escribir = (clave, valor) => { try { localStorage.setItem(clave, valor); } catch (_) {} };
 
-function descripcionContenido(contenido) {
+function descripcionContenido(contenido, breve = false) {
   const { clasesDisponibles, clasesTotales, materialesDisponibles, accesoAnticipado } = contenido || {};
   const cantidades = [clasesDisponibles, clasesTotales, materialesDisponibles];
   if (!cantidades.every(n => Number.isSafeInteger(n) && n >= 0) || clasesDisponibles > clasesTotales) return '';
-  const materiales = materialesDisponibles + (materialesDisponibles === 1 ? ' material disponible' : ' materiales disponibles');
+  const materiales = materialesDisponibles + (materialesDisponibles === 1 ? ' material' : ' materiales');
+  const disponibilidad = breve ? '' : (materialesDisponibles === 1 ? ' disponible' : ' disponibles');
   if (accesoAnticipado === true && clasesDisponibles < clasesTotales) {
-    return `Acceso anticipado · ${clasesDisponibles} de ${clasesTotales} clases y ${materiales}. Las demás clases están en preparación.`;
+    const restante = breve ? '' : ' Las demás clases están en preparación.';
+    return `Acceso anticipado · ${clasesDisponibles} de ${clasesTotales} clases y ${materiales}${disponibilidad}.${restante}`;
   }
-  return `${clasesDisponibles} ${clasesDisponibles === 1 ? 'clase' : 'clases'} y ${materiales}.`;
+  return `${clasesDisponibles} ${clasesDisponibles === 1 ? 'clase' : 'clases'} y ${materiales}${disponibilidad}.`;
 }
 
 function restante(dato) {
@@ -89,6 +91,7 @@ function celebrarReserva() {
 
 export function regaloCurso(slug) {
   const claveReclamo = 'sinergia_regalo_reclamo_v1_' + slug;
+  const detalle = `<p class="sgi-regalo-detalle" data-sgi-contenido hidden><span class="sgi-regalo-amplio"></span><span class="sgi-regalo-breve"></span></p>`;
   const dialogo = document.createElement('dialog');
   const dialogoNativo = typeof dialogo.showModal === 'function';
   dialogo.className = 'sgi-regalo';
@@ -98,9 +101,9 @@ export function regaloCurso(slug) {
     <button class="sgi-cerrar" type="button" aria-label="Cerrar">×</button>
     <div class="sgi-regalo-contenido">
       <h2 id="sgi-regalo-titulo">Llévate gratis ${NOMBRE}</h2>
-      <p>Aparta el regalo y paga <b data-sgi-curso></b> en este navegador.</p>
-      <p class="sgi-regalo-detalle" data-sgi-contenido hidden></p>
-      <div class="sgi-tiempo"><span>Plazo para confirmar tu pago al apartarlo</span><b>60 min</b></div>
+      <p><span class="sgi-regalo-amplio">Aparta el regalo y paga <b data-sgi-curso></b> en este navegador.</span><span class="sgi-regalo-breve">Aparta el regalo y paga tu inscripción en este navegador.</span></p>
+      ${detalle}
+      <div class="sgi-tiempo"><span class="sgi-regalo-amplio">Plazo para confirmar tu pago al apartarlo</span><span class="sgi-regalo-breve">Para confirmar tu pago después de apartar</span><b>60 min</b></div>
       <button class="sgi-btn" type="button" data-sgi-reclamar>Quiero mi lugar</button>
       <p class="sgi-error" data-sgi-error role="status" hidden>No pudimos apartar tu regalo. Intenta de nuevo.</p>
       <button class="sgi-omitir" type="button">Ahora no</button>
@@ -123,8 +126,8 @@ export function regaloCurso(slug) {
       <div class="sgi-regalo-card-texto">
         <span class="sgi-regalo-etiqueta">Curso de regalo</span>
         <p class="sgi-regalo-card-titulo"><b>${NOMBRE}</b></p>
-        <p data-sgi-card-plazo></p>
-        <p class="sgi-regalo-detalle" data-sgi-contenido hidden></p>
+        <p data-sgi-card-plazo><span class="sgi-regalo-amplio"></span><span class="sgi-regalo-breve"></span></p>
+        ${detalle}
         <button class="sgi-regalo-card-btn" type="button" data-sgi-reclamar>Apartar regalo</button>
         <p class="sgi-error" data-sgi-error role="status" hidden>No pudimos apartar tu regalo. Intenta de nuevo.</p>
       </div>`;
@@ -176,7 +179,7 @@ export function regaloCurso(slug) {
       const d = await r.json();
       if (d.regaloSlug !== CURSO_RIEGO || typeof d.regaloDisponible !== 'boolean') return null;
       if (!d.regaloDisponible || (d.venceEn && d.activo !== true)) return { disponible: false };
-      const estado = { disponible: true, contenido: descripcionContenido(d.contenido) };
+      const estado = { disponible: true, contenido: descripcionContenido(d.contenido), contenidoBreve: descripcionContenido(d.contenido, true) };
       if (d.activo !== true) return estado;
       const vence = Date.parse(d.venceEn);
       const ahora = Date.parse(d.ahora);
@@ -193,8 +196,14 @@ export function regaloCurso(slug) {
     disponible = estado.disponible;
     reserva = estado.reserva || null;
     if (reserva) recordarReclamo();
-    if (estado.contenido) contenido = estado.contenido;
-    detalles.forEach(n => { n.textContent = contenido; n.hidden = !contenido; });
+    if (estado.contenido) {
+      contenido = estado.contenido;
+      detalles.forEach(n => {
+        n.querySelector('.sgi-regalo-amplio').textContent = contenido;
+        n.querySelector('.sgi-regalo-breve').textContent = estado.contenidoBreve;
+        n.hidden = false;
+      });
+    }
     if (disponible) superficies.forEach(n => { if (!n.querySelector('img').hasAttribute('src')) prepararFoto(n); });
   }
 
@@ -217,7 +226,11 @@ export function regaloCurso(slug) {
       n.hidden = !mostrar;
       const leyenda = inscripcion ? 'Apartado · confirma tu pago en ' + tiempo(falta) + '.' :
         'Aparta el regalo y confirma tu pago en 60 minutos.';
-      if (plazos[i].textContent !== leyenda) plazos[i].textContent = leyenda;
+      const leyendaBreve = inscripcion ? leyenda : 'Confirma tu pago en 60 min tras apartar.';
+      const amplio = plazos[i].querySelector('.sgi-regalo-amplio');
+      const breve = plazos[i].querySelector('.sgi-regalo-breve');
+      if (amplio.textContent !== leyenda) amplio.textContent = leyenda;
+      if (breve.textContent !== leyendaBreve) breve.textContent = leyendaBreve;
     });
     botones.forEach((b, i) => {
       b.disabled = activando;

@@ -1,0 +1,35 @@
+:is(.hero, .hero-nuevo) .sgi-acceso-aula {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 44px;
+  max-width: 100%;
+  margin: 0 0 16px;
+  padding: 8px 14px;
+  border: 1px solid #b8cdbf;
+  border-radius: 10px;
+  background: #fff;
+  color: #174834;
+  font-size: .875rem;
+  font-weight: 750;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+}
+
+.hero .sgi-acceso-aula {
+  border-color: rgb(255 255 255 / 52%);
+  background: rgb(255 255 255 / 8%);
+  color: #fff;
+}
+
+:is(.hero, .hero-nuevo) .sgi-acceso-aula:is(:hover, :focus-visible) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:is(.hero, .hero-nuevo) .sgi-acceso-aula:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
