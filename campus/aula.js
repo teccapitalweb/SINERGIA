@@ -7,6 +7,7 @@
 import { CURSO_RIEGO, esCursoIndividual, landingCurso, portadaCurso, portadaPublica, mxn, validarOferta } from '../componentes/cursos-individuales-config.js?v=1';
 
 const I = {
+  brote: '<svg viewBox="0 0 24 24"><path d="M12 21v-8M12 15C6 15 3 11 3 5c6 0 9 3 9 9M12 15c0-5 3-8 9-8 0 5-3 8-9 8"/></svg>',
   casa: '<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>',
   clases: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>',
   doc: '<svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
@@ -95,6 +96,7 @@ const TABS = [
   { id: '', t: 'Inicio', lado: 'Mi curso', i: 'casa' },
   { id: 'clases', t: 'Clases', lado: 'Temario', i: 'clases' },
   { id: 'materiales', t: 'Materiales', lado: 'Materiales', i: 'doc' },
+  { id: 'brote', t: 'Brote', lado: 'Brote', i: 'brote' },
   { id: 'certificado', t: 'Certificado', lado: 'Mi certificado', i: 'cert' }
 ];
 
@@ -648,6 +650,7 @@ export function pintarAula(ctx, c, partes) {
   if (sub === 'clase') return vistaClase(c, partes[3]);
   if (sub === 'clases') return vistaClases(c);
   if (sub === 'materiales') return vistaMateriales(c);
+  if (sub === 'brote') return ctx.brote.montar($('#mc-view'), c);
   if (sub === 'certificado') return vistaCertificado(c);
   return vistaInicio(c);
 }

@@ -10,8 +10,9 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=ofertas-cursos-1';
+import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=brote-1';
 import { API_SINERGIA, CURSO_RIEGO, CURSOS_INDIVIDUALES, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=1';
+import { crearBrote, tieneBrote } from './brote.js?v=1';
 
 import { firebaseConfig } from '../componentes/campus-firebase-config.js?v=1';
 const BACKEND = API_SINERGIA;
@@ -30,6 +31,8 @@ setPersistence(auth, browserLocalPersistence).catch(() => null);
 
 const $app = document.getElementById('app');
 const E = { usuario: null, datos: null, error: null, cargando: false, scroll: {}, reproduciendo: null, cuentaAtras: null };
+const brote = crearBrote(api);
+let revisionDatos = 0;
 
 // Regreso de un pago (lo deja gracias.html en esta pestaña): curso recién comprado, válido 15 minutos
 function pagoReciente() {
@@ -63,7 +66,8 @@ async function api(ruta, opciones = {}) {
   const u = auth.currentUser;
   const headers = { 'Content-Type': 'application/json' };
   if (u) headers.Authorization = 'Bearer ' + await u.getIdToken();
-  const r = await fetch(BACKEND + ruta, { method: opciones.body ? 'POST' : 'GET', headers, body: opciones.body ? JSON.stringify(opciones.body) : undefined });
+  const r = await fetch(BACKEND + ruta, { method: opciones.body ? 'POST' : 'GET', headers, body: opciones.body ? JSON.stringify(opciones.body) : undefined,
+    signal: opciones.signal, cache: opciones.cache });
   const data = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(data.error || data.mensaje || ('Error ' + r.status)); e.status = r.status; e.datos = data; throw e; }
   return data;
@@ -81,6 +85,14 @@ const esVista = (c, id) => c.progreso.completadas.includes(id);
 
 // ── Sesión ─────────────────────────────────────────────────
 onAuthStateChanged(auth, async (u) => {
+  brote.cambiarCuenta(u?.uid || null);
+  if (E.usuario && E.usuario.uid !== u?.uid) {
+    ++revisionDatos;
+    E.datos = null;
+    E.error = null;
+    E.scroll = {};
+    $app.innerHTML = '<div class="splash"><span>Abriendo el Campus Sinergia…</span></div>';
+  }
   E.usuario = u;
   const { partes, q } = ruta();
   if (partes[0] === 'entrar' && q.get('t')) return canjearEnlace(q.get('t'), q.get('curso'));
@@ -95,10 +107,18 @@ onAuthStateChanged(auth, async (u) => {
 });
 
 async function cargarDatos() {
+  const revision = ++revisionDatos;
+  const cuenta = auth.currentUser?.uid;
+  const vigente = () => revision === revisionDatos && auth.currentUser?.uid === cuenta;
   E.cargando = true; E.error = null;
-  try { E.datos = await api('/campus/mis-cursos'); }
-  catch (e) { E.datos = null; E.error = e; }
-  E.cargando = false;
+  try {
+    const datos = await api('/campus/mis-cursos');
+    if (vigente()) E.datos = datos;
+  } catch (e) {
+    if (vigente()) { E.datos = null; E.error = e; }
+  } finally {
+    if (vigente()) E.cargando = false;
+  }
 }
 
 async function canjearEnlace(t, slug) {
@@ -185,11 +205,13 @@ function pantallaAcceso(opc = {}) {
 // ── Marco del campus ───────────────────────────────────────
 const NAV = [
   ['#/', 'inicio', 'Mi inicio'], ['#/cursos', 'cursos', 'Mis cursos'], ['#/materiales', 'material', 'Materiales'],
-  ['#/progreso', 'progreso', 'Mi progreso'], ['#/certificado', 'certificado', 'Certificados'], ['#/cuenta', 'cuenta', 'Mi cuenta']
+  ['#/progreso', 'progreso', 'Mi progreso'], ['#/certificado', 'certificado', 'Certificados'], ['#/brote', 'hoja', 'Brote'], ['#/cuenta', 'cuenta', 'Mi cuenta']
 ];
 function marco(activo, html) {
-  const nav = NAV.map(([h, i, t]) => `<a class="nav-item${activo === h ? ' activo' : ''}" href="${h}" ${activo === h ? 'aria-current="page"' : ''}>${ICO[i]}<span>${t}</span></a>`).join('');
-  const movil = NAV.filter(([h]) => h !== '#/progreso').map(([h, i, t]) => `<a class="${activo === h ? 'activo' : ''}" href="${h}">${ICO[i]}<span>${t.replace('Mis ', '').replace('Mi ', '')}</span></a>`).join('');
+  const conBrote = tieneBrote(E.datos);
+  const opciones = NAV.filter(([h]) => h !== '#/brote' || conBrote);
+  const nav = opciones.map(([h, i, t]) => `<a class="nav-item${activo === h ? ' activo' : ''}" href="${h}" ${activo === h ? 'aria-current="page"' : ''}>${ICO[i]}<span>${t}</span></a>`).join('');
+  const movil = opciones.filter(([h]) => h !== '#/progreso' && (!conBrote || h !== '#/certificado')).map(([h, i, t]) => `<a class="${activo === h ? 'activo' : ''}" href="${h}" ${activo === h ? 'aria-current="page"' : ''}>${ICO[i]}<span>${t.replace('Mis ', '').replace('Mi ', '')}</span></a>`).join('');
   return `${E.datos && E.datos.alumno.esAdmin ? '<div class="vista-equipo">Vista del equipo: ves todos los cursos y las clases ocultas también se pueden reproducir. Tu avance no se guarda.</div>' : ''}
   <div class="campus">
     <aside class="lateral" aria-label="Menú del campus">
@@ -335,6 +357,7 @@ function vistaCuenta() {
   const d = E.datos, u = E.usuario;
   const proveedores = (u.providerData || []).map((p) => p.providerId);
   return `<div class="encabezado"><div><span class="eyebrow">Tu cuenta</span><h1 class="titulo"><span>Mi cuenta</span></h1></div></div>
+  ${tieneBrote(E.datos) ? '<p><a class="btn btn-sec" href="#/certificado">Ver mis certificados</a></p>' : ''}
   <div class="datos"><div class="dato"><span>Nombre</span><b style="font-size:18px">${esc(d.alumno.nombre || '—')}</b></div><div class="dato"><span>Correo</span><b style="font-size:16px;word-break:break-all">${esc(d.alumno.email)}</b></div></div>
   <h2 class="sec">Mis compras</h2>
   <div class="caja">${d.compras.length ? `<table class="tabla-simple">${d.compras.map((c) => `<tr><td><b>${esc((curso(c.curso) || { titulo: c.curso }).titulo)}</b></td><td>${c.fecha ? new Date(c.fecha).toLocaleDateString('es-MX', { dateStyle: 'medium' }) : ''}</td><td style="text-align:right">${c.monto != null ? '$' + c.monto.toLocaleString('es-MX') : ''}</td></tr>`).join('')}</table>` : '<p class="sub">No hay compras registradas con este correo.</p>'}</div>
@@ -351,6 +374,7 @@ function vistaCuenta() {
 
 // ── Render y eventos ───────────────────────────────────────
 function render() {
+  brote.desmontar();
   if (!E.usuario) return pantallaAcceso();
   $app.className = '';
   clearInterval(E.cuentaAtras);
@@ -389,7 +413,7 @@ function render() {
     return render();
   }
   if (partes[0] === 'curso' && curso(partes[1])) {
-    pintarAula({ app: $app, E, api, render, WHATSAPP }, curso(partes[1]), partes); window.scrollTo(0, 0);
+    pintarAula({ app: $app, E, api, render, WHATSAPP, brote }, curso(partes[1]), partes); window.scrollTo(0, 0);
     if (pg && pg.curso === partes[1]) { olvidarPago(); confeti(); setTimeout(() => { const t = document.getElementById('mc-toast'); if (t) { t.textContent = '¡Bienvenido! Tu curso ya está activo'; t.className = 'mc__toast on'; setTimeout(() => { t.className = 'mc__toast'; }, 3800); } }, 400); }
     return;
   }
@@ -407,10 +431,16 @@ function render() {
   else if (partes[0] === 'materiales') { activo = '#/materiales'; html = vistaMateriales(); }
   else if (partes[0] === 'progreso') { activo = '#/progreso'; html = vistaProgreso(); }
   else if (partes[0] === 'certificado') { activo = '#/certificado'; html = vistaCertificado(); }
+  else if (partes[0] === 'brote') {
+    activo = '#/brote';
+    html = tieneBrote(E.datos) ? '<div id="brote-campus"></div>' :
+      '<div class="caja vacio"><b>Brote está disponible para alumnos con acceso a un curso</b><a class="btn btn-sec" href="#/cursos">Ver mis cursos</a></div>';
+  }
   else if (partes[0] === 'cuenta') { activo = '#/cuenta'; html = vistaCuenta(); }
   else html = vistaInicio();
   $app.innerHTML = marco(activo, html);
   if (activo === '#/cursos') mostrarPreciosRecomendados($app, api);
+  if (activo === '#/brote') brote.montar(document.getElementById('brote-campus'));
   pintarAvatar($app.querySelector('.campus-avatar'), E.usuario, E.datos.alumno);
   const clave = location.hash;
   window.scrollTo(0, E.scroll[clave] || 0);
