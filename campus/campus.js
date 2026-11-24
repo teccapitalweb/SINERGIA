@@ -10,8 +10,8 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=portadas-2';
-import { API_SINERGIA, CURSO_RIEGO, CURSOS_INDIVIDUALES, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=2';
+import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=descuento-alumno-1';
+import { API_SINERGIA, CURSO_RIEGO, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=2';
 
 import { firebaseConfig } from '../componentes/campus-firebase-config.js?v=1';
 const BACKEND = API_SINERGIA;
@@ -283,7 +283,7 @@ function vistaCursos() {
   const anteriores = [...new Set(compras.map(x => x.curso))];
   return `<div class="encabezado"><div><span class="eyebrow">Mi biblioteca</span><h1 class="titulo"><span>Mis cursos</span></h1><p class="sub">Entra a las clases y materiales de tus cursos.</p></div></div>
     ${d.cursos.length ? `<div class="rejilla">${d.cursos.map(tarjetaCurso).join('')}</div>` : (!anteriores.length ? sinCursos() : '')}
-    ${anteriores.map(slug => recomendarCursos(d, { slug }, 'Por tu compra de ' + CURSOS_INDIVIDUALES[slug].titulo)).join('')}
+    ${anteriores.map(slug => recomendarCursos(d, { slug })).join('')}
     ${anteriores.length ? '' : otrosCursos(d.otros)}`;
 }
 function noTiene() {
