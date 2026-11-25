@@ -96,7 +96,7 @@ const TABS = [
   { id: '', t: 'Inicio', lado: 'Mi curso', i: 'casa' },
   { id: 'clases', t: 'Clases', lado: 'Temario', i: 'clases' },
   { id: 'materiales', t: 'Materiales', lado: 'Materiales', i: 'doc' },
-  { id: 'brote', t: 'Brote', lado: 'Brote', i: 'brote' },
+  { id: 'brote', t: 'Brote IA', lado: 'Brote IA', i: 'brote' },
   { id: 'certificado', t: 'Certificado', lado: 'Mi certificado', i: 'cert' }
 ];
 
