@@ -569,6 +569,7 @@
 </style>
 <link rel="stylesheet" href="/componentes/curso-individual.css?v=6">
 <link rel="stylesheet" href="/componentes/acceso-curso.css">
+<link rel="stylesheet" href="/componentes/video-promocional.css?v=1">
 <script src="/cookies.js?v=cursos-1" defer></script>
 </head>
 <body data-curso-individual="biofertilizantes">
@@ -621,9 +622,13 @@
     </div>
 
     <div class="hero-right">
-      <div class="hero-video-wrapper">
-        <video src="assets/video-hero.mp4" poster="assets/poster-hero.jpg"
-               controls autoplay muted loop playsinline preload="metadata"></video>
+      <div class="hero-video-wrapper" data-sgi-video-promo>
+        <video id="video-biofertilizantes" poster="https://vz-158cdd56-161.b-cdn.net/a308bed6-5a22-4483-9775-ca7a084e0217/thumbnail.jpg"
+               controls autoplay muted loop playsinline preload="metadata">
+          <source src="https://vz-158cdd56-161.b-cdn.net/a308bed6-5a22-4483-9775-ca7a084e0217/play_720p.mp4" type="video/mp4">
+          <source src="assets/video-hero.mp4" type="video/mp4">
+        </video>
+        <button id="soundBtn" class="sgi-video-sonido" type="button" aria-controls="video-biofertilizantes" hidden>Activar sonido</button>
       </div>
       <div class="hero-video-etiqueta">
         &#128249; Preview del curso
@@ -1648,5 +1653,6 @@
 </script>
 <!-- TESTIMONIOS-VT:FIN -->
 <script type="module" src="/componentes/curso-individual.js?v=5"></script>
+<script type="module" src="/componentes/video-promocional.js?v=1"></script>
 </body>
 </html>
