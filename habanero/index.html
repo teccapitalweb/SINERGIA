@@ -394,21 +394,6 @@
     .section-title { font-size: 26px; }
   }
 
-  .guarantee-badge { display: flex; gap: 14px; align-items: center;
-                     background: rgba(255,255,255,0.1);
-                     border: 1px solid rgba(255,255,255,0.25);
-                     border-radius: 10px; padding: 14px 16px;
-                     margin: 16px 0; }
-  .guarantee-icon { flex-shrink: 0; width: 32px; height: 32px;
-                    color: var(--brand-primary);
-                    background: white; border-radius: 50%;
-                    display: flex; align-items: center;
-                    justify-content: center; padding: 6px; }
-  .guarantee-icon svg { width: 100%; height: 100%; }
-  .guarantee-text strong { display: block; font-size: 14px;
-                           color: white; margin-bottom: 4px; }
-  .guarantee-text span { font-size: 12px; color: rgba(255,255,255,0.8);
-                         line-height: 1.4; }
 
   .faq-section { padding: 60px 20px; background: white; }
   .faq-wrapper { max-width: 800px; margin: 0 auto; }
@@ -439,7 +424,8 @@
                       font-size: 14px; transition: all 0.2s; }
   .faq-whatsapp-btn:hover { background: #1DA851; transform: translateY(-1px); }
 </style>
-<link rel="stylesheet" href="/componentes/curso-individual.css?v=3">
+<link rel="stylesheet" href="/componentes/curso-individual.css?v=6">
+<link rel="stylesheet" href="/componentes/acceso-curso.css">
 <script src="/cookies.js?v=cursos-1" defer></script>
 </head>
 <body data-curso-individual="habanero">
@@ -448,6 +434,7 @@
 <header class="hero">
   <div class="wrap">
     <div class="live-pill"><span class="live-dot"></span> Curso en vivo · Clases online</div>
+    <div><a href="/campus/#/cursos" class="sgi-campus-link sgi-acceso-aula">Ya compré · Entrar a mi curso</a></div>
     <h1>Domina el cultivo de <em>chile habanero</em></h1>
     <p class="hero-sub">De la plántula a la venta: nutrición, riego, plagas y comercialización con el <b>Ing. Rodolfo Valentín Ávila</b> — 30+ años de experiencia en campo.</p>
 
@@ -892,18 +879,6 @@
         <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Certificado digital con QR y folio válido</div>
         <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Grupo VIP de WhatsApp con otros productores</div>
       </div>
-      <div class="guarantee-badge">
-        <div class="guarantee-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <polyline points="9 12 11 14 15 10"/>
-          </svg>
-        </div>
-        <div class="guarantee-text">
-          <strong>Garantía de 7 días</strong>
-          <span>Si el primer módulo no cumple tus expectativas, te devolvemos el 100% de tu inversión. Sin preguntas.</span>
-        </div>
-      </div>
       <a class="btn btn-fire pulse js-buy" href="#" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
         INSCRIBIRME AHORA
@@ -1131,6 +1106,6 @@
 <script src="../precios.js"></script>
 <script>Precios.init('habanero');</script>
 
-<script type="module" src="/componentes/curso-individual.js?v=2"></script>
+<script type="module" src="/componentes/curso-individual.js?v=5"></script>
 </body>
 </html>

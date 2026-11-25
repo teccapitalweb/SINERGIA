@@ -4,10 +4,10 @@ export const PORTADA_RIEGO = '/img/cursos/mini/riego.webp';
 export const REFERIDO = 'sg_desde';
 
 export const CURSOS_INDIVIDUALES = Object.freeze({
-  'biofertilizantes': { titulo: 'Elaboración y Aplicación de Biofertilizantes en Cultivos', portada: '/biofertilizantes/assets/poster-hero.jpg' },
-  'cana-de-azucar': { titulo: 'Producción Rentable de Caña de Azúcar', portada: '/campus/portadas/cana-de-azucar-2.jpg' },
-  'gerberas': { titulo: 'Cultivo y Manejo de Gerberas', portada: '/gerberas/assets/poster-hero.jpg' },
-  'habanero': { titulo: 'Producción y Manejo de Chile Habanero', portada: '/habanero/assets/chiles-hero.jpg' },
+  'biofertilizantes': { titulo: 'Elaboración y Aplicación de Biofertilizantes en Cultivos', portada: '/campus/portadas/biofertilizantes-1.jpg' },
+  'cana-de-azucar': { titulo: 'Producción Rentable de Caña de Azúcar', portada: '/campus/portadas/cana-de-azucar-1.jpg' },
+  'gerberas': { titulo: 'Cultivo y Manejo de Gerberas', portada: '/campus/portadas/gerberas.webp' },
+  'habanero': { titulo: 'Producción y Manejo de Chile Habanero', portada: '/campus/portadas/habanero.webp' },
   'soluciones-nutritivas': { titulo: 'Elaboración de Soluciones Nutritivas para Cultivos', portada: '/campus/portadas/soluciones-nutritivas-1.jpg' }
 });
 
@@ -23,8 +23,9 @@ export function portadaPublica(portada) {
 }
 
 export function portadaCurso(curso) {
-  return portadaPublica(curso.portada) ||
-    (curso.slug === CURSO_RIEGO ? PORTADA_RIEGO : CURSOS_INDIVIDUALES[curso.slug]?.portada || '');
+  const primerModulo = curso.modulos?.find(modulo => modulo.clases?.length);
+  return portadaPublica(primerModulo?.clases[0]?.portada) || CURSOS_INDIVIDUALES[curso.slug]?.portada ||
+    portadaPublica(curso.portada) || (curso.slug === CURSO_RIEGO ? PORTADA_RIEGO : '');
 }
 
 const formateador = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 2 });

@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 
 <link rel="icon" href="img/logo.jpg" type="image/jpeg">
-<link rel="stylesheet" href="admin/cursos-individuales.css">
+<link rel="stylesheet" href="admin/cursos-individuales.css?v=2">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2839,15 +2839,12 @@ body::before { display: none; }
          INSCRIPCIONES A CURSOS (landings con pago único)
          ═══════════════════════════════════════════════════════════ -->
     <div class="tab-panel" data-panel="inscripciones" id="cursosIndividuales">
-      <div class="db-hero sg-ci-hero">
-        <div class="db-hero-top"><div>
-          <span class="db-eyebrow">Panel de administración</span>
-          <h2 class="db-hero-titulo">Cursos <em>individuales.</em></h2>
-          <p class="db-hero-sub">Inscripciones, actividad de las páginas de cada curso y precios.</p>
-        </div></div>
-      </div>
+      <header class="sg-ci-encabezado">
+        <h2>Cursos individuales</h2>
+        <p>Actividad de los cursos y seguimiento de pagos.</p>
+      </header>
       <nav class="sg-ci-tabs" aria-label="Cursos individuales">
-        <button type="button" data-ci-tab="resumen" aria-current="true">Resumen comparativo</button>
+        <button type="button" data-ci-tab="resumen" aria-current="true">Resumen</button>
         <button type="button" data-ci-tab="inscripciones">Inscripciones</button>
         <button type="button" data-ci-tab="visitas">Visitas</button>
         <button type="button" data-ci-tab="video">Video</button>
@@ -7927,7 +7924,7 @@ body::before { display: none; }
     if (tab === 'precios') return pxCargar(false);
     if (!CI.modulo) {
       ciMetricas.innerHTML = '<p class="widget-box" role="status">Cargando la actividad…</p>';
-      CI.modulo = import('./admin/cursos-individuales.js').then(m => {
+      CI.modulo = import('./admin/cursos-individuales.js?v=2').then(m => {
         if (version !== CI.version) return null;
         CI.panel = m.crearMetricasCursos({
           contenedor: ciMetricas,

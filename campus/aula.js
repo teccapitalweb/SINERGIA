@@ -4,7 +4,7 @@
    con visor, valoración con estrellas y solicitud de certificado), adaptado a cada curso de Sinergia.
    El servidor sigue decidiendo todo: qué clases hay, el video firmado, el avance y las descargas.
    ═══════════════════════════════════════════════════════════ */
-import { CURSO_RIEGO, esCursoIndividual, landingCurso, portadaCurso, portadaPublica, mxn, validarOferta } from '../componentes/cursos-individuales-config.js?v=1';
+import { CURSO_RIEGO, CURSOS_INDIVIDUALES, esCursoIndividual, landingCurso, portadaCurso, portadaPublica, mxn, validarOferta } from '../componentes/cursos-individuales-config.js?v=2';
 
 const I = {
   brote: '<svg viewBox="0 0 24 24"><path d="M12 21v-8M12 15C6 15 3 11 3 5c6 0 9 3 9 9M12 15c0-5 3-8 9-8 0 5-3 8-9 8"/></svg>',
@@ -27,9 +27,9 @@ const ESTADOS_MX = ['Aguascalientes','Baja California','Baja California Sur','Ca
 
 // Portadas definitivas: cuando existan, se escriben aquí (rutas del sitio). Sin portada se dibuja una de arte.
 const PORTADAS = {
-  'biofertilizantes': { curso: '/biofertilizantes/assets/poster-hero.jpg', clases: ['/campus/portadas/biofertilizantes-1.jpg', '/campus/portadas/biofertilizantes-2.jpg', '/campus/portadas/biofertilizantes-3.jpg', '/campus/portadas/biofertilizantes-4.jpg', '/campus/portadas/biofertilizantes-5.jpg'], materiales: ['/campus/portadas/mat-biofertilizantes-1.jpg', '/campus/portadas/mat-biofertilizantes-2.jpg', '/campus/portadas/mat-biofertilizantes-3.jpg', '/campus/portadas/mat-biofertilizantes-4.jpg', '/campus/portadas/mat-biofertilizantes-5.jpg'] },
-  'cana-de-azucar': { curso: '/campus/portadas/cana-de-azucar-2.jpg', clases: ['/campus/portadas/cana-de-azucar-1.jpg', '/campus/portadas/cana-de-azucar-2.jpg', '/campus/portadas/cana-de-azucar-3.jpg', '/campus/portadas/cana-de-azucar-4.jpg', '/campus/portadas/cana-de-azucar-5.jpg'], materiales: ['/campus/portadas/mat-cana-de-azucar-1.jpg', '/campus/portadas/mat-cana-de-azucar-2.jpg', '/campus/portadas/mat-cana-de-azucar-3.jpg', '/campus/portadas/mat-cana-de-azucar-4.jpg', '/campus/portadas/mat-cana-de-azucar-5.jpg'] },
-  'soluciones-nutritivas': { curso: '/campus/portadas/soluciones-nutritivas-1.jpg', clases: ['/campus/portadas/soluciones-nutritivas-1.jpg', '/campus/portadas/soluciones-nutritivas-2.jpg', '/campus/portadas/soluciones-nutritivas-3.jpg', '/campus/portadas/soluciones-nutritivas-4.jpg', '/campus/portadas/soluciones-nutritivas-5.jpg'], materiales: ['/campus/portadas/mat-soluciones-nutritivas-1.jpg', '/campus/portadas/mat-soluciones-nutritivas-2.jpg', '/campus/portadas/mat-soluciones-nutritivas-3.jpg', '/campus/portadas/mat-soluciones-nutritivas-4.jpg', '/campus/portadas/mat-soluciones-nutritivas-5.jpg'] }
+  'biofertilizantes': { clases: ['/campus/portadas/biofertilizantes-1.jpg', '/campus/portadas/biofertilizantes-2.jpg', '/campus/portadas/biofertilizantes-3.jpg', '/campus/portadas/biofertilizantes-4.jpg', '/campus/portadas/biofertilizantes-5.jpg'], materiales: ['/campus/portadas/mat-biofertilizantes-1.jpg', '/campus/portadas/mat-biofertilizantes-2.jpg', '/campus/portadas/mat-biofertilizantes-3.jpg', '/campus/portadas/mat-biofertilizantes-4.jpg', '/campus/portadas/mat-biofertilizantes-5.jpg'] },
+  'cana-de-azucar': { clases: ['/campus/portadas/cana-de-azucar-1.jpg', '/campus/portadas/cana-de-azucar-2.jpg', '/campus/portadas/cana-de-azucar-3.jpg', '/campus/portadas/cana-de-azucar-4.jpg', '/campus/portadas/cana-de-azucar-5.jpg'], materiales: ['/campus/portadas/mat-cana-de-azucar-1.jpg', '/campus/portadas/mat-cana-de-azucar-2.jpg', '/campus/portadas/mat-cana-de-azucar-3.jpg', '/campus/portadas/mat-cana-de-azucar-4.jpg', '/campus/portadas/mat-cana-de-azucar-5.jpg'] },
+  'soluciones-nutritivas': { clases: ['/campus/portadas/soluciones-nutritivas-1.jpg', '/campus/portadas/soluciones-nutritivas-2.jpg', '/campus/portadas/soluciones-nutritivas-3.jpg', '/campus/portadas/soluciones-nutritivas-4.jpg', '/campus/portadas/soluciones-nutritivas-5.jpg'], materiales: ['/campus/portadas/mat-soluciones-nutritivas-1.jpg', '/campus/portadas/mat-soluciones-nutritivas-2.jpg', '/campus/portadas/mat-soluciones-nutritivas-3.jpg', '/campus/portadas/mat-soluciones-nutritivas-4.jpg', '/campus/portadas/mat-soluciones-nutritivas-5.jpg'] }
 };
 const TEMA = {
   'biofertilizantes': { corto: 'Biofertilizantes', lema: 'Nutrición viva para tu suelo', motivo: 'hoja' },
@@ -289,7 +289,7 @@ function vistaInicio(c) {
   const minTot = cl.reduce((a, x) => a + (x.duracionMin || 0), 0);
   const dur = minTot ? (minTot >= 90 ? (Math.round(minTot / 6) / 10) + ' horas' : minTot + ' min') : '—';
   const estado = !c.contenidoListo ? 'En preparación' : p.porcentaje >= 100 ? 'Completado' : p.completadas.length ? 'En progreso' : 'Por empezar';
-  const port = portadaPublica(c.portada) || PORTADAS[c.slug]?.curso || portadaCurso(c);
+  const port = portadaCurso(c);
   const regalo = X.E.datos.cursos.find(x => x.origen === 'regalo' && x.regaloDe === c.slug && x.slug === CURSO_RIEGO);
   $('#mc-view').innerHTML = `<section class="mc__hero" aria-labelledby="mc-curso-nombre">
     <div class="mc__head">
@@ -332,17 +332,23 @@ function vistaInicio(c) {
   <aside class="mc__aside">${panelAprendizaje(c)}</aside></div>`;
   ligar(c);
 }
-export function recomendarCursos(datos, c, encabezado = 'Porque adquiriste este curso te podría interesar') {
+export function recomendarCursos(datos, c) {
   if (!esCursoIndividual(c.slug) || c.origen === 'regalo' ||
       !(datos.compras || []).some(x => x.curso === c.slug && x.monto > 0)) return '';
   const pendientes = (datos.otros || []).filter(x => landingCurso(x.slug) && x.slug !== c.slug);
   if (!pendientes.length) return '';
+  const nombreOrigen = c.titulo || CURSOS_INDIVIDUALES[c.slug].titulo;
   return `<section class="mc__sec mc__recomendados">
-    <h2>${esc(encabezado)}</h2>
+    <h2>Descuento especial para alumnos</h2>
+    <p class="mc__beneficio-alumno">Por haber comprado <strong>${esc(nombreOrigen)}</strong><span class="mc__beneficio-detalle"> con nosotros, consulta tu precio especial para estos cursos</span>.</p>
     <div class="mc__recomendados-grid">${pendientes.map(x => `
       <a class="mc__recomendado" data-origen="${esc(c.slug)}" data-destino="${esc(x.slug)}" href="${esc(landingCurso(x.slug, c.slug))}">
         <img src="${esc(portadaCurso(x))}" alt="" loading="lazy">
-        <div><h3>${esc(x.titulo)}</h3><p data-precio-alumno hidden></p><span>Ver curso ${I.flecha}</span></div>
+        <div class="mc__recomendado-info">
+          <h3>${esc(x.titulo)}</h3>
+          <div class="mc__precio-alumno" data-precio-alumno hidden></div>
+          <span class="mc__recomendado-cta"><span data-cta-alumno>Ver curso</span>${I.flecha}</span>
+        </div>
       </a>`).join('')}</div>
   </section>`;
 }
@@ -355,8 +361,10 @@ export function mostrarPreciosRecomendados(app, api) {
         const precio = validarOferta(oferta, origenSlug, destinoSlug);
         if (!tarjeta.isConnected || !precio) return;
         const nodo = tarjeta.querySelector('[data-precio-alumno]');
-        nodo.innerHTML = `<s>${mxn(precio.precioCentavos)}</s> <b>${mxn(precio.totalCentavos)}</b>`;
+        nodo.innerHTML = `<span class="mc__ahorro-alumno">Ahorras ${mxn(precio.descuentoCentavos)}</span>
+          <p class="mc__importe-alumno"><s>${mxn(precio.precioCentavos)}</s> <strong>${mxn(precio.totalCentavos)}</strong></p>`;
         nodo.hidden = false;
+        tarjeta.querySelector('[data-cta-alumno]').textContent = 'Ver curso con descuento';
       })
       .catch(() => {});
   }

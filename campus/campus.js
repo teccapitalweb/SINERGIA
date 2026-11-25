@@ -11,19 +11,12 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=brote-1';
-import { API_SINERGIA, CURSO_RIEGO, CURSOS_INDIVIDUALES, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=1';
+import { API_SINERGIA, CURSO_RIEGO, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=2';
 import { crearBrote, tieneBrote } from './brote.js?v=1';
 
 import { firebaseConfig } from '../componentes/campus-firebase-config.js?v=1';
 const BACKEND = API_SINERGIA;
 const WHATSAPP = '5212361074058';
-
-// Fotos reales que ya existen en el sitio (ponente / portada de cada landing). Sin foto: fondo de color.
-const IMAGENES = {
-  'biofertilizantes': { portada: '/biofertilizantes/assets/poster-hero.jpg', ponente: '/biofertilizantes/assets/ponente.jpg' },
-  'cana-de-azucar': { portada: '/cana-de-azucar/assets/ponente.jpg', ponente: '/cana-de-azucar/assets/ponente.jpg' },
-  'soluciones-nutritivas': {}
-};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -229,7 +222,7 @@ function marco(activo, html) {
 
 // ── Componentes ────────────────────────────────────────────
 function portada(c, extra = '') {
-  const imagen = portadaCurso(c) || IMAGENES[c.slug]?.portada;
+  const imagen = portadaCurso(c);
   return `<div class="portada">${imagen ? `<img src="${esc(imagen)}" alt="" loading="lazy">` : `<div class="hoja">${ICO.hoja}</div>`}${extra}</div>`;
 }
 function tarjetaCurso(c) {
@@ -312,7 +305,7 @@ function vistaCursos() {
   const anteriores = [...new Set(compras.map(x => x.curso))];
   return `<div class="encabezado"><div><span class="eyebrow">Mi biblioteca</span><h1 class="titulo"><span>Mis cursos</span></h1><p class="sub">Entra a las clases y materiales de tus cursos.</p></div></div>
     ${d.cursos.length ? `<div class="rejilla">${d.cursos.map(tarjetaCurso).join('')}</div>` : (!anteriores.length ? sinCursos() : '')}
-    ${anteriores.map(slug => recomendarCursos(d, { slug }, 'Por tu compra de ' + CURSOS_INDIVIDUALES[slug].titulo)).join('')}
+    ${anteriores.map(slug => recomendarCursos(d, { slug })).join('')}
     ${anteriores.length ? '' : otrosCursos(d.otros)}`;
 }
 function noTiene() {
