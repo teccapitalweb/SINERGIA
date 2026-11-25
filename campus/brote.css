@@ -72,6 +72,7 @@
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
+.brote-mensaje a { color: #1a5936; text-decoration: underline; text-underline-offset: .15em; }
 .brote-mensaje-propio {
   align-self: flex-end;
   border-color: #216540;

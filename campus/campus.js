@@ -10,9 +10,9 @@ import {
   signInWithCustomToken, signOut, updatePassword, setPersistence, browserLocalPersistence
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=brote-1';
+import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=brote-ia-2';
 import { API_SINERGIA, CURSO_RIEGO, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=2';
-import { crearBrote, tieneBrote } from './brote.js?v=biblioteca-1';
+import { crearBrote, tieneBrote } from './brote.js?v=biblioteca-2';
 
 import { firebaseConfig } from '../componentes/campus-firebase-config.js?v=1';
 const BACKEND = API_SINERGIA;
@@ -198,7 +198,7 @@ function pantallaAcceso(opc = {}) {
 // ── Marco del campus ───────────────────────────────────────
 const NAV = [
   ['#/', 'inicio', 'Mi inicio'], ['#/cursos', 'cursos', 'Mis cursos'], ['#/materiales', 'material', 'Materiales'],
-  ['#/progreso', 'progreso', 'Mi progreso'], ['#/certificado', 'certificado', 'Certificados'], ['#/brote', 'hoja', 'Brote'], ['#/cuenta', 'cuenta', 'Mi cuenta']
+  ['#/progreso', 'progreso', 'Mi progreso'], ['#/certificado', 'certificado', 'Certificados'], ['#/brote', 'hoja', 'Brote IA'], ['#/cuenta', 'cuenta', 'Mi cuenta']
 ];
 function marco(activo, html) {
   const conBrote = tieneBrote(E.datos);

@@ -32,9 +32,15 @@ function separarRespuesta(datos) {
   if (datos?.ok !== true || !respuesta) return null;
   const partes = (Array.isArray(datos.partes) ? datos.partes : [])
     .filter(x => typeof x === 'string' && x.trim()).slice(0, 8).map(texto => texto.trim().slice(0, 1500));
+  const enlaces = (Array.isArray(datos.enlaces) ? datos.enlaces : []).slice(0, 5).filter(enlace =>
+    typeof enlace?.texto === 'string' && enlace.texto.trim() && typeof enlace.url === 'string' &&
+    /^https:\/\/sinergiamexico\.it\.com\/[a-z0-9-]+\/$/.test(enlace.url));
   return {
     respuesta,
-    burbujas: (partes.length ? partes : [respuesta]).map(texto => ({ rol: 'asistente', texto }))
+    burbujas: [
+      ...(partes.length ? partes : [respuesta]).map(texto => ({ rol: 'asistente', texto })),
+      ...enlaces.map(enlace => ({ rol: 'asistente', texto: enlace.texto.slice(0, 200), enlace: enlace.url }))
+    ]
   };
 }
 
@@ -155,7 +161,17 @@ export function crearBrote(api) {
         const quien = document.createElement('span');
         quien.className = 'brote-sr';
         quien.textContent = mensaje.rol === 'usuario' ? 'Tú: ' : 'Brote: ';
-        nuevo.append(quien, document.createTextNode(mensaje.texto));
+        nuevo.append(quien);
+        if (mensaje.enlace) {
+          const link = document.createElement('a');
+          link.href = mensaje.enlace;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.textContent = mensaje.texto;
+          nuevo.append(link);
+        } else {
+          nuevo.append(document.createTextNode(mensaje.texto));
+        }
         log.append(nuevo);
         dibujados.set(mensaje, nuevo);
       }
