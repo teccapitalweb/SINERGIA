@@ -6,7 +6,7 @@ const MAX_TURNOS_EN_PANTALLA = 12;
 const MASCOTA = '/campus/portadas/brote.webp';
 
 export function tieneBrote(datos) {
-  return Boolean(datos?.cursos?.length || datos?.compras?.some(compra => compra.monto > 0));
+  return datos?.broteDisponible ?? Boolean(datos?.cursos?.length || datos?.compras?.some(compra => compra.monto > 0));
 }
 
 function aviso(error) {
