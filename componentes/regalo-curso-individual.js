@@ -39,7 +39,7 @@ function prepararFoto(nodo) {
 
 function celebrarReserva() {
   const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (movimientoReducido.matches || document.visibilityState === 'hidden') return;
+  if (movimientoReducido.matches || document.visibilityState === 'hidden' || document.querySelector('.sgi-confeti')) return;
 
   const lienzo = document.createElement('canvas');
   const dibujo = lienzo.getContext('2d');
@@ -54,18 +54,21 @@ function celebrarReserva() {
   lienzo.height = alto * escala;
   dibujo.scale(escala, escala);
 
-  const colores = ['#167348', '#55a457', '#ffd263', '#208ab0', '#f29853'];
-  const piezas = Array.from({ length: ancho < 600 ? 48 : 72 }, (_, i) => ({
-    x: ancho * (.47 + Math.random() * .06),
-    y: alto * (.4 + Math.random() * .04),
-    vx: (Math.random() - .5) * Math.min(ancho * 1.15, 720),
-    vy: -140 - Math.random() * 310,
-    giro: (Math.random() - .5) * 14,
-    ancho: 5 + Math.random() * 4,
+  const colores = ['#f0b429', '#166534', '#22a05a', '#ffffff', '#f97316', '#fde68a'];
+  const piezas = Array.from({ length: 150 }, (_, i) => ({
+    x: Math.random() * ancho,
+    y: -Math.random() * alto * .7,
+    vx: (Math.random() - .5) * 300,
+    vy: 120 + Math.random() * 240,
+    angulo: Math.random() * Math.PI * 2,
+    giro: (Math.random() - .5) * 18,
+    ancho: 6 + Math.random() * 6,
+    alto: 5 + Math.random() * 6,
     color: colores[i % colores.length]
   }));
   const inicio = performance.now();
-  const duracion = 2.1;
+  const duracion = 4.5;
+  const desvanecer = duracion / 4;
   document.body.append(lienzo);
 
   function animar(ahora) {
@@ -75,13 +78,13 @@ function celebrarReserva() {
       return;
     }
     dibujo.clearRect(0, 0, ancho, alto);
-    dibujo.globalAlpha = Math.min(1, (duracion - t) / .5);
+    dibujo.globalAlpha = Math.min(1, (duracion - t) / desvanecer);
     for (const pieza of piezas) {
       dibujo.save();
-      dibujo.translate(pieza.x + pieza.vx * t, pieza.y + pieza.vy * t + 260 * t * t);
-      dibujo.rotate(pieza.giro * t);
+      dibujo.translate(pieza.x + pieza.vx * t, pieza.y + pieza.vy * t + 54 * t * t);
+      dibujo.rotate(pieza.angulo + pieza.giro * t);
       dibujo.fillStyle = pieza.color;
-      dibujo.fillRect(0, 0, pieza.ancho, pieza.ancho * .6);
+      dibujo.fillRect(-pieza.ancho / 2, -pieza.alto / 2, pieza.ancho, pieza.alto);
       dibujo.restore();
     }
     requestAnimationFrame(animar);

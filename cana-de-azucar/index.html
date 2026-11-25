@@ -579,6 +579,7 @@ body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); out
 </style>
 <link rel="stylesheet" href="/componentes/curso-individual.css?v=6">
 <link rel="stylesheet" href="/componentes/acceso-curso.css">
+<link rel="stylesheet" href="/componentes/video-promocional.css?v=1">
 <script src="/cookies.js?v=cursos-1" defer></script>
 </head>
 <body data-curso-individual="cana-de-azucar">
@@ -617,12 +618,16 @@ body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); out
       </div>
 
       <div class="hn2-right">
-        <div class="hn2-video">
-          <video id="hn2-vid" src="assets/video-hero.mp4" poster="assets/poster-hero.jpg" controls muted loop playsinline preload="metadata" hidden></video>
-          <div class="hn2-ph" id="hn2-ph">
+        <div class="hn2-video" data-sgi-video-promo>
+          <video id="hn2-vid" poster="https://vz-158cdd56-161.b-cdn.net/2c899d76-b7ed-4223-9119-ab69c6b957fa/thumbnail.jpg"
+                 controls autoplay muted loop playsinline preload="metadata" hidden>
+            <source src="https://vz-158cdd56-161.b-cdn.net/2c899d76-b7ed-4223-9119-ab69c6b957fa/play_720p.mp4" type="video/mp4">
+          </video>
+          <button id="soundBtn" class="sgi-video-sonido" type="button" aria-controls="hn2-vid" hidden>Activar sonido</button>
+          <div class="hn2-ph" data-sgi-video-espera>
             <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
             <b>Video del curso</b>
-            <small>Muy pronto aqu&iacute;</small>
+            <small>Cargando la vista previa&hellip;</small>
           </div>
         </div>
         <div class="hn2-etiqueta">&#128249; Preview del curso</div>
@@ -630,18 +635,6 @@ body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); out
     </div>
   </div>
 </header>
-<script>
-// Cuando exista assets/video-hero.mp4, el video reemplaza al marcador autom&aacute;ticamente
-(function(){
-  var v = document.getElementById('hn2-vid');
-  if (!v) return;
-  v.addEventListener('loadedmetadata', function(){
-    v.hidden = false;
-    var ph = document.getElementById('hn2-ph'); if (ph) ph.remove();
-    v.play().catch(function(){});
-  });
-})();
-</script>
 
 <!-- ============ EMPRESAS QUE CONFÍAN ============ -->
 <section class="trusted">
@@ -1564,6 +1557,7 @@ body :is(a, button, summary):focus-visible { outline: 2px solid var(--base); out
 
 </script>
 <!-- TESTIMONIOS-VT:FIN -->
-<script type="module" src="/componentes/curso-individual.js?v=5"></script>
+<script type="module" src="/componentes/curso-individual.js?v=6"></script>
+<script type="module" src="/componentes/video-promocional.js?v=1"></script>
 </body>
 </html>
