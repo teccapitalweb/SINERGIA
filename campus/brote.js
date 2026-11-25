@@ -119,7 +119,7 @@ export function crearBrote(api) {
             <textarea id="brote-pregunta" rows="2" maxlength="${MAX_MENSAJE}" placeholder="Escribe tu pregunta…" enterkeyhint="send" autocomplete="off" aria-describedby="brote-privacidad"></textarea>
             <button type="submit">Enviar</button>
           </div>
-          <p class="brote-privacidad" id="brote-privacidad">Evita compartir datos personales. Brote usa tu mensaje y parte de la conversación reciente para responder con IA.</p>
+          <p class="brote-privacidad" id="brote-privacidad">Brote consulta manuales agrícolas y recuerda tus mensajes recientes mientras navegas por el Campus.</p>
         </form>
       </section>`;
     const panel = host.querySelector('.brote-chat');
@@ -134,7 +134,7 @@ export function crearBrote(api) {
     const imagen = panel.querySelector('.brote-avatar img');
     imagen.addEventListener('error', () => imagen.remove(), { once: true });
     panel.querySelector('[data-brote-contexto]').textContent = curso?.titulo || 'Tu asistente en el Campus Sinergia';
-    const saludo = { rol: 'asistente', texto: 'Cuéntame qué quieres repasar de tus cursos o aplicar en campo. ¿Por dónde empezamos?' };
+    const saludo = { rol: 'asistente', texto: 'Traigo la biblioteca bajo el brazo. Pregúntame sobre riego, nutrición o tus cultivos y buscamos por dónde empezar.' };
     const dibujados = new Map();
 
     function controles() {

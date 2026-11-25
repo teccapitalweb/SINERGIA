@@ -12,7 +12,7 @@ import {
 
 import { pintarAula, pintarSinCompra, pintarAvatar, abrirVisor, cerrarVisor, confeti, recomendarCursos, mostrarPreciosRecomendados } from './aula.js?v=brote-1';
 import { API_SINERGIA, CURSO_RIEGO, landingCurso, portadaCurso, portadaPublica } from '../componentes/cursos-individuales-config.js?v=2';
-import { crearBrote, tieneBrote } from './brote.js?v=1';
+import { crearBrote, tieneBrote } from './brote.js?v=biblioteca-1';
 
 import { firebaseConfig } from '../componentes/campus-firebase-config.js?v=1';
 const BACKEND = API_SINERGIA;
